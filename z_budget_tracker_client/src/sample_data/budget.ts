@@ -88,6 +88,48 @@ const budgets: Budget = {
                 id: 6,
                 name: "Utilities - Electric"
             }
+        },
+        {
+            account_id: 7,
+            amount: 175,
+            category_id: 3,
+            item_type: 'b',
+            category: {
+                id: 3,
+                name: "Supplies"
+            },
+            account: {
+                id: 7,
+                name: "Toner"
+            }
+        },
+        {
+            account_id: 8,
+            amount: 175,
+            category_id: 3,
+            item_type: 'b',
+            category: {
+                id: 3,
+                name: "Supplies"
+            },
+            account: {
+                id: 8,
+                name: "Pens"
+            }
+        },
+        {
+            account_id: 9,
+            amount: 175,
+            category_id: 3,
+            item_type: 'b',
+            category: {
+                id: 3,
+                name: "Supplies"
+            },
+            account: {
+                id: 9,
+                name: "Erasers"
+            }
         }
     ]
 }

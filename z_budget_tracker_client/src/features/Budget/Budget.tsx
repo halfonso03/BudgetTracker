@@ -15,11 +15,10 @@ type Budget = {
 
 const Budget = () => {
   const { data } = useBudget();
-
   const categories: Category[] = [];
 
   if (data && data.items) {
-    //   // get distinct categories
+    // get distinct categories
     for (const item of data.items) {
       if (!categories.find((c) => c.name == item.category?.name)) {
         categories.push({
@@ -29,18 +28,6 @@ const Budget = () => {
       }
     }
   }
-
-  const totals: BudgetRow[] = categories.map((c) => ({
-    accountId: 999,
-    categoryId: c.id,
-    amount: Number(
-      data?.items
-        .filter((x) => x.category_id == c.id)
-        .map((i) => i.amount)
-        .reduce((acc, cur) => acc + cur, 0),
-    ),
-    name: 'Total ' + c.name,
-  }));
 
   const budgetRows: BudgetRow[] =
     data && data.items
@@ -54,16 +41,45 @@ const Budget = () => {
         ]
       : [];
 
+  const totalRows: BudgetRow[] = categories.map((c) => ({
+    accountId: 999,
+    categoryId: c.id,
+    amount: Number(
+      data?.items
+        .filter((x) => x.category_id == c.id)
+        .map((i) => i.amount)
+        .reduce((acc, cur) => acc + cur, 0),
+    ),
+    name: 'Total ' + c.name,
+  }));
 
-  const allRows = [...budgetRows, ...totals];
-  allRows.sort((a, b) => a.categoryId - b.categoryId || a.accountId - b.accountId)
+  const allRows = [...budgetRows, ...totalRows].sort(
+    (a, b) => a.categoryId - b.categoryId || a.accountId - b.accountId,
+  );
 
-  const { register, control, handleSubmit } = useForm<Budget>({
-    values: {
-      rows: allRows,
-    },
-  });
-  
+  let runningTotal = 0;
+  const categoryAccountIndexes: Record<
+    string,
+    { startIndex: number; endIndex: number }
+  > = {};
+  for (const cat of categories) {
+    const tempRows = allRows.filter(
+      (a) => a.categoryId == cat.id && a.accountId !== 999,
+    );
+    categoryAccountIndexes[cat.id] = {
+      startIndex: runningTotal,
+      endIndex: tempRows.length + runningTotal - 1,
+    };
+    runningTotal += tempRows.length + 1;
+  }
+
+  const { register, control, handleSubmit, getValues, setValue } =
+    useForm<Budget>({
+      values: {
+        rows: allRows,
+      },
+    });
+
   // 2. Pass the control object and array name into useFieldArray
   const { fields } = useFieldArray({
     control,
@@ -74,25 +90,37 @@ const Budget = () => {
     console.log('data', data);
   };
 
-  // const handleCalculateTotal = () => {
-  // Safely retrieve the current row's inputs
-  // const amount = Number(getValues(`rows.${index}.amount`)) || 0;
+  console.log('catge', categoryAccountIndexes);
 
-  // const total = fields
-  //   .slice(0, fields.length - 1)
-  //   .map((_, index) => Number(getValues(`rows.${index}.amount`)))
-  //   .reduce((acc, cur) => cur + acc, 0);
+  const handleCalculateTotal = (
+    categoryId: number,
+    startIndex: number,
+    endIndex: number,
+  ) => {
+    // Safely retrieve the current row's inputs
+    // const amount = Number(getValues(`rows.${index}.amount`)) || 0;
 
-  // setValue(`rows.${fields.length - 1}.amount`, total);
-  // };
+    let i: number = -1;
+    const categoryTotal = fields
+      .filter((x) => x.categoryId == categoryId && x.accountId !== 999)
+      .map(() => {
+        i += 1;
+        const x2 = Number(getValues(`rows.${startIndex + i}.amount`));
+        return x2;
+      })
+      .reduce((acc, cur) => cur + acc, 0);
+
+    setValue(`rows.${endIndex + 1}.amount`, categoryTotal);
+  };
 
   if (!data) return <span>Loading...</span>;
-  let index2 = -1;
+  let indexRunningTotal = -1;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       {categories.map((c) => {
         const categoryFields = fields.filter((x) => x.categoryId == c.id);
+
         const t2 = (
           <table className="border w-200" key={c.id}>
             <thead>
@@ -106,16 +134,20 @@ const Budget = () => {
             </thead>
             <tbody>
               {categoryFields.map((field, index) => {
-                index2 += 1;
+                indexRunningTotal += 1;
 
-                const amountRegister = register(`rows.${index2}.amount`, {
-                  valueAsNumber: true,
-                });
+                const amountRegister = register(
+                  `rows.${indexRunningTotal}.amount`,
+                  {
+                    valueAsNumber: true,
+                  },
+                );
 
                 return (
-                  <tr key={index}>
+                  <tr key={field.id}>
                     <td className="text-start">{field.name}</td>
                     <td className="text-start">
+                      {indexRunningTotal}
                       <input
                         key={field.id}
                         type="number"
@@ -130,7 +162,11 @@ const Budget = () => {
                         }
                         onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
                           amountRegister.onBlur(e);
-                          // handleCalculateTotal(c.id);
+                          handleCalculateTotal(
+                            field.categoryId,
+                            categoryAccountIndexes[field.categoryId].startIndex,
+                            categoryAccountIndexes[field.categoryId].endIndex,
+                          );
                         }}
                       />
                     </td>
