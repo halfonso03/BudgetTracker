@@ -3,21 +3,18 @@
 import { useQuery } from '@tanstack/react-query';
 import initiatives from '../../sample_data/initiatives';
 
-const fetchInitiative = async (initiativeId: number): Promise<Initiative> => {
-
-
+const fetchInitiatives = async (): Promise<Initiative[]> => {
   return new Promise((resolve) => {
-    const i = initiatives.filter((x) => x.id == initiativeId)[0];
     setTimeout(() => {
-      resolve(i);
+      resolve(initiatives);
     }, 300);
   });
 };
 
-const useInitiatives = (initiativeId: number) => {
-  const { data, isLoading } = useQuery<Initiative>({
-    queryKey: ['initiative', initiativeId],
-    queryFn: () => fetchInitiative(initiativeId),
+const useInitiatives = () => {
+  const { data, isLoading } = useQuery<Initiative[]>({
+    queryKey: ['initiatives'],
+    queryFn: fetchInitiatives,
   });
 
   return { data, isLoading };

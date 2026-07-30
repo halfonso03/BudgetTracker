@@ -25,7 +25,7 @@ export const routes: RouteObject[] = [
         element: <Budget />,
       },
       {
-        path: '/budgets/new',
+        path: '/budgets/new/:year',
         element: <CreateBudget />,
       },
       {

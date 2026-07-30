@@ -22,3 +22,42 @@ input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
   transition: background-color 5000s ease-in-out 0s;
 }
+
+@theme {
+  --animate-tab-in: tabIn 0.45s ease-out forwards;
+
+  @keyframes tabIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  --animate-fade-in: fadeIn 0.45s ease-out forwards;
+
+  @keyframes fadeIn {
+    0% {
+      transform: translateY(-25%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(-5%);
+      opacity: 1;
+    }
+  }
+
+  --animate-top-menu: topMenuFadeIn 0.7s ease-in forwards;
+
+  @keyframes topMenuFadeIn {
+    0% {
+      /* opacity: 0; */
+      tranform: scale(0.1);
+    }
+    100% {
+      /* opacity: 1; */
+      tranform: scale(0.7);
+    }
+  }
+}

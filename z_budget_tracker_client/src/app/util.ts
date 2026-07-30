@@ -25,19 +25,6 @@ export function formatNumber(amount: number): string {
         maximumFractionDigits: 2,
     })
 
-    // console.log('formatNUmber', formatter.format(amount))
-    // if (isNaN(+formatter.format(amount))) {
-    //     return "0.00"
-    // }
-
     return formatter.format(amount)
 }
 
-// export const requiredString = (fieldName: string) =>
-//     z
-//         .string({ error: `${fieldName} is required` })
-//         .min(1, { error: `${fieldName} is required` });
-
-// export function timeAgo(date: DateArg<Date>) {
-//     return formatDistanceToNow(date) + " ago";
-// }

@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
 
 const CreateBudget = () => {
-  const { initiativeId, grantId } = useParams();
+  const { year } = useParams();
 
-  return <div>CreateBudget</div>;
+  return <div>Initiaive</div>;
 };
 export default CreateBudget;

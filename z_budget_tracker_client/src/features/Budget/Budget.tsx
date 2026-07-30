@@ -2,7 +2,7 @@
 import { useForm, useFieldArray } from 'react-hook-form';
 import useBudget from '../../api/hooks/useBudgets';
 import { useParams } from 'react-router-dom';
-import useInitiatives from '../../api/hooks/useInitiatives';
+import useInitiative from '../../api/hooks/useInitiatives';
 import useGrants from '../../api/hooks/useGrants';
 import NumericArrayInput from '../../components/NumericArrayInput';
 import { formatNumber } from '../../app/util';
@@ -24,7 +24,7 @@ const Budget = () => {
   const { initiativeId, grantId } = useParams();
 
   const { data } = useBudget(+initiativeId!, +grantId!);
-  const { data: initiative } = useInitiatives(+initiativeId!);
+  const { data: initiative } = useInitiative(+initiativeId!);
   const { data: grant } = useGrants(+grantId!);
 
   // get distinct categories
@@ -133,10 +133,7 @@ const Budget = () => {
     setValue(`rows.${totalsIndex}.amount`, formatNumber(categoryTotal));
   }
 
-  function formatArrayFieldAmount(
-    accountId: number,
-    amount: string,
-  ) {
+  function formatArrayFieldAmount(accountId: number, amount: string) {
     const formatter = new Intl.NumberFormat('en-US', {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -180,7 +177,6 @@ const Budget = () => {
       <div>{initiative?.name}</div>
       <div>{grant?.name}</div>
       <div>{grant?.year}</div>
-
 
       <form onSubmit={handleSubmit(onSubmit)}>
         {categories.map((c) => {

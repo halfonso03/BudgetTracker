@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import Summary from './Summary';
 import Button from '../../components/Button';
-import { useNavigate } from 'react-router-dom';
+import BudgetSelectionsModal from './BudgetSelectionsModal';
 
 const Budgets = () => {
   const [year, setYear] = useState<number>(2026);
-  const navigate = useNavigate();
+  const [isCreateBudgetModalOpen, setIsCreateBudgetOpenModal] =
+    useState<boolean>(false);
 
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(+e.target.value);
@@ -28,7 +29,7 @@ const Budgets = () => {
         <div>
           <Button
             onClick={() => {
-              navigate('/budgets/new');
+              setIsCreateBudgetOpenModal(true);
             }}
           >
             Create Budget
@@ -36,6 +37,12 @@ const Budgets = () => {
         </div>
       </div>
       <Summary year={year}></Summary>
+      {isCreateBudgetModalOpen && (
+        <BudgetSelectionsModal
+          year={year}
+          onCancelForm={() => setIsCreateBudgetOpenModal(false)}
+        />
+      )}
     </>
   );
 };
