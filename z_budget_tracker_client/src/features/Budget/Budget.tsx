@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm, useFieldArray } from 'react-hook-form';
 import useBudget from '../../api/hooks/useBudgets';
+import { useParams } from 'react-router-dom';
 
 type BudgetRow = {
   accountId: number;
@@ -14,21 +15,22 @@ type Budget = {
 };
 
 const Budget = () => {
-  const { data } = useBudget();
+  const { initiativeId, grantId } = useParams();
+  
+  const { data } = useBudget(+initiativeId!, +grantId!);
   const categories: Category[] = [];
 
-  if (data && data.items) {
-    // get distinct categories
-    for (const item of data.items) {
-      if (!categories.find((c) => c.name == item.category?.name)) {
-        categories.push({
-          id: item.category!.id,
-          name: item.category!.name,
-        });
-      }
+  // get distinct categories
+  for (const item of data?.items ?? []) {
+    if (!categories.find((c) => c.name == item.category?.name)) {
+      categories.push({
+        id: item.category!.id,
+        name: item.category!.name,
+      });
     }
   }
 
+  // get budgets rows
   const budgetRows: BudgetRow[] =
     data && data.items
       ? [
@@ -41,6 +43,7 @@ const Budget = () => {
         ]
       : [];
 
+  // create total rows dynamically
   const totalRows: BudgetRow[] = categories.map((c) => ({
     accountId: 999,
     categoryId: c.id,
@@ -53,10 +56,12 @@ const Budget = () => {
     name: 'Total ' + c.name,
   }));
 
+  // combine for later access
   const allRows = [...budgetRows, ...totalRows].sort(
     (a, b) => a.categoryId - b.categoryId || a.accountId - b.accountId,
   );
 
+  // calculate the start and end index of each group for totaling
   let runningTotal = 0;
   const categoryAccountIndexes: Record<
     string,
@@ -68,7 +73,7 @@ const Budget = () => {
     );
     categoryAccountIndexes[cat.id] = {
       startIndex: runningTotal,
-      endIndex: tempRows.length + runningTotal - 1,
+      endIndex: tempRows.length + runningTotal,
     };
     runningTotal += tempRows.length + 1;
   }
@@ -80,37 +85,32 @@ const Budget = () => {
       },
     });
 
-  // 2. Pass the control object and array name into useFieldArray
   const { fields } = useFieldArray({
     control,
     name: 'rows',
   });
-
-  const onSubmit = (data: any) => {
-    console.log('data', data);
-  };
-
-  console.log('catge', categoryAccountIndexes);
 
   const handleCalculateTotal = (
     categoryId: number,
     startIndex: number,
     endIndex: number,
   ) => {
-    // Safely retrieve the current row's inputs
-    // const amount = Number(getValues(`rows.${index}.amount`)) || 0;
-
     let i: number = -1;
     const categoryTotal = fields
       .filter((x) => x.categoryId == categoryId && x.accountId !== 999)
       .map(() => {
         i += 1;
-        const x2 = Number(getValues(`rows.${startIndex + i}.amount`));
-        return x2;
+        const value = getValues(`rows.${startIndex + i}.amount`);
+        if (!value) return 0;
+        return value;
       })
       .reduce((acc, cur) => cur + acc, 0);
 
-    setValue(`rows.${endIndex + 1}.amount`, categoryTotal);
+    setValue(`rows.${endIndex}.amount`, categoryTotal);
+  };
+
+  const onSubmit = (data: any) => {
+    console.log('data', data);
   };
 
   if (!data) return <span>Loading...</span>;
@@ -125,10 +125,10 @@ const Budget = () => {
           <table className="border w-200" key={c.id}>
             <thead>
               <tr>
-                <td className="font-bold">{c.name}</td>
+                <td className="font-bold w-100">{c.name}</td>
               </tr>
               <tr>
-                <td className="text-start">Account</td>
+                <td className="text-start"></td>
                 <td className="text-start  font-bold">Amount</td>
               </tr>
             </thead>
@@ -147,7 +147,6 @@ const Budget = () => {
                   <tr key={field.id}>
                     <td className="text-start">{field.name}</td>
                     <td className="text-start">
-                      {indexRunningTotal}
                       <input
                         key={field.id}
                         type="number"
@@ -179,7 +178,6 @@ const Budget = () => {
         return t2;
       })}
 
-      {/*  */}
       <button type="submit" className="p-2 border ">
         Submit Form
       </button>

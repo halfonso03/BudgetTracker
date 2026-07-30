@@ -1,4 +1,5 @@
-const budgets: Budget = {
+const budget: Budget =
+{
     initiative_id: 1,
     grant_id: 1,
     grant: { id: 1, name: "G25001" },
@@ -16,7 +17,8 @@ const budgets: Budget = {
             },
             account: {
                 id: 1,
-                name: "Printing & Binding"
+                name: "Printing & Binding",
+                account_number: '11-102-0312-54700'
             }
         },
         {
@@ -30,7 +32,8 @@ const budgets: Budget = {
             },
             account: {
                 id: 2,
-                name: "Insurance-Other"
+                name: "Insurance-Other",
+                account_number: '11-102-0312-54701'
             }
         },
         {
@@ -44,7 +47,8 @@ const budgets: Budget = {
             },
             account: {
                 id: 3,
-                name: "Freight & Postage Service"
+                name: "Freight & Postage Service",
+                account_number: '11-102-0312-54702'
             }
         },
         {
@@ -58,7 +62,8 @@ const budgets: Budget = {
             },
             account: {
                 id: 4,
-                name: "Communication Services"
+                name: "Communication Services",
+                account_number: '11-102-0312-54703'
             }
         },
         {
@@ -72,7 +77,8 @@ const budgets: Budget = {
             },
             account: {
                 id: 5,
-                name: "Rentals & Leases"
+                name: "Rentals & Leases",
+                account_number: '11-102-0312-54700'
             }
         },
         {
@@ -86,7 +92,8 @@ const budgets: Budget = {
             },
             account: {
                 id: 6,
-                name: "Utilities - Electric"
+                name: "Utilities - Electric",
+                account_number: '11-102-0312-54700'
             }
         },
         {
@@ -100,7 +107,8 @@ const budgets: Budget = {
             },
             account: {
                 id: 7,
-                name: "Toner"
+                name: "Toner",
+                account_number: '11-102-0312-54700'
             }
         },
         {
@@ -114,7 +122,8 @@ const budgets: Budget = {
             },
             account: {
                 id: 8,
-                name: "Pens"
+                name: "Pens",
+                account_number: '11-102-0312-54700'
             }
         },
         {
@@ -128,10 +137,13 @@ const budgets: Budget = {
             },
             account: {
                 id: 9,
-                name: "Erasers"
+                name: "Erasers",
+                account_number: '11-102-0312-54700'
             }
-        }
+        },
+
     ]
 }
 
-export default budgets;
+
+export default budget;

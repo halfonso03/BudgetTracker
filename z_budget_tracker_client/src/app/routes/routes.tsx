@@ -1,10 +1,10 @@
 import { createBrowserRouter, type RouteObject } from 'react-router-dom';
-import UsersInOU from '../../features/users/UsersInOU';
-import Home from '../../pages/Home';
-import Login from '../../features/account/login';
 import App from '../../App';
-import ProtectedRoute from './ProtectedRoute';
+import Home from '../../features/Home';
+import Budgets from '../../features/Budget/Budgets';
+import Reprogrammings from '../../features/Reprogrammings/Reprogrammings';
 import NotFound from '../../components/NotFound';
+import Budget from '../../features/Budget/Budget';
 
 export const routes: RouteObject[] = [
   {
@@ -12,27 +12,25 @@ export const routes: RouteObject[] = [
     element: <App></App>,
     children: [
       {
-        path: '',
-        element: (
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        ),
-        children: [
-          {
-            path: '/:ou/users',
-            element: (
-              <ProtectedRoute>
-                <UsersInOU></UsersInOU>
-              </ProtectedRoute>
-            ),
-          },
-        ],
+        path: '/',
+        element: <Home></Home>,
       },
-      { path: '/login', element: <Login /> },
-      { path: '*', element: <NotFound /> },
+      {
+        path: '/budgets',
+        element: <Budgets />,
+      },
+      {
+        path: '/budgets/:initiativeId/:grantId',
+        element: <Budget />,
+      },
+      {
+        path: '/reprogrammings',
+        element: <Reprogrammings />,
+      },
     ],
   },
+  // { path: '/login', element: <Login /> },
+  { path: '*', element: <NotFound /> },
 ];
 
 export const router = createBrowserRouter(routes);

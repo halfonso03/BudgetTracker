@@ -1,0 +1,22 @@
+vite.config 
+    add build section
+          build: {
+            outDir: "../API/wwwroot",
+            chunkSizeWarningLimit: 1600,
+            emptyOutDir: true,
+        },
+
+create .env.production
+    Remove localhsot from the environments variables
+
+    
+client -> npm run build -> fix any errors
+
+Programs.cs
+    Add Fallback controller
+    UseStaticFiles();
+    UseDefaultFiles();
+    app.MapFallbackToController("Index", "Fallback");
+
+
+API -> dotnet build

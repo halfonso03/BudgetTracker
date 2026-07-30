@@ -4,7 +4,7 @@ type ItemyType = 'b' | 'r' | 'd';
 type Account = {
     id: number
     name: string
-    account_number?: number
+    account_number: string
 }
 
 type Category = {
@@ -13,19 +13,6 @@ type Category = {
     // sort_order: number
 }
 
-
-type BudgetAccount = {
-    id: number
-    name: string
-    account_number?: number
-    amount: number
-}
-
-type BudgetCategory = {
-    id: number
-    name: string
-    accounts: BudgetAccount[]
-}
 
 type Grant = {
     id: number
@@ -54,4 +41,13 @@ type Budget = {
     items: BudgetLineItem[]
     initiative?: Initiative
     grant?: Grant
+}
+
+type BudgetSummary = {
+    initiative_id: number
+    initiative_name: string,
+    grant_id: number
+    grant_name: string,
+    year: number,
+    amount: number
 }

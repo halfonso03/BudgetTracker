@@ -1,11 +1,11 @@
 // import { useQuery } from "@tanstack/react-query";
 // import agent from "../agent";
 import { useQuery } from "@tanstack/react-query";
-import budgets from "../../sample_data/budget";
+import budgets from "../../sample_data/budgets";
 // import agent from "../agent";
 
 
-const fetchBudget = async (): Promise<Budget> => {
+const fetchBudget = async (initiativeId: number, grantId: number): Promise<Budget> => {
 
     // const response = await agent.get<Role[], any, {}>("/groups", {
     //     params: {
@@ -18,22 +18,29 @@ const fetchBudget = async (): Promise<Budget> => {
 
     // return response.data
 
-    return new Promise((resolve) => {
+    const budget = budgets.filter(x => x.initiative_id == initiativeId && x.grant_id == grantId);
+
+    return new Promise((resolve, reject) => {
+
         setTimeout(() => {
-            const result = budgets
-            resolve(result);
-        }, 300); // Simulates 1.5 seconds of network delay
+            if (budget && budget.length === 1) {
+                resolve(budget[0]);
+
+            } else {
+                reject('Budget not found')
+            }
+        }, 300);
     });
 };
 
 
 
-const useBudget = () => {
+const useBudget = (initiatveId: number, grantId: number) => {
 
 
     const { data, isLoading } = useQuery<Budget>({
-        queryKey: ['budget'],
-        queryFn: fetchBudget,
+        queryKey: ['budget', initiatveId, grantId],
+        queryFn: () => fetchBudget(initiatveId, grantId),
     })
 
     return { data, isLoading }
