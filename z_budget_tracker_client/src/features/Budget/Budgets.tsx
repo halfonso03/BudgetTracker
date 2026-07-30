@@ -1,37 +1,41 @@
-import { Link } from 'react-router-dom';
-import useBudgetSummary from '../../api/hooks/useBudgetSummay';
-import { formatCurrency } from '../../app/util';
-import { Glasses } from 'lucide-react';
+import { useState } from 'react';
+import Summary from './Summary';
+import Button from '../../components/Button';
+import { useNavigate } from 'react-router-dom';
 
 const Budgets = () => {
-  const { data } = useBudgetSummary();
+  const [year, setYear] = useState<number>(2026);
+  const navigate = useNavigate();
 
-  if (!data) return null;
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setYear(+e.target.value);
+  };
 
   return (
     <>
-      <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] font-semibold p-3 gap-4">
-        <div>Year</div>
-        <div>Initiative</div>
-        <div>Grant</div>
-        <div>Amount</div>
-        <div></div>
-      </div>
-      {data.map((budget, index) => (
-        <div key={index}>
-          <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr]  gap-4 mb-5 border border-neutral-300 p-3">
-            <div>{budget.year}</div>
-            <div>{budget.initiative_name}</div>
-            <div>{budget.grant_name}</div>
-            <div>{formatCurrency(budget.amount)}</div>
-            <div className="text-center">
-              <Link to={`${budget.initiative_id}/${budget.grant_id}`} className='text-blue-600'>
-                <Glasses></Glasses>
-              </Link>
-            </div>
-          </div>
+      <div className="flex mb-4 justify-between items-center">
+        <div>
+          <div className="p-2 font-bold text-neutral-700">Year:</div>
+          <select
+            value={year}
+            className="p-2 border border-neutral-300"
+            onChange={handleYearChange}
+          >
+            <option value="2026">2026</option>
+            <option value="2025">2025</option>
+          </select>
         </div>
-      ))}
+        <div>
+          <Button
+            onClick={() => {
+              navigate('/budgets/new');
+            }}
+          >
+            Create Budget
+          </Button>
+        </div>
+      </div>
+      <Summary year={year}></Summary>
     </>
   );
 };

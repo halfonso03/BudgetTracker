@@ -5,6 +5,7 @@ import Budgets from '../../features/Budget/Budgets';
 import Reprogrammings from '../../features/Reprogrammings/Reprogrammings';
 import NotFound from '../../components/NotFound';
 import Budget from '../../features/Budget/Budget';
+import CreateBudget from '../../features/Budget/CreateBudget';
 
 export const routes: RouteObject[] = [
   {
@@ -22,6 +23,10 @@ export const routes: RouteObject[] = [
       {
         path: '/budgets/:initiativeId/:grantId',
         element: <Budget />,
+      },
+      {
+        path: '/budgets/new',
+        element: <CreateBudget />,
       },
       {
         path: '/reprogrammings',

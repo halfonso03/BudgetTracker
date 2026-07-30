@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 :root {
   font-size: 0.95rem;
-  font-family: 'Poppins', 'Segoe UI Symbol', 'Noto Color Emoji', 'sans-serif';
+  /* font-family: 'Segoe UI Symbol', 'Noto Color Emoji', 'sans-serif'; */
   /* transition: color 0.3s, background-color 0.3s; */
   min-height: 100vh;
   line-height: 1.5;
@@ -10,7 +10,11 @@
   min-height: 100svh;
 }
 
-
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

@@ -18,9 +18,19 @@ export function formatCurrency(amount: number) {
     return customFormat.format(amount)
 }
 
-export function formatNumber(amount: number) {
+export function formatNumber(amount: number): string {
 
-    return new Intl.NumberFormat('en-US').format(amount)
+    const formatter = new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    })
+
+    // console.log('formatNUmber', formatter.format(amount))
+    // if (isNaN(+formatter.format(amount))) {
+    //     return "0.00"
+    // }
+
+    return formatter.format(amount)
 }
 
 // export const requiredString = (fieldName: string) =>

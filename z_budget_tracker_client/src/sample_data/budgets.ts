@@ -2,13 +2,13 @@ const budgets: Budget[] = [
     {
         initiative_id: 1,
         grant_id: 1,
-        grant: { id: 1, name: "G25001" },
+        grant: { id: 1, name: "G26001" },
         initiative: { id: 1, name: "Management & Coordination" },
         year: 2026,
         items: [
             {
                 account_id: 1,
-                amount: 100,
+                amount: 2010,
                 category_id: 1,
                 item_type: 'b',
                 category: {
@@ -23,7 +23,7 @@ const budgets: Budget[] = [
             },
             {
                 account_id: 2,
-                amount: 200,
+                amount: 3150,
                 category_id: 1,
                 item_type: 'b',
                 category: {
@@ -38,7 +38,7 @@ const budgets: Budget[] = [
             },
             {
                 account_id: 3,
-                amount: 0,
+                amount: 1150,
                 category_id: 1,
                 item_type: 'b',
                 category: {
@@ -147,13 +147,13 @@ const budgets: Budget[] = [
     {
         initiative_id: 2,
         grant_id: 1,
-        grant: { id: 1, name: "G25001" },
-        initiative: { id: 1, name: "Management & Coordination" },
+        grant: { id: 1, name: "G26001" },
+        initiative: { id: 2, name: "Training Unit" },
         year: 2026,
         items: [
             {
                 account_id: 1,
-                amount: 101,
+                amount: 1000,
                 category_id: 1,
                 item_type: 'b',
                 category: {

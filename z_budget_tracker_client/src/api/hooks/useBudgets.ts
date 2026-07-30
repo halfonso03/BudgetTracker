@@ -29,7 +29,7 @@ const fetchBudget = async (initiativeId: number, grantId: number): Promise<Budge
             } else {
                 reject('Budget not found')
             }
-        }, 300);
+        }, 50);
     });
 };
 
