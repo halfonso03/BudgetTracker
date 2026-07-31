@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
+    [Table("tblAuthorizedUsers")]
     public class AuthorizedUser
     {
         [Key]

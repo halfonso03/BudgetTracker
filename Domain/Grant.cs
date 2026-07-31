@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
+    [Table("tblGrant")]
     public class Grant
     {
         [Key]

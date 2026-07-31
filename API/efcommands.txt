@@ -1,0 +1,2 @@
+dotnet ef migrations add GrantDates -p Persistence -s API
+$ dotnet ef database update InitialCreate -p Persistence -s API

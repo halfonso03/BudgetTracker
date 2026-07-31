@@ -1,31 +1,46 @@
-using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Domain
 {
+    [Table("tblBudget")]
     public class BudgetLineItem
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Column(Order = 0)]
+        public required int Id { get; set; }
+        [Column(Order = 4)]
         public required double Amount { get; set; }
+        [Column(Order = 5)]
         public required string ItemType { get; set; }
+        [Column(Order = 1)]
         public int InitiativeId { get; set; }
+        [Column(Order = 2)]
         public int GrantId { get; set; }
+        [Column(Order = 3)]
         public int AccountId { get; set; }
         public required Initiative Initiative { get; set; }
         public required Grant Grant { get; set; }
         public required Account Account { get; set; }
+
+        [Column(Order = 7)]
         public required DateTime CreateDate { get; set; }
+
+        [Column(Order = 6)]
         public int CreatedBy { get; set; }
 
         [ForeignKey(nameof(CreatedBy))]
         public required AuthorizedUser CreatedByUser { get; set; }
 
-        [ForeignKey(nameof(CreatedBy))]
-        public required AuthorizedUser UpdatedByUser { get; set; }
+        [Column(Order = 9)]
         public DateTime? UpdateDate { get; set; }
+
+        [Column(Order = 8)]
         public int? UpdatedBy { get; set; }
+
+        [ForeignKey(nameof(UpdatedBy))]
+        public required AuthorizedUser UpdatedByUser { get; set; }
 
     }
 }

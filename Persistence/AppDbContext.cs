@@ -5,15 +5,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext(DbContextOptions options) : DbContext(options)
     {
         public required DbSet<Initiative> Initiatives { get; set; }
         public required DbSet<Category> Categories { get; set; }
         public required DbSet<Account> Accounts { get; set; }
         public required DbSet<Grant> Grants { get; set; }
-
         public required DbSet<BudgetLineItem> BudgetLineItems { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -40,6 +38,9 @@ namespace Persistence
             builder.Entity<Initiative>().Property(x => x.Name).HasColumnName("name").HasColumnType("varchar(200)"); ;
 
             builder.Entity<Grant>().Property(x => x.Id).HasColumnName("id");
+            builder.Entity<Grant>().Property(x => x.StartDate).HasColumnName("start_date");
+            builder.Entity<Grant>().Property(x => x.EndDate).HasColumnName("end_date");
+
             builder.Entity<Grant>().Property(x => x.Name).HasColumnName("name").HasColumnType("varchar(50)"); ;
 
 
@@ -47,17 +48,11 @@ namespace Persistence
             builder.Entity<BudgetLineItem>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
             builder.Entity<BudgetLineItem>().Property(x => x.GrantId).HasColumnName("grant_id");
             builder.Entity<BudgetLineItem>().Property(x => x.AccountId).HasColumnName("account_id");
+            builder.Entity<BudgetLineItem>().Property(x => x.ItemType).HasColumnName("item_type");
             builder.Entity<BudgetLineItem>().Property(x => x.CreateDate).HasColumnName("create_date").HasColumnType("datetime");
             builder.Entity<BudgetLineItem>().Property(x => x.CreatedBy).HasColumnName("created_by");
             builder.Entity<BudgetLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("datetime");
             builder.Entity<BudgetLineItem>().Property(x => x.UpdatedBy).HasColumnName("updated_by");
-
-
-
-
-
-
         }
-
     }
 }

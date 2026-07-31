@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain
 {
+    [Table("tblAccount")]
     public class Account
     {
         [Key]
