@@ -10,6 +10,15 @@
   min-height: 100svh;
 }
 
+.entity-label {
+  font-weight: bold;
+  color: var(--color-neutral-500);
+}
+
+.entity-name {
+  font-weight: bold;
+}
+
 input[type='number']::-webkit-outer-spin-button,
 input[type='number']::-webkit-inner-spin-button {
   -webkit-appearance: none;

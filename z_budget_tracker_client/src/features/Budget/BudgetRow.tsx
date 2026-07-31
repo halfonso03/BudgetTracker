@@ -9,6 +9,7 @@ interface Props {
   initiativeId: number;
   grantId: number;
   accountId: number;
+  comment: string;
   fieldName: string;
   budgetedAmount: string;
   spentAmount: number;
@@ -22,6 +23,7 @@ const BudgetRow = ({
   accountId,
   initiativeId,
   grantId,
+  comment,
   budgetedAmount,
   spentAmount,
   isLastRow,
@@ -62,7 +64,7 @@ const BudgetRow = ({
           register={amountRegister}
           readOnly={isLastRow}
           disabled={isLastRow}
-          className={`${isLastRow ? 'border-0  font-bold text-neutral-600' : 'border-b-2 border-l-0 border-t-0 border-r-0 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+          className={`${isLastRow ? 'border-0 font-bold text-neutral-600' : 'border-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
           onClick={onClick}
           onBlur={(e) => {
             const budgeted = parseFormattedNumber(e.target.value);
@@ -83,7 +85,7 @@ const BudgetRow = ({
         {remaining}
       </div>
       <div
-        className={`text-center p-3 text-blue-500 text-sm self-center ${isLastRow ? 'bg-neutral-100' : ''}`}
+        className={`text-end  text-blue-500 text-sm self-center ${isLastRow ? 'bg-neutral-100 p-3' : ' p-0'}`}
       >
         <button
           type="button"
@@ -95,15 +97,30 @@ const BudgetRow = ({
           0 Comments
         </button>
       </div>
+      <div
+        className={`text-center p-3 text-blue-500 text-sm self-center ${isLastRow ? 'bg-neutral-100' : ''}`}
+      >
+        <button
+          type="button"
+          className={`cursor-pointer ${isLastRow ? 'opacity-0' : ''}`}
+          disabled={isLastRow}
+          tabIndex={-1}
+          onClick={() => onOpenComments()}
+        >
+          Actions
+        </button>
+      </div>
       {commentsOpen && (
         <CommentsModal
           initiativeId={initiativeId}
           grantId={grantId}
           accountId={accountId}
+          accountName={fieldName}
           onSaveComments={handleSaveComments}
           onCancelForm={() => {
             setCommentsOpen(false);
           }}
+          currentComments={comment}
         ></CommentsModal>
       )}
     </>

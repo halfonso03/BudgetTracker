@@ -13,6 +13,7 @@ type BudgetRow = {
   categoryId: number;
   amount: string;
   name: string;
+  comment: string;
 };
 
 type Budget = {
@@ -47,6 +48,7 @@ const Budget = () => {
             categoryId: item.category_id!,
             amount: formatNumber(item.amount),
             name: item.account.name,
+            comment: item.comment,
           })),
         ]
       : [];
@@ -69,7 +71,7 @@ const Budget = () => {
       name: 'Total',
     };
 
-    return { ...ret, amount: ret.amount.toString() };
+    return { ...ret, amount: ret.amount.toString(), comment: '' };
   });
 
   // combine for later access
@@ -166,7 +168,7 @@ const Budget = () => {
   let indexRunningTotal = -1;
 
   return (
-    <div className="w-[80%] mx-auto">
+    <div className="w-[85%] mx-auto">
       <div className="grid grid-cols-[1fr_1fr_1fr] mb-5">
         <div className="font-bold text-neutral-400">Initiative</div>
         <div className="font-bold text-neutral-400">Grant</div>
@@ -181,9 +183,9 @@ const Budget = () => {
           const categoryFields = fields.filter((x) => x.categoryId == c.id);
 
           const grid = (
-            <div className="border border-neutral-200 mb-4" key={c.id}>
+            <div className="border border-neutral-200 mb-7" key={c.id}>
               <div
-                className=" grid grid-cols-[.8fr_.25fr_.25fr_.25fr_.3fr]"
+                className=" grid grid-cols-[.7fr_.25fr_.25fr_.25fr_.2fr_.2fr]"
                 key={c.id}
               >
                 <div className="pl-3 py-2 font-bold bg-neutral-100 text-neutral-700">
@@ -198,7 +200,8 @@ const Budget = () => {
                 <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
                   Remaining
                 </div>
-                <div className="bg-neutral-100"></div>
+                <div className="text-end py-2 bg-neutral-100 font-bold text-neutral-500">Comments</div>
+                <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-500">Actions</div>
 
                 {categoryFields.map((field, index) => {
                   indexRunningTotal += 1;
@@ -217,6 +220,7 @@ const Budget = () => {
                         initiativeId={+initiativeId!}
                         grantId={+grantId!}
                         fieldName={field.name}
+                        comment={field.comment}
                         budgetedAmount={field.amount}
                         spentAmount={20}
                         amountRegister={amountRegister}

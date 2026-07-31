@@ -32,6 +32,7 @@ type BudgetLineItem = {
     category?: Category
     account: Account
     item_type?: ItemyType
+    comment: string
 }
 
 type Budget = {

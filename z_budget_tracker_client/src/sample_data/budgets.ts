@@ -9,6 +9,7 @@ const budgets: Budget[] = [
             {
                 account_id: 1,
                 amount: 2010,
+                comment: 'test 1',
                 category_id: 1,
                 item_type: 'b',
                 category: {
@@ -24,6 +25,7 @@ const budgets: Budget[] = [
             {
                 account_id: 2,
                 amount: 3150,
+                comment: 'test 2',
                 category_id: 1,
                 item_type: 'b',
                 category: {
@@ -39,6 +41,7 @@ const budgets: Budget[] = [
             {
                 account_id: 3,
                 amount: 1150,
+                comment: 'test 3',
                 category_id: 1,
                 item_type: 'b',
                 category: {
@@ -54,6 +57,7 @@ const budgets: Budget[] = [
             {
                 account_id: 4,
                 amount: 50,
+                comment: 'test 4',
                 category_id: 1,
                 item_type: 'b',
                 category: {
@@ -69,6 +73,7 @@ const budgets: Budget[] = [
             {
                 account_id: 5,
                 amount: 50,
+                comment: 'test 5',
                 category_id: 2,
                 item_type: 'b',
                 category: {
@@ -84,6 +89,7 @@ const budgets: Budget[] = [
             {
                 account_id: 6,
                 amount: 75,
+                comment: 'test 6',
                 category_id: 2,
                 item_type: 'b',
                 category: {
@@ -99,6 +105,7 @@ const budgets: Budget[] = [
             {
                 account_id: 7,
                 amount: 175,
+                comment: 'test 7',
                 category_id: 3,
                 item_type: 'b',
                 category: {
@@ -114,6 +121,7 @@ const budgets: Budget[] = [
             {
                 account_id: 8,
                 amount: 175,
+                comment: 'test 8',
                 category_id: 3,
                 item_type: 'b',
                 category: {
@@ -129,6 +137,7 @@ const budgets: Budget[] = [
             {
                 account_id: 9,
                 amount: 175,
+                comment: 'test 9',
                 category_id: 3,
                 item_type: 'b',
                 category: {
@@ -154,6 +163,7 @@ const budgets: Budget[] = [
             {
                 account_id: 1,
                 amount: 1000,
+                comment: 'test 10',
                 category_id: 1,
                 item_type: 'b',
                 category: {
@@ -169,6 +179,7 @@ const budgets: Budget[] = [
             {
                 account_id: 2,
                 amount: 200,
+                comment: 'test 11',
                 category_id: 1,
                 item_type: 'b',
                 category: {
@@ -184,6 +195,7 @@ const budgets: Budget[] = [
             {
                 account_id: 3,
                 amount: 0,
+                comment: 'test 12',
                 category_id: 1,
                 item_type: 'b',
                 category: {
@@ -199,6 +211,7 @@ const budgets: Budget[] = [
             {
                 account_id: 4,
                 amount: 50,
+                comment: 'test 13',
                 category_id: 1,
                 item_type: 'b',
                 category: {
@@ -214,6 +227,7 @@ const budgets: Budget[] = [
             {
                 account_id: 5,
                 amount: 50,
+                comment: 'test 14',
                 category_id: 2,
                 item_type: 'b',
                 category: {
@@ -229,6 +243,7 @@ const budgets: Budget[] = [
             {
                 account_id: 6,
                 amount: 75,
+                comment: 'test 15',
                 category_id: 2,
                 item_type: 'b',
                 category: {
@@ -244,6 +259,7 @@ const budgets: Budget[] = [
             {
                 account_id: 7,
                 amount: 175,
+                comment: 'test 16',
                 category_id: 3,
                 item_type: 'b',
                 category: {
@@ -259,6 +275,7 @@ const budgets: Budget[] = [
             {
                 account_id: 8,
                 amount: 175,
+                comment: 'test 17',
                 category_id: 3,
                 item_type: 'b',
                 category: {
@@ -274,6 +291,7 @@ const budgets: Budget[] = [
             {
                 account_id: 9,
                 amount: 175,
+                comment: 'test 18',
                 category_id: 3,
                 item_type: 'b',
                 category: {
