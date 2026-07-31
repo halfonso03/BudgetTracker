@@ -170,12 +170,12 @@ const Budget = () => {
   return (
     <div className="w-[85%] mx-auto">
       <div className="grid grid-cols-[1fr_1fr_1fr] mb-5">
-        <div className="font-bold text-neutral-400">Initiative</div>
-        <div className="font-bold text-neutral-400">Grant</div>
-        <div className="font-bold text-neutral-400">Year</div>
-        <div className="font-bold">{initiative?.name}</div>
-        <div className="font-bold">{grant?.name}</div>
-        <div className="font-bold">{grant?.year}</div>
+        <div className="entity-label">Initiative</div>
+        <div className="entity-label">Grant</div>
+        <div className="entity-label">Year</div>
+        <div className="entity-name">{initiative?.name}</div>
+        <div className="entity-name">{grant?.name}</div>
+        <div className="entity-name">{grant?.year}</div>
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)}>

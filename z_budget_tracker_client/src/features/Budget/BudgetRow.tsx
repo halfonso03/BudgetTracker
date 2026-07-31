@@ -64,7 +64,7 @@ const BudgetRow = ({
           register={amountRegister}
           readOnly={isLastRow}
           disabled={isLastRow}
-          className={`${isLastRow ? 'border-0 font-bold text-neutral-600' : 'border-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+          className={`${isLastRow ? 'border-0 font-bold text-neutral-600' : 'border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
           onClick={onClick}
           onBlur={(e) => {
             const budgeted = parseFormattedNumber(e.target.value);
