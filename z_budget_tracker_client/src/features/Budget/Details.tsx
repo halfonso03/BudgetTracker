@@ -48,7 +48,7 @@ const Budget = () => {
             accountId: item.account_id,
             categoryId: item.category_id!,
             amount: formatNumber(item.amount),
-            name: item.account.name,
+            name: item.account_name,
             comment: item.comment,
           })),
         ]
