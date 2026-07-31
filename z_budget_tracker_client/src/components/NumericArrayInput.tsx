@@ -3,21 +3,23 @@ import type { UseFormRegisterReturn } from 'react-hook-form';
 interface Props {
   readOnly: boolean;
   disabled: boolean;
-  
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onClick: (e: React.MouseEvent<HTMLInputElement>) => void;
   register: UseFormRegisterReturn<`rows.${number}.amount`>;
+  className?: string;
 }
-
 
 const NumericArrayInput = ({
   readOnly,
   disabled,
   onBlur,
   onFocus,
+  onClick,
   register,
+  className,
 }: Props) => {
-  function handleOnKeyUp(e: React.KeyboardEvent<HTMLInputElement>) {
+  function handleOnKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (
       e.key !== 'Backspace' &&
       e.key !== 'ArrowRight' &&
@@ -30,19 +32,21 @@ const NumericArrayInput = ({
     }
   }
 
+  const classes = 'p-[.1rem] w-35 border text-end  ' + className;
+
   return (
     <input
-      
       type="text"
       maxLength={10}
       inputMode="decimal"
       {...register}
       readOnly={readOnly}
       disabled={disabled}
-      onKeyDown={handleOnKeyUp}
-      className={`p-[.1rem] w-35 border text-end `}
+      className={classes}
       onFocus={onFocus}
       onBlur={onBlur}
+      onClick={onClick}
+      onKeyDown={handleOnKeyDown}
     />
   );
 };

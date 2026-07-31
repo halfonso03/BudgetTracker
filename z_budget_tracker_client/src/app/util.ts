@@ -28,3 +28,9 @@ export function formatNumber(amount: number): string {
     return formatter.format(amount)
 }
 
+
+export function parseFormattedNumber(formattedString: string) {
+    // Removes everything except numbers, minus signs, and decimal points
+    const cleanString = formattedString.toString().replace(/[^0-9.-]/g, '');
+    return parseFloat(cleanString);
+}

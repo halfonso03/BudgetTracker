@@ -4,7 +4,7 @@ import Home from '../../features/Home';
 import Budgets from '../../features/Budget/Budgets';
 import Reprogrammings from '../../features/Reprogrammings/Reprogrammings';
 import NotFound from '../../components/NotFound';
-import Budget from '../../features/Budget/Budget';
+import Budget from '../../features/Budget/Details';
 import CreateBudget from '../../features/Budget/CreateBudget';
 
 export const routes: RouteObject[] = [
