@@ -7,6 +7,7 @@ import { formatNumber, parseFormattedNumber } from '../../app/util';
 import useInitiative from '../../api/hooks/useInitiative';
 import type React from 'react';
 import BudgetRow from './BudgetRow';
+import MenuIdProvider from '../../contexts/MenuIdContext';
 
 type BudgetRow = {
   accountId: number;
@@ -177,81 +178,86 @@ const Budget = () => {
         <div className="entity-name">{grant?.name}</div>
         <div className="entity-name">{grant?.year}</div>
       </div>
+      <MenuIdProvider>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {categories.map((c) => {
+            const categoryFields = fields.filter((x) => x.categoryId == c.id);
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {categories.map((c) => {
-          const categoryFields = fields.filter((x) => x.categoryId == c.id);
+            const grid = (
+              <div className="border border-neutral-200 mb-7" key={c.id}>
+                <div
+                  className=" grid grid-cols-[.7fr_.25fr_.25fr_.25fr_.2fr_.2fr]"
+                  key={c.id}
+                >
+                  <div className="pl-3 py-2 font-bold bg-neutral-100 text-neutral-700">
+                    {c.name}
+                  </div>
+                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
+                    Budgeted
+                  </div>
+                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
+                    Spent
+                  </div>
+                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
+                    Remaining
+                  </div>
+                  <div className="text-end py-2 bg-neutral-100 font-bold text-neutral-500">
+                    Comments
+                  </div>
+                  <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-500">
+                    Actions
+                  </div>
 
-          const grid = (
-            <div className="border border-neutral-200 mb-7" key={c.id}>
-              <div
-                className=" grid grid-cols-[.7fr_.25fr_.25fr_.25fr_.2fr_.2fr]"
-                key={c.id}
-              >
-                <div className="pl-3 py-2 font-bold bg-neutral-100 text-neutral-700">
-                  {c.name}
-                </div>
-                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
-                  Budgeted
-                </div>
-                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
-                  Spent
-                </div>
-                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
-                  Remaining
-                </div>
-                <div className="text-end py-2 bg-neutral-100 font-bold text-neutral-500">Comments</div>
-                <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-500">Actions</div>
+                  {categoryFields.map((field, index) => {
+                    indexRunningTotal += 1;
 
-                {categoryFields.map((field, index) => {
-                  indexRunningTotal += 1;
+                    const amountRegister = register(
+                      `rows.${indexRunningTotal}.amount`,
+                    );
 
-                  const amountRegister = register(
-                    `rows.${indexRunningTotal}.amount`,
-                  );
+                    const isLastRow = index == categoryFields.length - 1;
 
-                  const isLastRow = index == categoryFields.length - 1;
+                    return (
+                      <>
+                        <BudgetRow
+                          isLastRow={isLastRow}
+                          accountId={field.accountId}
+                          initiativeId={+initiativeId!}
+                          grantId={+grantId!}
+                          fieldName={field.name}
+                          comment={field.comment}
+                          budgetedAmount={field.amount}
+                          spentAmount={20}
+                          amountRegister={amountRegister}
+                          onClick={(e: React.MouseEvent<HTMLInputElement>) => {
+                            const input = e.target as HTMLInputElement;
+                            input.select();
+                          }}
+                          onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
+                            const input = e.target as HTMLInputElement;
 
-                  return (
-                    <>
-                      <BudgetRow
-                        isLastRow={isLastRow}
-                        accountId={field.accountId}
-                        initiativeId={+initiativeId!}
-                        grantId={+grantId!}
-                        fieldName={field.name}
-                        comment={field.comment}
-                        budgetedAmount={field.amount}
-                        spentAmount={20}
-                        amountRegister={amountRegister}
-                        onClick={(e: React.MouseEvent<HTMLInputElement>) => {
-                          const input = e.target as HTMLInputElement;
-                          input.select();
-                        }}
-                        onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
-                          const input = e.target as HTMLInputElement;
+                            input.select();
 
-                          input.select();
-
-                          removeNumberFormattingFromArrayField(
-                            field.accountId,
-                            e.target.value,
-                          );
-                        }}
-                        onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-                          amountRegister.onBlur(e);
-                          formatArrayFieldAmount(
-                            field.accountId,
-                            e.target.value,
-                          );
-                          handleCalculateTotal(
-                            field.categoryId,
-                            categoryAccountIndexes[field.categoryId].startIndex,
-                            categoryAccountIndexes[field.categoryId].endIndex,
-                          );
-                        }}
-                      ></BudgetRow>
-                      {/* <div
+                            removeNumberFormattingFromArrayField(
+                              field.accountId,
+                              e.target.value,
+                            );
+                          }}
+                          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                            amountRegister.onBlur(e);
+                            formatArrayFieldAmount(
+                              field.accountId,
+                              e.target.value,
+                            );
+                            handleCalculateTotal(
+                              field.categoryId,
+                              categoryAccountIndexes[field.categoryId]
+                                .startIndex,
+                              categoryAccountIndexes[field.categoryId].endIndex,
+                            );
+                          }}
+                        ></BudgetRow>
+                        {/* <div
                         className={`text-start pl-3 py-2  ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
                       >
                         {field.name}
@@ -307,20 +313,21 @@ const Budget = () => {
                           0 Comments
                         </button>
                       </div> */}
-                    </>
-                  );
-                })}
+                      </>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
+            );
 
-          return grid;
-        })}
+            return grid;
+          })}
 
-        <button type="submit" className="p-2 border ">
-          Submit Form
-        </button>
-      </form>
+          <button type="submit" className="p-2 border ">
+            Submit Form
+          </button>
+        </form>
+      </MenuIdProvider>
     </div>
   );
 };

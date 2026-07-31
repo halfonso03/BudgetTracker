@@ -3,6 +3,8 @@ import NumericArrayInput from '../../components/NumericArrayInput';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import { formatNumber, parseFormattedNumber } from '../../app/util';
 import CommentsModal from './CommentsModal';
+import Menus from '../../components/menus/Menus';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   isLastRow: boolean;
@@ -32,6 +34,7 @@ const BudgetRow = ({
   onFocus,
   amountRegister,
 }: Props) => {
+  const navigate = useNavigate();
   const [remaining, setRemaining] = useState<string>(() =>
     formatNumber(parseFormattedNumber(budgetedAmount) - spentAmount),
   );
@@ -98,17 +101,37 @@ const BudgetRow = ({
         </button>
       </div>
       <div
-        className={`text-center p-3 text-blue-500 text-sm self-center ${isLastRow ? 'bg-neutral-100' : ''}`}
+        className={`flex justify-center p-3 text-blue-500 text-sm self-center ${isLastRow ? 'bg-neutral-100' : ''}`}
       >
-        <button
-          type="button"
-          className={`cursor-pointer ${isLastRow ? 'opacity-0' : ''}`}
-          disabled={isLastRow}
-          tabIndex={-1}
-          onClick={() => onOpenComments()}
-        >
-          Actions
-        </button>
+        {!isLastRow && (
+          <Menus>
+            <Menus.Toggler id={accountId.toString()}>Actions</Menus.Toggler>
+            <Menus.List id={accountId.toString()}>
+              <Menus.MenuItem
+                onClick={() => {
+                  navigate(
+                    `/reprogramming/create/${initiativeId}/${grantId}/${accountId}`,
+                  );
+                }}
+              >
+                <span className="text-[.95rem] text-neutral-800">
+                  Reprogram Funds
+                </span>
+              </Menus.MenuItem>
+              <Menus.MenuItem
+                onClick={() => {
+                  navigate(
+                    `/disbusersement/create/${initiativeId}/${grantId}/${accountId}`,
+                  );
+                }}
+              >
+                <span className="text-[.95rem] text-neutral-800">
+                  Disburse Funds
+                </span>
+              </Menus.MenuItem>
+            </Menus.List>
+          </Menus>
+        )}
       </div>
       {commentsOpen && (
         <CommentsModal
