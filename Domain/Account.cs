@@ -17,7 +17,7 @@ namespace Domain
         public required string Name { get; set; }
         public required string Number { get; set; }
         public required int CategoryId { get; set; }
-        public required Category Category { get; set; }
+        public Category? Category { get; set; }
 
     }
 }

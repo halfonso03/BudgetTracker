@@ -10,5 +10,10 @@ namespace Application.Budgets.DTOs
     {
         public required int Id { get; set; }
         public required string Name { get; set; }
+
+        public static InitiativeDto Create(int id, string name)
+        {
+            return new() { Id = id, Name = name };
+        }
     }
 }

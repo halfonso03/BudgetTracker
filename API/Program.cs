@@ -25,9 +25,10 @@ builder.Services.AddCors(opt =>
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials()
-                        .WithOrigins("https://localhost:3001");
+                        .WithOrigins("http://localhost:3000", "https://localhost:3000", "https://localhost:5001");
                 });
             });
+
 
 
 var app = builder.Build();

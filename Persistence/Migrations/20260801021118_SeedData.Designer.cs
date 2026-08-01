@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260801021118_SeedData")]
+    partial class SeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,13 +141,6 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tblAuthorizedUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            WindowsLogin = "halfonso"
-                        });
                 });
 
             modelBuilder.Entity("Domain.BudgetLineItem", b =>
@@ -215,41 +211,6 @@ namespace Persistence.Migrations
                     b.HasIndex("UpdatedBy");
 
                     b.ToTable("tblBudget");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccountId = 1,
-                            Amount = 100.0,
-                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = 1,
-                            GrantId = 1,
-                            InitiativeId = 1,
-                            ItemType = "B"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AccountId = 3,
-                            Amount = 100.0,
-                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = 1,
-                            GrantId = 1,
-                            InitiativeId = 1,
-                            ItemType = "B"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AccountId = 4,
-                            Amount = 105.0,
-                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = 1,
-                            GrantId = 1,
-                            InitiativeId = 1,
-                            ItemType = "B"
-                        });
                 });
 
             modelBuilder.Entity("Domain.Category", b =>
@@ -311,11 +272,6 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("end_date");
 
-                    b.Property<string>("Fiduciary")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("fiduciary");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
@@ -328,24 +284,6 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tblGrant");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            EndDate = new DateTime(2028, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Fiduciary = "MSCO",
-                            Name = "G26001",
-                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 2,
-                            EndDate = new DateTime(2028, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Fiduciary = "Cameron Co",
-                            Name = "G26001",
-                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("Domain.Initiative", b =>

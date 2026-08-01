@@ -20,9 +20,9 @@ namespace Domain
         public int GrantId { get; set; }
         [Column(Order = 3)]
         public int AccountId { get; set; }
-        public required Initiative Initiative { get; set; }
-        public required Grant Grant { get; set; }
-        public required Account Account { get; set; }
+        public Initiative? Initiative { get; set; }
+        public Grant? Grant { get; set; }
+        public Account? Account { get; set; }
 
         [Column(Order = 7)]
         public required DateTime CreateDate { get; set; }
@@ -31,7 +31,7 @@ namespace Domain
         public int CreatedBy { get; set; }
 
         [ForeignKey(nameof(CreatedBy))]
-        public required AuthorizedUser CreatedByUser { get; set; }
+        public AuthorizedUser? CreatedByUser { get; set; }
 
         [Column(Order = 9)]
         public DateTime? UpdateDate { get; set; }
@@ -40,7 +40,7 @@ namespace Domain
         public int? UpdatedBy { get; set; }
 
         [ForeignKey(nameof(UpdatedBy))]
-        public required AuthorizedUser UpdatedByUser { get; set; }
+        public AuthorizedUser? UpdatedByUser { get; set; }
 
     }
 }

@@ -15,6 +15,158 @@ namespace Persistence
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            var categories = new List<Category>
+            {
+                new() { Id = 1, Name = "Services" },
+                new() { Id = 2, Name = "Facilities" },
+                new() { Id = 3, Name = "Supplies" },
+                new() { Id = 4, Name = "Personnel" },
+                new() { Id = 5, Name = "Fringe" }
+            };
+
+
+
+            builder.Entity<Category>().HasData(categories);
+
+            builder.Entity<Initiative>().HasData(
+                new Initiative() { Id = 1, Name = "Management & Coordination" },
+                new Initiative() { Id = 2, Name = "Training" },
+                new Initiative() { Id = 3, Name = "Multemedia & Technology" }
+            );
+
+            builder.Entity<Grant>().HasData(
+                new Grant()
+                {
+                    Id = 1,
+                    StartDate = new DateTime(2026, 1, 1),
+                    EndDate = new DateTime(2028, 1, 1),
+                    Name = "G26001",
+                    Fiduciary = "MSCO"
+                },
+                new Grant
+                {
+                    Id = 2,
+                    StartDate = new DateTime(2026, 1, 1),
+                    EndDate = new DateTime(2028, 1, 1),
+                    Name = "G26001",
+                    Fiduciary = "Cameron Co"
+                }
+            );
+
+
+            builder.Entity<Account>().HasData(
+                new Account()
+                {
+                    Id = 1,
+                    Name = "Printing & Binding",
+                    Number = "11-102-0312-54700",
+                    CategoryId = 1,
+                },
+                new Account()
+                {
+                    Id = 2,
+                    Name = "Insurance-Other",
+                    Number = "11-102-0312-54701",
+                    CategoryId = 1,
+                },
+                new Account()
+                {
+                    Id = 3,
+                    Name = "Freight & Postage Service",
+                    Number = "11-102-0312-54702",
+                    CategoryId = 1,
+                },
+                new Account()
+                {
+                    Id = 4,
+                    Name = "Communication Services",
+                    Number = "11-102-0312-54703",
+                    CategoryId = 1,
+                },
+                new Account()
+                {
+                    Id = 5,
+                    Name = "Rentals & Lease",
+                    Number = "11-102-0312-54704",
+                    CategoryId = 2,
+                },
+                new Account()
+                {
+                    Id = 6,
+                    Name = "Utilities - Electric",
+                    Number = "11-102-0312-54705",
+                    CategoryId = 2,
+                },
+                new Account()
+                {
+                    Id = 7,
+                    Name = "Toner",
+                    Number = "11-102-0312-54706",
+                    CategoryId = 3,
+                },
+                new Account()
+                {
+                    Id = 8,
+                    Name = "Pens",
+                    Number = "11-102-0312-54707",
+                    CategoryId = 3,
+                },
+                new Account()
+                {
+                    Id = 9,
+                    Name = "Erasers",
+                    Number = "11-102-0312-54708",
+                    CategoryId = 3,
+                }
+            );
+
+            builder.Entity<AuthorizedUser>().HasData(
+                    new AuthorizedUser
+                    {
+                        Id = 1,
+                        WindowsLogin = "halfonso"
+                    }
+            );
+
+            builder.Entity<BudgetLineItem>().HasData(
+                new BudgetLineItem()
+                {
+                    AccountId = 1,
+                    Amount = 100,
+                    CreatedBy = 1,
+                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                    GrantId = 1,
+                    InitiativeId = 1,
+                    ItemType = "B",
+                    Id = 1
+                },
+
+                new BudgetLineItem()
+                {
+                    AccountId = 3,
+                    Amount = 100,
+                    CreatedBy = 1,
+                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                    GrantId = 1,
+                    InitiativeId = 1,
+                    ItemType = "B",
+                    Id = 2
+                },
+
+
+                new BudgetLineItem()
+                {
+                    AccountId = 4,
+                    Amount = 105,
+                    CreatedBy = 1,
+                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                    GrantId = 1,
+                    InitiativeId = 1,
+                    ItemType = "B",
+                    Id = 3
+                }
+            );
+
             builder.Entity<Category>()
                 .HasMany(x => x.Accounts)
                 .WithOne(x => x.Category)
@@ -40,6 +192,7 @@ namespace Persistence
             builder.Entity<Grant>().Property(x => x.Id).HasColumnName("id");
             builder.Entity<Grant>().Property(x => x.StartDate).HasColumnName("start_date");
             builder.Entity<Grant>().Property(x => x.EndDate).HasColumnName("end_date");
+            builder.Entity<Grant>().Property(x => x.Fiduciary).HasColumnName("fiduciary");
 
             builder.Entity<Grant>().Property(x => x.Name).HasColumnName("name").HasColumnType("varchar(50)"); ;
 
