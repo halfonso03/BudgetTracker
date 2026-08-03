@@ -1,36 +1,84 @@
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '../../app/util';
 import { ChevronDownSquare, View } from 'lucide-react';
-import useBudgetSummary from '../../api/hooks/useBudgetSummay';
+import useBudgetSummary from '../../api/hooks/useBudgetForYear.tsx';
 import { useState } from 'react';
+
+const grid_columns = '1fr_.5fr_1fr_1fr_1fr_1fr_.5fr_.3fr';
 
 interface Props {
   year: number;
 }
 const Summary = ({ year }: Props) => {
-  const { data } = useBudgetSummary(year);
-
+  const { data, isLoading } = useBudgetSummary(year);
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (!data) return null;
+
+  const budgetSummaries: BudgetSummary[] = data.map((b) => {
+    return {
+      initiative_id: b.initiative_id,
+      initiative_name: b.initiative!.name,
+      grant_id: b.grant_id,
+      grant_name: b.grant!.name,
+      year: b.year,
+      approved_amount: b.items
+        .filter((x) => x.item_type?.toLowerCase() == 'b')
+        .map((i) => i.amount)
+        .reduce((acc, cur) => acc + cur, 0),
+      current_amount: b.items
+        .filter(
+          (x) =>
+            x.item_type?.toLowerCase() == 'b' ||
+            x.item_type?.toLowerCase() == 'r',
+        )
+        .map((i) => i.amount)
+        .reduce((acc, cur) => (acc ?? 0) + (cur ?? 0), 0),
+      spent_amount: b.items
+        .filter((x) => x.item_type?.toLowerCase() == 'd')
+        .map((i) => i.amount)
+        .reduce((acc, cur) => acc + cur, 0),
+      remaining_amount: b.items
+        .filter(
+          (x) => x.item_type?.toLowerCase() == 'b' || x.item_type?.toLowerCase() == 'r' || x.item_type?.toLowerCase() == 'd',
+        )
+        .map((i) => i.amount)
+        .reduce((acc, cur) => (acc ?? 0) + (cur ?? 0), 0),
+    };
+  });
 
   return (
     <div>
-      <div className="entity-label grid grid-cols-[1fr_1fr_1fr_1fr_1fr_.3fr_.3fr] font-semibold p-3 gap-4 ">
+      <div
+        className={`entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr_.3fr] font-semibold p-3 gap-4 `}
+      >
         <div>Initiative</div>
         <div>Grant</div>
-        <div className="text-center">Budgeted</div>
-        <div className="text-center">Spent</div>
-        <div className="text-center">Remaining</div>
+        <div className="text-end">Approved Budget</div>
+        <div className="text-end">Current Budget</div>
+        <div className="text-end">Spent Amount</div>
+        <div className="text-end">Remaining Balance</div>
         <div className="text-center entity-label">Details</div>
         <div></div>
       </div>
-      {data?.map((budget, index) => (
+      {budgetSummaries?.map((budget, index) => (
         <div key={index} className="border border-neutral-300 mb-5">
-          <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_.3fr_.3fr]  gap-4 p-3">
+          <div className={`grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr_.3fr] gap-4 p-3`}>
             <div className="entity-name">{budget.initiative_name}</div>
             <div className="entity-name">{budget.grant_name}</div>
-            <div className="text-center">{formatCurrency(budget.amount)}</div>
-            <div className="text-center"></div>
-            <div className="text-center"></div>
+            <div className="text-end">
+              {formatCurrency(budget.approved_amount)}
+            </div>
+            <div className="text-end">
+              {formatCurrency(budget.current_amount)}
+            </div>
+            <div className="text-end">
+              {formatCurrency(budget.spent_amount)}
+            </div>
+            <div className="text-end">
+              {formatCurrency(budget.remaining_amount)}
+            </div>
             <div className="flex justify-center">
               <Link
                 to={`${budget.initiative_id}/${budget.grant_id}`}
@@ -57,20 +105,65 @@ const Summary = ({ year }: Props) => {
           </div>
 
           <div
-            className={` pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}`}
+            className={`pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}`}
           >
-            <div className="p-3 border-t border-t-neutral-200">
-              <div className="entity-label mb-2 border-b border-b-neutral-200 pb-2">Category</div>
-              <div className="entity-name mb-2">Personnel</div>
-              <div className="entity-name mb-2">Fringe</div>
-              <div className="entity-name mb-2">Services</div>
-              <div className="entity-name mb-2">Supplies</div>
-              <div className="entity-name mb-2">Facilities</div>
-            </div>
+            <CategorySummary
+              items={
+                data.filter((x) => x.initiative_id == budget.initiative_id)[0]
+                  .items
+              }
+            ></CategorySummary>
           </div>
         </div>
       ))}
     </div>
   );
 };
+
+interface CategorySummaryProps {
+  items: BudgetLineItem[];
+}
+
+function CategorySummary({ items }: CategorySummaryProps) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const groupedData = items.reduce((accumulator: any, currentItem) => {
+    const key: string = currentItem.category!.name!;
+
+    // Initialize the array if the key doesn't exist yet
+    if (!accumulator[key]) {
+      accumulator[key] = [];
+    }
+
+    // Push the current object into the group
+    accumulator[key].push(currentItem);
+
+    return accumulator;
+  }, {}); // Empty object is the initial value
+
+  const t: { category: string; amount: number }[] = Object.entries(
+    groupedData,
+  ).map(([category, value]) => {
+    const items = value as BudgetLineItem[];
+    const amount = items.reduce((acc, cur) => acc + cur.amount, 0);
+    return { category, amount };
+  });
+
+  return (
+    <div className="border-t border-t-neutral-200">
+      <div className="entity-label mb-2 border-b border-b-neutral-200 p-3 pt-3">
+        Category
+      </div>
+      {t.map((c, i) => (
+        <div className={`grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr_.3fr] gap-4 px-3`} key={i}>
+          <div className="entity-name mb-2" key={i}>
+            {c.category}
+          </div>
+          <div></div>
+          <div className="text-end">{formatCurrency(c.amount)}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default Summary;

@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Domain
 {
@@ -14,10 +15,13 @@ namespace Domain
         public required double Amount { get; set; }
         [Column(Order = 5)]
         public required string ItemType { get; set; }
+
         [Column(Order = 1)]
         public int InitiativeId { get; set; }
+
         [Column(Order = 2)]
         public int GrantId { get; set; }
+
         [Column(Order = 3)]
         public int AccountId { get; set; }
         public Initiative? Initiative { get; set; }

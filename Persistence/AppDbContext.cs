@@ -140,7 +140,6 @@ namespace Persistence
                     ItemType = "B",
                     Id = 1
                 },
-
                 new BudgetLineItem()
                 {
                     AccountId = 3,
@@ -152,8 +151,6 @@ namespace Persistence
                     ItemType = "B",
                     Id = 2
                 },
-
-
                 new BudgetLineItem()
                 {
                     AccountId = 4,
@@ -164,7 +161,74 @@ namespace Persistence
                     InitiativeId = 1,
                     ItemType = "B",
                     Id = 3
+                },
+                new BudgetLineItem()
+                {
+                    AccountId = 4,
+                    Amount = 105,
+                    CreatedBy = 1,
+                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                    GrantId = 1,
+                    InitiativeId = 1,
+                    ItemType = "B",
+                    Id = 4
+                },
+                new BudgetLineItem()
+                {
+                    AccountId = 7,
+                    Amount = 1200,
+                    CreatedBy = 1,
+                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                    GrantId = 1,
+                    InitiativeId = 1,
+                    ItemType = "B",
+                    Id = 5
+                },
+                new BudgetLineItem()
+                {
+                    AccountId = 8,
+                    Amount = 400,
+                    CreatedBy = 1,
+                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                    GrantId = 1,
+                    InitiativeId = 1,
+                    ItemType = "B",
+                    Id = 6
+                },
+                new BudgetLineItem()
+                {
+                    AccountId = 5,
+                    Amount = 596.01,
+                    CreatedBy = 1,
+                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                    GrantId = 1,
+                    InitiativeId = 1,
+                    ItemType = "B",
+                    Id = 7
+                },
+                new BudgetLineItem()
+                {
+                    AccountId = 5,
+                    Amount = 596.01,
+                    CreatedBy = 1,
+                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                    GrantId = 1,
+                    InitiativeId = 1,
+                    ItemType = "B",
+                    Id = 8
+                },
+                new BudgetLineItem()
+                {
+                    AccountId = 8,
+                    Amount = 400,
+                    CreatedBy = 1,
+                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                    GrantId = 1,
+                    InitiativeId = 2,
+                    ItemType = "B",
+                    Id = 9
                 }
+
             );
 
             builder.Entity<Category>()

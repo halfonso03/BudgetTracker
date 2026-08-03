@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260803131037_SeedBudget3")]
+    partial class SeedBudget3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -281,39 +284,6 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 1,
                             InitiativeId = 1,
-                            ItemType = "B"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AccountId = 5,
-                            Amount = 596.00999999999999,
-                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = 1,
-                            GrantId = 1,
-                            InitiativeId = 1,
-                            ItemType = "B"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AccountId = 5,
-                            Amount = 596.00999999999999,
-                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = 1,
-                            GrantId = 1,
-                            InitiativeId = 1,
-                            ItemType = "B"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            AccountId = 8,
-                            Amount = 400.0,
-                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = 1,
-                            GrantId = 1,
-                            InitiativeId = 2,
                             ItemType = "B"
                         });
                 });

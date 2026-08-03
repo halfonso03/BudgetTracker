@@ -13,7 +13,6 @@ type Category = {
     // sort_order: number
 }
 
-
 type Grant = {
     id: number
     name: string,
@@ -52,5 +51,8 @@ type BudgetSummary = {
     grant_id: number
     grant_name: string,
     year: number,
-    amount: number
+    approved_amount: number
+    current_amount: number
+    spent_amount: number
+    remaining_amount: number
 }

@@ -1,3 +1,5 @@
+using Application.interfaces;
+using Application.services;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -14,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddTransient<IBudgetService, BudgetService>();
 
 
 builder.Services.AddControllers();
@@ -25,7 +28,7 @@ builder.Services.AddCors(opt =>
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials()
-                        .WithOrigins("http://localhost:3000", "https://localhost:3000", "https://localhost:5001");
+                        .WithOrigins("http://localhost:3001", "https://localhost:3001", "https://localhost:5001");
                 });
             });
 
