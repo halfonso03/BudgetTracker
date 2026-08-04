@@ -3,7 +3,7 @@ import NumericArrayInput from '../../components/NumericArrayInput';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import { formatNumber, parseFormattedNumber } from '../../app/util';
 import CommentsModal from './CommentsModal';
-import Menus from '../../components/menus/Menus';
+import { ArrowLeftRight, DollarSign } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
@@ -16,11 +16,11 @@ interface Props {
   budgetedAmount: string;
   spentAmount: number;
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
-  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onFocus: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onClick: (e: React.MouseEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
 }
-const BudgetRow = ({
+const BudgetInputRow = ({
   fieldName,
   accountId,
   initiativeId,
@@ -57,53 +57,81 @@ const BudgetRow = ({
   return (
     <>
       <div
-        className={`text-start pl-3 py-2  ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
+        className={`self-center pl-3 py-2 ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
       >
         {fieldName}
       </div>
-      <div className={`text-end py-2  ${isLastRow ? 'bg-neutral-100' : ''}`}>
+      <div
+        className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100' : ''}`}
+      >
         <NumericArrayInput
           key={accountId}
           register={amountRegister}
           readOnly={isLastRow}
           disabled={isLastRow}
-          className={`${isLastRow ? 'border-0 font-bold text-neutral-600' : 'border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
-          onClick={onClick}
+          className={`${isLastRow ? 'border-0 p-0 m-0 font-bold text-neutral-600' : 'p-[.2rem] border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+          onClick={(e) => (onClick ? onClick(e) : null)}
           onBlur={(e) => {
-            const budgeted = parseFormattedNumber(e.target.value);
-            setRemaining(formatNumber(budgeted - spentAmount));
-            onBlur(e);
+            if (onBlur) {
+              const budgeted = parseFormattedNumber(e.target.value);
+              setRemaining(formatNumber(budgeted - spentAmount));
+              onBlur(e);
+            }
           }}
-          onFocus={onFocus}
+          onFocus={(e) => (onFocus ? onFocus(e) : null)}
         ></NumericArrayInput>
       </div>
       <div
-        className={`text-end py-2  ${isLastRow ? 'bg-neutral-100  font-bold text-neutral-600' : ''}`}
+        className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100  font-bold text-neutral-600' : ''}`}
       >
         {spentAmount}
       </div>
       <div
-        className={`text-end py-2  ${isLastRow ? 'bg-neutral-100  font-bold text-neutral-600' : ''}`}
+        className={`text-end self-center py-2 ${isLastRow ? 'bg-neutral-100  font-bold text-neutral-600' : ''}`}
       >
         {remaining}
       </div>
       <div
-        className={`text-end  text-blue-500 text-sm self-center ${isLastRow ? 'bg-neutral-100 p-3' : ' p-0'}`}
-      >
-        <button
-          type="button"
-          className={`cursor-pointer ${isLastRow ? 'opacity-0' : ''}`}
-          disabled={isLastRow}
-          tabIndex={-1}
-          onClick={() => onOpenComments()}
-        >
-          0 Comments
-        </button>
-      </div>
-      <div
-        className={`flex justify-center p-3 text-blue-500 text-sm self-center ${isLastRow ? 'bg-neutral-100' : ''}`}
+        className={`text-center self-center py-2 text-blue-500 text-sm  ${isLastRow ? 'bg-neutral-100 self-stretch' : ' self-center '}`}
       >
         {!isLastRow ? (
+          <button
+            type="button"
+            className={`cursor-pointer ${isLastRow ? 'opacity-0' : ''}`}
+            disabled={isLastRow}
+            tabIndex={-1}
+            onClick={() => onOpenComments()}
+          >
+            0 Comments
+          </button>
+        ) : (
+          <div>&nbsp;</div>
+        )}
+      </div>
+      <div
+        className={`flex py-2 justify-around cursor-pointer text-blue-500 self-center ${isLastRow ? 'bg-neutral-100' : ''}`}
+      >
+        {!isLastRow ? (
+          <>
+            <ArrowLeftRight
+              onClick={() => {
+                navigate(
+                  `/reprogramming/create/${initiativeId}/${grantId}/${accountId}`,
+                );
+              }}
+            ></ArrowLeftRight>
+            <DollarSign
+              onClick={() => {
+                navigate(
+                  `/disbusersement/create/${initiativeId}/${grantId}/${accountId}`,
+                );
+              }}
+            ></DollarSign>
+          </>
+        ) : (
+          <div>&nbsp;</div>
+        )}
+        {/* {!isLastRow ? (
           <Menus>
             <Menus.Toggler id={accountId.toString()}>Actions</Menus.Toggler>
             <Menus.List id={accountId.toString()}>
@@ -131,9 +159,7 @@ const BudgetRow = ({
               </Menus.MenuItem>
             </Menus.List>
           </Menus>
-        ) : (
-          <div className=''>&nbsp;</div>
-        )}
+        ) : ( */}
       </div>
       {commentsOpen && (
         <CommentsModal
@@ -151,4 +177,4 @@ const BudgetRow = ({
     </>
   );
 };
-export default BudgetRow;
+export default BudgetInputRow;

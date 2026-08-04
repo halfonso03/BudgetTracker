@@ -15,12 +15,12 @@ const fetchAvailableGrant = async (initiativeId: number): Promise<Grant[]> => {
       }, 300);
     });
   } else {
-    const t = initiativeBudgets.map((b) => ({
-      id: b.grant_id,
-      has: grants.map((g) => g.id).some(() => b.grant_id),
-    }));
+    
+    // const t = initiativeBudgets.map((b) => ({
+    //   id: b.grant_id,
+    //   has: grants.map((g) => g.id).some(() => b.grant_id),
+    // }));
 
-    console.log('t', t);
 
     // const usedGrants = g.some((value) =>
     //   initiativeBudgets.map((b2) => b2.grant_id).includes(value.id),

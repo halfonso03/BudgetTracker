@@ -6,11 +6,10 @@ import useGrants from '../../api/hooks/useGrants';
 import { formatNumber, parseFormattedNumber } from '../../app/util';
 import useInitiative from '../../api/hooks/useInitiative';
 import type React from 'react';
-import BudgetRow from './BudgetRow';
-import MenuIdProvider from '../../contexts/MenuIdContext';
+import BudgetInputRow from './BudgetInputRow';
 import { Fragment } from 'react';
 
-type BudgetRow = {
+type BudgetInputRow = {
   accountId: number;
   categoryId: number;
   amount: string;
@@ -19,17 +18,13 @@ type BudgetRow = {
 };
 
 type Budget = {
-  rows: BudgetRow[];
+  rows: BudgetInputRow[];
 };
 
 const Budget = () => {
   const categories: Category[] = [];
-
   const { initiativeId, grantId } = useParams();
-
   const { data, isLoading } = useBudget(+initiativeId!, +grantId!);
-
-  console.log('bdget details', data)
   const { data: initiative } = useInitiative(+initiativeId!);
   const { data: grant } = useGrants(+grantId!);
 
@@ -44,66 +39,70 @@ const Budget = () => {
   }
 
   // get budgets rows
-  const budgetRows: BudgetRow[] =
-    data && data.items
-      ? [
-          ...data.items.map((item) => ({
-            accountId: item.account_id,
-            categoryId: item.category_id!,
-            amount: formatNumber(item.amount),
-            name: item.account_name,
-            comment: item.comment,
-          })),
-        ]
-      : [];
+  let budgetRows: BudgetInputRow[] = [];
 
-  // create total rows dynamically
-  const totalRows: BudgetRow[] = categories.map((c) => {
-    const formattedNumber = formatNumber(
-      Number(
-        data?.items
-          .filter((x) => x.category_id == c.id)
-          .map((i) => i.amount)
-          .reduce((acc, cur) => acc + cur, 0),
-      ),
-    );
+  if (data && data.items) {
+    for (const cat of categories) {
+      const accounts: BudgetInputRow[] = data.items
+        .filter((i) => i.category_id == cat.id)
+        .sort((a, b) => a.account_name.localeCompare(b.account_name))
+        .map((item) => ({
+          accountId: item.account_id,
+          categoryId: item.category_id!,
+          amount: formatNumber(item.amount),
+          name: item.account_name,
+          comment: item.comment,
+        }));
 
-    const ret = {
-      accountId: 999,
-      categoryId: c.id,
-      amount: formattedNumber,
-      name: 'Total',
-    };
+      const formattedNumber = formatNumber(
+        Number(
+          data?.items
+            .filter((x) => x.category_id == cat.id)
+            .map((i) => i.amount)
+            .reduce((acc, cur) => acc + cur, 0),
+        ),
+      );
 
-    return { ...ret, amount: ret.amount.toString(), comment: '' };
-  });
+      const ret = {
+        accountId: 999,
+        categoryId: cat.id,
+        amount: formattedNumber,
+        name: 'Total',
+      };
+
+      budgetRows = [...budgetRows, ...accounts];
+      budgetRows.push({ ...ret, amount: ret.amount.toString(), comment: '' });
+    }
+  }
+
+  console.log('budgetRows', budgetRows);
 
   // combine for later access
-  const allRows = [...budgetRows, ...totalRows].sort(
-    (a, b) => a.categoryId - b.categoryId || a.accountId - b.accountId,
-  );
-
   // calculate the start and end index of each group for totaling
   let runningTotal = 0;
   const categoryAccountIndexes: Record<
     string,
-    { startIndex: number; endIndex: number }
+    { startIndex: number; totalIndex: number }
   > = {};
+
   for (const cat of categories) {
-    const tempRows = allRows.filter(
-      (a) => a.categoryId == cat.id && a.accountId !== 999,
-    );
+    const tempRows = budgetRows.filter((a) => a.categoryId == cat.id);
+    console.log(tempRows.length);
+    // console.log('tempRows', cat.name, tempRows);
+    // console.log(1,runningTotal)
     categoryAccountIndexes[cat.id] = {
       startIndex: runningTotal,
-      endIndex: tempRows.length + runningTotal,
+      totalIndex: tempRows.length + runningTotal - 1,
     };
-    runningTotal += tempRows.length + 1;
+    runningTotal += runningTotal == 0 ? tempRows.length : tempRows.length
+    // console.log(2,runningTotal)
   }
 
+  console.log('categoryAccountIndexes', categoryAccountIndexes);
   const { register, control, handleSubmit, getValues, setValue } =
     useForm<Budget>({
       values: {
-        rows: allRows,
+        rows: budgetRows,
       },
     });
 
@@ -119,7 +118,7 @@ const Budget = () => {
     });
 
     let index = 0;
-    while (allRows[index].accountId !== accountId) {
+    while (budgetRows[index].accountId !== accountId) {
       index++;
     }
 
@@ -136,7 +135,7 @@ const Budget = () => {
     amount: string,
   ) {
     let index = 0;
-    while (allRows[index].accountId !== accountId) {
+    while (budgetRows[index].accountId !== accountId) {
       index++;
     }
 
@@ -168,7 +167,7 @@ const Budget = () => {
   };
 
   if (isLoading) return <span>Loading...</span>;
-  if (!data) return <span>Error</span>
+  if (!data) return <span>Error</span>;
 
   let indexRunningTotal = -1;
 
@@ -183,86 +182,82 @@ const Budget = () => {
         <div className="entity-name">{initiative?.name}</div>
         <div className="entity-name">{grant?.name}</div>
       </div>
-      <MenuIdProvider>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {categories.map((c) => {
-            const categoryFields = fields.filter((x) => x.categoryId == c.id);
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {categories.map((c) => {
+          const categoryFields = fields.filter((x) => x.categoryId == c.id);
 
-            const grid = (
-              <div className="border border-neutral-200 mb-7" key={c.id}>
-                <div
-                  className=" grid grid-cols-[.7fr_.25fr_.25fr_.25fr_.2fr_.2fr]"
-                  key={c.id}
-                >
-                  <div className="pl-3 py-2 font-bold bg-neutral-100 text-neutral-700">
-                    {c.name}
-                  </div>
-                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
-                    Budgeted
-                  </div>
-                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
-                    Spent
-                  </div>
-                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
-                    Remaining
-                  </div>
-                  <div className="text-end py-2 bg-neutral-100 font-bold text-neutral-500">
-                    Comments
-                  </div>
-                  <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-500">
-                    Actions
-                  </div>
+          const grid = (
+            <div className="border border-neutral-200 mb-7" key={c.id}>
+              <div
+                className=" grid grid-cols-[.7fr_.25fr_.25fr_.25fr_.2fr_.2fr]"
+                key={c.id}
+              >
+                <div className="pl-3 py-2 font-bold bg-neutral-100 text-neutral-700">
+                  {c.name}
+                </div>
+                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
+                  Budgeted
+                </div>
+                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
+                  Spent
+                </div>
+                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
+                  Remaining
+                </div>
+                <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-500">
+                  Comments
+                </div>
+                <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-500">
+                  Actions
+                </div>
 
-                  {categoryFields.map((field, index) => {
-                    indexRunningTotal += 1;
+                {categoryFields.map((field, index) => {
+                  indexRunningTotal += 1;
+                  const amountRegister = register(
+                    `rows.${indexRunningTotal}.amount`,
+                  );
+                  const isLastRow = index == categoryFields.length - 1;
 
-                    const amountRegister = register(
-                      `rows.${indexRunningTotal}.amount`,
-                    );
+                  return (
+                    <Fragment key={field.id}>
+                      <BudgetInputRow
+                        isLastRow={isLastRow}
+                        accountId={field.accountId}
+                        initiativeId={+initiativeId!}
+                        grantId={+grantId!}
+                        fieldName={field.name}
+                        comment={field.comment}
+                        budgetedAmount={field.amount}
+                        spentAmount={20}
+                        amountRegister={amountRegister}
+                        onClick={(e: React.MouseEvent<HTMLInputElement>) => {
+                          const input = e.target as HTMLInputElement;
+                          input.select();
+                        }}
+                        onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
+                          const input = e.target as HTMLInputElement;
 
-                    const isLastRow = index == categoryFields.length - 1;
+                          input.select();
 
-                    return (
-                      <Fragment key={field.id}>
-                        <BudgetRow
-                          isLastRow={isLastRow}
-                          accountId={field.accountId}
-                          initiativeId={+initiativeId!}
-                          grantId={+grantId!}
-                          fieldName={field.name}
-                          comment={field.comment}
-                          budgetedAmount={field.amount}
-                          spentAmount={20}
-                          amountRegister={amountRegister}
-                          onClick={(e: React.MouseEvent<HTMLInputElement>) => {
-                            const input = e.target as HTMLInputElement;
-                            input.select();
-                          }}
-                          onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
-                            const input = e.target as HTMLInputElement;
-
-                            input.select();
-
-                            removeNumberFormattingFromArrayField(
-                              field.accountId,
-                              e.target.value,
-                            );
-                          }}
-                          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-                            amountRegister.onBlur(e);
-                            formatArrayFieldAmount(
-                              field.accountId,
-                              e.target.value,
-                            );
-                            handleCalculateTotal(
-                              field.categoryId,
-                              categoryAccountIndexes[field.categoryId]
-                                .startIndex,
-                              categoryAccountIndexes[field.categoryId].endIndex,
-                            );
-                          }}
-                        ></BudgetRow>
-                        {/* <div
+                          removeNumberFormattingFromArrayField(
+                            field.accountId,
+                            e.target.value,
+                          );
+                        }}
+                        onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                          amountRegister.onBlur(e);
+                          formatArrayFieldAmount(
+                            field.accountId,
+                            e.target.value,
+                          );
+                          handleCalculateTotal(
+                            field.categoryId,
+                            categoryAccountIndexes[field.categoryId].startIndex,
+                            categoryAccountIndexes[field.categoryId].totalIndex,
+                          );
+                        }}
+                      ></BudgetInputRow>
+                      {/* <div
                         className={`text-start pl-3 py-2  ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
                       >
                         {field.name}
@@ -318,21 +313,20 @@ const Budget = () => {
                           0 Comments
                         </button>
                       </div> */}
-                      </Fragment>
-                    );
-                  })}
-                </div>
+                    </Fragment>
+                  );
+                })}
               </div>
-            );
+            </div>
+          );
 
-            return grid;
-          })}
+          return grid;
+        })}
 
-          <button type="submit" className="p-2 border ">
-            Submit Form
-          </button>
-        </form>
-      </MenuIdProvider>
+        <button type="submit" className="p-2 border ">
+          Submit Form
+        </button>
+      </form>
     </div>
   );
 };

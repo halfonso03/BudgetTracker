@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import Button from '../../components/Button';
 import Modal, { type ModalSize } from '../../components/Modal';
 
@@ -30,16 +30,21 @@ const CommentsModal = ({
 }: Props) => {
   const ref = useRef<HTMLTextAreaElement | null>(null);
 
+  const [comments, setComments] = useState<string | undefined>(currentComments);
+
   return (
     <Modal isOpen={true} onClose={onCancelForm} size={size} title={`Comments`}>
       <div></div>
       <div className="px-5 mb-5">
         <div className="entity-label">Account</div>
-        <div className='entity-name mb-5'>{accountName}</div>
+        <div className="entity-name mb-5">{accountName}</div>
         <div className="entity-label mb-1">Comments</div>
         <textarea
           ref={ref}
-          value={currentComments}
+          value={comments}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setComments(e.target.value)
+          }
           className="w-full border border-neutral-300 rounded-sm p-2"
         ></textarea>
       </div>
@@ -58,11 +63,7 @@ const CommentsModal = ({
           Save Comments
         </Button>
 
-        <Button
-          buttonSize="small"
-          variation="secondary"
-          onClick={onCancelForm}
-        >
+        <Button buttonSize="small" variation="secondary" onClick={onCancelForm}>
           Cancel
         </Button>
       </div>

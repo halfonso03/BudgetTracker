@@ -36,7 +36,7 @@ const Budgets = () => {
           </Button>
         </div>
       </div>
-      <Summary year={year}></Summary>
+      <Summary year={year} key={year}></Summary>
       {isCreateBudgetModalOpen && (
         <BudgetSelectionsModal
           year={year}

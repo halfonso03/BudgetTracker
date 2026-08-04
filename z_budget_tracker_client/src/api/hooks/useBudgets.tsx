@@ -2,12 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import agent from '../agent';
 
 const fetchBudget = async (
-  year: number,
   initiative_id: number,
+  grant_id: number,
 ): Promise<Budget> => {
   const response = await agent.get<Budget>('/Budget/GetBudget', {
     params: {
-      year: year,
+      grantId: grant_id,
       initiativeId: initiative_id,
     },
   });
@@ -17,16 +17,16 @@ const fetchBudget = async (
   return budgets;
 };
 
-const useBudgetSummary = (year: number, initiative_id: number) => {
+const useBudgetDetails = (initiative_id: number, grant_id: number, ) => {
   const { data, isLoading } = useQuery<Budget>({
-    queryFn: () => fetchBudget(year, initiative_id),
-    queryKey: ['budgets', initiative_id, year],
+    queryFn: () => fetchBudget(initiative_id, grant_id),
+    queryKey: ['budgets', initiative_id, grant_id],
   });
 
   return { data, isLoading };
 };
 
-export default useBudgetSummary;
+export default useBudgetDetails;
 
 // const fetchBudget = async (initiativeId: number, grantId: number): Promise<Budget> => {
 

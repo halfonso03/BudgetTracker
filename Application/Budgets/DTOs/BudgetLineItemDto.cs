@@ -25,5 +25,8 @@ namespace Application.Budgets.DTOs
         public required string ItemType { get; set; }
 
         public CategoryDto? Category { get; set; } = CategoryDto.Create(1, "Personnal");
+
+        [JsonPropertyName("category_id")]
+        public required int CategoryId { get; set; }
     }
 }

@@ -32,7 +32,7 @@ const NumericArrayInput = ({
     }
   }
 
-  const classes = 'p-[.1rem] w-35 border text-end  ' + className;
+  const classes = ' w-35 border text-end  ' + className;
 
   return (
     <input

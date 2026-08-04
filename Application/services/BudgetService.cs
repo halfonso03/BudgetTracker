@@ -57,13 +57,12 @@ namespace Application.services
                                          Comment = "comment",
                                          ItemType = x.ItemType,
                                          Name = x.Account!.Name,
+                                         CategoryId = x.Account.CategoryId,
                                          Category = CategoryDto.Create(x.Account.Category!.Id, x.Account.Category.Name)
                                      })
                             };
 
             return summaries;
-
-
         }
 
         public async Task<BudgetDto> GetBudget(int initiativeId, int grantId)
@@ -125,7 +124,8 @@ namespace Application.services
                                          Comment = "comment",
                                          ItemType = x.ItemType,
                                          Name = x.Account!.Name,
-                                         Category = CategoryDto.Create(x.Account.Category!.Id, x.Account.Category.Name)
+                                         Category = CategoryDto.Create(x.Account.Category!.Id, x.Account.Category.Name),
+                                         CategoryId = x.Account.CategoryId
                                      }).ToList()
                             };
 
