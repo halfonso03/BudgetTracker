@@ -15,11 +15,9 @@ const MenuIdProvider = ({ children }: MenuIdProps) => {
   const [priorId, setPriorId] = useState<string>('');
 
   return (
-    <div className="relative">
-      <MenuIdContext.Provider value={{ priorId, setPriorId }}>
-        {children}
-      </MenuIdContext.Provider>
-    </div>
+    <MenuIdContext.Provider value={{ priorId, setPriorId }}>
+      {children}
+    </MenuIdContext.Provider>
   );
 };
 

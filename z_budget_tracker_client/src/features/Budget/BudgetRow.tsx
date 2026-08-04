@@ -103,7 +103,7 @@ const BudgetRow = ({
       <div
         className={`flex justify-center p-3 text-blue-500 text-sm self-center ${isLastRow ? 'bg-neutral-100' : ''}`}
       >
-        {!isLastRow && (
+        {!isLastRow ? (
           <Menus>
             <Menus.Toggler id={accountId.toString()}>Actions</Menus.Toggler>
             <Menus.List id={accountId.toString()}>
@@ -131,6 +131,8 @@ const BudgetRow = ({
               </Menus.MenuItem>
             </Menus.List>
           </Menus>
+        ) : (
+          <div className=''>&nbsp;</div>
         )}
       </div>
       {commentsOpen && (

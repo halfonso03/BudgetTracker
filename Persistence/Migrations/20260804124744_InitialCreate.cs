@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
@@ -46,7 +48,8 @@ namespace Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(type: "varchar(50)", nullable: false),
                     start_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    end_date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    end_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    fiduciary = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -135,6 +138,76 @@ namespace Persistence.Migrations
                         principalTable: "tblInitiative",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "tblAuthorizedUsers",
+                columns: new[] { "id", "last_login_date", "windows_login" },
+                values: new object[] { 1, null, "halfonso" });
+
+            migrationBuilder.InsertData(
+                table: "tblCategory",
+                columns: new[] { "id", "name" },
+                values: new object[,]
+                {
+                    { 1, "Services" },
+                    { 2, "Facilities" },
+                    { 3, "Supplies" },
+                    { 4, "Personnel" },
+                    { 5, "Fringe" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "tblGrant",
+                columns: new[] { "id", "end_date", "fiduciary", "name", "start_date" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "MSCO", "G25001", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cameron Co", "G25002", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "MCSPo", "G26001", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 4, new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cameron Co", "G26002", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "tblInitiative",
+                columns: new[] { "id", "name" },
+                values: new object[,]
+                {
+                    { 1, "Management & Coordination" },
+                    { 2, "Training" },
+                    { 3, "Multemedia & Technology" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "tblAccount",
+                columns: new[] { "id", "category_id", "name", "number" },
+                values: new object[,]
+                {
+                    { 1, 1, "Printing & Binding", "11-102-0312-54700" },
+                    { 2, 1, "Insurance-Other", "11-102-0312-54701" },
+                    { 3, 1, "Freight & Postage Service", "11-102-0312-54702" },
+                    { 4, 1, "Communication Services", "11-102-0312-54703" },
+                    { 5, 2, "Rentals & Lease", "11-102-0312-54704" },
+                    { 6, 2, "Utilities - Electric", "11-102-0312-54705" },
+                    { 7, 3, "Toner", "11-102-0312-54706" },
+                    { 8, 3, "Pens", "11-102-0312-54707" },
+                    { 9, 3, "Erasers", "11-102-0312-54708" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "tblBudget",
+                columns: new[] { "Id", "account_id", "amount", "create_date", "created_by", "grant_id", "initiative_id", "item_type", "update_date", "updated_by" },
+                values: new object[,]
+                {
+                    { 1, 1, 100.0, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null },
+                    { 2, 3, 100.0, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null },
+                    { 3, 4, 105.0, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null },
+                    { 4, 4, 105.0, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null },
+                    { 5, 7, 1200.0, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null },
+                    { 6, 8, 400.0, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null },
+                    { 7, 5, 596.00999999999999, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null },
+                    { 8, 5, 596.00999999999999, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null },
+                    { 9, 8, 400.0, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 2, "B", null, null }
                 });
 
             migrationBuilder.CreateIndex(

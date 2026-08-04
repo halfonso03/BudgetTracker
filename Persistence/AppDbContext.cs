@@ -38,17 +38,33 @@ namespace Persistence
                 new Grant()
                 {
                     Id = 1,
-                    StartDate = new DateTime(2026, 1, 1),
-                    EndDate = new DateTime(2028, 1, 1),
-                    Name = "G26001",
+                    StartDate = new DateTime(2025, 1, 1),
+                    EndDate = new DateTime(2026, 12, 31),
+                    Name = "G25001",
                     Fiduciary = "MSCO"
+                },
+                new Grant()
+                {
+                    Id = 2,
+                    StartDate = new DateTime(2025, 1, 1),
+                    EndDate = new DateTime(2026, 12, 31),
+                    Name = "G25002",
+                    Fiduciary = "Cameron Co"
                 },
                 new Grant
                 {
-                    Id = 2,
+                    Id = 3,
                     StartDate = new DateTime(2026, 1, 1),
-                    EndDate = new DateTime(2028, 1, 1),
+                    EndDate = new DateTime(2027, 12, 31),
                     Name = "G26001",
+                    Fiduciary = "MCSPo"
+                },
+                new Grant
+                {
+                    Id = 4,
+                    StartDate = new DateTime(2026, 1, 1),
+                    EndDate = new DateTime(2027, 12, 31),
+                    Name = "G26002",
                     Fiduciary = "Cameron Co"
                 }
             );
@@ -164,17 +180,6 @@ namespace Persistence
                 },
                 new BudgetLineItem()
                 {
-                    AccountId = 4,
-                    Amount = 105,
-                    CreatedBy = 1,
-                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                    GrantId = 1,
-                    InitiativeId = 1,
-                    ItemType = "B",
-                    Id = 4
-                },
-                new BudgetLineItem()
-                {
                     AccountId = 7,
                     Amount = 1200,
                     CreatedBy = 1,
@@ -208,17 +213,6 @@ namespace Persistence
                 },
                 new BudgetLineItem()
                 {
-                    AccountId = 5,
-                    Amount = 596.01,
-                    CreatedBy = 1,
-                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                    GrantId = 1,
-                    InitiativeId = 1,
-                    ItemType = "B",
-                    Id = 8
-                },
-                new BudgetLineItem()
-                {
                     AccountId = 8,
                     Amount = 400,
                     CreatedBy = 1,
@@ -227,6 +221,28 @@ namespace Persistence
                     InitiativeId = 2,
                     ItemType = "B",
                     Id = 9
+                },
+                new BudgetLineItem()
+                {
+                    AccountId = 5,
+                    Amount = 750,
+                    CreatedBy = 1,
+                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                    GrantId = 3,
+                    InitiativeId = 1,
+                    ItemType = "B",
+                    Id = 10
+                },
+                new BudgetLineItem()
+                {
+                    AccountId = 8,
+                    Amount = 250,
+                    CreatedBy = 1,
+                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                    GrantId = 3,
+                    InitiativeId = 2,
+                    ItemType = "B",
+                    Id = 11
                 }
 
             );

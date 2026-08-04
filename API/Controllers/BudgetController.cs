@@ -16,9 +16,17 @@ namespace API.Controllers
         [HttpGet("GetBudgetSummary")]
         public async Task<IActionResult> GetBudgetSummary(int year)
         {
-            var summaries = await _budgetService.GetSummary(year);
+            var budgets = await _budgetService.GetBudgets(year);
 
-            return Ok(summaries);
+            return Ok(budgets);
+        }
+
+        [HttpGet("GetBudget")]
+        public async Task<IActionResult> GetBudget(int initiativeId, int grantId)
+        {
+            var budgets = await _budgetService.GetBudget(initiativeId, grantId);
+
+            return Ok(budgets);
         }
     }
 }

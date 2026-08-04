@@ -17,7 +17,7 @@ namespace Application.Budgets.DTOs
         public int GrantId { get; set; }
         public required GrantDto Grant { get; set; }
         public required InitiativeDto Initiative { get; set; }
-        public List<BudgetLineItemDto> Items { get; set; } = [];
+        public IEnumerable<BudgetLineItemDto> Items { get; set; } = [];
         public int Year => Grant.StartDate.Year;
     }
 }

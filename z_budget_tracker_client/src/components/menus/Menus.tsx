@@ -5,7 +5,6 @@ import { useOutsideClick } from '../../hooks/useOutsideClick';
 import useMenuId from '../../contexts/useMenuId';
 import { MenusContext } from './MenusContext';
 
-
 export type MenuContextType = {
   openId: string;
   close: () => void;
@@ -18,7 +17,6 @@ interface MenuProps {
 }
 
 const Menus = ({ children }: MenuProps) => {
-
   const { setPriorId } = useMenuId();
 
   const [openId, setOpenId] = useState<string>('');
@@ -33,11 +31,9 @@ const Menus = ({ children }: MenuProps) => {
   };
 
   return (
-    <div className="relative">
-      <MenusContext.Provider value={{ openId, close, open }}>
-        {children}
-      </MenusContext.Provider>
-    </div>
+    <MenusContext.Provider value={{ openId, close, open }}>
+      {children}
+    </MenusContext.Provider>
   );
 };
 
@@ -56,11 +52,10 @@ function List({ id, children }: ListProps) {
 
   return (
     <div
-      className="absolute bg-gray-50 bg-dark-content border border-gray-300 dark:border-mauve-700 p-2 rounded-sm cursor-pointer z-51 "
-      style={{ top: '20px', left: '30px' }}
+      className="absolute bg-gray-50 bg-dark-content border border-gray-300 dark:border-mauve-700 p-2 rounded-sm cursor-pointer "
       ref={ref}
     >
-      <ul className="w-50">{children}</ul>
+      <ul className="w-50  ">{children}</ul>
     </div>
   );
 }

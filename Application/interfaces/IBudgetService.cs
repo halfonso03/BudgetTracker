@@ -8,6 +8,8 @@ namespace Application.interfaces
 {
     public interface IBudgetService
     {
-        Task<List<BudgetDto>> GetSummary(int year);
+        Task<List<BudgetDto>> GetBudgets(int year, int initiativeId = 0);
+
+        Task<BudgetDto> GetBudget(int initiativeId, int grantId);
     }
 }

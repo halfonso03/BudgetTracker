@@ -13,7 +13,7 @@ const Budgets = () => {
   };
 
   return (
-    <>
+    <div className=''>
       <div className="flex mb-4 justify-between items-center">
         <div>
           <div className="p-2 font-bold text-neutral-700">Year:</div>
@@ -43,7 +43,7 @@ const Budgets = () => {
           onCancelForm={() => setIsCreateBudgetOpenModal(false)}
         />
       )}
-    </>
+    </div>
   );
 };
 

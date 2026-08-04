@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260801015651_SeedCategories")]
-    partial class SeedCategories
+    [Migration("20260804125851_AddBudgets2")]
+    partial class AddBudgets2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,71 @@ namespace Persistence.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("tblAccount");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            Name = "Printing & Binding",
+                            Number = "11-102-0312-54700"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CategoryId = 1,
+                            Name = "Insurance-Other",
+                            Number = "11-102-0312-54701"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = 1,
+                            Name = "Freight & Postage Service",
+                            Number = "11-102-0312-54702"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CategoryId = 1,
+                            Name = "Communication Services",
+                            Number = "11-102-0312-54703"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 2,
+                            Name = "Rentals & Lease",
+                            Number = "11-102-0312-54704"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 2,
+                            Name = "Utilities - Electric",
+                            Number = "11-102-0312-54705"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryId = 3,
+                            Name = "Toner",
+                            Number = "11-102-0312-54706"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CategoryId = 3,
+                            Name = "Pens",
+                            Number = "11-102-0312-54707"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CategoryId = 3,
+                            Name = "Erasers",
+                            Number = "11-102-0312-54708"
+                        });
                 });
 
             modelBuilder.Entity("Domain.AuthorizedUser", b =>
@@ -76,6 +141,13 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tblAuthorizedUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            WindowsLogin = "halfonso"
+                        });
                 });
 
             modelBuilder.Entity("Domain.BudgetLineItem", b =>
@@ -146,6 +218,107 @@ namespace Persistence.Migrations
                     b.HasIndex("UpdatedBy");
 
                     b.ToTable("tblBudget");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccountId = 1,
+                            Amount = 100.0,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 1,
+                            InitiativeId = 1,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccountId = 3,
+                            Amount = 100.0,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 1,
+                            InitiativeId = 1,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccountId = 4,
+                            Amount = 105.0,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 1,
+                            InitiativeId = 1,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AccountId = 7,
+                            Amount = 1200.0,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 1,
+                            InitiativeId = 1,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AccountId = 8,
+                            Amount = 400.0,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 1,
+                            InitiativeId = 1,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AccountId = 5,
+                            Amount = 596.00999999999999,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 1,
+                            InitiativeId = 1,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AccountId = 8,
+                            Amount = 400.0,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 1,
+                            InitiativeId = 2,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AccountId = 5,
+                            Amount = 750.0,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 3,
+                            InitiativeId = 1,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            AccountId = 8,
+                            Amount = 250.0,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 3,
+                            InitiativeId = 2,
+                            ItemType = "B"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Category", b =>
@@ -170,12 +343,12 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Personnel"
+                            Name = "Services"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Fringe"
+                            Name = "Facilities"
                         },
                         new
                         {
@@ -185,12 +358,12 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 4,
-                            Name = "Facilities"
+                            Name = "Personnel"
                         },
                         new
                         {
                             Id = 5,
-                            Name = "Equipment"
+                            Name = "Fringe"
                         });
                 });
 
@@ -207,6 +380,11 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("end_date");
 
+                    b.Property<string>("Fiduciary")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("fiduciary");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("varchar(50)")
@@ -219,6 +397,40 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tblGrant");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            EndDate = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Fiduciary = "MSCO",
+                            Name = "G25001",
+                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            EndDate = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Fiduciary = "Cameron Co",
+                            Name = "G25002",
+                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            EndDate = new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Fiduciary = "MCSPo",
+                            Name = "G26001",
+                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 4,
+                            EndDate = new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Fiduciary = "Cameron Co",
+                            Name = "G26002",
+                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        });
                 });
 
             modelBuilder.Entity("Domain.Initiative", b =>
@@ -238,6 +450,23 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tblInitiative");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Management & Coordination"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Training"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Multemedia & Technology"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Account", b =>

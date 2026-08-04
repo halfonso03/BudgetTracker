@@ -252,17 +252,6 @@ namespace Persistence.Migrations
                         },
                         new
                         {
-                            Id = 4,
-                            AccountId = 4,
-                            Amount = 105.0,
-                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = 1,
-                            GrantId = 1,
-                            InitiativeId = 1,
-                            ItemType = "B"
-                        },
-                        new
-                        {
                             Id = 5,
                             AccountId = 7,
                             Amount = 1200.0,
@@ -296,23 +285,34 @@ namespace Persistence.Migrations
                         },
                         new
                         {
-                            Id = 8,
-                            AccountId = 5,
-                            Amount = 596.00999999999999,
-                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = 1,
-                            GrantId = 1,
-                            InitiativeId = 1,
-                            ItemType = "B"
-                        },
-                        new
-                        {
                             Id = 9,
                             AccountId = 8,
                             Amount = 400.0,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 1,
+                            InitiativeId = 2,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AccountId = 5,
+                            Amount = 750.0,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 3,
+                            InitiativeId = 1,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            AccountId = 8,
+                            Amount = 250.0,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 3,
                             InitiativeId = 2,
                             ItemType = "B"
                         });
@@ -399,17 +399,33 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            EndDate = new DateTime(2028, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EndDate = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Fiduciary = "MSCO",
+                            Name = "G25001",
+                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            EndDate = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Fiduciary = "Cameron Co",
+                            Name = "G25002",
+                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            EndDate = new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Fiduciary = "MCSPo",
                             Name = "G26001",
                             StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
-                            Id = 2,
-                            EndDate = new DateTime(2028, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Id = 4,
+                            EndDate = new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Fiduciary = "Cameron Co",
-                            Name = "G26001",
+                            Name = "G26002",
                             StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });

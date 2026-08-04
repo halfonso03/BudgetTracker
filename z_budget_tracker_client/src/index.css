@@ -6,8 +6,11 @@ html {
 
 :root {
   font-size: 0.95rem;
+  font-family: 'Poppins';
   /* font-family: 'Segoe UI Symbol', 'Noto Color Emoji', 'sans-serif'; */
-  /* transition: color 0.3s, background-color 0.3s; */
+  transition:
+    color 0.3s,
+    background-color 0.3s;
   min-height: 100vh;
   line-height: 1.5;
   box-sizing: border-box;
@@ -17,11 +20,12 @@ html {
 .entity-label {
   font-weight: bold;
   color: var(--color-neutral-500);
+  opacity: .96;
 }
 
 .entity-name {
   font-weight: bold;
-  color:var(--color-neutral-800)
+  color: var(--color-neutral-800);
 }
 
 input[type='number']::-webkit-outer-spin-button,
@@ -38,13 +42,17 @@ input:-webkit-autofill:focus {
 }
 
 .box {
+  position: relative;
   height: 0;
   overflow: hidden;
   transition: height 0.2s ease-in-out;
+  z-index: 1
+  
 }
 
 .box.expanded {
   height: auto; /* Works flawlessly if interpolate-size is enabled */
+  z-index: 10; 
 }
 
 @theme {

@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-// import budgets from '../../sample_data/budgets';
 import agent from '../agent';
 
 const fetchBudgetSummary = async (year: number): Promise<Budget[]> => {
@@ -12,6 +11,22 @@ const fetchBudgetSummary = async (year: number): Promise<Budget[]> => {
   const budgets = response.data;
 
   return budgets;
+
+};
+
+const useBudgetSummary = (year: number) => {
+  const { data, isLoading } = useQuery<Budget[]>({
+    queryFn: () => fetchBudgetSummary(year),
+    queryKey: ['budgets', year],
+  });
+
+  return { data, isLoading };
+};
+
+export default useBudgetSummary;
+
+
+
 
   // return response.data
   // const b: BudgetSummary[] = budgets
@@ -32,15 +47,3 @@ const fetchBudgetSummary = async (year: number): Promise<Budget[]> => {
   //     resolve(b);
   //   }, 300); // Simulates 1.5 seconds of network delay
   // });
-};
-
-const useBudgetSummary = (year: number) => {
-  const { data, isLoading } = useQuery<Budget[]>({
-    queryFn: () => fetchBudgetSummary(year),
-    queryKey: ['budget_summary', year],
-  });
-
-  return { data, isLoading };
-};
-
-export default useBudgetSummary;

@@ -8,6 +8,7 @@ import useInitiative from '../../api/hooks/useInitiative';
 import type React from 'react';
 import BudgetRow from './BudgetRow';
 import MenuIdProvider from '../../contexts/MenuIdContext';
+import { Fragment } from 'react';
 
 type BudgetRow = {
   accountId: number;
@@ -26,7 +27,9 @@ const Budget = () => {
 
   const { initiativeId, grantId } = useParams();
 
-  const { data } = useBudget(+initiativeId!, +grantId!);
+  const { data, isLoading } = useBudget(+initiativeId!, +grantId!);
+
+  console.log('bdget details', data)
   const { data: initiative } = useInitiative(+initiativeId!);
   const { data: grant } = useGrants(+grantId!);
 
@@ -164,19 +167,21 @@ const Budget = () => {
     console.log('data1', data);
   };
 
-  if (!data) return <span>Loading...</span>;
+  if (isLoading) return <span>Loading...</span>;
+  if (!data) return <span>Error</span>
 
   let indexRunningTotal = -1;
 
   return (
     <div className="w-[85%] mx-auto">
-      <div className="grid grid-cols-[1fr_1fr_1fr] mb-5">
+      <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-6">
+        <div className="entity-label">Year</div>
         <div className="entity-label">Initiative</div>
         <div className="entity-label">Grant</div>
-        <div className="entity-label">Year</div>
+        <div className="entity-name">{grant?.year}</div>
+
         <div className="entity-name">{initiative?.name}</div>
         <div className="entity-name">{grant?.name}</div>
-        <div className="entity-name">{grant?.year}</div>
       </div>
       <MenuIdProvider>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -218,7 +223,7 @@ const Budget = () => {
                     const isLastRow = index == categoryFields.length - 1;
 
                     return (
-                      <>
+                      <Fragment key={field.id}>
                         <BudgetRow
                           isLastRow={isLastRow}
                           accountId={field.accountId}
@@ -313,7 +318,7 @@ const Budget = () => {
                           0 Comments
                         </button>
                       </div> */}
-                      </>
+                      </Fragment>
                     );
                   })}
                 </div>
