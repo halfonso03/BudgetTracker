@@ -9,7 +9,7 @@ const initiatives: Initiative[] = [
     },
     {
         id: 3,
-        name: "ORS"
+        name: "Multimedia & Technology"
     }
 ]
 

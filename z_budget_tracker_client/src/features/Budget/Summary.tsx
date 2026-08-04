@@ -54,7 +54,7 @@ const Summary = ({ year }: Props) => {
 
   return (
     <MenuIdProvider>
-      <div className="">
+      <div>
         <div
           className={`entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-4 `}
         >
@@ -76,7 +76,7 @@ const Summary = ({ year }: Props) => {
               <div className="entity-name">{budget.grant_name}</div>
               <div className="text-end underline underline-offset-3 font-semibold">
                 <Link
-                  to={`${budget.initiative_id}/${budget.grant_id}`}
+                  to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
                   className="text-blue-500"
                 >
                   {formatCurrency(budget.approved_amount)}

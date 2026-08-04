@@ -16,6 +16,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddTransient<IGrantService, GrantService>();
+builder.Services.AddTransient<IInitiativeService, InitiativesService>();
 builder.Services.AddTransient<IBudgetService, BudgetService>();
 
 

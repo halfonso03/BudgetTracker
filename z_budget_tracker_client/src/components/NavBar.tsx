@@ -9,8 +9,8 @@ const NavBar = () => {
     <div className="flex justify-between align-middle p-3 border-b border-b-gray-300 dark:border-b-neutral-700 text-gray-900 dark:text-gray-100 bg-dark-nav ">
       <div className="flex gap-3 text-2xl p-2 flex-1">
         <Link to="/">Home</Link>
-        <Link to="/budgets">Budgets</Link>
-        <Link to="reprogrammings">Reprogrammings</Link>
+        <Link to="/budget">Budgets</Link>
+        <Link to="/reprogramming">Reprogrammings</Link>
       </div>
       <div className="flex justify-center items-center w-full flex-0 mr-2">
         {/* <AccountToggler loginId={user} logOut={logout}></AccountToggler> */}

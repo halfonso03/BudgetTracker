@@ -6,7 +6,7 @@ import useGrants from '../../api/hooks/useGrants';
 import { formatNumber, parseFormattedNumber } from '../../app/util';
 import useInitiative from '../../api/hooks/useInitiative';
 import type React from 'react';
-import BudgetInputRow from './BudgetInputRow';
+import BudgetInputFields from './BudgetInputFields';
 import { Fragment } from 'react';
 
 type BudgetInputRow = {
@@ -15,18 +15,22 @@ type BudgetInputRow = {
   amount: string;
   name: string;
   comment: string;
+  spent_amount: string;
+  remaining_amount: string;
 };
 
-type Budget = {
+type Details = {
   rows: BudgetInputRow[];
 };
 
-const Budget = () => {
+const Details = () => {
   const categories: Category[] = [];
-  const { initiativeId, grantId } = useParams();
+  const { year, initiativeId, grantId } = useParams();
   const { data, isLoading } = useBudget(+initiativeId!, +grantId!);
   const { data: initiative } = useInitiative(+initiativeId!);
-  const { data: grant } = useGrants(+grantId!);
+  const { data: grants } = useGrants(+year!);
+
+  const grant = grants?.filter((x) => x.id == +grantId!)[0];
 
   // get distinct categories
   for (const item of data?.items ?? []) {
@@ -52,30 +56,37 @@ const Budget = () => {
           amount: formatNumber(item.amount),
           name: item.account_name,
           comment: item.comment,
+          spent_amount: formatNumber(item.spent_amount),
+          remaining_amount: formatNumber(item.amount - item.spent_amount),
         }));
 
-      const formattedNumber = formatNumber(
-        Number(
-          data?.items
-            .filter((x) => x.category_id == cat.id)
-            .map((i) => i.amount)
-            .reduce((acc, cur) => acc + cur, 0),
-        ),
-      );
+      const totalBudgted = data?.items
+        .filter((x) => x.category_id == cat.id)
+        .map((i) => i.amount)
+        .reduce((acc, cur) => acc + cur, 0);
 
-      const ret = {
+      const totalSpent = data?.items
+        .filter((x) => x.category_id == cat.id)
+        .map((i) => i.spent_amount)
+        .reduce((acc, cur) => acc + cur, 0);
+
+      const formattedTotalBudgeted = formatNumber(totalBudgted);
+      const formattedTotalSpent = formatNumber(totalSpent);
+
+      const totalRow = {
         accountId: 999,
         categoryId: cat.id,
-        amount: formattedNumber,
+        amount: formattedTotalBudgeted,
+        spent_amount: formattedTotalSpent,
+        remaining_amount: formatNumber(totalBudgted - totalSpent),
+        comment: '',
         name: 'Total',
       };
 
       budgetRows = [...budgetRows, ...accounts];
-      budgetRows.push({ ...ret, amount: ret.amount.toString(), comment: '' });
+      budgetRows.push(totalRow);
     }
   }
-
-  console.log('budgetRows', budgetRows);
 
   // combine for later access
   // calculate the start and end index of each group for totaling
@@ -87,20 +98,15 @@ const Budget = () => {
 
   for (const cat of categories) {
     const tempRows = budgetRows.filter((a) => a.categoryId == cat.id);
-    console.log(tempRows.length);
-    // console.log('tempRows', cat.name, tempRows);
-    // console.log(1,runningTotal)
     categoryAccountIndexes[cat.id] = {
       startIndex: runningTotal,
       totalIndex: tempRows.length + runningTotal - 1,
     };
-    runningTotal += runningTotal == 0 ? tempRows.length : tempRows.length
-    // console.log(2,runningTotal)
+    runningTotal += tempRows.length;
   }
 
-  console.log('categoryAccountIndexes', categoryAccountIndexes);
   const { register, control, handleSubmit, getValues, setValue } =
-    useForm<Budget>({
+    useForm<Details>({
       values: {
         rows: budgetRows,
       },
@@ -160,6 +166,16 @@ const Budget = () => {
       .reduce((acc, cur) => cur + acc, 0);
 
     setValue(`rows.${totalsIndex}.amount`, formatNumber(categoryTotal));
+
+    const totalSpent = budgetRows
+      .filter((x) => x.categoryId == categoryId && x.accountId !== 999)
+      .map((x) => parseFormattedNumber(x.spent_amount))
+      .reduce((acc, curr) => acc + curr, 0);
+
+    setValue(
+      `rows.${totalsIndex}.remaining_amount`,
+      formatNumber(categoryTotal - totalSpent),
+    );
   }
 
   const onSubmit = (data: any) => {
@@ -213,14 +229,20 @@ const Budget = () => {
 
                 {categoryFields.map((field, index) => {
                   indexRunningTotal += 1;
+
+                  const isLastRow = index == categoryFields.length - 1;
+
                   const amountRegister = register(
                     `rows.${indexRunningTotal}.amount`,
                   );
-                  const isLastRow = index == categoryFields.length - 1;
+
+                  const remainingAmountRegister = register(
+                    `rows.${indexRunningTotal}.remaining_amount`,
+                  );
 
                   return (
                     <Fragment key={field.id}>
-                      <BudgetInputRow
+                      <BudgetInputFields
                         isLastRow={isLastRow}
                         accountId={field.accountId}
                         initiativeId={+initiativeId!}
@@ -228,8 +250,9 @@ const Budget = () => {
                         fieldName={field.name}
                         comment={field.comment}
                         budgetedAmount={field.amount}
-                        spentAmount={20}
+                        spentAmount={field.spent_amount}
                         amountRegister={amountRegister}
+                        remainingAmountRegister={remainingAmountRegister}
                         onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                           const input = e.target as HTMLInputElement;
                           input.select();
@@ -256,7 +279,7 @@ const Budget = () => {
                             categoryAccountIndexes[field.categoryId].totalIndex,
                           );
                         }}
-                      ></BudgetInputRow>
+                      ></BudgetInputFields>
                       {/* <div
                         className={`text-start pl-3 py-2  ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
                       >
@@ -330,7 +353,7 @@ const Budget = () => {
     </div>
   );
 };
-export default Budget;
+export default Details;
 
 // {
 

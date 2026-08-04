@@ -16,7 +16,10 @@ type Category = {
 type Grant = {
     id: number
     name: string,
+    startDate?: Date,
+    endDate?: Date
     year?: number
+    fiduciary?: string
 }
 
 type Initiative = {
@@ -27,6 +30,7 @@ type Initiative = {
 type BudgetLineItem = {
     account_id: number
     amount: number
+    spent_amount: number
     category_id?: number
     category?: Category
     account?: Account

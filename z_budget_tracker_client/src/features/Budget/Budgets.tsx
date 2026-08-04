@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Summary from './Summary';
 import Button from '../../components/Button';
-import BudgetSelectionsModal from './BudgetSelectionsModal';
+import CreateBudgetModal from './CreateBudgetModal';
 
 const Budgets = () => {
   const [year, setYear] = useState<number>(2026);
@@ -13,10 +13,10 @@ const Budgets = () => {
   };
 
   return (
-    <div className=''>
+    <div className="">
       <div className="flex mb-4 justify-between items-center">
         <div>
-          <div className="p-2 font-bold text-neutral-700">Year:</div>
+          <div className="p-2 font-bold entity-label">Year:</div>
           <select
             value={year}
             className="p-2 border border-neutral-300"
@@ -38,7 +38,7 @@ const Budgets = () => {
       </div>
       <Summary year={year} key={year}></Summary>
       {isCreateBudgetModalOpen && (
-        <BudgetSelectionsModal
+        <CreateBudgetModal
           year={year}
           onCancelForm={() => setIsCreateBudgetOpenModal(false)}
         />

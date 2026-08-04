@@ -1,14 +1,11 @@
 // import { useQuery } from "@tanstack/react-query";
 // import agent from "../agent";
 import { useQuery } from '@tanstack/react-query';
-import initiatives from '../../sample_data/initiatives';
+import agent from '../agent';
 
 const fetchInitiatives = async (): Promise<Initiative[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(initiatives);
-    }, 300);
-  });
+  const response = await agent.get<Initiative[]>('/Initiative');
+  return response.data;
 };
 
 const useInitiatives = () => {

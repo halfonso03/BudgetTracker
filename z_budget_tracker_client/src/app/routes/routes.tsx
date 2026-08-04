@@ -4,7 +4,7 @@ import Home from '../../features/Home';
 import Budgets from '../../features/Budget/Budgets';
 import Reprogrammings from '../../features/Reprogrammings/Reprogrammings';
 import NotFound from '../../components/NotFound';
-import Budget from '../../features/Budget/Details';
+import Details from '../../features/Budget/Details';
 import CreateBudget from '../../features/Budget/CreateBudget';
 
 export const routes: RouteObject[] = [
@@ -17,19 +17,19 @@ export const routes: RouteObject[] = [
         element: <Home></Home>,
       },
       {
-        path: '/budgets',
+        path: '/budget',
         element: <Budgets />,
       },
       {
-        path: '/budgets/:initiativeId/:grantId',
-        element: <Budget />,
+        path: '/budget/:year/:initiativeId/:grantId',
+        element: <Details />,
       },
       {
-        path: '/budgets/new/:year',
+        path: '/budget/new/:year/:initiativeId/:grantId',
         element: <CreateBudget />,
       },
       {
-        path: '/reprogrammings/create/:initiativeId?/:grantId?/:accountId?',
+        path: '/reprogramming/create/:initiativeId?/:grantId?/:accountId?',
         element: <Reprogrammings />,
       },
     ],

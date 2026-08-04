@@ -18,6 +18,6 @@ namespace Application.Budgets.DTOs
         public required GrantDto Grant { get; set; }
         public required InitiativeDto Initiative { get; set; }
         public IEnumerable<BudgetLineItemDto> Items { get; set; } = [];
-        public int Year => Grant.StartDate.Year;
+        public required int Year { get; set; }
     }
 }

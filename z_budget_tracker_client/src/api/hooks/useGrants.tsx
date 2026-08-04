@@ -1,19 +1,17 @@
+// import { useQuery } from "@tanstack/react-query";
+// import agent from "../agent";
 import { useQuery } from '@tanstack/react-query';
-import grants from '../../sample_data/grants';
+import agent from '../agent';
 
-const fetchGrant = async (grantId: number): Promise<Grant> => {
-  return new Promise((resolve) => {
-    const i = grants.filter((x) => x.id == grantId)[0];
-    setTimeout(() => {
-      resolve(i);
-    }, 300);
-  });
+const fetchGrants = async (year: number): Promise<Grant[]> => {
+  const response = await agent.get<Grant[]>(`/Grant/${year}`);
+  return response.data;
 };
 
-const useGrants = (grantId: number) => {
-  const { data, isLoading } = useQuery<Grant>({
-    queryKey: ['grant', grantId],
-    queryFn: () => fetchGrant(grantId),
+const useGrants = (year: number) => {
+  const { data, isLoading } = useQuery<Grant[]>({
+    queryKey: ['grants', year],
+    queryFn: () => fetchGrants(year),
   });
 
   return { data, isLoading };

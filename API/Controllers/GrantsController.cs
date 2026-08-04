@@ -1,0 +1,23 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Application.interfaces;
+using Microsoft.AspNetCore.Mvc;
+
+namespace API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class GrantController(IGrantService _grantService) : ControllerBase
+    {
+
+        [HttpGet("{year}")]
+        public async Task<IActionResult> Get(int year)
+        {
+            var grants = await _grantService.GetGrants(year);
+
+            return Ok(grants);
+        }
+    }
+}

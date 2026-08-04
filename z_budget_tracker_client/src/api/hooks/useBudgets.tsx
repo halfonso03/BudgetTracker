@@ -12,12 +12,17 @@ const fetchBudget = async (
     },
   });
 
-  const budgets = response.data;
+  let budget = response.data;
 
-  return budgets;
+  budget = {
+    ...budget,
+    items: budget.items.map((b) => ({ ...b, spent_amount: 20 })),
+  };
+
+  return budget;
 };
 
-const useBudgetDetails = (initiative_id: number, grant_id: number, ) => {
+const useBudgetDetails = (initiative_id: number, grant_id: number) => {
   const { data, isLoading } = useQuery<Budget>({
     queryFn: () => fetchBudget(initiative_id, grant_id),
     queryKey: ['budgets', initiative_id, grant_id],

@@ -14,13 +14,14 @@ interface Props {
   comment: string;
   fieldName: string;
   budgetedAmount: string;
-  spentAmount: number;
+  spentAmount: string;
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
+  remainingAmountRegister: UseFormRegisterReturn<`rows.${number}.remaining_amount`>;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
 }
-const BudgetInputRow = ({
+const BudgetInputFields = ({
   fieldName,
   accountId,
   initiativeId,
@@ -33,10 +34,13 @@ const BudgetInputRow = ({
   onBlur,
   onFocus,
   amountRegister,
+  remainingAmountRegister,
 }: Props) => {
   const navigate = useNavigate();
   const [remaining, setRemaining] = useState<string>(() =>
-    formatNumber(parseFormattedNumber(budgetedAmount) - spentAmount),
+    formatNumber(
+      parseFormattedNumber(budgetedAmount) - parseFormattedNumber(spentAmount),
+    ),
   );
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
 
@@ -69,12 +73,13 @@ const BudgetInputRow = ({
           register={amountRegister}
           readOnly={isLastRow}
           disabled={isLastRow}
-          className={`${isLastRow ? 'border-0 p-0 m-0 font-bold text-neutral-600' : 'p-[.2rem] border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+          className={`${isLastRow ? 'border-0 p-0 m-0 font-bold text-neutral-600 pr-1 ' : 'p-[.2rem] border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
           onClick={(e) => (onClick ? onClick(e) : null)}
           onBlur={(e) => {
             if (onBlur) {
               const budgeted = parseFormattedNumber(e.target.value);
-              setRemaining(formatNumber(budgeted - spentAmount));
+              const spent = parseFormattedNumber(spentAmount);
+              setRemaining(formatNumber(budgeted - spent));
               onBlur(e);
             }
           }}
@@ -82,14 +87,24 @@ const BudgetInputRow = ({
         ></NumericArrayInput>
       </div>
       <div
-        className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100  font-bold text-neutral-600' : ''}`}
+        className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
       >
         {spentAmount}
       </div>
       <div
-        className={`text-end self-center py-2 ${isLastRow ? 'bg-neutral-100  font-bold text-neutral-600' : ''}`}
+        className={`text-end self-center py-2 ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
       >
-        {remaining}
+        {!isLastRow ? (
+          remaining
+        ) : (
+          <input
+            {...remainingAmountRegister}
+            readOnly={true}
+            tabIndex={-1}
+            disabled={true}
+            className="text-end w-full"
+          ></input>
+        )}
       </div>
       <div
         className={`text-center self-center py-2 text-blue-500 text-sm  ${isLastRow ? 'bg-neutral-100 self-stretch' : ' self-center '}`}
@@ -177,4 +192,4 @@ const BudgetInputRow = ({
     </>
   );
 };
-export default BudgetInputRow;
+export default BudgetInputFields;

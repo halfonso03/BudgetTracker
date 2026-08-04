@@ -6,10 +6,8 @@ using Application.Budgets.DTOs;
 
 namespace Application.interfaces
 {
-    public interface IBudgetService
+    public interface IGrantService
     {
-        Task<List<BudgetDto>> GetBudgets(int year);
-
-        Task<BudgetDto> GetBudget(int initiativeId, int grantId);
+        Task<List<GrantDto>> GetGrants(int year);
     }
 }
