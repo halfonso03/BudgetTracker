@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import agent from '../agent';
 
 const fetchBudgetSummary = async (year: number): Promise<Budget[]> => {
-  const response = await agent.get<Budget[]>('/Budget/GetBudgetForYear', {
+  const response = await agent.get<Budget[]>('/Budget/GetBudgetsForYear', {
     params: {
       year: year,
     },

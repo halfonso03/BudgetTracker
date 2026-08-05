@@ -58,7 +58,7 @@ type Budget = {
     grant_id: number
     year: number
     items?: BudgetLineItem[]
-    account_balances?: AccountBalance[]
+    account_balances: AccountBalance[]
     initiative?: Initiative
     grant?: Grant
 }

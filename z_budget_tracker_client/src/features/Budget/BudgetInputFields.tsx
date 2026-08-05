@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import NumericArrayInput from '../../components/NumericArrayInput';
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import { formatNumber, parseFormattedNumber } from '../../app/util';
+import {
+  formatCurrency,
+  formatNumber,
+  parseFormattedNumber,
+} from '../../app/util';
 import CommentsModal from './CommentsModal';
 import { ArrowLeftRight, DollarSign } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -98,7 +102,7 @@ const BudgetInputFields = ({
       <div
         className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
       >
-        {spentAmount}
+        {formatCurrency(parseFormattedNumber(spentAmount))}
       </div>
       <div
         className={`text-end self-center py-2 ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}

@@ -24,30 +24,17 @@ const Summary = ({ year }: Props) => {
       grant_id: b.grant_id,
       grant_name: b.grant!.name,
       year: b.year,
-      approved_amount: b.items
-        .filter((x) => x.item_type?.toLowerCase() == 'b')
+      approved_amount: b.account_balances
         .map((i) => i.amount)
         .reduce((acc, cur) => acc + cur, 0),
-      current_amount: b.items
-        .filter(
-          (x) =>
-            x.item_type?.toLowerCase() == 'b' ||
-            x.item_type?.toLowerCase() == 'r',
-        )
-        .map((i) => i.amount)
-        .reduce((acc, cur) => (acc ?? 0) + (cur ?? 0), 0),
-      spent_amount: b.items
-        .filter((x) => x.item_type?.toLowerCase() == 'd')
-        .map((i) => i.amount)
+      current_amount: b.account_balances
+        .map((i) => i.current_amount)
         .reduce((acc, cur) => acc + cur, 0),
-      remaining_amount: b.items
-        .filter(
-          (x) =>
-            x.item_type?.toLowerCase() == 'b' ||
-            x.item_type?.toLowerCase() == 'r' ||
-            x.item_type?.toLowerCase() == 'd',
-        )
-        .map((i) => i.amount)
+      spent_amount: b.account_balances
+        .map((i) => i.spent_amount)
+        .reduce((acc, cur) => acc + cur, 0),
+      remaining_amount: b.account_balances
+        .map((i) => i.current_amount + i.spent_amount)
         .reduce((acc, cur) => (acc ?? 0) + (cur ?? 0), 0),
     };
   });
@@ -93,8 +80,7 @@ const Summary = ({ year }: Props) => {
               </div>
               <div className="flex justify-center">
                 <ChevronDownSquare
-                  className={`text-blue-500 cursor-pointer 
-                  ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
+                  className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
                   onClick={() => {
                     if (expandedIndexes.some((x) => x == index)) {
                       setExpandedIndexes((prev) =>
@@ -115,7 +101,7 @@ const Summary = ({ year }: Props) => {
                 grantId={budget.grant_id}
                 items={
                   data.filter((x) => x.initiative_id == budget.initiative_id)[0]
-                    .items
+                    .account_balances
                 }
               ></CategorySummary>
             </div>
@@ -129,7 +115,7 @@ const Summary = ({ year }: Props) => {
 interface CategorySummaryProps {
   initiativeId: number;
   grantId: number;
-  items: BudgetLineItem[];
+  items: AccountBalance[];
 }
 
 function CategorySummary({
@@ -140,26 +126,42 @@ function CategorySummary({
   const navigate = useNavigate();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const groupedData = items.reduce((accumulator: any, currentItem) => {
-    const key: string = currentItem.category!.name!;
+  const groupedData = items.reduce(
+    (accumulator: any, currentItem: AccountBalance) => {
+      const key: string = currentItem.category!.name!;
 
-    // Initialize the array if the key doesn't exist yet
-    if (!accumulator[key]) {
-      accumulator[key] = [];
-    }
+      // Initialize the array if the key doesn't exist yet
+      if (!accumulator[key]) {
+        accumulator[key] = [];
+      }
+      // Push the current object into the group
+      accumulator[key].push(currentItem);
 
-    // Push the current object into the group
-    accumulator[key].push(currentItem);
+      return accumulator;
+    },
+    {},
+  ); // Empty object is the initial value
 
-    return accumulator;
-  }, {}); // Empty object is the initial value
+  const categoryTotals: {
+    category: string;
+    amount: number;
+    current_amount: number;
+    spent_amount: number;
+  }[] = Object.entries(groupedData).map(([category, value]) => {
+    const items = value as AccountBalance[];
+    const budgetTotal = items.reduce((acc, cur) => acc + cur.amount, 0);
+    const currentTotal = items.reduce(
+      (acc, cur) => acc + cur.current_amount,
+      0,
+    );
+    const spentTotal = items.reduce((acc, cur) => acc + cur.spent_amount, 0);
 
-  const categoryTotals: { category: string; amount: number }[] = Object.entries(
-    groupedData,
-  ).map(([category, value]) => {
-    const items = value as BudgetLineItem[];
-    const categoryTotal = items.reduce((acc, cur) => acc + cur.amount, 0);
-    return { category, amount: categoryTotal };
+    return {
+      category,
+      amount: budgetTotal,
+      current_amount: currentTotal,
+      spent_amount: spentTotal,
+    };
   });
 
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
@@ -183,8 +185,9 @@ function CategorySummary({
             </div>
             <div></div>
             <div className="text-end">{formatCurrency(c.amount)}</div>
-            <div></div>
-            <div></div>
+            <div className="text-end">{formatCurrency(c.current_amount)}</div>
+            <div className="text-end">{formatCurrency(c.spent_amount)}</div>
+
             <div></div>
 
             <div className="flex justify-center items-center">
@@ -221,8 +224,12 @@ function CategorySummary({
                     <div className="text-end italic text-neutral-700">
                       {formatCurrency(i.amount)}
                     </div>
-                    <div></div>
-                    <div></div>
+                    <div className="text-end italic text-neutral-700">
+                      {formatCurrency(i.current_amount)}
+                    </div>
+                    <div className="text-end italic text-neutral-700">
+                      {i.spent_amount !== 0 && formatCurrency(i.spent_amount)}
+                    </div>
                     <div></div>
                     <div className="flex justify-around text-blue-500 text-[.9rem] cursor-pointer">
                       <ArrowLeftRight
