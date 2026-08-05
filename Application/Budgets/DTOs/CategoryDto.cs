@@ -12,12 +12,24 @@ namespace Application.Budgets.DTOs
         public required int Id { get; set; }
         public required string Name { get; set; }
 
+        public List<AccountDto> Accounts { get; set; } = [];
+
         public static CategoryDto Create(int id, string name)
         {
             return new CategoryDto
             {
                 Id = id,
                 Name = name
+            };
+        }
+        
+        public static CategoryDto Create(int id, string name, List<AccountDto> accountDtos)
+        {
+            return new CategoryDto
+            {
+                Id = id,
+                Name = name,
+                Accounts = accountDtos
             };
         }
 
@@ -27,5 +39,6 @@ namespace Application.Budgets.DTOs
 
             return Create(category.Id, category.Name);
         }
+
     }
 }

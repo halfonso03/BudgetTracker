@@ -21,7 +21,7 @@ interface Props {
   currentAmount: string;
   spentAmount: string;
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
-  remainingAmountRegister: UseFormRegisterReturn<`rows.${number}.remaining_amount`>;
+  remainingAmountRegister?: UseFormRegisterReturn<`rows.${number}.remaining_amount`>;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
@@ -43,11 +43,18 @@ const BudgetInputFields = ({
   remainingAmountRegister,
 }: Props) => {
   const navigate = useNavigate();
+  const reprogrammed =
+    parseFormattedNumber(budgetedAmount) - parseFormattedNumber(currentAmount);
   const [remaining, setRemaining] = useState<string>(() =>
     formatNumber(
       parseFormattedNumber(budgetedAmount) - parseFormattedNumber(spentAmount),
     ),
   );
+
+  const [current, setCurrent] = useState<string>(
+    formatNumber(parseFormattedNumber(currentAmount)),
+  );
+
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
 
   function onOpenComments() {
@@ -83,10 +90,12 @@ const BudgetInputFields = ({
           onClick={(e) => (onClick ? onClick(e) : null)}
           onBlur={(e) => {
             if (onBlur) {
-              // const budgeted = parseFormattedNumber(e.target.value);
-              const current = parseFormattedNumber(currentAmount);
-              const spent = parseFormattedNumber(spentAmount);
-              setRemaining(formatNumber(current - spent));
+              const budgeted = parseFormattedNumber(e.target.value);
+
+              setCurrent(formatNumber(budgeted + reprogrammed));
+              // const currentParsed = parseFormattedNumber(current);
+              const spentParsed = parseFormattedNumber(spentAmount);
+              setRemaining(formatNumber(budgeted + reprogrammed - spentParsed));
               onBlur(e);
             }
           }}
@@ -94,9 +103,9 @@ const BudgetInputFields = ({
         ></NumericArrayInput>
       </div>
       <div
-        className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
+        className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''} ${parseFormattedNumber(current) < 0 ? ' text-red-500 ' : ''}`}
       >
-        {currentAmount}
+        {formatCurrency(parseFormattedNumber(current))}
         {/* {currentAmount ? currentAmount : 0} */}
       </div>
       <div
@@ -159,35 +168,6 @@ const BudgetInputFields = ({
         ) : (
           <div>&nbsp;</div>
         )}
-        {/* {!isLastRow ? (
-          <Menus>
-            <Menus.Toggler id={accountId.toString()}>Actions</Menus.Toggler>
-            <Menus.List id={accountId.toString()}>
-              <Menus.MenuItem
-                onClick={() => {
-                  navigate(
-                    `/reprogramming/create/${initiativeId}/${grantId}/${accountId}`,
-                  );
-                }}
-              >
-                <span className="text-[.95rem] text-neutral-800">
-                  Reprogram Funds
-                </span>
-              </Menus.MenuItem>
-              <Menus.MenuItem
-                onClick={() => {
-                  navigate(
-                    `/disbusersement/create/${initiativeId}/${grantId}/${accountId}`,
-                  );
-                }}
-              >
-                <span className="text-[.95rem] text-neutral-800">
-                  Disburse Funds
-                </span>
-              </Menus.MenuItem>
-            </Menus.List>
-          </Menus>
-        ) : ( */}
       </div>
       {commentsOpen && (
         <CommentsModal

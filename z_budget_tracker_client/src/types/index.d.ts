@@ -4,12 +4,14 @@ type ItemyType = 'b' | 'r' | 'd';
 type Account = {
     id: number
     name: string
-    account_number: string
+    number: string
+    category_id: number
 }
 
 type Category = {
     id: number
     name: string,
+    accounts?: Account[]
     // sort_order: number
 }
 

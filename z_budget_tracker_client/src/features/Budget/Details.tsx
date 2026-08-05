@@ -4,10 +4,11 @@ import useBudget from '../../api/hooks/useBudgets';
 import { useParams } from 'react-router-dom';
 import useGrants from '../../api/hooks/useGrants';
 import { formatNumber, parseFormattedNumber } from '../../app/util';
-import useInitiative from '../../api/hooks/useInitiative';
+import { useInitiative } from '../../api/hooks/useInitiative';
 import type React from 'react';
 import BudgetInputFields from './BudgetInputFields';
 import { Fragment } from 'react';
+import useInitiatives from '../../api/hooks/useInitiatives';
 
 type BudgetInputRow = {
   accountId: number;
@@ -28,7 +29,10 @@ const Details = () => {
   const categories: Category[] = [];
   const { year, initiativeId, grantId } = useParams();
   const { data: budget, isLoading } = useBudget(+initiativeId!, +grantId!);
-  const { data: initiative } = useInitiative(+initiativeId!);
+  const { data: initiatives } = useInitiatives();
+
+  const initiative = initiatives?.filter((x) => x.id === +initiativeId!)[0];
+
   const { data: grants } = useGrants(+year!);
 
   const grant = grants?.filter((x) => x.id == +grantId!)[0];

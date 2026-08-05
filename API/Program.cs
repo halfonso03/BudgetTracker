@@ -1,5 +1,6 @@
 using Application.interfaces;
 using Application.services;
+using Application.Services;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -16,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddTransient<ICategoryService, CategoriesService>();
 builder.Services.AddTransient<IGrantService, GrantService>();
 builder.Services.AddTransient<IInitiativeService, InitiativesService>();
 builder.Services.AddTransient<IBudgetService, BudgetService>();

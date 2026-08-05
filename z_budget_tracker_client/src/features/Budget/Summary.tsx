@@ -125,8 +125,8 @@ function CategorySummary({
 }: CategorySummaryProps) {
   const navigate = useNavigate();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const groupedData = items.reduce(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (accumulator: any, currentItem: AccountBalance) => {
       const key: string = currentItem.category!.name!;
 
@@ -187,9 +187,7 @@ function CategorySummary({
             <div className="text-end">{formatCurrency(c.amount)}</div>
             <div className="text-end">{formatCurrency(c.current_amount)}</div>
             <div className="text-end">{formatCurrency(c.spent_amount)}</div>
-
             <div></div>
-
             <div className="flex justify-center items-center">
               <ChevronDownSquare
                 className={`text-neutral-500 cursor-pointer 
