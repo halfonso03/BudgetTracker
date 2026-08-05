@@ -43,18 +43,20 @@ const BudgetInputFields = ({
   remainingAmountRegister,
 }: Props) => {
   const navigate = useNavigate();
+
   const reprogrammed =
-    parseFormattedNumber(budgetedAmount) - parseFormattedNumber(currentAmount);
+    parseFormattedNumber(currentAmount) - parseFormattedNumber(budgetedAmount);
+
+  console.log('reprogrammed', reprogrammed);
   const [remaining, setRemaining] = useState<string>(() =>
     formatNumber(
-      parseFormattedNumber(budgetedAmount) - parseFormattedNumber(spentAmount),
+      parseFormattedNumber(currentAmount) - parseFormattedNumber(spentAmount),
     ),
   );
 
   const [current, setCurrent] = useState<string>(
     formatNumber(parseFormattedNumber(currentAmount)),
   );
-
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
 
   function onOpenComments() {
@@ -95,7 +97,8 @@ const BudgetInputFields = ({
               setCurrent(formatNumber(budgeted + reprogrammed));
               // const currentParsed = parseFormattedNumber(current);
               const spentParsed = parseFormattedNumber(spentAmount);
-              setRemaining(formatNumber(budgeted + reprogrammed - spentParsed));
+              setRemaining(formatNumber(budgeted + reprogrammed + spentParsed));
+
               onBlur(e);
             }
           }}
@@ -111,7 +114,11 @@ const BudgetInputFields = ({
       <div
         className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
       >
-        {formatCurrency(parseFormattedNumber(spentAmount))}
+        {parseFormattedNumber(spentAmount) !== 0 ? (
+          formatCurrency(parseFormattedNumber(spentAmount))
+        ) : (
+          <span>&nbsp;</span>
+        )}
       </div>
       <div
         className={`text-end self-center py-2 ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}

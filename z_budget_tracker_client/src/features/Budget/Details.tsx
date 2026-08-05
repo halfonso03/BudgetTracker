@@ -4,7 +4,6 @@ import useBudget from '../../api/hooks/useBudgets';
 import { useParams } from 'react-router-dom';
 import useGrants from '../../api/hooks/useGrants';
 import { formatNumber, parseFormattedNumber } from '../../app/util';
-import { useInitiative } from '../../api/hooks/useInitiative';
 import type React from 'react';
 import BudgetInputFields from './BudgetInputFields';
 import { Fragment } from 'react';
