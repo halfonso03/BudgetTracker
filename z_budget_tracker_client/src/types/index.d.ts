@@ -27,10 +27,23 @@ type Initiative = {
     name: string
 }
 
+
+type AccountBalance = {
+    account_id: number
+    account_name: string,
+    account_number: string
+    comment: string
+    amount: number
+    current_amount: number,
+    spent_amount: number
+    category?: Category
+    category_id?: number
+    item_type?: ItemyType
+}
+
 type BudgetLineItem = {
     account_id: number
     amount: number
-    spent_amount: number
     category_id?: number
     category?: Category
     account?: Account
@@ -44,7 +57,8 @@ type Budget = {
     initiative_id: number
     grant_id: number
     year: number
-    items: BudgetLineItem[]
+    items?: BudgetLineItem[]
+    account_balances?: AccountBalance[]
     initiative?: Initiative
     grant?: Grant
 }

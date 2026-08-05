@@ -14,6 +14,7 @@ interface Props {
   comment: string;
   fieldName: string;
   budgetedAmount: string;
+  currentAmount: string;
   spentAmount: string;
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
   remainingAmountRegister: UseFormRegisterReturn<`rows.${number}.remaining_amount`>;
@@ -28,6 +29,7 @@ const BudgetInputFields = ({
   grantId,
   comment,
   budgetedAmount,
+  currentAmount,
   spentAmount,
   isLastRow,
   onClick,
@@ -77,14 +79,21 @@ const BudgetInputFields = ({
           onClick={(e) => (onClick ? onClick(e) : null)}
           onBlur={(e) => {
             if (onBlur) {
-              const budgeted = parseFormattedNumber(e.target.value);
+              // const budgeted = parseFormattedNumber(e.target.value);
+              const current = parseFormattedNumber(currentAmount);
               const spent = parseFormattedNumber(spentAmount);
-              setRemaining(formatNumber(budgeted - spent));
+              setRemaining(formatNumber(current - spent));
               onBlur(e);
             }
           }}
           onFocus={(e) => (onFocus ? onFocus(e) : null)}
         ></NumericArrayInput>
+      </div>
+      <div
+        className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
+      >
+        {currentAmount}
+        {/* {currentAmount ? currentAmount : 0} */}
       </div>
       <div
         className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}

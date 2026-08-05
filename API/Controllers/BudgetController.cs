@@ -13,10 +13,10 @@ namespace API.Controllers
 {
     public class BudgetController(IBudgetService _budgetService) : BaseApiController
     {
-        [HttpGet("GetBudgetSummary")]
-        public async Task<IActionResult> GetBudgetSummary(int year)
+        [HttpGet("GetBudgetsForYear")]
+        public async Task<IActionResult> GetBudgetsForYear(int year)
         {
-            var budgets = await _budgetService.GetBudgets(year);
+            var budgets = await _budgetService.GetBudgetsForYear(year);
 
             return Ok(budgets);
         }

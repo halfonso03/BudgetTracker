@@ -12,12 +12,12 @@ const fetchBudget = async (
     },
   });
 
-  let budget = response.data;
+  const budget = response.data;
 
-  budget = {
-    ...budget,
-    items: budget.items.map((b) => ({ ...b, spent_amount: 20 })),
-  };
+  // budget = {
+  //   ...budget,
+  //   account_balances: budget.account_balances.map((b) => ({ ...b })),
+  // };
 
   return budget;
 };

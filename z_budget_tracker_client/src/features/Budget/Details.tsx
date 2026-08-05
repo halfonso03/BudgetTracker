@@ -15,6 +15,7 @@ type BudgetInputRow = {
   amount: string;
   name: string;
   comment: string;
+  current_amount: string;
   spent_amount: string;
   remaining_amount: string;
 };
@@ -26,14 +27,14 @@ type Details = {
 const Details = () => {
   const categories: Category[] = [];
   const { year, initiativeId, grantId } = useParams();
-  const { data, isLoading } = useBudget(+initiativeId!, +grantId!);
+  const { data: budget, isLoading } = useBudget(+initiativeId!, +grantId!);
   const { data: initiative } = useInitiative(+initiativeId!);
   const { data: grants } = useGrants(+year!);
 
   const grant = grants?.filter((x) => x.id == +grantId!)[0];
 
   // get distinct categories
-  for (const item of data?.items ?? []) {
+  for (const item of budget?.account_balances ?? []) {
     if (!categories.find((c) => c.name == item.category?.name)) {
       categories.push({
         id: item.category!.id,
@@ -45,40 +46,48 @@ const Details = () => {
   // get budgets rows
   let budgetRows: BudgetInputRow[] = [];
 
-  if (data && data.items) {
+  if (budget && budget.account_balances) {
     for (const cat of categories) {
-      const accounts: BudgetInputRow[] = data.items
+      const accounts: BudgetInputRow[] = budget.account_balances
         .filter((i) => i.category_id == cat.id)
         .sort((a, b) => a.account_name.localeCompare(b.account_name))
         .map((item) => ({
           accountId: item.account_id,
           categoryId: item.category_id!,
+          spent_amount: formatNumber(item.spent_amount),
+          remaining_amount: formatNumber(item.amount - item.spent_amount),
+          current_amount: formatNumber(item.current_amount),
           amount: formatNumber(item.amount),
           name: item.account_name,
           comment: item.comment,
-          spent_amount: formatNumber(item.spent_amount),
-          remaining_amount: formatNumber(item.amount - item.spent_amount),
         }));
 
-      const totalBudgted = data?.items
+      const totalBudgeted = budget?.account_balances
         .filter((x) => x.category_id == cat.id)
         .map((i) => i.amount)
         .reduce((acc, cur) => acc + cur, 0);
 
-      const totalSpent = data?.items
+      const totalCurrent = budget?.account_balances
+        .filter((x) => x.category_id == cat.id)
+        .map((i) => i.current_amount)
+        .reduce((acc, cur) => acc + cur, 0);
+
+      const totalSpent = budget?.account_balances
         .filter((x) => x.category_id == cat.id)
         .map((i) => i.spent_amount)
         .reduce((acc, cur) => acc + cur, 0);
 
-      const formattedTotalBudgeted = formatNumber(totalBudgted);
+      const formattedTotalBudgeted = formatNumber(totalBudgeted);
       const formattedTotalSpent = formatNumber(totalSpent);
+      const formatterTotalCurrent = formatNumber(totalCurrent);
 
       const totalRow = {
         accountId: 999,
         categoryId: cat.id,
         amount: formattedTotalBudgeted,
+        current_amount: formatterTotalCurrent,
         spent_amount: formattedTotalSpent,
-        remaining_amount: formatNumber(totalBudgted - totalSpent),
+        remaining_amount: formatNumber(totalBudgeted - totalSpent),
         comment: '',
         name: 'Total',
       };
@@ -183,7 +192,7 @@ const Details = () => {
   };
 
   if (isLoading) return <span>Loading...</span>;
-  if (!data) return <span>Error</span>;
+  if (!budget) return <span>Error</span>;
 
   let indexRunningTotal = -1;
 
@@ -205,7 +214,7 @@ const Details = () => {
           const grid = (
             <div className="border border-neutral-200 mb-7" key={c.id}>
               <div
-                className=" grid grid-cols-[.7fr_.25fr_.25fr_.25fr_.2fr_.2fr]"
+                className=" grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr]"
                 key={c.id}
               >
                 <div className="pl-3 py-2 font-bold bg-neutral-100 text-neutral-700">
@@ -213,6 +222,9 @@ const Details = () => {
                 </div>
                 <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
                   Budgeted
+                </div>
+                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
+                  Current
                 </div>
                 <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500">
                   Spent
@@ -250,6 +262,7 @@ const Details = () => {
                         fieldName={field.name}
                         comment={field.comment}
                         budgetedAmount={field.amount}
+                        currentAmount={field.current_amount}
                         spentAmount={field.spent_amount}
                         amountRegister={amountRegister}
                         remainingAmountRegister={remainingAmountRegister}
