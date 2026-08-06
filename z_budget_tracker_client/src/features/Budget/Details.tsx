@@ -126,6 +126,20 @@ const Details = () => {
     totalsIndex: number,
   ) {
     let i: number = -1;
+    const totalCurrent = fields
+      .filter((x) => x.categoryId == categoryId && x.accountId !== 999)
+      .map(() => {
+        i += 1;
+        const value = getValues(`rows.${startIndex + i}.amount`);
+        if (!value) return 0;
+        return parseFormattedNumber(value);
+      })
+      .reduce((acc, cur) => cur + acc, 0);
+
+    setValue(`rows.${totalsIndex}.current_amount`, formatNumber(totalCurrent));
+
+
+    i = -1;
     const categoryTotal = fields
       .filter((x) => x.categoryId == categoryId && x.accountId !== 999)
       .map(() => {
@@ -149,27 +163,6 @@ const Details = () => {
     );
   }
 
-  function handleCalculateTotalCurrent(
-    amount: string,
-    categoryId: number,
-    rowIndex: number,
-    totalsIndex: number,
-  ) {
-    const row = budgetRows[rowIndex];
-
-    if (amount.trim() == '-') amount = '0.00';
-
-    row.current_amount =
-      row.current_amount + formatNumber(parseFormattedNumber(amount));
-
-    const totalCurrent = budgetRows
-      .filter((x) => x.categoryId == categoryId && x.accountId !== 999)
-      .map((x) => parseFormattedNumber(x.current_amount as string))
-      .reduce((acc, curr) => acc + curr, 0);
-
-    setValue(`rows.${totalsIndex}.current_amount`, formatNumber(totalCurrent));
-  }
-
   const onSubmit = (data: any) => {
     console.log('data1', data);
   };
@@ -180,7 +173,7 @@ const Details = () => {
   let indexRunningTotal = -1;
 
   return (
-    <div className="w-[85%] mx-auto">
+    <div className="w-full mx-auto">
       <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-6">
         <div className="entity-label">Year</div>
         <div className="entity-label">Initiative</div>
@@ -303,10 +296,10 @@ const Details = () => {
                             categoryAccountIndexes[field.categoryId].startIndex,
                             categoryAccountIndexes[field.categoryId].totalIndex,
                           );
+
                           handleCalculateTotalCurrent(
-                            e.target.value,
                             field.categoryId,
-                            rowIndex,
+                            categoryAccountIndexes[field.categoryId].startIndex,
                             categoryAccountIndexes[field.categoryId].totalIndex,
                           );
                         }}
@@ -330,7 +323,10 @@ const Details = () => {
                 );
 
                 return (
-                  <div className='grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr] pb-0 border-t border-t-neutral-200' key={field.id}>
+                  <div
+                    className="grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr] pb-0 border-t border-t-neutral-200"
+                    key={field.id}
+                  >
                     <BudgetInputFields
                       rowIndex={indexRunningTotal}
                       isLastRow={true}
