@@ -283,7 +283,7 @@ const Details = () => {
                             e.target.value,
                           );
                         }}
-                        onBlur={({ e, rowIndex }) => {
+                        onBlur={({ e }) => {
                           amountRegister.onBlur(e);
                           formatArrayFieldAmount(
                             setValue,
@@ -292,12 +292,6 @@ const Details = () => {
                             e.target.value,
                           );
                           handleCalculateTotal(
-                            field.categoryId,
-                            categoryAccountIndexes[field.categoryId].startIndex,
-                            categoryAccountIndexes[field.categoryId].totalIndex,
-                          );
-
-                          handleCalculateTotalCurrent(
                             field.categoryId,
                             categoryAccountIndexes[field.categoryId].startIndex,
                             categoryAccountIndexes[field.categoryId].totalIndex,
