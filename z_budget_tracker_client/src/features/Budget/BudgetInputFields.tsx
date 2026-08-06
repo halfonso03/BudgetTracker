@@ -7,10 +7,11 @@ import {
   parseFormattedNumber,
 } from '../../app/util';
 import CommentsModal from './CommentsModal';
-import { ArrowLeftRight, DollarSign } from 'lucide-react';
+import { AlertTriangle, ArrowLeftRight, DollarSign } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
+  rowIndex: number;
   isLastRow: boolean;
   initiativeId: number;
   grantId: number;
@@ -22,11 +23,17 @@ interface Props {
   spentAmount: string;
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
   remainingAmountRegister?: UseFormRegisterReturn<`rows.${number}.remaining_amount`>;
-  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  currentAmountRegister?: UseFormRegisterReturn<`rows.${number}.current_amount`>;
+
+  onBlur?: (data: {
+    e: React.FocusEvent<HTMLInputElement>;
+    rowIndex: number;
+  }) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
 }
 const BudgetInputFields = ({
+  rowIndex,
   fieldName,
   accountId,
   initiativeId,
@@ -41,12 +48,16 @@ const BudgetInputFields = ({
   onFocus,
   amountRegister,
   remainingAmountRegister,
+  currentAmountRegister,
 }: Props) => {
   const navigate = useNavigate();
 
-  const reprogrammed =
+  let reprogrammed =
     parseFormattedNumber(currentAmount) - parseFormattedNumber(budgetedAmount);
 
+  reprogrammed = isNaN(reprogrammed) ? 0 : reprogrammed;
+
+  const [error, setError] = useState<boolean>(false);
   const [remaining, setRemaining] = useState<string>(() =>
     formatNumber(
       parseFormattedNumber(currentAmount) - parseFormattedNumber(spentAmount),
@@ -70,6 +81,12 @@ const BudgetInputFields = ({
     } finally {
       setCommentsOpen(false);
     }
+  }
+
+  function getCellColor(isLastRow: boolean, amount: string) {
+    if (isLastRow) return 'bg-neutral-100 font-bold text-neutral-600 ';
+    if (isNaN(parseFormattedNumber(amount))) return 'text-neutral-400';
+    if (parseFormattedNumber(amount) === 0) return 'text-neutral-400';
   }
 
   return (
@@ -97,46 +114,75 @@ const BudgetInputFields = ({
                 setCurrent(formatNumber(budgeted + reprogrammed));
               } else setCurrent('-');
 
-              // const currentParsed = parseFormattedNumber(current);
-              console.log(budgeted, reprogrammed, spentAmount);
-
               const spentParsed = parseFormattedNumber(spentAmount);
-              setRemaining(
-                formatNumber(
-                  budgeted +
-                    (isNaN(reprogrammed) ? 0 : reprogrammed) +
-                    spentParsed,
-                ),
+              const newRemaining = formatNumber(
+                budgeted +
+                  (isNaN(reprogrammed) ? 0 : reprogrammed) +
+                  spentParsed,
               );
+              setRemaining(newRemaining);
 
-              onBlur(e);
+              console.log('newRemaining', newRemaining);
+
+              if (
+                budgeted +
+                  (isNaN(reprogrammed) ? 0 : reprogrammed) +
+                  spentParsed <
+                0
+              ) {
+                setError(true);
+              } else {
+                setError(false);
+              }
+
+              onBlur({ e, rowIndex });
             }
           }}
           onFocus={(e) => (onFocus ? onFocus(e) : null)}
         ></NumericArrayInput>
       </div>
       <div
-        className={`text-end self-center py-2  ${isLastRow && 'bg-neutral-100 font-bold text-neutral-600'} ${parseFormattedNumber(current) < 0 && ' text-red-500 '} ${isNaN(parseFormattedNumber(currentAmount)) && ' text-neutral-400 '}`}
+        className={`text-end self-center py-2 ${getCellColor(isLastRow, current)}`}
       >
-        {isNaN(parseFormattedNumber(currentAmount))
-          ? '-'
-          : formatCurrency(parseFormattedNumber(current))}
-      </div>
-      <div
-        className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
-      >
-        {parseFormattedNumber(spentAmount) !== 0 ? (
-          formatCurrency(parseFormattedNumber(spentAmount))
+        {!isLastRow ? (
+          <span>
+            {parseFormattedNumber(current) == 0 ||
+            isNaN(parseFormattedNumber(current))
+              ? '- '
+              : current}
+          </span>
         ) : (
-          <span className="text-neutral-400">-</span>
+          <div>
+            <input
+              type="text"
+              {...currentAmountRegister}
+              readOnly={true}
+              tabIndex={-1}
+              disabled={true}
+              className="text-end w-full"
+            />
+          </div>
         )}
       </div>
       <div
-        className={`text-end self-center py-2 ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''} ${isNaN(parseFormattedNumber(remaining)) && ' text-neutral-400 '}`}
+        className={`text-end self-center py-2  ${getCellColor(isLastRow, spentAmount)}`}
       >
+        {parseFormattedNumber(spentAmount) !== 0
+          ? formatCurrency(parseFormattedNumber(spentAmount))
+          : '-'}
+      </div>
+      <div
+        className={`flex justify-end self-center py-2 ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''} `}
+      >
+        {error && (
+          <div className="mr-2 relative">
+            <AlertTriangle className="absolute ml-1 text-red-500 bottom-0 right-1"></AlertTriangle>
+          </div>
+        )}
         {!isLastRow ? (
-          isNaN(parseFormattedNumber(remaining)) ? (
-            '-'
+          isNaN(parseFormattedNumber(remaining)) ||
+          parseFormattedNumber(remaining) == 0 ? (
+            <span className="text-neutral-400">-</span>
           ) : (
             remaining
           )
