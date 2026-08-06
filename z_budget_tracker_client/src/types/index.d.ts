@@ -76,3 +76,19 @@ type BudgetSummary = {
     spent_amount: number
     remaining_amount: number
 }
+
+type BudgetInputRow = {
+    accountId: number;
+    categoryId: number;
+    amount: string;
+    name: string;
+    comment: string;
+    current_amount?: string;
+    spent_amount?: string;
+    remaining_amount?: string;
+};
+
+
+type BudgetRows = {
+  rows: BudgetInputRow[];
+};

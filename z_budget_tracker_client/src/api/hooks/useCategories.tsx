@@ -12,6 +12,7 @@ const useCategories = () => {
   const { data, isLoading } = useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: fetchCategories,
+    placeholderData: [],
   });
 
   return { data, isLoading };

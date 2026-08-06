@@ -1,39 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm, useFieldArray } from 'react-hook-form';
-import useBudget from '../../api/hooks/useBudgets';
+import { Fragment } from 'react';
 import { useParams } from 'react-router-dom';
+import type React from 'react';
+
+import useBudget from '../../api/hooks/useBudgets';
 import useGrants from '../../api/hooks/useGrants';
 import { formatNumber, parseFormattedNumber } from '../../app/util';
-import type React from 'react';
 import BudgetInputFields from './BudgetInputFields';
-import { Fragment } from 'react';
 import useInitiatives from '../../api/hooks/useInitiatives';
-
-type BudgetInputRow = {
-  accountId: number;
-  categoryId: number;
-  amount: string;
-  name: string;
-  comment: string;
-  current_amount: string;
-  spent_amount: string;
-  remaining_amount: string;
-};
-
-type Details = {
-  rows: BudgetInputRow[];
-};
+import {
+  formatArrayFieldAmount,
+  removeNumberFormattingFromArrayField,
+} from './utils';
 
 const Details = () => {
   const categories: Category[] = [];
   const { year, initiativeId, grantId } = useParams();
   const { data: budget, isLoading } = useBudget(+initiativeId!, +grantId!);
   const { data: initiatives } = useInitiatives();
-
   const initiative = initiatives?.filter((x) => x.id === +initiativeId!)[0];
 
   const { data: grants } = useGrants(+year!);
-
   const grant = grants?.filter((x) => x.id == +grantId!)[0];
 
   // get distinct categories
@@ -118,7 +106,7 @@ const Details = () => {
   }
 
   const { register, control, handleSubmit, getValues, setValue } =
-    useForm<Details>({
+    useForm<BudgetRows>({
       values: {
         rows: budgetRows,
       },
@@ -128,38 +116,6 @@ const Details = () => {
     control,
     name: 'rows',
   });
-
-  function formatArrayFieldAmount(accountId: number, amount: string) {
-    const formatter = new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-
-    let index = 0;
-    while (budgetRows[index].accountId !== accountId) {
-      index++;
-    }
-
-    if (formatter.format(+amount) === 'NaN') {
-      setValue(`rows.${index}.amount`, '0.00');
-      return;
-    }
-
-    setValue(`rows.${index}.amount`, formatNumber(+amount));
-  }
-
-  function removeNumberFormattingFromArrayField(
-    accountId: number,
-    amount: string,
-  ) {
-    let index = 0;
-    while (budgetRows[index].accountId !== accountId) {
-      index++;
-    }
-
-    const result = amount.replace(/(?<=\d),(?=\d)/g, '');
-    setValue(`rows.${index}.amount`, result);
-  }
 
   function handleCalculateTotal(
     categoryId: number,
@@ -181,7 +137,7 @@ const Details = () => {
 
     const totalSpent = budgetRows
       .filter((x) => x.categoryId == categoryId && x.accountId !== 999)
-      .map((x) => parseFormattedNumber(x.spent_amount))
+      .map((x) => parseFormattedNumber(x.spent_amount as string))
       .reduce((acc, curr) => acc + curr, 0);
 
     setValue(
@@ -206,7 +162,6 @@ const Details = () => {
         <div className="entity-label">Initiative</div>
         <div className="entity-label">Grant</div>
         <div className="entity-name">{grant?.year}</div>
-
         <div className="entity-name">{initiative?.name}</div>
         <div className="entity-name">{grant?.name}</div>
       </div>
@@ -255,6 +210,7 @@ const Details = () => {
                     `rows.${indexRunningTotal}.remaining_amount`,
                   );
 
+
                   return (
                     <Fragment key={field.id}>
                       <BudgetInputFields
@@ -265,8 +221,10 @@ const Details = () => {
                         fieldName={field.name}
                         comment={field.comment}
                         budgetedAmount={field.amount}
-                        currentAmount={field.current_amount}
-                        spentAmount={field.spent_amount}
+                        currentAmount={
+                          parseFormattedNumber(field.current_amount!) === 0 ? '-' : (field.current_amount as string)
+                        }
+                        spentAmount={field.spent_amount as string}
                         amountRegister={amountRegister}
                         remainingAmountRegister={remainingAmountRegister}
                         onClick={(e: React.MouseEvent<HTMLInputElement>) => {
@@ -275,10 +233,10 @@ const Details = () => {
                         }}
                         onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
                           const input = e.target as HTMLInputElement;
-
                           input.select();
-
                           removeNumberFormattingFromArrayField(
+                            setValue,
+                            budgetRows,
                             field.accountId,
                             e.target.value,
                           );
@@ -286,6 +244,8 @@ const Details = () => {
                         onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
                           amountRegister.onBlur(e);
                           formatArrayFieldAmount(
+                            setValue,
+                            budgetRows,
                             field.accountId,
                             e.target.value,
                           );
@@ -296,62 +256,6 @@ const Details = () => {
                           );
                         }}
                       ></BudgetInputFields>
-                      {/* <div
-                        className={`text-start pl-3 py-2  ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
-                      >
-                        {field.name}
-                      </div>
-                      <div
-                        className={`text-start py-2  ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
-                      >
-                        <NumericArrayInput
-                          key={field.accountId}
-                          register={amountRegister}
-                          readOnly={index == categoryFields.length - 1}
-                          disabled={index == categoryFields.length - 1}
-                          className={`${isLastRow ? 'border-0' : 'border-b-2 border-l-0 border-t-0 border-r-0 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
-                          onClick={(e: React.MouseEvent<HTMLInputElement>) => {
-                            const input = e.target as HTMLInputElement;
-                            input.select();
-                          }}
-                          onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
-                            removeNumberFormattingFromArrayField(
-                              field.accountId,
-                              e.target.value,
-                            );
-                          }}
-                          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-                            amountRegister.onBlur(e);
-                            formatArrayFieldAmount(
-                              field.accountId,
-                              e.target.value,
-                            );
-                            handleCalculateTotal(
-                              field.categoryId,
-                              categoryAccountIndexes[field.categoryId]
-                                .startIndex,
-                              categoryAccountIndexes[field.categoryId].endIndex,
-                            );
-                          }}
-                        ></NumericArrayInput>
-                      </div>
-                      <div
-                        className={`text-start py-2  ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
-                      ></div>
-                      <div
-                        className={`text-start py-2  ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
-                      ></div>
-                      <div
-                        className={`text-center p-3 text-blue-500 text-sm self-center ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
-                      >
-                        <button
-                          className={`cursor-pointer ${isLastRow ? 'opacity-0' : ''}`}
-                          disabled={isLastRow}
-                          tabIndex={-1}
-                        >
-                          0 Comments
-                        </button>
-                      </div> */}
                     </Fragment>
                   );
                 })}
@@ -462,3 +366,62 @@ export default Details;
                             );
                           }}
                         /> */
+
+{
+  /* <div
+                        className={`text-start pl-3 py-2  ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
+                      >
+                        {field.name}
+                      </div>
+                      <div
+                        className={`text-start py-2  ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
+                      >
+                        <NumericArrayInput
+                          key={field.accountId}
+                          register={amountRegister}
+                          readOnly={index == categoryFields.length - 1}
+                          disabled={index == categoryFields.length - 1}
+                          className={`${isLastRow ? 'border-0' : 'border-b-2 border-l-0 border-t-0 border-r-0 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+                          onClick={(e: React.MouseEvent<HTMLInputElement>) => {
+                            const input = e.target as HTMLInputElement;
+                            input.select();
+                          }}
+                          onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
+                            removeNumberFormattingFromArrayField(
+                              field.accountId,
+                              e.target.value,
+                            );
+                          }}
+                          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                            amountRegister.onBlur(e);
+                            formatArrayFieldAmount(
+                              field.accountId,
+                              e.target.value,
+                            );
+                            handleCalculateTotal(
+                              field.categoryId,
+                              categoryAccountIndexes[field.categoryId]
+                                .startIndex,
+                              categoryAccountIndexes[field.categoryId].endIndex,
+                            );
+                          }}
+                        ></NumericArrayInput>
+                      </div>
+                      <div
+                        className={`text-start py-2  ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
+                      ></div>
+                      <div
+                        className={`text-start py-2  ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
+                      ></div>
+                      <div
+                        className={`text-center p-3 text-blue-500 text-sm self-center ${index == categoryFields.length - 1 ? 'bg-neutral-100' : ''}`}
+                      >
+                        <button
+                          className={`cursor-pointer ${isLastRow ? 'opacity-0' : ''}`}
+                          disabled={isLastRow}
+                          tabIndex={-1}
+                        >
+                          0 Comments
+                        </button>
+                      </div> */
+}

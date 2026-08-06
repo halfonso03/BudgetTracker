@@ -47,7 +47,6 @@ const BudgetInputFields = ({
   const reprogrammed =
     parseFormattedNumber(currentAmount) - parseFormattedNumber(budgetedAmount);
 
-  console.log('reprogrammed', reprogrammed);
   const [remaining, setRemaining] = useState<string>(() =>
     formatNumber(
       parseFormattedNumber(currentAmount) - parseFormattedNumber(spentAmount),
@@ -94,10 +93,21 @@ const BudgetInputFields = ({
             if (onBlur) {
               const budgeted = parseFormattedNumber(e.target.value);
 
-              setCurrent(formatNumber(budgeted + reprogrammed));
+              if (budgeted + reprogrammed !== 0) {
+                setCurrent(formatNumber(budgeted + reprogrammed));
+              } else setCurrent('-');
+
               // const currentParsed = parseFormattedNumber(current);
+              console.log(budgeted, reprogrammed, spentAmount);
+
               const spentParsed = parseFormattedNumber(spentAmount);
-              setRemaining(formatNumber(budgeted + reprogrammed + spentParsed));
+              setRemaining(
+                formatNumber(
+                  budgeted +
+                    (isNaN(reprogrammed) ? 0 : reprogrammed) +
+                    spentParsed,
+                ),
+              );
 
               onBlur(e);
             }
@@ -106,10 +116,11 @@ const BudgetInputFields = ({
         ></NumericArrayInput>
       </div>
       <div
-        className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''} ${parseFormattedNumber(current) < 0 ? ' text-red-500 ' : ''}`}
+        className={`text-end self-center py-2  ${isLastRow && 'bg-neutral-100 font-bold text-neutral-600'} ${parseFormattedNumber(current) < 0 && ' text-red-500 '} ${isNaN(parseFormattedNumber(currentAmount)) && ' text-neutral-400 '}`}
       >
-        {formatCurrency(parseFormattedNumber(current))}
-        {/* {currentAmount ? currentAmount : 0} */}
+        {isNaN(parseFormattedNumber(currentAmount))
+          ? '-'
+          : formatCurrency(parseFormattedNumber(current))}
       </div>
       <div
         className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
@@ -117,14 +128,18 @@ const BudgetInputFields = ({
         {parseFormattedNumber(spentAmount) !== 0 ? (
           formatCurrency(parseFormattedNumber(spentAmount))
         ) : (
-          <span>&nbsp;</span>
+          <span className="text-neutral-400">-</span>
         )}
       </div>
       <div
-        className={`text-end self-center py-2 ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
+        className={`text-end self-center py-2 ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''} ${isNaN(parseFormattedNumber(remaining)) && ' text-neutral-400 '}`}
       >
         {!isLastRow ? (
-          remaining
+          isNaN(parseFormattedNumber(remaining)) ? (
+            '-'
+          ) : (
+            remaining
+          )
         ) : (
           <input
             {...remainingAmountRegister}

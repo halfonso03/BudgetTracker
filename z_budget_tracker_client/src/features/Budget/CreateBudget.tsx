@@ -1,24 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useParams } from 'react-router-dom';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { Fragment } from 'react';
+import { useParams } from 'react-router-dom';
+
 import BudgetInputFieldsNewBudget from './BudgetInputFieldsNewBudget';
 import useCategories from '../../api/hooks/useCategories';
-import { useFieldArray, useForm } from 'react-hook-form';
 import useInitiatives from '../../api/hooks/useInitiatives';
 import useGrants from '../../api/hooks/useGrants';
 import { formatNumber, parseFormattedNumber } from '../../app/util';
-
-type BudgetInputRow = {
-  accountId: number;
-  categoryId: number;
-  amount: string;
-  name: string;
-  comment: string;
-};
-
-type Details = {
-  rows: BudgetInputRow[];
-};
+import {
+  formatArrayFieldAmount,
+  removeNumberFormattingFromArrayField,
+} from './utils';
 
 type grp = {
   [key: string]: any;
@@ -27,8 +20,6 @@ type grp = {
 
 const CreateBudget = () => {
   const { year, initiativeId, grantId } = useParams();
-
-  console.log(year, initiativeId, grantId);
   const { data: grants } = useGrants(+year!);
   const { data: initiatives } = useInitiatives();
   const { data: categories, isLoading: loadingCategories } = useCategories();
@@ -38,14 +29,14 @@ const CreateBudget = () => {
 
   let budgetRows: BudgetInputRow[] = [];
   let runningTotal = 0;
-  
+
   const categoryAccountIndexes: Record<
     string,
     { startIndex: number; totalIndex: number }
   > = {};
 
   if (categories) {
-    const groupedData: grp = categories.reduce(
+    const groupedCategories: grp = categories.reduce(
       (accumulator: any, currentItem: Category) => {
         const key: string = currentItem.name;
 
@@ -59,8 +50,8 @@ const CreateBudget = () => {
       {},
     );
 
-    for (const cat in groupedData) {
-      const value = groupedData[cat];
+    for (const cat in groupedCategories) {
+      const value = groupedCategories[cat];
 
       const accounts: BudgetInputRow[] = value[0].map((item: Account) => ({
         accountId: item.id,
@@ -92,7 +83,7 @@ const CreateBudget = () => {
   }
 
   const { register, control, handleSubmit, setValue, getValues } =
-    useForm<Details>({
+    useForm<BudgetRows>({
       values: {
         rows: budgetRows,
       },
@@ -102,38 +93,6 @@ const CreateBudget = () => {
     control,
     name: 'rows',
   });
-
-  function formatArrayFieldAmount(accountId: number, amount: string) {
-    const formatter = new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-
-    let index = 0;
-    while (budgetRows[index].accountId !== accountId) {
-      index++;
-    }
-
-    if (formatter.format(+amount) === 'NaN') {
-      setValue(`rows.${index}.amount`, '0.00');
-      return;
-    }
-
-    setValue(`rows.${index}.amount`, formatNumber(+amount));
-  }
-
-  function removeNumberFormattingFromArrayField(
-    accountId: number,
-    amount: string,
-  ) {
-    let index = 0;
-    while (budgetRows[index].accountId !== accountId) {
-      index++;
-    }
-
-    const result = amount.replace(/(?<=\d),(?=\d)/g, '');
-    setValue(`rows.${index}.amount`, result);
-  }
 
   function handleCalculateTotal(
     categoryId: number,
@@ -160,6 +119,7 @@ const CreateBudget = () => {
 
   if (loadingCategories) return <div>Loading...</div>;
   if (!categories) return <span>Error</span>;
+
   let indexRunningTotal = -1;
 
   return (
@@ -169,89 +129,84 @@ const CreateBudget = () => {
         <div className="entity-label">Initiative</div>
         <div className="entity-label">Grant</div>
         <div className="entity-name">{year}</div>
-
         <div className="entity-name">{initiative?.name}</div>
         <div className="entity-name">
           {grant?.name} - {grant?.fiduciary}
         </div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {categories
-          .filter((c) => c.accounts!.length > 0)
-          .map((c) => {
-            const categoryFields = fields.filter((x) => x.categoryId == c.id);
+        {categories.map((c) => {
+          const categoryFields = fields.filter((x) => x.categoryId == c.id);
 
-            const grid = (
-              <div className="border border-neutral-200 mb-7" key={c.id}>
-                <div className=" grid grid-cols-[.55fr_.25fr_.25fr]" key={c.id}>
-                  <div className="pl-3 py-2 bg-neutral-100 entity-label">
-                    {c.name}
-                  </div>
-                  <div className="py-2 text-end bg-neutral-100 entity-label">
-                    Budgeted Amount
-                  </div>
-                  <div className="text-center py-2 bg-neutral-100 entity-label">
-                    Comments
-                  </div>
-
-                  {categoryFields.map((field, index) => {
-                    indexRunningTotal += 1;
-
-                    const isLastRow = index == categoryFields.length - 1;
-
-                    const amountRegister = register(
-                      `rows.${indexRunningTotal}.amount`,
-                    );
-
-                    return (
-                      <Fragment key={field.id}>
-                        <BudgetInputFieldsNewBudget
-                          isLastRow={isLastRow}
-                          accountId={field.accountId}
-                          initiativeId={+initiativeId!}
-                          grantId={+grantId!}
-                          fieldName={field.name}
-                          comment={field.comment}
-                          budgetedAmount={field.amount}
-                          amountRegister={amountRegister}
-                          onClick={(e: React.MouseEvent<HTMLInputElement>) => {
-                            const input = e.target as HTMLInputElement;
-                            input.select();
-                          }}
-                          onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
-                            const input = e.target as HTMLInputElement;
-
-                            input.select();
-
-                            removeNumberFormattingFromArrayField(
-                              field.accountId,
-                              e.target.value,
-                            );
-                          }}
-                          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
-                            amountRegister.onBlur(e);
-                            formatArrayFieldAmount(
-                              field.accountId,
-                              e.target.value,
-                            );
-                            handleCalculateTotal(
-                              field.categoryId,
-                              categoryAccountIndexes[field.categoryId]
-                                .startIndex,
-                              categoryAccountIndexes[field.categoryId]
-                                .totalIndex,
-                            );
-                          }}
-                        ></BudgetInputFieldsNewBudget>
-                      </Fragment>
-                    );
-                  })}
+          return (
+            <div className="border border-neutral-200 mb-7" key={c.id}>
+              <div className=" grid grid-cols-[.55fr_.25fr_.25fr]" key={c.id}>
+                <div className="pl-3 py-2 bg-neutral-100 entity-label">
+                  {c.name}
                 </div>
-              </div>
-            );
+                <div className="py-2 text-end bg-neutral-100 entity-label">
+                  Budgeted Amount
+                </div>
+                <div className="text-center py-2 bg-neutral-100 entity-label">
+                  Comments
+                </div>
 
-            return grid;
-          })}
+                {categoryFields.map((field, index) => {
+                  indexRunningTotal += 1;
+
+                  const isLastRow = index == categoryFields.length - 1;
+
+                  const amountRegister = register(
+                    `rows.${indexRunningTotal}.amount`,
+                  );
+
+                  return (
+                    <Fragment key={field.id}>
+                      <BudgetInputFieldsNewBudget
+                        isLastRow={isLastRow}
+                        accountId={field.accountId}
+                        initiativeId={+initiativeId!}
+                        grantId={+grantId!}
+                        fieldName={field.name}
+                        comment={field.comment}
+                        budgetedAmount={field.amount}
+                        amountRegister={amountRegister}
+                        onClick={(e: React.MouseEvent<HTMLInputElement>) => {
+                          const input = e.target as HTMLInputElement;
+                          input.select();
+                        }}
+                        onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
+                          const input = e.target as HTMLInputElement;
+                          input.select();
+                          removeNumberFormattingFromArrayField(
+                            setValue,
+                            budgetRows,
+                            field.accountId,
+                            e.target.value,
+                          );
+                        }}
+                        onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                          amountRegister.onBlur(e);
+                          formatArrayFieldAmount(
+                            setValue,
+                            budgetRows,
+                            field.accountId,
+                            e.target.value,
+                          );
+                          handleCalculateTotal(
+                            field.categoryId,
+                            categoryAccountIndexes[field.categoryId].startIndex,
+                            categoryAccountIndexes[field.categoryId].totalIndex,
+                          );
+                        }}
+                      ></BudgetInputFieldsNewBudget>
+                    </Fragment>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
 
         <button type="submit" className="p-2 border ">
           Submit Form
