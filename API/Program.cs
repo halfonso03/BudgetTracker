@@ -1,4 +1,4 @@
-using Application.interfaces;
+using Application.Interfaces;
 using Application.services;
 using Application.Services;
 using Domain;
@@ -18,6 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddTransient<ICommentsService, CommentsService>();
 builder.Services.AddTransient<ICategoryService, CategoriesService>();
 builder.Services.AddTransient<IGrantService, GrantService>();
 builder.Services.AddTransient<IInitiativeService, InitiativesService>();

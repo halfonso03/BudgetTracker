@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Application.Budgets.DTOs
+namespace Application.DTOs.Budgets
 {
     public class GrantDto
     {

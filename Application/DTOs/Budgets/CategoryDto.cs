@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 
-namespace Application.Budgets.DTOs
+namespace Application.DTOs.Budgets
 {
     public class CategoryDto
     {
@@ -22,7 +22,7 @@ namespace Application.Budgets.DTOs
                 Name = name
             };
         }
-        
+
         public static CategoryDto Create(int id, string name, List<AccountDto> accountDtos)
         {
             return new CategoryDto

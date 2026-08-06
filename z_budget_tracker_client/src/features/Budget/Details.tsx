@@ -2,8 +2,6 @@
 import { useForm, useFieldArray } from 'react-hook-form';
 import { Fragment, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import type React from 'react';
-
 import useBudget from '../../api/hooks/useBudgets';
 import useGrants from '../../api/hooks/useGrants';
 import { formatNumber, parseFormattedNumber } from '../../app/util';
@@ -81,10 +79,14 @@ const Details = () => {
         amount: formattedTotalBudgeted,
         current_amount: formatterTotalCurrent,
         spent_amount: formattedTotalSpent,
-        remaining_amount: formatNumber(totalBudgeted - totalSpent),
+        remaining_amount: formatNumber(totalBudgeted + totalSpent),
         comment: '',
         name: 'Total',
       };
+
+      // if (cat.id == 1) {
+      //   console.log('formattedTotalSpent', totalBudgeted, totalSpent);
+      // }
 
       budgetRows = [...budgetRows, ...accounts];
       budgetRows.push(totalRow);
@@ -138,7 +140,6 @@ const Details = () => {
 
     setValue(`rows.${totalsIndex}.current_amount`, formatNumber(totalCurrent));
 
-
     i = -1;
     const categoryTotal = fields
       .filter((x) => x.categoryId == categoryId && x.accountId !== 999)
@@ -157,9 +158,11 @@ const Details = () => {
       .map((x) => parseFormattedNumber(x.spent_amount as string))
       .reduce((acc, curr) => acc + curr, 0);
 
+    console.log('categoryTotal', categoryTotal);
+    console.log('totalSpent', totalSpent);
     setValue(
       `rows.${totalsIndex}.remaining_amount`,
-      formatNumber(categoryTotal - totalSpent),
+      formatNumber(categoryTotal + totalSpent),
     );
   }
 
@@ -239,25 +242,15 @@ const Details = () => {
                 {amountFieldsForCategory.map((field) => {
                   indexRunningTotal += 1;
 
-                  const isLastRow = false; //index == amountFieldsForCategory.length - 1;
-
                   const amountRegister = register(
                     `rows.${indexRunningTotal}.amount`,
-                  );
-
-                  const remainingAmountRegister = register(
-                    `rows.${indexRunningTotal}.remaining_amount`,
-                  );
-
-                  const currentAmountRegister = register(
-                    `rows.${indexRunningTotal}.current_amount`,
                   );
 
                   return (
                     <Fragment key={field.id}>
                       <BudgetInputFields
                         rowIndex={indexRunningTotal}
-                        isLastRow={isLastRow}
+                        isLastRow={false}
                         accountId={field.accountId}
                         initiativeId={+initiativeId!}
                         grantId={+grantId!}
@@ -267,8 +260,12 @@ const Details = () => {
                         currentAmount={field.current_amount as string}
                         spentAmount={field.spent_amount as string}
                         amountRegister={amountRegister}
-                        currentAmountRegister={currentAmountRegister}
-                        remainingAmountRegister={remainingAmountRegister}
+                        currentAmountRegister={register(
+                          `rows.${indexRunningTotal}.current_amount`,
+                        )}
+                        remainingAmountRegister={register(
+                          `rows.${indexRunningTotal}.remaining_amount`,
+                        )}
                         onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                           const input = e.target as HTMLInputElement;
                           input.select();
@@ -304,17 +301,6 @@ const Details = () => {
               </div>
               {totalFieldForCategory.map((field) => {
                 indexRunningTotal += 1;
-                const amountRegister = register(
-                  `rows.${indexRunningTotal}.amount`,
-                );
-
-                const remainingAmountRegister = register(
-                  `rows.${indexRunningTotal}.remaining_amount`,
-                );
-
-                const currentAmountRegister = register(
-                  `rows.${indexRunningTotal}.current_amount`,
-                );
 
                 return (
                   <div
@@ -332,9 +318,15 @@ const Details = () => {
                       budgetedAmount={field.amount}
                       currentAmount={field.current_amount as string}
                       spentAmount={field.spent_amount as string}
-                      amountRegister={amountRegister}
-                      currentAmountRegister={currentAmountRegister}
-                      remainingAmountRegister={remainingAmountRegister}
+                      amountRegister={register(
+                        `rows.${indexRunningTotal}.amount`,
+                      )}
+                      currentAmountRegister={register(
+                        `rows.${indexRunningTotal}.current_amount`,
+                      )}
+                      remainingAmountRegister={register(
+                        `rows.${indexRunningTotal}.remaining_amount`,
+                      )}
                     ></BudgetInputFields>
                   </div>
                 );

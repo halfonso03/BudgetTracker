@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.Budgets.DTOs;
+using Application.DTOs.Budgets;
 
-namespace Application.interfaces
+namespace Application.Interfaces
 {
     public interface IBudgetService
     {

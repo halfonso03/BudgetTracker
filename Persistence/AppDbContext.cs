@@ -12,6 +12,7 @@ namespace Persistence
         public required DbSet<Account> Accounts { get; set; }
         public required DbSet<Grant> Grants { get; set; }
         public required DbSet<BudgetLineItem> BudgetLineItems { get; set; }
+        public required DbSet<BudgetComment> BudgetComments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -139,11 +140,22 @@ namespace Persistence
             );
 
             builder.Entity<AuthorizedUser>().HasData(
-                    new AuthorizedUser
-                    {
-                        Id = 1,
-                        WindowsLogin = "halfonso"
-                    }
+                new AuthorizedUser
+                {
+                    Id = 1,
+                    WindowsLogin = "hialfonso"
+                },
+                new AuthorizedUser
+                {
+                    Id = 2,
+                    WindowsLogin = "rxleopold"
+                },
+
+                new AuthorizedUser
+                {
+                    Id = 3,
+                    WindowsLogin = "rescobar"
+                }
             );
 
             builder.Entity<BudgetLineItem>().HasData(
@@ -288,6 +300,14 @@ namespace Persistence
             builder.Entity<BudgetLineItem>().Property(x => x.CreatedBy).HasColumnName("created_by");
             builder.Entity<BudgetLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("datetime");
             builder.Entity<BudgetLineItem>().Property(x => x.UpdatedBy).HasColumnName("updated_by");
+
+            builder.Entity<BudgetComment>().Property(x => x.Text).HasColumnName("comment_text").HasColumnType("varchar(max)"); ;
+            builder.Entity<BudgetComment>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+            builder.Entity<BudgetComment>().Property(x => x.EntryPersonId).HasColumnName("entry_user_id");
+
+            builder.Entity<BudgetComment>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
+            builder.Entity<BudgetComment>().Property(x => x.GrantId).HasColumnName("grant_id");
+            builder.Entity<BudgetComment>().Property(x => x.AccountId).HasColumnName("account_id");
         }
     }
 }

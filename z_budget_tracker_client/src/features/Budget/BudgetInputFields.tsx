@@ -60,9 +60,10 @@ const BudgetInputFields = ({
   const [error, setError] = useState<boolean>(false);
   const [remaining, setRemaining] = useState<string>(() =>
     formatNumber(
-      parseFormattedNumber(currentAmount) - parseFormattedNumber(spentAmount),
+      parseFormattedNumber(currentAmount) - (-1 * parseFormattedNumber(spentAmount)),
     ),
   );
+
 
   const [current, setCurrent] = useState<string>(
     formatNumber(parseFormattedNumber(currentAmount)),
@@ -121,8 +122,6 @@ const BudgetInputFields = ({
                   spentParsed,
               );
               setRemaining(newRemaining);
-
-              console.log('newRemaining', newRemaining);
 
               if (
                 budgeted +

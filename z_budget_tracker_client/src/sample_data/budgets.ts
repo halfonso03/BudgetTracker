@@ -1,4 +1,5 @@
-const budgets: Budget[] = [
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const budgets: any[] = [
     {
         initiative_id: 1,
         grant_id: 1,

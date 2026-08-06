@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Application.Budgets.DTOs;
-using Application.interfaces;
+using Application.DTOs.Budgets;
+using Application.Interfaces;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -46,6 +46,8 @@ namespace Application.services
             var i = budgetLineItemsFromDb.First().Initiative!;
             var g = budgetLineItemsFromDb.First().Grant!;
 
+            var comments = await _dbContext.BudgetComments.Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId).ToListAsync();
+
             var result = new BudgetDto
             {
                 Grant = GrantDto.Create(g.Id, g.Name, g.StartDate, g.EndDate, g.Fiduciary),
@@ -53,11 +55,12 @@ namespace Application.services
                 InitiativeId = i.Id,
                 GrantId = g.Id,
                 Year = g.Year,
-                AccountBalances = CreatePivotedBalances(lineItems)
+                AccountBalances = CreatePivotedBalances(lineItems, comments)
             };
 
             return result;
         }
+
         public async Task<List<BudgetDto>> GetBudgetsForYear(int year)
         {
             var budgetBase = (from b in _dbContext.BudgetLineItems
@@ -76,7 +79,7 @@ namespace Application.services
                                   g.StartDate.Year
                               } into grp
                               where grp.Key.StartDate.Year == year
-                              select new 
+                              select new
                               {
                                   Grant = GrantDto.Create(grp.Key.GrantId, grp.Key.grant_name, grp.Key.StartDate, grp.Key.EndDate, grp.Key.Fiduciary),
                                   Initiative = InitiativeDto.Create(grp.Key.InitiativeId, grp.Key.initiative_name),
@@ -90,7 +93,6 @@ namespace Application.services
                                          GrantId = grp.Key.GrantId,
                                          Amount = x.Amount,
                                          AccountId = x.AccountId,
-                                         Comment = "comment",
                                          ItemType = x.ItemType,
                                          Name = x.Account!.Name,
                                          Category = CategoryDto.Create(x.Account.Category!.Id, x.Account.Category.Name),
@@ -98,7 +100,7 @@ namespace Application.services
                                      }).ToList()
                               }).ToList();
 
-   
+
             var result = from a in budgetBase
                          select new BudgetDto
                          {
@@ -113,7 +115,7 @@ namespace Application.services
             return [.. result];
         }
 
-        private List<AccountBalancesDto> CreatePivotedBalances(List<BudgetLineItemDto> items)
+        private List<AccountBalancesDto> CreatePivotedBalances(List<BudgetLineItemDto> items, List<BudgetComment>? comments = null)
         {
             _accounts ??= [.. _dbContext.Accounts.Include(x => x.Category)];
 
@@ -127,7 +129,8 @@ namespace Application.services
                                  Amount = items.Where(x => x.ItemType == "B" && x.AccountId == a.Id).Sum(x => x.Amount),
                                  SpentAmount = items.Where(x => x.ItemType == "D" && x.AccountId == a.Id).Sum(x => x.Amount),
                                  CurrentAmount = items.Where(x => (x.ItemType == "R" || x.ItemType == "B") && x.AccountId == a.Id).Sum(x => x.Amount),
-                                 Category = CategoryDto.CreateFromDomain(_accounts.First(x => x.CategoryId == a.CategoryId).Category)
+                                 Category = CategoryDto.CreateFromDomain(_accounts.First(x => x.CategoryId == a.CategoryId).Category),
+                                 CommentCount = comments != null ? comments.Count(x => x.AccountId == a.Id) : 0
                              }).ToList();
 
 

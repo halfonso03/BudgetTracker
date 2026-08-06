@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 
-namespace Application.Budgets.DTOs
+namespace Application.DTOs.Budgets
 {
     public class BudgetLineItemDto
     {
@@ -23,7 +23,7 @@ namespace Application.Budgets.DTOs
         [JsonPropertyName("account_number")]
         public string? AccountNumber { get; set; }
 
-        public string? Comment { get; set; }
+        // public string? Comment { get; set; }
 
         public required double Amount { get; set; } = 0;
 
@@ -44,7 +44,6 @@ namespace Application.Budgets.DTOs
                 AccountId = accountId,
                 Amount = amount,
                 CategoryId = categoryId,
-                Comment = comment,
                 ItemType = itemType,
                 AccountNumber = accountNumber,
                 Name = name,

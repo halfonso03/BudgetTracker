@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Azure.Core.Serialization;
 using Microsoft.VisualBasic;
 
-namespace Application.Budgets.DTOs
+namespace Application.DTOs.Budgets
 {
     public class BudgetDto
     {

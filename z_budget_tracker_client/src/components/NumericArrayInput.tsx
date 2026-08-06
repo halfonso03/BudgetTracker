@@ -26,7 +26,8 @@ const NumericArrayInput = ({
       e.key !== 'ArrowLeft' &&
       e.key !== 'Tab' &&
       e.key !== 'Delete' &&
-      e.key !== 'End'
+      e.key !== 'End' &&
+      e.key !== 'Home'
     ) {
       if (/[^0-9.]/g.test(e.key)) e.preventDefault();
     }

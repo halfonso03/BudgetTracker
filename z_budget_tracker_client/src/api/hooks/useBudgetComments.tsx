@@ -22,6 +22,7 @@ const useBudgetComments = (
     mutationFn: saveComments2,
   });
 
+  console.log(initiativeId, grantId, accountId, comment);
   return { saveComments, isSaveCommentsPending, isSaveCommentsSuccess };
 };
 

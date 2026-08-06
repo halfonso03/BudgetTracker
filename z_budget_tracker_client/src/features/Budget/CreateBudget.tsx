@@ -152,6 +152,7 @@ const CreateBudget = () => {
                 </div>
 
                 {categoryFields.map((field, index) => {
+                  // eslint-disable-next-line react-hooks/immutability
                   indexRunningTotal += 1;
 
                   const isLastRow = index == categoryFields.length - 1;

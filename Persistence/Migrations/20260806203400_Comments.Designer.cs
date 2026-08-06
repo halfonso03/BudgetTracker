@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260806203400_Comments")]
+    partial class Comments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -49,7 +52,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("tblAccount", (string)null);
+                    b.ToTable("tblAccount");
 
                     b.HasData(
                         new
@@ -137,7 +140,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tblAuthorizedUsers", (string)null);
+                    b.ToTable("tblAuthorizedUsers");
 
                     b.HasData(
                         new
@@ -155,54 +158,6 @@ namespace Persistence.Migrations
                             Id = 3,
                             WindowsLogin = "rescobar"
                         });
-                });
-
-            modelBuilder.Entity("Domain.BudgetComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int")
-                        .HasColumnName("account_id");
-
-                    b.Property<DateTime>("EntryDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime")
-                        .HasColumnName("entry_date")
-                        .HasDefaultValueSql("GETDATE()");
-
-                    b.Property<int>("EntryPersonId")
-                        .HasColumnType("int")
-                        .HasColumnName("entry_user_id");
-
-                    b.Property<int>("GrantId")
-                        .HasColumnType("int")
-                        .HasColumnName("grant_id");
-
-                    b.Property<int>("InitiativeId")
-                        .HasColumnType("int")
-                        .HasColumnName("initiative_id");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("varchar(max)")
-                        .HasColumnName("comment_text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("EntryPersonId");
-
-                    b.HasIndex("GrantId");
-
-                    b.HasIndex("InitiativeId");
-
-                    b.ToTable("tblBudgetComment", (string)null);
                 });
 
             modelBuilder.Entity("Domain.BudgetLineItem", b =>
@@ -272,7 +227,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UpdatedBy");
 
-                    b.ToTable("tblBudget", (string)null);
+                    b.ToTable("tblBudget");
 
                     b.HasData(
                         new
@@ -392,7 +347,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tblCategory", (string)null);
+                    b.ToTable("tblCategory");
 
                     b.HasData(
                         new
@@ -451,7 +406,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tblGrant", (string)null);
+                    b.ToTable("tblGrant");
 
                     b.HasData(
                         new
@@ -504,7 +459,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tblInitiative", (string)null);
+                    b.ToTable("tblInitiative");
 
                     b.HasData(
                         new
@@ -543,41 +498,6 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Domain.BudgetComment", b =>
-                {
-                    b.HasOne("Domain.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.AuthorizedUser", "EntryPerson")
-                        .WithMany()
-                        .HasForeignKey("EntryPersonId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Grant", "Grant")
-                        .WithMany()
-                        .HasForeignKey("GrantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Initiative", "Initiative")
-                        .WithMany()
-                        .HasForeignKey("InitiativeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-
-                    b.Navigation("EntryPerson");
-
-                    b.Navigation("Grant");
-
-                    b.Navigation("Initiative");
                 });
 
             modelBuilder.Entity("Domain.BudgetLineItem", b =>
