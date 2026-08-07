@@ -2,9 +2,10 @@ interface Props {
   bRef: React.Ref<HTMLDivElement>;
   cRef: React.Ref<HTMLDivElement>;
   rRef: React.Ref<HTMLDivElement>;
+  totalSpent: string;
 }
 
-const BudgetHeader = ({ bRef, cRef, rRef }: Props) => {
+const BudgetHeader = ({ bRef, cRef, rRef, totalSpent }: Props) => {
   return (
     <div className="grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr] pt-5 mb-5 border-t border-t-neutral-200">
       <div className="pl-3 py-2"></div>
@@ -16,7 +17,7 @@ const BudgetHeader = ({ bRef, cRef, rRef }: Props) => {
       <div></div>
       <div className="text-end font-bold text-neutral-800" ref={bRef}></div>
       <div className="text-end font-bold text-neutral-800 " ref={cRef}></div>
-      <div className="text-end font-bold text-neutral-800 "></div>
+      <div className="text-end font-bold text-neutral-800 ">{totalSpent}</div>
       <div className="text-end font-bold text-neutral-800 " ref={rRef}></div>
       <div></div>
       <div></div>

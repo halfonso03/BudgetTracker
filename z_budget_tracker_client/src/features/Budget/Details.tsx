@@ -40,6 +40,15 @@ const Details = () => {
   const { data: grants } = useGrants(+year!);
   const grant = grants?.filter((x) => x.id == +grantId!)[0];
 
+  const totalSpent =
+    budget &&
+    budget.account_balances &&
+    formatCurrency(
+      budget.account_balances
+        .map((item) => item.spent_amount)
+        .reduce((acc, cur) => acc + cur, 0),
+    );
+
   // get distinct categories
   for (const item of budget?.account_balances ?? []) {
     if (!categories.find((c) => c.name == item.category?.name)) {
@@ -98,10 +107,6 @@ const Details = () => {
         comment: '',
         name: 'Total',
       };
-
-      // if (cat.id == 1) {
-      //   console.log('formattedTotalSpent', totalBudgeted, totalSpent);
-      // }
 
       budgetRows = [...budgetRows, ...accounts];
       budgetRows.push(totalRow);
@@ -227,7 +232,12 @@ const Details = () => {
         <div className="entity-name">{grant?.name}</div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <BudgetHeader bRef={bRef} cRef={cRef} rRef={rRef}></BudgetHeader>
+        <BudgetHeader
+          bRef={bRef}
+          cRef={cRef}
+          rRef={rRef}
+          totalSpent={totalSpent}
+        ></BudgetHeader>
         {categories.map((c, index) => {
           const amountFieldsForCategory = fields.filter(
             (x) => x.categoryId == c.id && x.accountId !== 999,

@@ -17,6 +17,13 @@ html {
   min-height: 100svh;
 }
 
+.nav-link {
+  padding-bottom: 0.4rem;
+}
+
+.nav-link.active {
+  border-bottom: 3px solid var(--color-blue-800);
+}
 .entity-label {
   font-weight: bold;
   color: var(--color-neutral-500);

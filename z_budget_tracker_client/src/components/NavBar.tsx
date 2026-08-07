@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const NavBar = () => {
   // const { logout, user } = useAuth();
@@ -6,11 +6,17 @@ const NavBar = () => {
   // if (!user) return null;
 
   return (
-    <div className="flex justify-between align-middle p-3 border-b border-b-gray-300 dark:border-b-neutral-700 text-gray-900 dark:text-gray-100 bg-dark-nav ">
+    <div className="flex justify-between align-middle p-3  text-gray-900 dark:text-gray-100 bg-dark-nav ">
       <div className="flex gap-3 text-2xl p-2 flex-1">
-        <Link to="/">Home</Link>
-        <Link to="/budget">Budgets</Link>
-        <Link to="/reprogramming">Reprogrammings</Link>
+        <NavLink to="/" className="nav-link">
+          Home
+        </NavLink>
+        <NavLink to="/budget" className="nav-link">
+          Budgets
+        </NavLink>
+        <NavLink to="/reprogramming" className="nav-link">
+          Reprogrammings
+        </NavLink>
       </div>
       <div className="flex justify-center items-center w-full flex-0 mr-2">
         {/* <AccountToggler loginId={user} logOut={logout}></AccountToggler> */}

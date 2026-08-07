@@ -1,17 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useFieldArray, useForm } from 'react-hook-form';
-import { Fragment } from 'react';
+import { Fragment, useCallback, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 import BudgetInputFieldsNewBudget from './BudgetInputFieldsNewBudget';
 import useCategories from '../../api/hooks/useCategories';
 import useInitiatives from '../../api/hooks/useInitiatives';
 import useGrants from '../../api/hooks/useGrants';
-import { formatNumber, parseFormattedNumber } from '../../app/util';
+import {
+  formatCurrency,
+  formatNumber,
+  parseFormattedNumber,
+} from '../../app/util';
 import {
   formatArrayFieldAmount,
   removeNumberFormattingFromArrayField,
 } from './utils';
+import BudgetHeaderCreate from './BudgetHeaderCreate';
 
 type grp = {
   [key: string]: any;
@@ -19,6 +24,8 @@ type grp = {
 };
 
 const CreateBudget = () => {
+  const bRef = useRef<HTMLDivElement | null>(null);
+
   const { year, initiativeId, grantId } = useParams();
   const { data: grants } = useGrants(+year!);
   const { data: initiatives } = useInitiatives();
@@ -94,6 +101,27 @@ const CreateBudget = () => {
     name: 'rows',
   });
 
+  function calculateTotalBudgeted() {
+    const totalBudgeted = categories!
+      .map((x: Category) => {
+        return parseFormattedNumber(
+          getValues(`rows.${categoryAccountIndexes[x.id].totalIndex}.amount`),
+        );
+      })
+      .reduce((acc, curr) => acc + curr, 0);
+    if (bRef && bRef.current)
+      bRef.current!.innerHTML = formatCurrency(totalBudgeted);
+  }
+
+  const calculateTotals = useCallback(() => {
+    calculateTotalBudgeted();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categories, categoryAccountIndexes]);
+  
+  useEffect(() => {
+    calculateTotals();
+  }, [calculateTotals]);
+
   function handleCalculateTotal(
     categoryId: number,
     startIndex: number,
@@ -111,6 +139,8 @@ const CreateBudget = () => {
       .reduce((acc, cur) => cur + acc, 0);
 
     setValue(`rows.${totalsIndex}.amount`, formatNumber(categoryTotal));
+
+    calculateTotalBudgeted();
   }
 
   const onSubmit = (data: any) => {
@@ -123,8 +153,8 @@ const CreateBudget = () => {
   let indexRunningTotal = -1;
 
   return (
-    <div className="w-[85%] mx-auto">
-      <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-6">
+    <div className="w-full mx-auto">
+      <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-2">
         <div className="entity-label">Year</div>
         <div className="entity-label">Initiative</div>
         <div className="entity-label">Grant</div>
@@ -135,6 +165,8 @@ const CreateBudget = () => {
         </div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <BudgetHeaderCreate bRef={bRef}></BudgetHeaderCreate>
+
         {categories.map((c) => {
           const categoryFields = fields.filter((x) => x.categoryId == c.id);
 
@@ -145,7 +177,7 @@ const CreateBudget = () => {
                   {c.name}
                 </div>
                 <div className="py-2 text-end bg-neutral-100 entity-label">
-                  Budgeted Amount
+                  Budgeted
                 </div>
                 <div className="text-center py-2 bg-neutral-100 entity-label">
                   Comments
