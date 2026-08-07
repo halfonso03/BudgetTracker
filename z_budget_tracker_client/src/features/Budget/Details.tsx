@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm, useFieldArray } from 'react-hook-form';
-import { Fragment, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import useBudget from '../../api/hooks/useBudgets';
 import useGrants from '../../api/hooks/useGrants';
-import { formatNumber, parseFormattedNumber } from '../../app/util';
+import {
+  formatCurrency,
+  formatNumber,
+  parseFormattedNumber,
+} from '../../app/util';
 import BudgetInputFields from './BudgetInputFields';
 import useInitiatives from '../../api/hooks/useInitiatives';
 import {
@@ -12,13 +15,25 @@ import {
   removeNumberFormattingFromArrayField,
 } from './utils';
 import { ChevronDownSquare } from 'lucide-react';
+import useBudgetDetails from '../../api/hooks/useBudgetDetails';
+import BudgetHeader from './BudgetHeader';
+
+type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
 
 const Details = () => {
+  console.log('details render');
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
+
+  const bRef = useRef<HTMLDivElement | null>(null);
+  const cRef = useRef<HTMLDivElement | null>(null);
+  const rRef = useRef<HTMLDivElement | null>(null);
 
   const categories: Category[] = [];
   const { year, initiativeId, grantId } = useParams();
-  const { data: budget, isLoading } = useBudget(+initiativeId!, +grantId!);
+  const { data: budget, isLoading } = useBudgetDetails(
+    +initiativeId!,
+    +grantId!,
+  );
   const { data: initiatives } = useInitiatives();
   const initiative = initiatives?.filter((x) => x.id === +initiativeId!)[0];
 
@@ -158,17 +173,43 @@ const Details = () => {
       .map((x) => parseFormattedNumber(x.spent_amount as string))
       .reduce((acc, curr) => acc + curr, 0);
 
-    console.log('categoryTotal', categoryTotal);
-    console.log('totalSpent', totalSpent);
     setValue(
       `rows.${totalsIndex}.remaining_amount`,
       formatNumber(categoryTotal + totalSpent),
     );
+    calculateTotals();
   }
+
+  function getTotalForField(fieldName: totalsFieldNames) {
+    const b = categories
+      .map((x) => {
+        const rows = getValues('rows')[categoryAccountIndexes[x.id].totalIndex];
+        return parseFormattedNumber(rows[fieldName] as string);
+      })
+      .reduce((acc, curr) => acc + curr, 0);
+    return b;
+  }
+
+  const calculateTotals = useCallback(() => {
+    const totalBudgeted = getTotalForField('amount');
+    const totalCurrent = getTotalForField('current_amount');
+    const totalRemaining = getTotalForField('remaining_amount');
+    if (bRef && bRef.current)
+      bRef.current!.innerHTML = formatCurrency(totalBudgeted);
+    if (cRef && cRef.current)
+      cRef.current!.innerHTML = formatCurrency(totalCurrent);
+    if (rRef && rRef.current)
+      rRef.current!.innerHTML = formatCurrency(totalRemaining);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [categories, categoryAccountIndexes]);
 
   const onSubmit = (data: any) => {
     console.log('data1', data);
   };
+
+  useEffect(() => {
+    calculateTotals();
+  }, [calculateTotals]);
 
   if (isLoading) return <span>Loading...</span>;
   if (!budget) return <span>Error</span>;
@@ -177,7 +218,7 @@ const Details = () => {
 
   return (
     <div className="w-full mx-auto">
-      <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-6">
+      <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-2">
         <div className="entity-label">Year</div>
         <div className="entity-label">Initiative</div>
         <div className="entity-label">Grant</div>
@@ -186,6 +227,7 @@ const Details = () => {
         <div className="entity-name">{grant?.name}</div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <BudgetHeader bRef={bRef} cRef={cRef} rRef={rRef}></BudgetHeader>
         {categories.map((c, index) => {
           const amountFieldsForCategory = fields.filter(
             (x) => x.categoryId == c.id && x.accountId !== 999,

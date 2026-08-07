@@ -133,7 +133,6 @@ namespace Application.services
                                  CommentCount = comments != null ? comments.Count(x => x.AccountId == a.Id) : 0
                              }).ToList();
 
-
             return baseItems;
         }
     }
