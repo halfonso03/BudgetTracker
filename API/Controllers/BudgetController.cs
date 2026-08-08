@@ -29,6 +29,23 @@ namespace API.Controllers
             return Ok(budgets);
         }
 
-        
+        [HttpPost]
+        public async Task<IActionResult> CreateBudget(CreateBudgetRequestDto createBudgetDto)
+        {
+            try
+            {
+                await _budgetService.CreateBudget(createBudgetDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error in {nameof(CreateBudget)}: {ex.Message}");
+                
+                throw;
+            }
+
+            return Ok();
+        }
+
+
     }
 }

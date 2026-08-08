@@ -11,5 +11,6 @@ namespace Application.Interfaces
         Task<List<BudgetDto>> GetBudgetsForYear(int year);
 
         Task<BudgetDto> GetBudget(int initiativeId, int grantId);
+        Task CreateBudget(CreateBudgetRequestDto createBudgetDtos);
     }
 }

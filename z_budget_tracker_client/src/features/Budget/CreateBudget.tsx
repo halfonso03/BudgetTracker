@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useFieldArray, useForm } from 'react-hook-form';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import BudgetInputFieldsNewBudget from './BudgetInputFieldsNewBudget';
 import useCategories from '../../api/hooks/useCategories';
@@ -18,6 +18,10 @@ import {
 } from './utils';
 import BudgetHeaderCreate from './BudgetHeaderCreate';
 import { ChevronDownSquare } from 'lucide-react';
+import { useBudgetActions } from '../../api/hooks/useBudgetActions';
+import toast from 'react-hot-toast';
+
+const userId = 1;
 
 type grp = {
   [key: string]: any;
@@ -26,8 +30,8 @@ type grp = {
 
 const CreateBudget = () => {
   const bRef = useRef<HTMLDivElement | null>(null);
+  const navigate = useNavigate();
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
-
   const { year, initiativeId, grantId } = useParams();
   const { data: grants } = useGrants(+year!);
   const { data: initiatives } = useInitiatives();
@@ -38,6 +42,9 @@ const CreateBudget = () => {
 
   let budgetRows: BudgetInputRow[] = [];
   let runningTotal = 0;
+
+  const { createBudget, createBudgetSuccess, createBudgetPending } =
+    useBudgetActions();
 
   const categoryAccountIndexes: Record<
     string,
@@ -146,16 +153,36 @@ const CreateBudget = () => {
   }
 
   const onSubmit = (data: BudgetRows) => {
-    const postData = data.rows.filter(x => parseFormattedNumber(x.amount) > 0 && x.accountId != 999)
-
-    console.log('first', postData);
+    const items: CreateBudgetLineItemsRequest[] = data.rows
+      .filter((x) => parseFormattedNumber(x.amount) > 0 && x.accountId != 999)
+      .map((x) => ({
+        ...x,
+        amount: parseFormattedNumber(x.amount),
+        initiativeId: +initiativeId!,
+        grantId: +grantId!,
+      }));
+    const createRequest: CreateBudgetRequest = {
+      createdBy: userId,
+      lineItems: items,
+    };
+    try {
+      createBudget(createRequest);
+      toast.success('Budget Created. Redirecting...', {
+        duration: 3000,
+      });
+      setTimeout(() => {
+        navigate(`/budget/${year}/${initiativeId}/${grantId}`);
+      }, 3000);
+    } catch (error) {
+      toast.error(error as string);
+      console.log(error);
+    }
   };
 
   if (loadingCategories) return <div>Loading...</div>;
   if (!categories) return <span>Error</span>;
 
   let indexRunningTotal = -1;
-
   return (
     <div className="w-full mx-auto">
       <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-2">
@@ -290,7 +317,7 @@ const CreateBudget = () => {
           );
         })}
 
-        <button type="submit" className="p-2 border ">
+        <button type="submit" className="p-2 border cursor-pointer ">
           Submit Form
         </button>
       </form>

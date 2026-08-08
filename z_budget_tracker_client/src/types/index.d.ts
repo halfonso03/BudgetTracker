@@ -30,6 +30,20 @@ type Initiative = {
 }
 
 
+// used by BudgetSummary.tsx
+type BudgetSummary = {
+    initiative_id: number
+    initiative_name: string,
+    grant_id: number
+    grant_name: string,
+    year: number,
+    approved_amount: number
+    current_amount: number
+    spent_amount: number
+    remaining_amount: number
+}
+
+// used by BudgetSummary.tsx
 type AccountBalance = {
     account_id: number
     account_name: string,
@@ -43,6 +57,7 @@ type AccountBalance = {
     item_type?: ItemyType
 }
 
+// child of Budget Type
 type BudgetLineItem = {
     account_id: number
     amount: number
@@ -55,6 +70,9 @@ type BudgetLineItem = {
     account_number: string
 }
 
+// used by
+//  UseBudgetSummary.tsx
+// useBudgetDetails.tsx
 type Budget = {
     initiative_id: number
     grant_id: number
@@ -65,18 +83,9 @@ type Budget = {
     grant?: Grant
 }
 
-type BudgetSummary = {
-    initiative_id: number
-    initiative_name: string,
-    grant_id: number
-    grant_name: string,
-    year: number,
-    approved_amount: number
-    current_amount: number
-    spent_amount: number
-    remaining_amount: number
-}
 
+
+// used by CreateBudget.tsx
 type BudgetInputRow = {
     accountId: number;
     categoryId: number;
@@ -88,7 +97,20 @@ type BudgetInputRow = {
     remaining_amount?: string;
 };
 
-
+// used by CreateBudget.tsx
 type BudgetRows = {
-  rows: BudgetInputRow[];
+    rows: BudgetInputRow[];
 };
+
+type CreateBudgetRequest = {
+    createdBy: number
+    lineItems: CreateBudgetLineItemsRequest[]
+}
+
+type CreateBudgetLineItemsRequest = {
+    accountId: number,
+    categoryId: number,
+    amount: number,
+    initiativeId: number,
+    grantId: number
+}

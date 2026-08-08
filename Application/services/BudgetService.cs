@@ -135,5 +135,39 @@ namespace Application.services
 
             return baseItems;
         }
+
+        public async Task CreateBudget(CreateBudgetRequestDto createBudgetDto)
+        {
+            var initiativeId = createBudgetDto.LineItems.First().InitiativeId;
+            var grantId = createBudgetDto.LineItems.First().GrantId;
+
+            Console.WriteLine(initiativeId);
+            Console.WriteLine(grantId);
+
+            // check if budget records already exist for the initiative and grant
+            if (_dbContext.BudgetLineItems.Any(x =>
+                x.InitiativeId == initiativeId &&
+                x.GrantId == grantId &&
+                x.ItemType == "B"))
+            {
+                throw new Exception("A budget for the initiative and grant already exists");
+            }
+
+            var items = createBudgetDto.LineItems.Select(x => new BudgetLineItem
+            {
+                Id = 0,
+                InitiativeId = x.InitiativeId,
+                GrantId = x.GrantId,
+                AccountId = x.AccountId,
+                Amount = x.Amount,
+                ItemType = "B",
+                CreateDate = DateTime.Now,
+                CreatedBy = createBudgetDto.CreatedBy
+            });
+
+            _dbContext.BudgetLineItems.AddRange(items);
+
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

@@ -8,10 +8,13 @@ namespace Application.DTOs.Budgets
 {
     public class CreateBudgetLineItemRequestDto
     {
-        [JsonPropertyName("initiative_Id")]
         public required int InitiativeId { get; set; }
 
-        [JsonPropertyName("grant_id")]
-        public required int grant_id { get; set; }
+        public required int GrantId { get; set; }
+
+        public required int AccountId { get; set; }
+
+        public required double Amount { get; set; }
+
     }
 }
