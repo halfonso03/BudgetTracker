@@ -29,7 +29,7 @@ namespace Application.services
 
             var lineItems = budgetLineItemsFromDb
                         .Select(x =>
-                            BudgetLineItemDto.Create
+                            BudgetLineItemResponseDto.Create
                                 (x.GrantId,
                                 x.InitiativeId,
                                 x.AccountId,
@@ -87,7 +87,7 @@ namespace Application.services
                                   grp.Key.GrantId,
                                   grp.Key.Year,
                                   LineItems =
-                                     grp.Select(x => new BudgetLineItemDto
+                                     grp.Select(x => new BudgetLineItemResponseDto
                                      {
                                          InitiativeId = grp.Key.InitiativeId,
                                          GrantId = grp.Key.GrantId,
@@ -115,7 +115,7 @@ namespace Application.services
             return [.. result];
         }
 
-        private List<AccountBalancesDto> CreatePivotedBalances(List<BudgetLineItemDto> items, List<BudgetComment>? comments = null)
+        private List<AccountBalancesDto> CreatePivotedBalances(List<BudgetLineItemResponseDto> items, List<BudgetComment>? comments = null)
         {
             _accounts ??= [.. _dbContext.Accounts.Include(x => x.Category)];
 

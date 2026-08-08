@@ -145,8 +145,10 @@ const CreateBudget = () => {
     calculateTotalBudgeted();
   }
 
-  const onSubmit = (data: any) => {
-    console.log('data1', data);
+  const onSubmit = (data: BudgetRows) => {
+    const postData = data.rows.filter(x => parseFormattedNumber(x.amount) > 0 && x.accountId != 999)
+
+    console.log('first', postData);
   };
 
   if (loadingCategories) return <div>Loading...</div>;

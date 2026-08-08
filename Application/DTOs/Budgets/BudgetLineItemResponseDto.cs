@@ -9,7 +9,7 @@ using Microsoft.Identity.Client;
 
 namespace Application.DTOs.Budgets
 {
-    public class BudgetLineItemDto
+    public class BudgetLineItemResponseDto
     {
         public required int InitiativeId { get; set; }
         public required int GrantId { get; set; }
@@ -35,9 +35,9 @@ namespace Application.DTOs.Budgets
         [JsonPropertyName("category_id")]
         public required int CategoryId { get; set; }
 
-        public static BudgetLineItemDto Create(int grantId, int initiativeId, int accountId, string name, double amount, int categoryId, string itemType, string comment = "", string accountNumber = "", CategoryDto? category = null)
+        public static BudgetLineItemResponseDto Create(int grantId, int initiativeId, int accountId, string name, double amount, int categoryId, string itemType, string comment = "", string accountNumber = "", CategoryDto? category = null)
         {
-            return new BudgetLineItemDto
+            return new BudgetLineItemResponseDto
             {
                 GrantId = grantId,
                 InitiativeId = initiativeId,

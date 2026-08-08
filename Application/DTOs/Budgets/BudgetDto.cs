@@ -39,7 +39,7 @@ namespace Application.DTOs.Budgets
 
 
         [JsonPropertyName("line_items")]
-        public IEnumerable<BudgetLineItemDto> LineItems { get; set; } = [];
+        public IEnumerable<BudgetLineItemResponseDto> LineItems { get; set; } = [];
 
         public required int Year { get; set; }
     }
