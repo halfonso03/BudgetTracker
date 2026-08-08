@@ -26,7 +26,7 @@ html {
 }
 .entity-label {
   font-weight: bold;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-600);
 }
 
 .entity-name {

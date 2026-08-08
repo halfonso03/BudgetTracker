@@ -28,7 +28,6 @@ const Details = () => {
   const cRef = useRef<HTMLDivElement | null>(null);
   const rRef = useRef<HTMLDivElement | null>(null);
 
-  const categories: Category[] = [];
   const { year, initiativeId, grantId } = useParams();
   const { data: budget, isLoading } = useBudgetDetails(
     +initiativeId!,
@@ -39,6 +38,9 @@ const Details = () => {
 
   const { data: grants } = useGrants(+year!);
   const grant = grants?.filter((x) => x.id == +grantId!)[0];
+
+  let budgetRows: BudgetInputRow[] = [];
+  const categories: Category[] = [];
 
   const totalSpent =
     budget &&
@@ -60,8 +62,6 @@ const Details = () => {
   }
 
   // get budgets rows
-  let budgetRows: BudgetInputRow[] = [];
-
   if (budget && budget.account_balances) {
     for (const cat of categories) {
       const accounts: BudgetInputRow[] = budget.account_balances
@@ -269,25 +269,25 @@ const Details = () => {
                 className={` grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200' : ''}`}
                 key={c.id}
               >
-                <div className="pl-3 py-2 font-bold bg-neutral-100 text-neutral-500 border-b border-b-neutral-200">
+                <div className="pl-3 py-2 font-bold bg-neutral-100 text-neutral-600 border-b border-b-neutral-200">
                   Account
                 </div>
-                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500 border-b border-b-neutral-200">
+                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
                   Budgeted
                 </div>
-                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500 border-b border-b-neutral-200">
+                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
                   Current
                 </div>
                 <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500 border-b border-b-neutral-200">
                   Spent
                 </div>
-                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500 border-b border-b-neutral-200">
+                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
                   Remaining
                 </div>
-                <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-500 border-b border-b-neutral-200">
+                <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
                   Comments
                 </div>
-                <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-500 border-b border-b-neutral-200">
+                <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
                   Actions
                 </div>
 

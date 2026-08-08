@@ -47,7 +47,7 @@ const BudgetInputFieldsNewBudget = ({
   return (
     <>
       <div
-        className={`self-center pl-3 py-2 ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-600' : ''}`}
+        className={`self-center pl-3 py-2 ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-700' : ''}`}
       >
         {fieldName}
       </div>

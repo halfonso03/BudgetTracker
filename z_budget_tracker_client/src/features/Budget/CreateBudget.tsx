@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useFieldArray, useForm } from 'react-hook-form';
-import { Fragment, useCallback, useEffect, useRef } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import BudgetInputFieldsNewBudget from './BudgetInputFieldsNewBudget';
@@ -17,6 +17,7 @@ import {
   removeNumberFormattingFromArrayField,
 } from './utils';
 import BudgetHeaderCreate from './BudgetHeaderCreate';
+import { ChevronDownSquare } from 'lucide-react';
 
 type grp = {
   [key: string]: any;
@@ -25,6 +26,7 @@ type grp = {
 
 const CreateBudget = () => {
   const bRef = useRef<HTMLDivElement | null>(null);
+  const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
 
   const { year, initiativeId, grantId } = useParams();
   const { data: grants } = useGrants(+year!);
@@ -117,7 +119,7 @@ const CreateBudget = () => {
     calculateTotalBudgeted();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories, categoryAccountIndexes]);
-  
+
   useEffect(() => {
     calculateTotals();
   }, [calculateTotals]);
@@ -167,27 +169,49 @@ const CreateBudget = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <BudgetHeaderCreate bRef={bRef}></BudgetHeaderCreate>
 
-        {categories.map((c) => {
-          const categoryFields = fields.filter((x) => x.categoryId == c.id);
-
+        {categories.map((c, index) => {
+          const amountFieldsForCategory = fields.filter(
+            (x) => x.categoryId == c.id && x.accountId !== 999,
+          );
+          const totalFieldForCategory = fields.filter(
+            (x) => x.categoryId == c.id && x.accountId === 999,
+          );
           return (
             <div className="border border-neutral-200 mb-7" key={c.id}>
-              <div className=" grid grid-cols-[.55fr_.25fr_.25fr]" key={c.id}>
-                <div className="pl-3 py-2 bg-neutral-100 entity-label">
-                  {c.name}
+              <div className="flex justify-between bg-neutral-100 ">
+                <div className="pl-3 py-2 font-bold">{c.name}</div>
+                <div className="self-center mr-2">
+                  <ChevronDownSquare
+                    className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
+                    onClick={() => {
+                      if (expandedIndexes.some((x) => x == index)) {
+                        setExpandedIndexes((prev) =>
+                          prev.filter((x) => x !== index),
+                        );
+                      } else {
+                        setExpandedIndexes((prev) => [...prev, index]);
+                      }
+                    }}
+                  ></ChevronDownSquare>
                 </div>
-                <div className="py-2 text-end bg-neutral-100 entity-label">
+              </div>
+              <div
+                className={`grid grid-cols-[.55fr_.25fr_.25fr] box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200' : ''}`}
+                key={c.id}
+              >
+                <div className="pl-3 py-2 bg-neutral-100 entity-name">
+                  Account
+                </div>
+                <div className="py-2 text-end bg-neutral-100 text-neutral-600 font-bold">
                   Budgeted
                 </div>
-                <div className="text-center py-2 bg-neutral-100 entity-label">
+                <div className="text-center py-2 bg-neutral-100 text-neutral-600 font-bold">
                   Comments
                 </div>
 
-                {categoryFields.map((field, index) => {
+                {amountFieldsForCategory.map((field) => {
                   // eslint-disable-next-line react-hooks/immutability
                   indexRunningTotal += 1;
-
-                  const isLastRow = index == categoryFields.length - 1;
 
                   const amountRegister = register(
                     `rows.${indexRunningTotal}.amount`,
@@ -196,7 +220,7 @@ const CreateBudget = () => {
                   return (
                     <Fragment key={field.id}>
                       <BudgetInputFieldsNewBudget
-                        isLastRow={isLastRow}
+                        isLastRow={false}
                         accountId={field.accountId}
                         initiativeId={+initiativeId!}
                         grantId={+grantId!}
@@ -237,6 +261,29 @@ const CreateBudget = () => {
                   );
                 })}
               </div>
+              {totalFieldForCategory.map((field) => {
+                indexRunningTotal += 1;
+
+                return (
+                  <div
+                    className="grid grid-cols-[.55fr_.25fr_.25fr]  pb-0 border-t border-t-neutral-200"
+                    key={field.id}
+                  >
+                    <BudgetInputFieldsNewBudget
+                      isLastRow={true}
+                      accountId={field.accountId}
+                      initiativeId={+initiativeId!}
+                      grantId={+grantId!}
+                      fieldName={field.name}
+                      comment={field.comment}
+                      budgetedAmount={field.amount}
+                      amountRegister={register(
+                        `rows.${indexRunningTotal}.amount`,
+                      )}
+                    ></BudgetInputFieldsNewBudget>
+                  </div>
+                );
+              })}
             </div>
           );
         })}
