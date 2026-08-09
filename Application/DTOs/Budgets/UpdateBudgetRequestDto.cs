@@ -10,7 +10,7 @@ using Microsoft.IdentityModel.Tokens.Experimental;
 
 namespace Application.DTOs.Budgets
 {
-    public class CreateBudgetRequestDto
+    public class UpdateBudgetRequestDto
     {
         [Required]
         [MinLength(1, ErrorMessage = "The list must contain at least one item.")]
@@ -18,7 +18,8 @@ namespace Application.DTOs.Budgets
 
         [Required]
         [DeniedValues(0)]
-        public int CreatedBy { get; set; }
+        public int UpdatedBy { get; set; }
+
 
         [ValueMustBeTrueValidator(ErrorMessage = "One or more items is duplicated.")]
         public bool? AllItemsAreDistinct
@@ -69,5 +70,6 @@ namespace Application.DTOs.Budgets
                 return true;
             }
         }
+
     }
 }

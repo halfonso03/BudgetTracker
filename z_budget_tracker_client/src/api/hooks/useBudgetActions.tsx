@@ -15,5 +15,27 @@ export const useBudgetActions = () => {
     onSuccess: () => {},
   });
 
-  return { createBudget, createBudgetPending, createBudgetSuccess };
+  const {
+    mutate: updateBudget,
+    isPending: updateBudgetPending,
+    isSuccess: updateBudgetSuccess,
+  } = useMutation({
+    mutationFn: async (updateRequest: UpdateBudgetRequest) => {
+
+      console.log('updateRequest', updateRequest)
+      // const response = await agent.put(`budget`, updateRequest);
+      // return response.data;
+    },
+
+    onSuccess: () => {},
+  });
+
+  return {
+    createBudget,
+    createBudgetPending,
+    createBudgetSuccess,
+    updateBudget,
+    updateBudgetPending,
+    updateBudgetSuccess,
+  };
 };

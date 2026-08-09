@@ -39,12 +39,31 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 return BadRequest($"Error in {nameof(CreateBudget)}: {ex.Message}");
-                
+
                 throw;
             }
 
             return Ok();
         }
+
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateBudget(UpdateBudgetRequestDto updateBudgetDto)
+        {
+            try
+            {
+                await _budgetService.UpdateBudget(updateBudgetDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error in {nameof(UpdateBudget)}: {ex.Message}");
+
+                throw;
+            }
+
+            return Ok();
+        }
+
 
 
     }

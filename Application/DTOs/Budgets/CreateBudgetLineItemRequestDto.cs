@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Budgets
 {
-    public class CreateBudgetLineItemRequestDto
+    public class BudgetLineItemRequestDto
     {
         public required int InitiativeId { get; set; }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Application.DTOs.Budgets;
@@ -141,9 +142,6 @@ namespace Application.services
             var initiativeId = createBudgetDto.LineItems.First().InitiativeId;
             var grantId = createBudgetDto.LineItems.First().GrantId;
 
-            Console.WriteLine(initiativeId);
-            Console.WriteLine(grantId);
-
             // check if budget records already exist for the initiative and grant
             if (_dbContext.BudgetLineItems.Any(x =>
                 x.InitiativeId == initiativeId &&
@@ -166,6 +164,65 @@ namespace Application.services
             });
 
             _dbContext.BudgetLineItems.AddRange(items);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateBudget(UpdateBudgetRequestDto updateBudgetDto)
+        {
+            var initiativeId = updateBudgetDto.LineItems.First().InitiativeId;
+            var grantId = updateBudgetDto.LineItems.First().GrantId;
+
+            var lineItemsFromDb = await _dbContext.BudgetLineItems.Where(x => x.InitiativeId == initiativeId &&
+                x.GrantId == grantId &&
+                x.ItemType == "B")
+                .ToListAsync();
+
+
+            foreach (var u in updateBudgetDto.LineItems)
+            {
+
+                //  update existing records
+                if (lineItemsFromDb.Any(x => x.AccountId == u.AccountId))
+                {
+                    if (lineItemsFromDb.First(x => x.AccountId == u.AccountId).Amount != u.Amount)
+                    {
+                        lineItemsFromDb.First(x => x.AccountId == u.AccountId).Amount = u.Amount;
+                    }
+                }
+                else
+                {
+                    // add new records
+                    var newLineItem = new BudgetLineItem
+                    {
+                        Id = 0,
+                        InitiativeId = u.InitiativeId,
+                        GrantId = u.GrantId,
+                        AccountId = u.AccountId,
+                        Amount = u.Amount,
+                        ItemType = "B",
+                        CreateDate = DateTime.Now,
+                        CreatedBy = updateBudgetDto.UpdatedBy
+                    };
+
+                    _dbContext.BudgetLineItems.Add(newLineItem);
+                }
+            }
+
+            // delete records from db if not present in the LineItems list
+
+
+            var deletedAccounts = from db in lineItemsFromDb
+                    join req in updateBudgetDto.LineItems
+                    on db.AccountId equals req.AccountId into itemsGroup
+                    from subItems in itemsGroup.DefaultIfEmpty()
+                    where subItems is null
+                    select db.AccountId;
+
+            foreach (var accountId in deletedAccounts)
+            {
+                _dbContext.BudgetLineItems.Remove(lineItemsFromDb.First(x => x.AccountId == accountId));
+            }
 
             await _dbContext.SaveChangesAsync();
         }

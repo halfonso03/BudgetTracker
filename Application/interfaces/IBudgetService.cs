@@ -9,8 +9,8 @@ namespace Application.Interfaces
     public interface IBudgetService
     {
         Task<List<BudgetDto>> GetBudgetsForYear(int year);
-
         Task<BudgetDto> GetBudget(int initiativeId, int grantId);
         Task CreateBudget(CreateBudgetRequestDto createBudgetDtos);
+        Task UpdateBudget(UpdateBudgetRequestDto updateBudgetDto);
     }
 }

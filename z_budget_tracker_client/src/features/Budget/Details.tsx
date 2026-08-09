@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm, useFieldArray } from 'react-hook-form';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -17,12 +16,17 @@ import {
 import { ChevronDownSquare } from 'lucide-react';
 import useBudgetDetails from '../../api/hooks/useBudgetDetails';
 import BudgetHeader from './BudgetHeader';
+import toast from 'react-hot-toast';
+import { useBudgetActions } from '../../api/hooks/useBudgetActions';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
+const userId = 1;
 
 const Details = () => {
   console.log('details render');
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
+
+  const { updateBudget } = useBudgetActions();
 
   const bRef = useRef<HTMLDivElement | null>(null);
   const cRef = useRef<HTMLDivElement | null>(null);
@@ -208,8 +212,36 @@ const Details = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories, categoryAccountIndexes]);
 
-  const onSubmit = (data: any) => {
-    console.log('data1', data);
+  const onSubmit = (data: BudgetRows) => {
+    const items: UpdateBudgetLineItemsRequest[] = data.rows
+      .filter((x) => parseFormattedNumber(x.amount) > 0 && x.accountId != 999)
+      .map((x) => ({
+        amount: parseFormattedNumber(x.amount),
+        initiativeId: +initiativeId!,
+        grantId: +grantId!,
+        accountId: x.accountId,
+      }));
+
+    const updateRequest: UpdateBudgetRequest = {
+      updateBy: userId,
+      lineItems: items,
+    };
+    try {
+      updateBudget(updateRequest);
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+
+      toast.success('Budget Updated.', {
+        duration: 2500,
+      });
+    } catch (error) {
+      toast.error(error as string);
+      console.log(error);
+    }
+
+    console.log('updateRequest', updateRequest);
   };
 
   useEffect(() => {
@@ -223,7 +255,7 @@ const Details = () => {
 
   return (
     <div className="w-full mx-auto">
-      <div className='mb-2 font-semibold text-2xl pb-5 text-neutral-700'>
+      <div className="mb-2 font-semibold text-2xl pb-5 text-neutral-700">
         Edit Budget
       </div>
       <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-2 py-2 border-b border-b-neutral-200  border-t border-t-neutral-200">
@@ -268,7 +300,7 @@ const Details = () => {
                   ></ChevronDownSquare>
                 </div>
               </div>
-              
+
               <div
                 className={`  grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200' : ''}`}
                 key={c.id}

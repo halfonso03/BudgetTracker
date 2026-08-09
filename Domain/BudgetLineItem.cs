@@ -10,7 +10,7 @@ namespace Domain
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column(Order = 0)]
-        public required int Id { get; set; }
+        public required int Id { get; set; } = 0;
         [Column(Order = 4)]
         public required double Amount { get; set; }
         [Column(Order = 5)]
