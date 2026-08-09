@@ -61,18 +61,6 @@ input:-webkit-autofill:focus {
 }
 
 @theme {
-  --animate-height: maxHeight 0.3s ease-in forwards;
-
-  @keyframes maxHeight {
-    0% {
-      min-height: 0;
-    }
-    100% {
-      min-height: 100%;
-      max-height: 100%;
-    }
-  }
-
   --animate-tab-in: tabIn 0.45s ease-out forwards;
 
   @keyframes tabIn {

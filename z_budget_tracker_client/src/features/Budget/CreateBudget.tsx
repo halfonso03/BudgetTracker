@@ -167,6 +167,11 @@ const CreateBudget = () => {
     };
     try {
       createBudget(createRequest);
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+
       toast.success('Budget Created. Redirecting...', {
         duration: 3000,
       });
@@ -184,8 +189,11 @@ const CreateBudget = () => {
 
   let indexRunningTotal = -1;
   return (
-    <div className="w-full mx-auto">
-      <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-2">
+    <div className="w-full mx-auto ">
+      <div className='mb-2 font-semibold text-2xl pb-5 text-neutral-700'>
+        Create New Budget
+      </div>
+      <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-2 py-2 border-b border-b-neutral-200  border-t border-t-neutral-200">
         <div className="entity-label">Year</div>
         <div className="entity-label">Initiative</div>
         <div className="entity-label">Grant</div>
@@ -295,7 +303,7 @@ const CreateBudget = () => {
 
                 return (
                   <div
-                    className="grid grid-cols-[.55fr_.25fr_.25fr]  pb-0 border-t border-t-neutral-200"
+                    className="grid grid-cols-[.55fr_.25fr_.25fr] border-t border-t-neutral-200  "
                     key={field.id}
                   >
                     <BudgetInputFieldsNewBudget

@@ -52,14 +52,14 @@ const BudgetInputFieldsNewBudget = ({
         {fieldName}
       </div>
       <div
-        className={`text-end self-center py-2  ${isLastRow ? 'bg-neutral-100' : ''}`}
+        className={`text-end self-center py-1  ${isLastRow ? 'bg-neutral-100' : ''}`}
       >
         <NumericArrayInput
           key={accountId}
           register={amountRegister}
           readOnly={isLastRow}
           disabled={isLastRow}
-          className={`${isLastRow ? 'border-0 p-0 m-0 font-bold text-neutral-600 pr-1 ' : 'p-[.2rem] border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+          className={`${isLastRow ? 'border-0 p-0 m-0 font-bold text-neutral-600 pr-1 py-1 ' : 'p-[.2rem] border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
           onClick={(e) => (onClick ? onClick(e) : null)}
           onBlur={(e) => {
             if (onBlur) {
