@@ -115,7 +115,9 @@ type CreateBudgetLineItemsRequest = {
 }
 
 type UpdateBudgetRequest = {
-    updateBy: number,
+    updatedBy: number,
+    initiativeId: number,
+    grantId: number,
     lineItems: UpdateBudgetLineItemsRequest[]
 }
 

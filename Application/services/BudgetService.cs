@@ -170,24 +170,42 @@ namespace Application.services
 
         public async Task UpdateBudget(UpdateBudgetRequestDto updateBudgetDto)
         {
-            var initiativeId = updateBudgetDto.LineItems.First().InitiativeId;
-            var grantId = updateBudgetDto.LineItems.First().GrantId;
+
+            var initiativeId = updateBudgetDto.InitiativeId;
+            var grantId = updateBudgetDto.GrantId;
 
             var lineItemsFromDb = await _dbContext.BudgetLineItems.Where(x => x.InitiativeId == initiativeId &&
                 x.GrantId == grantId &&
                 x.ItemType == "B")
                 .ToListAsync();
 
+            // zero out records from db that are not present in the LineItems list
+            var deletedAccounts = from db in lineItemsFromDb
+                                  join req in updateBudgetDto.LineItems
+                                  on db.AccountId equals req.AccountId into itemsGroup
+                                  from subItems in itemsGroup.DefaultIfEmpty()
+                                  where subItems is null
+                                  select db.AccountId;
+
+            foreach (var accountId in deletedAccounts)
+            {
+                var itemFromDb = lineItemsFromDb.First(x => x.AccountId == accountId);
+                itemFromDb.Amount = 0;
+                itemFromDb.UpdateDate = DateTime.Now;
+                itemFromDb.UpdatedBy = updateBudgetDto.UpdatedBy;
+            }
 
             foreach (var u in updateBudgetDto.LineItems)
             {
-
                 //  update existing records
                 if (lineItemsFromDb.Any(x => x.AccountId == u.AccountId))
                 {
                     if (lineItemsFromDb.First(x => x.AccountId == u.AccountId).Amount != u.Amount)
                     {
-                        lineItemsFromDb.First(x => x.AccountId == u.AccountId).Amount = u.Amount;
+                        var accountFromDb = lineItemsFromDb.First(x => x.AccountId == u.AccountId);
+                        accountFromDb.Amount = u.Amount;
+                        accountFromDb.UpdateDate = DateTime.Now;
+                        accountFromDb.UpdatedBy = updateBudgetDto.UpdatedBy;
                     }
                 }
                 else
@@ -209,20 +227,7 @@ namespace Application.services
                 }
             }
 
-            // delete records from db if not present in the LineItems list
 
-
-            var deletedAccounts = from db in lineItemsFromDb
-                    join req in updateBudgetDto.LineItems
-                    on db.AccountId equals req.AccountId into itemsGroup
-                    from subItems in itemsGroup.DefaultIfEmpty()
-                    where subItems is null
-                    select db.AccountId;
-
-            foreach (var accountId in deletedAccounts)
-            {
-                _dbContext.BudgetLineItems.Remove(lineItemsFromDb.First(x => x.AccountId == accountId));
-            }
 
             await _dbContext.SaveChangesAsync();
         }

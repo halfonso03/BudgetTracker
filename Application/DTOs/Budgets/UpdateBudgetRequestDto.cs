@@ -12,9 +12,12 @@ namespace Application.DTOs.Budgets
 {
     public class UpdateBudgetRequestDto
     {
-        [Required]
-        [MinLength(1, ErrorMessage = "The list must contain at least one item.")]
+        // [Required]
+        // [MinLength(1, ErrorMessage = "The list must contain at least one item.")]
         public List<BudgetLineItemRequestDto> LineItems { get; set; } = [];
+
+        public required int InitiativeId { get; set; }
+        public required int GrantId { get; set; }
 
         [Required]
         [DeniedValues(0)]

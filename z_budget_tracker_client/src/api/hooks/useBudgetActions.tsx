@@ -23,8 +23,8 @@ export const useBudgetActions = () => {
     mutationFn: async (updateRequest: UpdateBudgetRequest) => {
 
       console.log('updateRequest', updateRequest)
-      // const response = await agent.put(`budget`, updateRequest);
-      // return response.data;
+      const response = await agent.put(`budget`, updateRequest);
+      return response.data;
     },
 
     onSuccess: () => {},

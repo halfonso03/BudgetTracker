@@ -20,10 +20,9 @@ import toast from 'react-hot-toast';
 import { useBudgetActions } from '../../api/hooks/useBudgetActions';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
-const userId = 1;
+const userId = 2;
 
 const Details = () => {
-  console.log('details render');
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
 
   const { updateBudget } = useBudgetActions();
@@ -33,10 +32,12 @@ const Details = () => {
   const rRef = useRef<HTMLDivElement | null>(null);
 
   const { year, initiativeId, grantId } = useParams();
+  console.log('first');
   const { data: budget, isLoading } = useBudgetDetails(
     +initiativeId!,
     +grantId!,
   );
+  console.log('second');
   const { data: initiatives } = useInitiatives();
   const initiative = initiatives?.filter((x) => x.id === +initiativeId!)[0];
 
@@ -223,7 +224,9 @@ const Details = () => {
       }));
 
     const updateRequest: UpdateBudgetRequest = {
-      updateBy: userId,
+      updatedBy: userId,
+      initiativeId: +initiativeId!,
+      grantId: +grantId!,
       lineItems: items,
     };
     try {
