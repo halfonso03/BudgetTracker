@@ -4,7 +4,7 @@ interface Props {
 
 const BudgetHeaderCreate = ({ bRef }: Props) => {
   return (
-    <div className="grid grid-cols-[.55fr_.25fr_.25fr] mt-2 mb-1 ">
+    <div className="mb-5  grid grid-cols-[.55fr_.25fr_.25fr]  ">
       <div></div>
       <div className="pl-3 py-2 text-end entity-label">Total Budgeted</div>
       <div></div>

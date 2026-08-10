@@ -12,16 +12,16 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class CommentsController(ICommentsService _commentsService) : ControllerBase
     {
-        [HttpGet("/budget/account")]
-        public async Task<IActionResult> GetBudgetCommentsForAccount(int initiativeId, int grantId, int accountId)
-        {
-            List<CommentDto> results = await _commentsService.GetBudgetComments(initiativeId, grantId, accountId);
+        // [HttpGet("/budget/account")]
+        // public async Task<IActionResult> GetBudgetCommentsForAccount(int initiativeId, int grantId, int accountId)
+        // {
+        //     List<CommentDto> results = await _commentsService.GetBudgetComments(initiativeId, grantId, accountId);
 
-            return Ok(results);
-        }
+        //     return Ok(results);
+        // }
 
         [HttpPost]
-        public async Task<IActionResult> Add(CommentDto commentDto)
+        public async Task<IActionResult> Add(CreateCommentDto commentDto)
         {
             int result = await _commentsService.AddComment(commentDto);
 
@@ -31,7 +31,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(CommentDto commentDto)
+        public async Task<IActionResult> Update(UpdateCommentDto commentDto)
         {
             int result = await _commentsService.UpdateComment(commentDto);
 

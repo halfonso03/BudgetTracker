@@ -304,6 +304,8 @@ namespace Persistence
             builder.Entity<BudgetComment>().Property(x => x.Text).HasColumnName("comment_text").HasColumnType("varchar(max)"); ;
             builder.Entity<BudgetComment>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
             builder.Entity<BudgetComment>().Property(x => x.EntryPersonId).HasColumnName("entry_user_id");
+            builder.Entity<BudgetComment>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+            builder.Entity<BudgetComment>().Property(x => x.UpdatePersonId).HasColumnName("update_user_id");
 
             builder.Entity<BudgetComment>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
             builder.Entity<BudgetComment>().Property(x => x.GrantId).HasColumnName("grant_id");

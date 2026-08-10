@@ -47,7 +47,13 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
+
 app.MapControllers();
+app.MapFallbackToController("Index", "Fallback");
 
 
 using var scope = app.Services.CreateScope();

@@ -3,7 +3,6 @@ import { formatCurrency } from '../../app/util';
 import { ArrowLeftRight, ChevronDownSquare, DollarSign } from 'lucide-react';
 import useBudgetSummary from '../../api/hooks/useBudgetSummary.tsx';
 import { Fragment, useState } from 'react';
-import MenuIdProvider from '../../contexts/MenuIdContext.tsx';
 
 // const grid_columns = '1fr_.5fr_1fr_1fr_1fr_1fr_.5fr_.3fr';
 
@@ -39,76 +38,79 @@ const Summary = ({ year }: Props) => {
     };
   });
 
+  if (!budgetSummaries.length)
+    return <div className="my-5">There are no budgets for {year}</div>;
+
   return (
-    <MenuIdProvider>
-      <div>
-        <div
-          className={`entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-4 `}
-        >
-          <div>Initiative</div>
-          <div>Grant</div>
-          <div className="text-end">Approved Budget</div>
-          <div className="text-end">Current Budget</div>
-          <div className="text-end">Spent Amount</div>
-          <div className="text-end">Remaining Balance</div>
-          {/* <div className="text-center entity-label">Details</div> */}
-          <div></div>
-        </div>
-        {budgetSummaries?.map((budget, index) => (
-          <div key={index} className=" border border-neutral-300 mb-5">
-            <div
-              className={`grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 p-3`}
-            >
-              <div className="entity-name">{budget.initiative_name}</div>
-              <div className="entity-name">{budget.grant_name}</div>
-              <div className="text-end underline underline-offset-3 font-semibold">
-                <Link
-                  to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
-                  className="text-blue-500"
-                >
-                  {formatCurrency(budget.approved_amount)}
-                </Link>
-              </div>
-              <div className="text-end">
-                {formatCurrency(budget.current_amount)}
-              </div>
-              <div className="text-end">
-                {formatCurrency(budget.spent_amount)}
-              </div>
-              <div className="text-end">
-                {formatCurrency(budget.remaining_amount)}
-              </div>
-              <div className="flex justify-center">
-                <ChevronDownSquare
-                  className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
-                  onClick={() => {
-                    if (expandedIndexes.some((x) => x == index)) {
-                      setExpandedIndexes((prev) =>
-                        prev.filter((x) => x !== index),
-                      );
-                    } else {
-                      setExpandedIndexes((prev) => [...prev, index]);
-                    }
-                  }}
-                ></ChevronDownSquare>
-              </div>
+    <div>
+      <div
+        className={`entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-4 `}
+      >
+        <div>Initiative</div>
+        <div>Grant</div>
+        <div className="text-end">Approved Budget</div>
+        <div className="text-end">Current Budget</div>
+        <div className="text-end">Spent Amount</div>
+        <div className="text-end">Remaining Balance</div>
+        {/* <div className="text-center entity-label">Details</div> */}
+        <div></div>
+      </div>
+      {budgetSummaries?.map((budget, index) => (
+        <div key={index} className=" border border-neutral-300 mb-5">
+          <div
+            className={`grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 p-3 `}
+          >
+            <div className="entity-name self-center">
+              {budget.initiative_name}
             </div>
-            <div
-              className={` pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}`}
-            >
-              <CategorySummary
-                initiativeId={budget.initiative_id}
-                grantId={budget.grant_id}
-                items={
-                  data.filter((x) => x.initiative_id == budget.initiative_id)[0]
-                    .account_balances
-                }
-              ></CategorySummary>
+            <div className="entity-name self-center">{budget.grant_name}</div>
+            <div className="text-end underline underline-offset-3 font-semibold self-center">
+              <Link
+                to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
+                className="text-blue-500 self-center"
+              >
+                {formatCurrency(budget.approved_amount)}
+              </Link>
+            </div>
+            <div className="text-end self-center">
+              {formatCurrency(budget.current_amount)}
+            </div>
+            <div className="text-end self-center">
+              {formatCurrency(budget.spent_amount)}
+            </div>
+            <div className="text-end self-center">
+              {formatCurrency(budget.remaining_amount)}
+            </div>
+            <div className="flex justify-center self-center">
+              <ChevronDownSquare
+                className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
+                onClick={() => {
+                  if (expandedIndexes.some((x) => x == index)) {
+                    setExpandedIndexes((prev) =>
+                      prev.filter((x) => x !== index),
+                    );
+                  } else {
+                    setExpandedIndexes((prev) => [...prev, index]);
+                  }
+                }}
+              ></ChevronDownSquare>
             </div>
           </div>
-        ))}
-      </div>
-    </MenuIdProvider>
+          <div
+            className={` pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}`}
+          >
+            <CategorySummary
+              initiativeId={budget.initiative_id}
+              grantId={budget.grant_id}
+              items={
+                data.filter((x) => x.initiative_id == budget.initiative_id)[0]
+                  .account_balances
+              }
+            ></CategorySummary>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 };
 

@@ -8,8 +8,8 @@ namespace Application.Interfaces
 {
     public interface ICommentsService
     {
-        Task<int> AddComment(CommentDto commentDto);
-        Task<List<CommentDto>> GetBudgetComments(int initiativeId, int grantId, int accountId);
-        Task<int> UpdateComment(CommentDto commentDto);
+        Task<int> AddComment(CreateCommentDto commentDto);
+        // Task<List<CommentDto>> GetBudgetComments(int initiativeId, int grantId, int accountId);
+        Task<int> UpdateComment(UpdateCommentDto commentDto);
     }
 }

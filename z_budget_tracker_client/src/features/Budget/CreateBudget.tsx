@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useFieldArray, useForm } from 'react-hook-form';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 
 import BudgetInputFieldsNewBudget from './BudgetInputFieldsNewBudget';
 import useCategories from '../../api/hooks/useCategories';
@@ -20,6 +20,7 @@ import BudgetHeaderCreate from './BudgetHeaderCreate';
 import { ChevronDownSquare } from 'lucide-react';
 import { useBudgetActions } from '../../api/hooks/useBudgetActions';
 import toast from 'react-hot-toast';
+import Button from '../../components/Button';
 
 const userId = 1;
 
@@ -30,7 +31,6 @@ type grp = {
 
 const CreateBudget = () => {
   const bRef = useRef<HTMLDivElement | null>(null);
-  const navigate = useNavigate();
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
   const { year, initiativeId, grantId } = useParams();
   const { data: grants } = useGrants(+year!);
@@ -43,8 +43,9 @@ const CreateBudget = () => {
   let budgetRows: BudgetInputRow[] = [];
   let runningTotal = 0;
 
-  const { createBudget, createBudgetSuccess, createBudgetPending } =
-    useBudgetActions();
+  const { createBudget } = useBudgetActions();
+
+  // , createBudgetSuccess, createBudgetPending
 
   const categoryAccountIndexes: Record<
     string,
@@ -163,21 +164,11 @@ const CreateBudget = () => {
       }));
     const createRequest: CreateBudgetRequest = {
       createdBy: userId,
+      year: +year!,
       lineItems: items,
     };
     try {
       createBudget(createRequest);
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
-
-      toast.success('Budget Created. Redirecting...', {
-        duration: 3000,
-      });
-      setTimeout(() => {
-        navigate(`/budget/${year}/${initiativeId}/${grantId}`);
-      }, 3000);
     } catch (error) {
       toast.error(error as string);
       console.log(error);
@@ -190,7 +181,7 @@ const CreateBudget = () => {
   let indexRunningTotal = -1;
   return (
     <div className="w-full mx-auto ">
-      <div className='mb-2 font-semibold text-2xl pb-5 text-neutral-700'>
+      <div className="mb-2 font-semibold text-2xl pb-5 text-neutral-700">
         Create New Budget
       </div>
       <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-2 py-2 border-b border-b-neutral-200  border-t border-t-neutral-200">
@@ -204,6 +195,11 @@ const CreateBudget = () => {
         </div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex justify-end mt-8 mb-2">
+          <Button type="submit" variation="primary">
+            Save Budget
+          </Button>
+        </div>
         <BudgetHeaderCreate bRef={bRef}></BudgetHeaderCreate>
 
         {categories.map((c, index) => {
@@ -324,10 +320,6 @@ const CreateBudget = () => {
             </div>
           );
         })}
-
-        <button type="submit" className="p-2 border cursor-pointer ">
-          Submit Form
-        </button>
       </form>
     </div>
   );

@@ -19,7 +19,10 @@ namespace Domain
         public required int AccountId { get; set; }
         public required DateTime EntryDate { get; set; }
         public required int EntryPersonId { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public int? UpdatePersonId { get; set; }
         public AuthorizedUser? EntryPerson { get; set; }
+        public AuthorizedUser? UpdatePerson { get; set; }
         public Grant? Grant { get; set; }
         public Initiative? Initiative { get; set; }
         public Account? Account { get; set; }

@@ -12,7 +12,7 @@ namespace Application.Services
 {
     public class CommentsService(AppDbContext _dbContext) : ICommentsService
     {
-        public async Task<int> AddComment(CommentDto commentDto)
+        public async Task<int> AddComment(CreateCommentDto commentDto)
         {
             if (commentDto.CommentType == CommentTypeEnum.Budget)
             {
@@ -48,22 +48,25 @@ namespace Application.Services
             return 0;
         }
 
-        public async Task<int> UpdateComment(CommentDto commentDto)
+        public async Task<int> UpdateComment(UpdateCommentDto commentDto)
         {
             if (commentDto.CommentType == CommentTypeEnum.Budget)
             {
                 try
                 {
-                    var comment = await _dbContext.BudgetComments.FirstAsync(x =>
-                                x.InitiativeId == commentDto.InitiativeId &&
-                                x.GrantId == commentDto.GrantId &&
-                                x.AccountId == commentDto.AccountId);
+                    var comment = await _dbContext.BudgetComments.FirstOrDefaultAsync(x =>
+                                x.Id == commentDto.Id);
 
-                    comment.Text = commentDto.Text.Trim(); ;
+                    if (comment is not null)
+                    {
+                        comment.Text = commentDto.Text.Trim();
+                        comment.UpdateDate = DateTime.Now;
+                        comment.UpdatePersonId = commentDto.UserId;
 
-                    var result = await _dbContext.SaveChangesAsync();
+                        await _dbContext.SaveChangesAsync();
+                    }
 
-                    return comment.Id;
+                    return commentDto.Id;
                 }
                 catch
                 {
@@ -80,17 +83,17 @@ namespace Application.Services
         }
 
 
-        public async Task<List<CommentDto>> GetBudgetComments(int initiativeId, int grantId, int accountId)
-        {
-            var results = await _dbContext.BudgetComments
-                                .Where(x => x.InitiativeId == initiativeId &&
-                                    x.GrantId == grantId &&
-                                    x.AccountId == accountId)
-                                .Select(x =>
-                                    CommentDto.Create(CommentTypeEnum.Budget, x.InitiativeId, x.GrantId, x.AccountId, x.Text, x.EntryPersonId, x.EntryDate))
-                                .ToListAsync();
+        // public async Task<List<CommentDto>> GetBudgetComments(int initiativeId, int grantId, int accountId)
+        // {
+        //     var results = await _dbContext.BudgetComments
+        //                         .Where(x => x.InitiativeId == initiativeId &&
+        //                             x.GrantId == grantId &&
+        //                             x.AccountId == accountId)
+        //                         .Select(x =>
+        //                             CommentDto.Create(CommentTypeEnum.Budget, x.InitiativeId, x.GrantId, x.AccountId, x.Text, x.EntryPersonId, x.EntryDate))
+        //                         .ToListAsync();
 
-            return results;
-        }
+        //     return results;
+        // }
     }
 }

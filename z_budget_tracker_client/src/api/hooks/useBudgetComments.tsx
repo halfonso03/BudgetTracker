@@ -1,29 +1,29 @@
-import { useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
+import agent from '../agent';
 
-const saveComments2 = async (c: string = '') => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(c);
-    }, 500);
-  });
-};
-
-const useBudgetComments = (
+const useBudgetLlineItemComment = (
   initiativeId: number,
   grantId: number,
   accountId: number,
-  comment: string,
 ) => {
-  const {
-    mutate: saveComments,
-    isPending: isSaveCommentsPending,
-    isSuccess: isSaveCommentsSuccess,
-  } = useMutation({
-    mutationFn: saveComments2,
+  const { data: comment } = useQuery({
+    queryFn: async () => {
+      const response = await agent.get<BudgetComment>(`/comments/budget`, {
+        params: {
+          initiativeId: initiativeId,
+          grantId: grantId,
+          accountId: accountId
+        },
+      });
+      return response.data;
+    },
+    queryKey: ['comment', initiativeId, grantId, accountId],
   });
 
+
   console.log(initiativeId, grantId, accountId, comment);
-  return { saveComments, isSaveCommentsPending, isSaveCommentsSuccess };
+
+  return { comment };
 };
 
-export default useBudgetComments;
+export default useBudgetLlineItemComment;

@@ -74,16 +74,6 @@ const BudgetInputFields = ({
     setCommentsOpen(true);
   }
 
-  function handleSaveComments() {
-    try {
-      console.log('13', 13);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setCommentsOpen(false);
-    }
-  }
-
   function getCellColor(isLastRow: boolean, amount: string) {
     if (isLastRow) return 'bg-neutral-100 font-bold text-neutral-600 ';
     if (isNaN(parseFormattedNumber(amount))) return 'text-neutral-400';
@@ -233,20 +223,22 @@ const BudgetInputFields = ({
             ></DollarSign>
           </>
         ) : (
-          <div className={`${isLastRow &&  "py-1"}`}>&nbsp;</div>
+          <div className={`${isLastRow && 'py-1'}`}>&nbsp;</div>
         )}
       </div>
       {commentsOpen && (
-        <CommentsModal
+        <CommentsModal        
           initiativeId={initiativeId}
           grantId={grantId}
           accountId={accountId}
           accountName={fieldName}
-          onSaveComments={handleSaveComments}
+          onCommentSaved={() => {
+            setCommentsOpen(false);
+          }}
           onCancelForm={() => {
             setCommentsOpen(false);
           }}
-          currentComments={comment}
+          text={comment}
         ></CommentsModal>
       )}
     </>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 using Application.DTOs.Budgets;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -24,47 +25,20 @@ namespace API.Controllers
         [HttpGet("GetBudget")]
         public async Task<IActionResult> GetBudget(int initiativeId, int grantId)
         {
-            var budgets = await _budgetService.GetBudget(initiativeId, grantId);
-
-            return Ok(budgets);
+            return Ok(await _budgetService.GetBudget(initiativeId, grantId));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateBudget(CreateBudgetRequestDto createBudgetDto)
         {
-            try
-            {
-                await _budgetService.CreateBudget(createBudgetDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error in {nameof(CreateBudget)}: {ex.Message}");
-
-                throw;
-            }
-
-            return Ok();
+            return HandleResult(await _budgetService.CreateBudget(createBudgetDto));
         }
 
 
         [HttpPut]
         public async Task<IActionResult> UpdateBudget(UpdateBudgetRequestDto updateBudgetDto)
         {
-            try
-            {
-                await _budgetService.UpdateBudget(updateBudgetDto);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error in {nameof(UpdateBudget)}: {ex.Message}");
-
-                throw;
-            }
-
-            return Ok();
+            return HandleResult(await _budgetService.UpdateBudget(updateBudgetDto));
         }
-
-
-
     }
 }

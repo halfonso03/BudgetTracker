@@ -18,6 +18,7 @@ import useBudgetDetails from '../../api/hooks/useBudgetDetails';
 import BudgetHeader from './BudgetHeader';
 import toast from 'react-hot-toast';
 import { useBudgetActions } from '../../api/hooks/useBudgetActions';
+import Button from '../../components/Button';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
 const userId = 2;
@@ -32,12 +33,10 @@ const Details = () => {
   const rRef = useRef<HTMLDivElement | null>(null);
 
   const { year, initiativeId, grantId } = useParams();
-  console.log('first');
   const { data: budget, isLoading } = useBudgetDetails(
     +initiativeId!,
     +grantId!,
   );
-  console.log('second');
   const { data: initiatives } = useInitiatives();
   const initiative = initiatives?.filter((x) => x.id === +initiativeId!)[0];
 
@@ -231,20 +230,10 @@ const Details = () => {
     };
     try {
       updateBudget(updateRequest);
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth',
-      });
-
-      toast.success('Budget Updated.', {
-        duration: 2500,
-      });
     } catch (error) {
       toast.error(error as string);
       console.log(error);
     }
-
-    console.log('updateRequest', updateRequest);
   };
 
   useEffect(() => {
@@ -270,6 +259,12 @@ const Details = () => {
         <div className="entity-name">{grant?.name}</div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <div className='flex justify-end mt-8 mb-4'>
+          <Button type="submit"  variation='primary'>
+            Save Budget
+          </Button>
+        </div>
+
         <BudgetHeader
           bRef={bRef}
           cRef={cRef}
@@ -317,7 +312,7 @@ const Details = () => {
                 <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
                   Current
                 </div>
-                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-500 border-b border-b-neutral-200">
+                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
                   Spent
                 </div>
                 <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
@@ -425,10 +420,6 @@ const Details = () => {
             </div>
           );
         })}
-
-        <button type="submit" className="p-2 border ">
-          Submit Form
-        </button>
       </form>
     </div>
   );

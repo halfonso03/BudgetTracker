@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Common
 {
-    public class CommentDto
+    public class CreateCommentDto
     {
         public CommentTypeEnum CommentType { get; set; }
         public required int InitiativeId { get; set; }
@@ -14,9 +14,9 @@ namespace Application.DTOs.Common
         public required string Text { get; set; }
         public required int UserId { get; set; }
         public DateTime? EntryDate { get; set; }
-        public static CommentDto Create(CommentTypeEnum commentType, int initiativeId, int grantId, int accountId, string text, int userId, DateTime? entryDate = null)
+        public static CreateCommentDto Create(CommentTypeEnum commentType, int initiativeId, int grantId, int accountId, string text, int userId, DateTime? entryDate = null)
         {
-            return new CommentDto()
+            return new CreateCommentDto()
             {
                 CommentType = commentType,
                 InitiativeId = initiativeId,
