@@ -1,12 +1,12 @@
-import { useState } from 'react';
 import Button from '../../components/Button';
 import Modal, { type ModalSize } from '../../components/Modal';
 import { useCommentActions } from '../../api/hooks/useCommentsActions';
 import { useForm } from 'react-hook-form';
-import useAuth from '../../contexts/useAuth';
 import useBudgetLlineItemComment from '../../api/hooks/useBudgetComments';
+type Mode = 'new_budget' | 'existing_budget';
 
 interface Props {
+  mode: Mode;
   initiativeId: number;
   grantId: number;
   accountId: number;
@@ -22,57 +22,58 @@ type CommentsFormValues = {
   initiativeId: number;
   grantId: number;
   accountId: number;
-  commentId: number;
-  text: string;
 };
 
 const CommentsModal = ({
+  mode,
   initiativeId,
   grantId,
   accountId,
-  text,
   accountName,
   onCancelForm,
   size = 'md',
 }: Props) => {
-  const { comment } = useBudgetLlineItemComment(
-    initiativeId,
-    grantId,
-    accountId,
-  );
+  const { comment, fetchingComment, fetchCommentSuccess } =
+    useBudgetLlineItemComment(
+      initiativeId,
+      grantId,
+      accountId,
+      mode == 'existing_budget',
+    );
+
+  const currentComment: BudgetComment =
+    (fetchCommentSuccess || mode == 'existing_budget') &&
+    comment !== null &&
+    comment?.id &&
+    comment.text
+      ? { ...comment }
+      : { id: 0, text: '' };
 
   const { handleSubmit, register } = useForm({
     defaultValues: {
-      commentId: comment?.id
+      commentId: currentComment.id,
       initiativeId: initiativeId,
       grantId: grantId,
       accountId: accountId,
-      text: text,
+      text: currentComment.text,
     },
   });
 
-  const { userId } = useAuth();
+  // const { userId } = useAuth();
 
-  const {
-    createComment,
-    createCommentPending,
-    updateComment,
-    updateCommentPending,
-  } = useCommentActions();
-
-  const [comment, setComment] = useState<string | undefined>(text);
+  const { createCommentPending, updateCommentPending } = useCommentActions();
 
   function onSubmit(data: CommentsFormValues) {
     console.log('data', data);
-    try {
-      if (commentId === 0) {
-        createComment({ ...data, userId: userId! });
-      } else {
-        updateComment({ id: data.commentId, text: data.text, userId: userId! });
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   if (comment?.id === 0) {
+    //     createComment({ ...data, userId: userId! });
+    //   } else {
+    //     updateComment({ id: data.commentId, text: data.text, userId: userId! });
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   }
 
   return (
@@ -88,17 +89,15 @@ const CommentsModal = ({
           <input type="text" {...register('grantId')} />
           <input type="text" {...register('accountId')} />
           <textarea
-            value={comment?.text}
             {...register('text')}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-              setComment(e.target.value)
-            }
             className="w-full border border-neutral-300 rounded-sm p-2"
           ></textarea>
           <div className="flex justify-end gap-3 p-3 border-t border-t-neutral-300">
             <Button
               buttonSize="medium"
-              disabled={createCommentPending || updateCommentPending}
+              disabled={
+                fetchingComment || createCommentPending || updateCommentPending
+              }
             >
               {createCommentPending || updateCommentPending
                 ? 'Saving...'
@@ -110,7 +109,9 @@ const CommentsModal = ({
               type="button"
               variation="secondary"
               onClick={onCancelForm}
-              disabled={createCommentPending || updateCommentPending}
+              disabled={
+                fetchingComment || createCommentPending || updateCommentPending
+              }
             >
               Cancel
             </Button>

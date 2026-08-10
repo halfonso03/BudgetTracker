@@ -97,6 +97,11 @@ type BudgetInputRow = {
     remaining_amount?: string;
 };
 
+type Comment = {
+    id: number,
+    text: string
+}
+
 // used by CreateBudget.tsx
 type BudgetRows = {
     rows: BudgetInputRow[];

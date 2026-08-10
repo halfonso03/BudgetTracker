@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Application.DTOs.Common;
 
 namespace Application.DTOs.Budgets
 {
@@ -17,7 +18,7 @@ namespace Application.DTOs.Budgets
         [JsonPropertyName("account_number")]
         public string? AccountNumber { get; set; }
 
-        public string? Comment { get; set; }
+        public CommentDto? Comment { get; set; }
 
         public required double Amount { get; set; } = 0;
 

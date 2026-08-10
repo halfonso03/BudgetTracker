@@ -7,6 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.DTOs.Budgets;
+using Application.DTOs.Common;
 using Application.Interfaces;
 using Domain;
 using Microsoft.EntityFrameworkCore;
@@ -124,7 +125,7 @@ namespace Application.services
 
             var baseItems = (from a in _accounts
                              select new AccountBalancesDto
-                             {
+                             {                            
                                  AccountId = a.Id,
                                  Name = a.Name,
                                  AccountNumber = a.Number,
@@ -133,10 +134,17 @@ namespace Application.services
                                  SpentAmount = items.Where(x => x.ItemType == "D" && x.AccountId == a.Id).Sum(x => x.Amount),
                                  CurrentAmount = items.Where(x => (x.ItemType == "R" || x.ItemType == "B") && x.AccountId == a.Id).Sum(x => x.Amount),
                                  Category = CategoryDto.CreateFromDomain(_accounts.First(x => x.CategoryId == a.CategoryId).Category),
-                                 CommentCount = comments != null ? comments.Count(x => x.AccountId == a.Id) : 0
+                                 Comment = CreateCommentDto(a.Id, comments)
                              }).ToList();
 
             return baseItems;
+        }
+        
+        public CommentDto? CreateCommentDto(int accountId, List<BudgetComment>? comments = null)
+        {
+            var comment = comments?.FirstOrDefault(x => x.AccountId == accountId);
+            if (comment is not null) return CommentDto.Create(comment.Id, comment.Text);
+            return null;
         }
 
         public async Task<Result<Unit>> CreateBudget(CreateBudgetRequestDto createBudgetDto)
@@ -179,7 +187,7 @@ namespace Application.services
             {
                 return Result<Unit>.Failure(ex.Message, 400);
             }
-            
+
             return Result<Unit>.Success(Unit.Value);
         }
 
