@@ -58,7 +58,7 @@ const Modal = ({ isOpen, onClose, size, title, children }: ModalProps) => {
             <X className="text-gray-700 hover:text-gray-500 dark:text-neutral-300 dark:hover:text-neutral-100 transition-all duration-200"></X>
           </button>
         </div>
-        <div className="pt-2  ">{children}</div>
+        <div className="pt-2">{children}</div>
       </div>
     </div>,
     document.body, // The target DOM container

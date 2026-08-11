@@ -10,6 +10,7 @@ interface Props {
   year: number;
 }
 const Summary = ({ year }: Props) => {
+
   const { data, isLoading } = useBudgetSummary(year);
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
 

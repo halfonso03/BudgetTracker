@@ -3,10 +3,12 @@ import { createContext, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
-  token: string | null;
-  user: string | null;
+  // token: string | null;
+  // user: string | null;
   userId: number | null;
-  login: (accessToken: string, userData: string, userId: number) => void;
+  login: (userId: number) => void;
+  // login: (accessToken: string, userData: string, userId: number) => void;
+
   logout: () => void;
   isLoggedIn: () => boolean;
 }
@@ -20,24 +22,24 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: AuthProps) => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<number | null>(null);
-  const [token, setToken] = useState<string | null>(() => {
-    const i = localStorage.getItem('token');
-    if (i) return i;
-    return null;
-  });
+  // const [token, setToken] = useState<string | null>(() => {
+  //   const i = localStorage.getItem('token');
+  //   if (i) return i;
+  //   return null;
+  // });
 
-  const [user, setUser] = useState<string | null>(() => {
-    const i = localStorage.getItem('user');
-    if (i) return i;
-    return null;
-  });
+  // const [user, setUser] = useState<string | null>(() => {
+  //   const i = localStorage.getItem('user');
+  //   if (i) return i;
+  //   return null;
+  // });
 
-  const login = (token: string, userData: string, userId: number) => {
+  const login = (userId: number) => {
     setUserId(userId);
-    setToken(token);
-    setUser(userData);
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', userData);
+    // setToken(token);
+    // setUser(userData);
+    // localStorage.setItem('token', token);
+    // localStorage.setItem('user', userData);
   };
 
   const logout = () => {
@@ -67,9 +69,7 @@ export const AuthProvider = ({ children }: AuthProps) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ token, user, userId, login, logout, isLoggedIn }}
-    >
+    <AuthContext.Provider value={{ userId, login, logout, isLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );

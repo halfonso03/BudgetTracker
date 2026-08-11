@@ -19,11 +19,13 @@ import BudgetHeader from './BudgetHeader';
 import toast from 'react-hot-toast';
 import { useBudgetActions } from '../../api/hooks/useBudgetActions';
 import Button from '../../components/Button';
+import useAuth from '../../contexts/useAuth';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
-const userId = 2;
 
 const Details = () => {
+  const { userId } = useAuth();
+
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
 
   const { updateBudget } = useBudgetActions();
@@ -43,7 +45,7 @@ const Details = () => {
   const { data: grants } = useGrants(+year!);
   const grant = grants?.filter((x) => x.id == +grantId!)[0];
 
-  console.log('budget', budget)
+  // console.log('budget', budget);
   let budgetRows: BudgetInputRow[] = [];
   const categories: Category[] = [];
 
@@ -66,13 +68,17 @@ const Details = () => {
     }
   }
 
+  // if (budget?.account_balances) {
+  //   console.log(budget?.account_balances);
+  // }
+
   // get budgets rows
   if (budget && budget.account_balances) {
     for (const cat of categories) {
       const accounts: BudgetInputRow[] = budget.account_balances
         .filter((i) => i.category_id == cat.id)
         .sort((a, b) => a.account_name.localeCompare(b.account_name))
-        .map((item) => ({
+        .map((item: AccountBalance) => ({
           accountId: item.account_id,
           categoryId: item.category_id!,
           spent_amount: formatNumber(item.spent_amount),
@@ -109,7 +115,6 @@ const Details = () => {
         current_amount: formatterTotalCurrent,
         spent_amount: formattedTotalSpent,
         remaining_amount: formatNumber(totalBudgeted + totalSpent),
-        comment: '',
         name: 'Total',
       };
 
@@ -260,12 +265,11 @@ const Details = () => {
         <div className="entity-name">{grant?.name}</div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className='flex justify-end mt-8 mb-4'>
-          <Button type="submit"  variation='primary'>
+        <div className="flex justify-end mt-8 mb-4">
+          <Button type="submit" variation="primary">
             Save Budget
           </Button>
         </div>
-
         <BudgetHeader
           bRef={bRef}
           cRef={cRef}

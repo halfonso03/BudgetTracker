@@ -16,7 +16,7 @@ interface Props {
   initiativeId: number;
   grantId: number;
   accountId: number;
-  comment: string;
+  comment?: BudgetComment;
   fieldName: string;
   budgetedAmount: string;
   currentAmount: string;
@@ -196,7 +196,7 @@ const BudgetInputFields = ({
             tabIndex={-1}
             onClick={() => onOpenComments()}
           >
-            0 Comments
+            {comment?.text ? 1 : 0} comment
           </button>
         ) : (
           <div>&nbsp;</div>
@@ -227,7 +227,8 @@ const BudgetInputFields = ({
         )}
       </div>
       {commentsOpen && (
-        <CommentsModal        
+        <CommentsModal
+          mode="existing_budget"
           initiativeId={initiativeId}
           grantId={grantId}
           accountId={accountId}
@@ -238,7 +239,8 @@ const BudgetInputFields = ({
           onCancelForm={() => {
             setCommentsOpen(false);
           }}
-          text={comment}
+          commentId={comment?.id ?? 0}
+          commentText={comment?.text ?? ''}
         ></CommentsModal>
       )}
     </>

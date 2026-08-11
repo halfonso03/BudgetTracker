@@ -48,7 +48,7 @@ type AccountBalance = {
     account_id: number
     account_name: string,
     account_number: string
-    comment: string
+    comment: BudgetComment
     amount: number
     current_amount: number,
     spent_amount: number
@@ -83,24 +83,18 @@ type Budget = {
     grant?: Grant
 }
 
-
-
 // used by CreateBudget.tsx
 type BudgetInputRow = {
     accountId: number;
     categoryId: number;
     amount: string;
     name: string;
-    comment: string;
+    comment?: BudgetComment;
     current_amount?: string;
     spent_amount?: string;
     remaining_amount?: string;
 };
 
-type Comment = {
-    id: number,
-    text: string
-}
 
 // used by CreateBudget.tsx
 type BudgetRows = {
@@ -135,7 +129,6 @@ type BudgetComment = {
     text: string
 }
 
-
 type CreateCommentRequest = {
     initiativeId: number,
     grantId: number,
@@ -143,7 +136,6 @@ type CreateCommentRequest = {
     text: string,
     userId: number
 }
-
 
 type UpdateCommentRequest = {
     id: number
