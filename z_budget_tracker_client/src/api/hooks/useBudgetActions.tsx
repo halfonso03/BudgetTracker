@@ -54,7 +54,7 @@ export const useBudgetActions = () => {
         behavior: 'smooth',
       });
       toast.success('Budget Updated.', {
-        duration: 2500,
+        duration: 2000,
       });
     },
     onError: () => {

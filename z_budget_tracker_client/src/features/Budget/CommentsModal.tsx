@@ -73,7 +73,7 @@ const CommentsModal = ({
     }).then(() => {
       setTimeout(() => {
         onCommentSaved();
-      }, 1100);
+      }, 400);
     });
   }
 

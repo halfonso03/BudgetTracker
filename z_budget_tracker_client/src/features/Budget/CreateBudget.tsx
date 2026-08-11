@@ -72,12 +72,16 @@ const CreateBudget = () => {
     for (const cat in groupedCategories) {
       const value = groupedCategories[cat];
 
-      const accounts: BudgetInputRow[] = value[0].map((item: Account) => ({
-        accountId: item.id,
-        categoryId: item.category_id!,
-        amount: '0.00',
-        name: item.name,
-      }));
+      const accounts: BudgetInputRow[] = value[0]
+        .sort((a: BudgetInputRow, b: BudgetInputRow) =>
+          a.name.localeCompare(b.name),
+        )
+        .map((item: Account) => ({
+          accountId: item.id,
+          categoryId: item.category_id!,
+          amount: '0.00',
+          name: item.name,
+        }));
 
       const totalRow = {
         accountId: 999,
@@ -119,13 +123,16 @@ const CreateBudget = () => {
         );
       })
       .reduce((acc, curr) => acc + curr, 0);
-    if (bRef && bRef.current)
+
+    if (bRef && bRef.current) {
       bRef.current!.innerHTML = formatCurrency(totalBudgeted);
+      setCanSubmitForm(totalBudgeted > 0);
+    }
   }
 
   const calculateTotals = useCallback(() => {
     calculateTotalBudgeted();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories, categoryAccountIndexes]);
 
   useEffect(() => {
@@ -151,8 +158,6 @@ const CreateBudget = () => {
     setValue(`rows.${totalsIndex}.amount`, formatNumber(categoryTotal));
 
     calculateTotalBudgeted();
-
-    setCanSubmitForm(categoryTotal > 0);
   }
 
   const onSubmit = (data: BudgetRows) => {
@@ -195,7 +200,7 @@ const CreateBudget = () => {
           });
         }
       } else {
-        setCommentsList(prev => ([...prev, e]))
+        setCommentsList((prev) => [...prev, e]);
       }
     } catch (error) {
       console.log('error', error);

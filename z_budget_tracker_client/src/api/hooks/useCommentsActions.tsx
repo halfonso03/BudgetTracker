@@ -53,7 +53,7 @@ export const useCommentActions = () => {
     isSuccess: updateCommentSuccess,
   } = useMutation({
     mutationFn: async (updateRequest: UpdateCommentRequest) => {
-      await sleep(1500);
+      await sleep(800);
       await agent.put(`comments`, updateRequest);
       return updateRequest;
     },

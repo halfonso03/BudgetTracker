@@ -143,7 +143,7 @@ namespace Application.services
             return baseItems;
         }
 
-        public CommentDto? CreateCommentDto(int accountId, List<BudgetComment>? comments = null)
+        public static CommentDto? CreateCommentDto(int accountId, List<BudgetComment>? comments = null)
         {
             var comment = comments?.FirstOrDefault(x => x.AccountId == accountId);
             if (comment is not null)
@@ -175,7 +175,7 @@ namespace Application.services
 
             try
             {
-                var items = createBudgetDto.LineItems.Select(x => new BudgetLineItem
+                _dbContext.BudgetLineItems.AddRange(createBudgetDto.LineItems.Select(x => new BudgetLineItem
                 {
                     Id = 0,
                     InitiativeId = x.InitiativeId,
@@ -185,22 +185,20 @@ namespace Application.services
                     ItemType = "B",
                     CreateDate = DateTime.Now,
                     CreatedBy = createBudgetDto.CreatedBy
-                });
+                }));
 
-                _dbContext.BudgetLineItems.AddRange(items);
-
-                var comments = createBudgetDto.Comments.Select(x => new BudgetComment
-                {
-                    Id = 0,
-                    AccountId = x.AccountId,
-                    InitiativeId = initiativeId,
-                    GrantId = grantId,
-                    Text = x.Text,
-                    EntryDate = DateTime.Now,
-                    EntryPersonId = createBudgetDto.CreatedBy
-                });
-
-                _dbContext.BudgetComments.AddRange(comments);
+                _dbContext.BudgetComments.AddRange(createBudgetDto.Comments
+                    .Where(x => !string.IsNullOrEmpty(x.Text))
+                    .Select(x => new BudgetComment
+                    {
+                        Id = 0,
+                        AccountId = x.AccountId,
+                        InitiativeId = initiativeId,
+                        GrantId = grantId,
+                        Text = x.Text,
+                        EntryDate = DateTime.Now,
+                        EntryPersonId = createBudgetDto.CreatedBy
+                    }));
 
                 await _dbContext.SaveChangesAsync();
             }
