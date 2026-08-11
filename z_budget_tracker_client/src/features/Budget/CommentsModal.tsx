@@ -12,8 +12,6 @@ interface Props {
   initiativeId: number;
   grantId: number;
   accountId: number;
-  commentId: number;
-  commentText: string;
   size?: ModalSize;
   onCommentSaved: () => void;
   onCancelForm: () => void;
@@ -61,13 +59,10 @@ const CommentsModal = ({
     createCommentSuccess,
   } = useCommentActions();
 
-  // console.log('commentId', commentId);
-  // console.log('commentText', commentText);
-
   const { handleSubmit, register, setValue } = useForm({
     defaultValues: {
-      commentId: comment?.id,
-      text: comment?.text,
+      commentId: comment?.id ?? 0,
+      text: comment?.text ?? '',
       initiativeId: initiativeId,
       grantId: grantId,
       accountId: accountId,
@@ -81,7 +76,7 @@ const CommentsModal = ({
     }).then(() => {
       setTimeout(() => {
         onCommentSaved();
-      }, 1500);
+      }, 1000);
     });
   }
 
@@ -153,8 +148,8 @@ const CommentsModal = ({
             handleSubmit(onSubmit)(event);
           }}
         >
-          <input type="text" {...register('commentId')} />
-          <br />
+          {/* <input type="text" {...register('commentId')} />
+          <br /> */}
           {/* CommentId:
           
           Initiative:

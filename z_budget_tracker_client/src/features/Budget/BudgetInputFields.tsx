@@ -241,7 +241,7 @@ const BudgetInputFields = ({
           setTimeout(() => {
             setCommentsOpen(false);
             setAnimateOut(false);
-          }, 650);
+          }, 1200);
         }}
         onCancelForm={() => {
           setAnimateOut(true);
@@ -251,8 +251,6 @@ const BudgetInputFields = ({
           }, 650);
         }}
         comment={comment}
-        commentId={comment?.id ?? 0}
-        commentText={comment?.text ?? ''}
       ></CommentsModal>
     </>
   );

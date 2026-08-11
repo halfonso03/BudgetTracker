@@ -19,13 +19,11 @@ import BudgetHeader from './BudgetHeader';
 import toast from 'react-hot-toast';
 import { useBudgetActions } from '../../api/hooks/useBudgetActions';
 import Button from '../../components/Button';
-import useAuth from '../../contexts/useAuth';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
 
 const Details = () => {
-  const { userId } = useAuth();
-
+  const userId = 1;
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
 
   const { updateBudget } = useBudgetActions();
@@ -251,19 +249,19 @@ const Details = () => {
 
   let indexRunningTotal = -1;
 
-  function testCommetnField() {
-    const c = fields.filter((x) => x.accountId == 1)[0];
+  // function testCommetnField() {
+  //   const c = fields.filter((x) => x.accountId == 1)[0];
 
-    console.log('c', c.id);
+  //   console.log('c', c.id);
 
-    // setValue(
-    //   `rows.${totalsIndex}.remaining_amount`,
-    //   formatNumber(categoryTotal + totalSpent),
-    // );
-  }
+  //   // setValue(
+  //   //   `rows.${totalsIndex}.remaining_amount`,
+  //   //   formatNumber(categoryTotal + totalSpent),
+  //   // );
+  // }
   return (
     <div className="w-full mx-auto">
-      <Button onClick={testCommetnField}>Comment</Button>
+      {/* <Button onClick={testCommetnField}>Comment</Button> */}
       <div className="mb-2 font-semibold text-2xl pb-5 text-neutral-700">
         Edit Budget
       </div>

@@ -53,7 +53,7 @@ const Modal = ({
     <div
       onClick={onClose}
       className="fixed inset-0 z-50 h-dvh w-screen bg-black/50 flex justify-center "
-      style={{ backgroundColor: 'rgb(0 ,0, 0, .8' }}
+      style={{ backgroundColor: 'rgb(0 ,0, 0, .8)' }}
     >
       {/* modal */}
       <div
@@ -74,21 +74,5 @@ const Modal = ({
     document.body, // The target DOM container
   );
 };
-
-// <div
-//       onClick={onClose}
-//       style={{ backgroundColor: 'rgb(0 ,0, 0, .8' }}
-//       className={`fixed inset-0 min-h-screen bg-gray-900 flex items-center justify-center p-5 `}
-//     >
-//       <div className={modalStyles + ' relative bg-white border-r-2 z-1000 rounded-sm animate-fade-in'} onClick={(e) => e.stopPropagation()}>
-//         <div className="w-full mb-2 p-4 flex justify-between align-center border-b border-gray-300 ">
-//           <h2 className="m-0 p-0 text-2xl text-gray-800">{title}</h2>
-//           <button style={closeButtonStyles} onClick={onClose}>
-//             <X className="text-gray-500 hover:text-gray-900"></X>
-//           </button>
-//         </div>
-//         <div className="py-1 px-4 ">{children}</div>
-//       </div>
-//     </div>
 
 export default Modal;
