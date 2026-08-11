@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useFieldArray, useForm } from 'react-hook-form';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
-import {  useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import BudgetInputFieldsNewBudget from './BudgetInputFieldsNewBudget';
 import useCategories from '../../api/hooks/useCategories';
@@ -19,8 +19,8 @@ import {
 import BudgetHeaderCreate from './BudgetHeaderCreate';
 import { ChevronDownSquare } from 'lucide-react';
 import { useBudgetActions } from '../../api/hooks/useBudgetActions';
-import toast from 'react-hot-toast';
 import Button from '../../components/Button';
+import toast from 'react-hot-toast';
 
 const userId = 1;
 
@@ -36,6 +36,8 @@ const CreateBudget = () => {
   const { data: grants } = useGrants(+year!);
   const { data: initiatives } = useInitiatives();
   const { data: categories, isLoading: loadingCategories } = useCategories();
+  const [canSubmitForm, setCanSubmitForm] = useState(false);
+  const { createBudget } = useBudgetActions();
 
   const initiative = initiatives?.filter((x) => x.id === +initiativeId!)[0];
   const grant = grants?.filter((x) => x.id == +grantId!)[0];
@@ -43,9 +45,9 @@ const CreateBudget = () => {
   let budgetRows: BudgetInputRow[] = [];
   let runningTotal = 0;
 
-  const { createBudget } = useBudgetActions();
-
-  // , createBudgetSuccess, createBudgetPending
+  const [commentsList, setCommentsList] = useState<
+    { accountId: number; text: string }[]
+  >([]);
 
   const categoryAccountIndexes: Record<
     string,
@@ -75,14 +77,12 @@ const CreateBudget = () => {
         categoryId: item.category_id!,
         amount: '0.00',
         name: item.name,
-        comment: '',
       }));
 
       const totalRow = {
         accountId: 999,
         categoryId: categories.filter((x) => x.name == cat)[0].id,
         amount: '0.00',
-        comment: '',
         name: 'Total',
       };
 
@@ -151,9 +151,12 @@ const CreateBudget = () => {
     setValue(`rows.${totalsIndex}.amount`, formatNumber(categoryTotal));
 
     calculateTotalBudgeted();
+
+    setCanSubmitForm(categoryTotal > 0);
   }
 
   const onSubmit = (data: BudgetRows) => {
+    const t = commentsList.map((x) => x);
     const items: CreateBudgetLineItemsRequest[] = data.rows
       .filter((x) => parseFormattedNumber(x.amount) > 0 && x.accountId != 999)
       .map((x) => ({
@@ -166,7 +169,9 @@ const CreateBudget = () => {
       createdBy: userId,
       year: +year!,
       lineItems: items,
+      comments: t,
     };
+
     try {
       createBudget(createRequest);
     } catch (error) {
@@ -174,6 +179,28 @@ const CreateBudget = () => {
       console.log(error);
     }
   };
+
+  function handleSaveComments(e: { accountId: number; text: string }) {
+    try {
+      if (commentsList.some((x) => x.accountId == e.accountId)) {
+        if (!e.text) {
+          setCommentsList((prev) => [
+            ...prev.filter((x) => x.accountId != e.accountId),
+          ]);
+        } else {
+          setCommentsList((prev) => {
+            prev.filter((x) => x.accountId == e.accountId)[0].text = e.text;
+            const newList = [...prev];
+            return newList;
+          });
+        }
+      } else {
+        setCommentsList(prev => ([...prev, e]))
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
 
   if (loadingCategories) return <div>Loading...</div>;
   if (!categories) return <span>Error</span>;
@@ -196,8 +223,8 @@ const CreateBudget = () => {
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex justify-end mt-8 mb-2">
-          <Button type="submit" variation="primary">
-            Save Budget
+          <Button type="submit" variation="primary" disabled={!canSubmitForm}>
+            Create Budget
           </Button>
         </div>
         <BudgetHeaderCreate bRef={bRef}></BudgetHeaderCreate>
@@ -258,7 +285,6 @@ const CreateBudget = () => {
                         initiativeId={+initiativeId!}
                         grantId={+grantId!}
                         fieldName={field.name}
-                        comment={field.comment}
                         budgetedAmount={field.amount}
                         amountRegister={amountRegister}
                         onClick={(e: React.MouseEvent<HTMLInputElement>) => {
@@ -289,6 +315,7 @@ const CreateBudget = () => {
                             categoryAccountIndexes[field.categoryId].totalIndex,
                           );
                         }}
+                        onCommentSaved={handleSaveComments}
                       ></BudgetInputFieldsNewBudget>
                     </Fragment>
                   );
@@ -308,7 +335,6 @@ const CreateBudget = () => {
                       initiativeId={+initiativeId!}
                       grantId={+grantId!}
                       fieldName={field.name}
-                      comment={field.comment}
                       budgetedAmount={field.amount}
                       amountRegister={register(
                         `rows.${indexRunningTotal}.amount`,

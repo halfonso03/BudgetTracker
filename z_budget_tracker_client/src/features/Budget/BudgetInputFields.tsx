@@ -229,7 +229,6 @@ const BudgetInputFields = ({
         )}
       </div>
       <CommentsModal
-        mode="existing_budget"
         isOpen={commentsOpen}
         animateOut={animateOut}
         initiativeId={initiativeId}

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Application.DTOs.Common;
 using Application.Validators;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens.Experimental;
@@ -15,6 +16,9 @@ namespace Application.DTOs.Budgets
         [Required]
         [MinLength(1, ErrorMessage = "The list must contain at least one item.")]
         public List<BudgetLineItemRequestDto> LineItems { get; set; } = [];
+
+        [Required]
+        public List<CreateBudgetCommentRequestDto> Comments { get; set; } = [];
 
         [Required]
         [DeniedValues(0)]
@@ -32,6 +36,25 @@ namespace Application.DTOs.Budgets
                 {
                     x.InitiativeId,
                     x.GrantId,
+                    x.AccountId
+                }).Distinct().Count();
+
+                if (itemCount == distintItemCount) return true;
+
+                return false;
+            }
+        }
+
+        [ValueMustBeTrueValidator(ErrorMessage = "One or more comments is duplicated.")]
+        public bool? AllCommentsAreDistinct
+        {
+            get
+            {
+                if (Comments.Count == 0) return null;
+
+                var itemCount = Comments.Count;
+                var distintItemCount = Comments.Select(x => new
+                {
                     x.AccountId
                 }).Distinct().Count();
 

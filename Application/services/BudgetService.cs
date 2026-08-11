@@ -189,6 +189,19 @@ namespace Application.services
 
                 _dbContext.BudgetLineItems.AddRange(items);
 
+                var comments = createBudgetDto.Comments.Select(x => new BudgetComment
+                {
+                    Id = 0,
+                    AccountId = x.AccountId,
+                    InitiativeId = initiativeId,
+                    GrantId = grantId,
+                    Text = x.Text,
+                    EntryDate = DateTime.Now,
+                    EntryPersonId = createBudgetDto.CreatedBy
+                });
+
+                _dbContext.BudgetComments.AddRange(comments);
+
                 await _dbContext.SaveChangesAsync();
             }
             catch (DbException ex)

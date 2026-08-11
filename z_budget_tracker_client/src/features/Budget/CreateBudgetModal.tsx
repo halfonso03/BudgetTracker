@@ -49,7 +49,7 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
   }
 
   return (
-    <Modal isOpen={true} onClose={onCancelForm} size="md" title="Create Budget">
+    <Modal isOpen={true} onClose={onCancelForm} size="md" title="Create Budget" animateOut={false}>
       <div className="p-5 pt-1">
         <div className="flex flex-col gap-4 mb-4 ">
           <div>

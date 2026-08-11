@@ -105,6 +105,8 @@ type CreateBudgetRequest = {
     createdBy: number
     year: number
     lineItems: CreateBudgetLineItemsRequest[]
+    comments: CreateBudgetCommentRequest[]
+
 }
 
 type CreateBudgetLineItemsRequest = {
@@ -112,6 +114,11 @@ type CreateBudgetLineItemsRequest = {
     amount: number,
     initiativeId: number,
     grantId: number
+}
+
+type CreateBudgetCommentRequest = {
+    accountId: number
+    text: string
 }
 
 type UpdateBudgetRequest = {

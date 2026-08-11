@@ -1,47 +1,50 @@
 import { useState } from 'react';
 import NumericArrayInput from '../../components/NumericArrayInput';
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import CommentsModal from './CommentsModal';
+import CommentsModalNewBudget from './CommentsModalNewBudget';
 
 interface Props {
   isLastRow: boolean;
   initiativeId: number;
   grantId: number;
   accountId: number;
-  comment: string;
   fieldName: string;
   budgetedAmount: string;
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
+  onCommentSaved?: (e: { accountId: number; text: string }) => void;
 }
 const BudgetInputFieldsNewBudget = ({
   fieldName,
   accountId,
-  initiativeId,
-  grantId,
-  comment,
   isLastRow,
   onClick,
   onBlur,
   onFocus,
   amountRegister,
+  onCommentSaved,
 }: Props) => {
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
+  const [animateOut, setAnimateOut] = useState<boolean>(false);
+  const [hasComment, setHasComment] = useState<boolean>(false);
 
-  function onOpenComments() {
-    setCommentsOpen(true);
+  function handleSaveComments(e: { accountId: number; text: string }) {
+    try {
+      setHasComment(e.text.trim() != '' && e.text !== null);
+      onCommentSaved?.(e);
+    } catch (error) {
+      console.log('error', error);
+    }
   }
 
-  function handleSaveComments() {
-    try {
-      console.log('13', 13);
-    } catch (error) {
-      console.log(error);
-    } finally {
+  function closeModal() {
+    setAnimateOut(true);
+    setTimeout(() => {
       setCommentsOpen(false);
-    }
+      setAnimateOut(false);
+    }, 450);
   }
 
   return (
@@ -63,7 +66,6 @@ const BudgetInputFieldsNewBudget = ({
           onClick={(e) => (onClick ? onClick(e) : null)}
           onBlur={(e) => {
             if (onBlur) {
-              // const budgeted = parseFormattedNumber(e.target.value);
               onBlur(e);
             }
           }}
@@ -79,28 +81,26 @@ const BudgetInputFieldsNewBudget = ({
             className={`cursor-pointer ${isLastRow ? 'opacity-0' : ''}`}
             disabled={isLastRow}
             tabIndex={-1}
-            onClick={() => onOpenComments()}
+            onClick={() => setCommentsOpen(true)}
           >
-            0 Comments
+            {hasComment ? 1 : 0} Comment
           </button>
         ) : (
           <div>&nbsp;</div>
         )}
       </div>
 
-      {commentsOpen && (
-        <CommentsModal
-          initiativeId={initiativeId}
-          grantId={grantId}
-          accountId={accountId}
-          accountName={fieldName}
-          onSaveComments={handleSaveComments}
-          onCancelForm={() => {
-            setCommentsOpen(false);
-          }}
-          currentComments={comment}
-        ></CommentsModal>
-      )}
+      <CommentsModalNewBudget
+        isOpen={commentsOpen}
+        animateOut={animateOut}
+        accountId={accountId}
+        accountName={fieldName}
+        onCommentSaved={(e) => {
+          handleSaveComments(e);
+          closeModal();
+        }}
+        onCancelForm={closeModal}
+      ></CommentsModalNewBudget>
     </>
   );
 };
