@@ -12,6 +12,7 @@ interface ModalProps {
   children: ReactNode;
   size: ModalSize;
   title?: string;
+  animateOut: boolean;
 }
 
 const closeButtonStyles = {
@@ -21,8 +22,19 @@ const closeButtonStyles = {
   cursor: 'pointer',
 } as {};
 
-const Modal = ({ isOpen, onClose, size, title, children }: ModalProps) => {
-  if (!isOpen) return null;
+const Modal = ({
+  isOpen,
+  onClose,
+  size,
+  title,
+  animateOut,
+  children,
+}: ModalProps) => {
+  let animateClass = '';
+
+  if (!isOpen && !animateOut) return null;
+  if (isOpen && animateOut) animateClass = 'animate-modal-out';
+  if (isOpen && !animateOut) animateClass = 'animate-modal-in';
 
   let modalStyles = '';
 
@@ -35,6 +47,7 @@ const Modal = ({ isOpen, onClose, size, title, children }: ModalProps) => {
   } else if (size === 'xl') {
     modalStyles += 'min-w-5xl max-w-5xl  ';
   }
+
   return createPortal(
     // body
     <div
@@ -44,10 +57,7 @@ const Modal = ({ isOpen, onClose, size, title, children }: ModalProps) => {
     >
       {/* modal */}
       <div
-        className={
-          modalStyles +
-          'max-w-md bg-white bg-dark-nav animate-fade-in self-center rounded-sm '
-        }
+        className={`${modalStyles} ${animateClass} max-w-md bg-white bg-dark-nav self-center rounded-sm `}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-full h-full mb-2 p-4 flex justify-between align-center border-b border-gray-300 dark:border-b-neutral-800">

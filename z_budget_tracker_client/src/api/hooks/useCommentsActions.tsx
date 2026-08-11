@@ -1,6 +1,5 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import agent from '../agent';
-import toast from 'react-hot-toast';
 
 const sleep = (delay: number) =>
   new Promise((resolve) => {
@@ -10,6 +9,8 @@ const sleep = (delay: number) =>
   });
 
 export const useCommentActions = () => {
+  const queryClient = useQueryClient();
+
   const {
     mutate: createComment,
     isPending: createCommentPending,
@@ -17,11 +18,32 @@ export const useCommentActions = () => {
   } = useMutation({
     mutationFn: async (createRequest: CreateCommentRequest) => {
       await sleep(1500);
-      await agent.post(`comments`, createRequest);
+      const response = await agent.post(`comments`, createRequest);
+      createRequest.newId = response.data;
       return createRequest;
     },
+    onSuccess: (data: CreateCommentRequest) => {
+      queryClient.setQueryData(['budgets', data.initiativeId, data.grantId], (oldData: Budget) => {
+        return {
+          ...oldData,
+          account_balances: oldData.account_balances.map((b) => {
+            return b.account_id == data.accountId
+              ? {
+                  ...b,
+                  comment: {
+                    id: data.newId!,
+                    text: data.text.trim(),
+                    entryDate: Date(),
+                    enteredBy: '1',
+                  },
+                }
+              : { ...b };
+          }),
+        };
+      });
+    },
     onError: () => {
-      alert('error');
+      alert('useCommentActions error');
     },
   });
 
@@ -32,16 +54,31 @@ export const useCommentActions = () => {
   } = useMutation({
     mutationFn: async (updateRequest: UpdateCommentRequest) => {
       await sleep(1500);
-      const response = await agent.put(`comments`, updateRequest);
-      return response.data;
+      await agent.put(`comments`, updateRequest);
+      return updateRequest;
     },
-    onSuccess: () => {
-      // toast.success('Comment Saved', {
-      //   duration: 1500,
-      // });
+    onSuccess: (data: UpdateCommentRequest) => {
+      queryClient.setQueryData(['budgets', data.initiativeId, data.grantId], (oldData: Budget) => {
+        return {
+          ...oldData,
+          account_balances: oldData.account_balances.map((b) => {
+            return b.account_id == data.accountId
+              ? {
+                  ...b,
+                  comment: {
+                    ...b.comment,
+                    text: data.text.trim(),
+                    updateDate: Date(),
+                    updatedBy: '1',
+                  },
+                }
+              : { ...b };
+          }),
+        };
+      });
     },
     onError: () => {
-      alert('useCommentActions errror');
+      alert('useCommentActions error');
     },
   });
 

@@ -27,7 +27,7 @@ namespace API.Controllers
 
             if (result == 0) return BadRequest();
 
-            return Ok();
+            return Ok(result);
         }
 
         [HttpPut]

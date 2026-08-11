@@ -65,6 +65,8 @@ const BudgetInputFields = ({
     ),
   );
 
+  const [animateOut, setAnimateOut] = useState<boolean>(false);
+
   const [current, setCurrent] = useState<string>(
     formatNumber(parseFormattedNumber(currentAmount)),
   );
@@ -226,23 +228,32 @@ const BudgetInputFields = ({
           <div className={`${isLastRow && 'py-1'}`}>&nbsp;</div>
         )}
       </div>
-      {commentsOpen && (
-        <CommentsModal
-          mode="existing_budget"
-          initiativeId={initiativeId}
-          grantId={grantId}
-          accountId={accountId}
-          accountName={fieldName}
-          onCommentSaved={() => {
+      <CommentsModal
+        mode="existing_budget"
+        isOpen={commentsOpen}
+        animateOut={animateOut}
+        initiativeId={initiativeId}
+        grantId={grantId}
+        accountId={accountId}
+        accountName={fieldName}
+        onCommentSaved={() => {
+          setAnimateOut(true);
+          setTimeout(() => {
             setCommentsOpen(false);
-          }}
-          onCancelForm={() => {
+            setAnimateOut(false);
+          }, 650);
+        }}
+        onCancelForm={() => {
+          setAnimateOut(true);
+          setTimeout(() => {
             setCommentsOpen(false);
-          }}
-          commentId={comment?.id ?? 0}
-          commentText={comment?.text ?? ''}
-        ></CommentsModal>
-      )}
+            setAnimateOut(false);
+          }, 650);
+        }}
+        comment={comment}
+        commentId={comment?.id ?? 0}
+        commentText={comment?.text ?? ''}
+      ></CommentsModal>
     </>
   );
 };

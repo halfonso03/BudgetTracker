@@ -126,10 +126,15 @@ type UpdateBudgetLineItemsRequest = CreateBudgetLineItemsRequest
 
 type BudgetComment = {
     id: number,
-    text: string
+    text: string,
+    entryDate: Date,
+    enteredBy: string,
+    updateDate?: Date,
+    updatedBy?: string
 }
 
 type CreateCommentRequest = {
+    newId?: number
     initiativeId: number,
     grantId: number,
     accountId: number,
@@ -139,6 +144,10 @@ type CreateCommentRequest = {
 
 type UpdateCommentRequest = {
     id: number
+    accountId: number
+    initiativeId: number,
+    grantId: number
     text: string,
-    userId: number
+    userId: number,
+
 }

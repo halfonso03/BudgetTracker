@@ -229,7 +229,7 @@ const Details = () => {
       }));
 
     const updateRequest: UpdateBudgetRequest = {
-      updatedBy: userId,
+      updatedBy: userId!,
       initiativeId: +initiativeId!,
       grantId: +grantId!,
       lineItems: items,
@@ -251,8 +251,19 @@ const Details = () => {
 
   let indexRunningTotal = -1;
 
+  function testCommetnField() {
+    const c = fields.filter((x) => x.accountId == 1)[0];
+
+    console.log('c', c.id);
+
+    // setValue(
+    //   `rows.${totalsIndex}.remaining_amount`,
+    //   formatNumber(categoryTotal + totalSpent),
+    // );
+  }
   return (
     <div className="w-full mx-auto">
+      <Button onClick={testCommetnField}>Comment</Button>
       <div className="mb-2 font-semibold text-2xl pb-5 text-neutral-700">
         Edit Budget
       </div>

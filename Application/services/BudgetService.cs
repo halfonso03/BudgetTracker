@@ -50,7 +50,10 @@ namespace Application.services
             var i = budgetLineItemsFromDb.First().Initiative!;
             var g = budgetLineItemsFromDb.First().Grant!;
 
-            var comments = await _dbContext.BudgetComments.Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId).ToListAsync();
+            var comments = await _dbContext.BudgetComments
+                .Include(x => x.EntryPerson)
+                .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId)
+                .ToListAsync();
 
             var result = new BudgetDto
             {
@@ -125,7 +128,7 @@ namespace Application.services
 
             var baseItems = (from a in _accounts
                              select new AccountBalancesDto
-                             {                            
+                             {
                                  AccountId = a.Id,
                                  Name = a.Name,
                                  AccountNumber = a.Number,
@@ -139,11 +142,20 @@ namespace Application.services
 
             return baseItems;
         }
-        
+
         public CommentDto? CreateCommentDto(int accountId, List<BudgetComment>? comments = null)
         {
             var comment = comments?.FirstOrDefault(x => x.AccountId == accountId);
-            if (comment is not null) return CommentDto.Create(comment.Id, comment.Text);
+            if (comment is not null)
+            {
+                return CommentDto.Create(
+                    comment.Id,
+                    comment.Text,
+                    comment.EntryDate,
+                    comment.EntryPerson?.Id.ToString() ?? "",
+                    comment.UpdateDate,
+                    comment.UpdatePerson?.Id.ToString() ?? null);
+            }
             return null;
         }
 
