@@ -247,7 +247,7 @@ const BudgetInputFields = ({
           setTimeout(() => {
             setCommentsOpen(false);
             setAnimateOut(false);
-          }, 650);
+          }, 400);
         }}
         comment={comment}
       ></CommentsModal>

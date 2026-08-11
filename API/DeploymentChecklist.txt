@@ -20,3 +20,6 @@ Programs.cs
 
 
 API -> dotnet build
+
+
+dotnet publish -c Release -o ./Publish

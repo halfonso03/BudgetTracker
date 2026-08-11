@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../../app/util';
 import { ArrowLeftRight, ChevronDownSquare, DollarSign } from 'lucide-react';
 import useBudgetSummary from '../../api/hooks/useBudgetSummary.tsx';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 
 // const grid_columns = '1fr_.5fr_1fr_1fr_1fr_1fr_.5fr_.3fr';
 
@@ -10,7 +10,6 @@ interface Props {
   year: number;
 }
 const Summary = ({ year }: Props) => {
-
   const { data, isLoading } = useBudgetSummary(year);
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
 
@@ -216,10 +215,11 @@ function CategorySummary({
                 .filter((x) => x.category?.name == c.category)
                 .sort((a, b) => a.account_name.localeCompare(b.account_name))
                 .map((i) => (
-                  <div className='my-0 p-1 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] mb-1 last:mb-0 transition-all duration-200 hover:bg-neutral-200' key={i.account_id}>
-                    <div className="italic pl-3">
-                      {i.account_name}
-                    </div>
+                  <div
+                    className="my-0 p-1 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] mb-1 last:mb-0 transition-all duration-200 hover:bg-neutral-200"
+                    key={i.account_id}
+                  >
+                    <div className="italic pl-3">{i.account_name}</div>
                     <div></div>
                     <div className="text-end italic text-neutral-700">
                       {formatCurrency(i.amount)}

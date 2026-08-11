@@ -6,7 +6,6 @@ import {
   type PieLabelRenderProps,
 } from 'recharts';
 import { RechartsDevtools } from '@recharts/devtools';
-import useAuth from '../contexts/useAuth';
 
 const renderCustomizedLabel = ({
   cx,
@@ -66,8 +65,6 @@ const Home = () => {
     },
   ];
 
-  const { login } = useAuth();
-  login('x', 'x', 1);
 
   return (
     <div>
