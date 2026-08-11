@@ -60,7 +60,7 @@ namespace Persistence
                     StartDate = new DateTime(2026, 1, 1),
                     EndDate = new DateTime(2027, 12, 31),
                     Name = "G26001",
-                    Fiduciary = "MCSPo"
+                    Fiduciary = "MCSO"
                 },
                 new Grant
                 {

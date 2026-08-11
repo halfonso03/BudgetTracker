@@ -271,7 +271,9 @@ const Details = () => {
         <div className="entity-label">Grant</div>
         <div className="entity-name">{grant?.year}</div>
         <div className="entity-name">{initiative?.name}</div>
-        <div className="entity-name">{grant?.name}</div>
+        <div className="entity-name">
+          {grant?.name} - {grant?.fiduciary}
+        </div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex justify-end mt-8 mb-4">

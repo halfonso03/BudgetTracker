@@ -40,6 +40,7 @@ const CommentsModal = ({
   comment,
 }: Props) => {
   const userId = 1;
+  const [priorComment, setPriorComment] = useState(comment?.text);
 
   const [commentFieldEmpty, setCommentFieldEmpty] = useState<boolean>(() => {
     if (comment) {
@@ -78,6 +79,7 @@ const CommentsModal = ({
   }
 
   async function onSubmit(data: CommentsFormValues) {
+    setPriorComment(data.text);
     try {
       if (!comment || comment.id === 0) {
         performSaveAction(() =>
@@ -150,19 +152,6 @@ const CommentsModal = ({
               handleSubmit(onSubmit)(event);
             }}
           >
-            {/* <input type="text" {...register('commentId')} />
-          <br /> */}
-            {/* CommentId:
-          
-          Initiative:
-          <input type="text" {...register('initiativeId')} />
-          <br />
-          Grant:
-          <input type="text" {...register('grantId')} />
-          <br />
-          Account:
-          <input type="text" {...register('accountId')} />
-          <br /> */}
             <textarea
               {...register('text')}
               className="w-full border border-neutral-300 rounded-sm p-2 outline-none focus:outline-none focus:ring-1 focus:ring-neutral-300 transition-all duration-300 ease-in-out"
@@ -212,7 +201,10 @@ const CommentsModal = ({
                 buttonSize="small"
                 type="button"
                 variation="secondary"
-                onClick={onCancelForm}
+                onClick={() => {
+                  setValue('text', priorComment ?? '');
+                  onCancelForm();
+                }}
                 disabled={createCommentPending || updateCommentPending}
               >
                 Cancel

@@ -21,12 +21,14 @@ const CommentsModalNewBudget = ({
   isOpen,
   animateOut,
 }: Props) => {
-  const [comment, setComment] = useState<string>('');
-
+  const [comment, setComment] = useState('');
+  const [isDirty, setIsDirty] = useState(false);
+  const [priorComment, setPriorComment] = useState('');
   function onSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     e.stopPropagation();
-
+    setIsDirty(true);
+    setPriorComment(comment);
     try {
       onCommentSaved({ accountId, text: comment });
     } catch (error) {
@@ -76,7 +78,14 @@ const CommentsModalNewBudget = ({
               buttonSize="small"
               type="button"
               variation="secondary"
-              onClick={onCancelForm}
+              onClick={() => {
+                if (!isDirty) {
+                  setComment('');
+                } else {
+                  setComment(priorComment);
+                }
+                onCancelForm();
+              }}
             >
               Cancel
             </Button>

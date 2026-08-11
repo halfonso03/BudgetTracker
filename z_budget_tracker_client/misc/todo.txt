@@ -1,4 +1,5 @@
-fix comments moda, not reverting comment to roginal when Cancel is clicked
 
-add entry and update dates for bugdets
 add delete budget when no reprogrammings and no expenses
+
+
+DONE fix comments moda, not reverting comment to roginal when Cancel is clicked
