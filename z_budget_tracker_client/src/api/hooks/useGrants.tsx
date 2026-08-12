@@ -12,6 +12,7 @@ const useGrants = (year: number) => {
   const { data, isLoading } = useQuery<Grant[]>({
     queryKey: ['grants', year],
     queryFn: () => fetchGrants(year),
+    enabled: year > 0,
   });
 
   return { data, isLoading };

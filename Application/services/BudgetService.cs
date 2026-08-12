@@ -292,5 +292,25 @@ namespace Application.services
 
             return Result<Unit>.Success(Unit.Value);
         }
+
+        public async Task<List<AccountCurrentAmountDto>> GetAccountBalancesForCategory(int initiativeId, int grantId, int categoryId)
+        {
+            var balances = await (from b in _dbContext.BudgetLineItems
+                            join a in _dbContext.Accounts on b.AccountId equals a.Id
+                            where b.InitiativeId == initiativeId &&
+                                b.GrantId == grantId &&
+                                b.AccountId == a.Id &&
+                                a.CategoryId == categoryId &&
+                                (b.ItemType == "B" || b.ItemType == "R")
+                            group b by new { id = a.Id, name= a.Name } into catBal
+                            orderby catBal.Key.name
+                            select
+                                AccountCurrentAmountDto.Create(
+                                     catBal.Key.id, catBal.Key.name, catBal.Sum(x => x.Amount))
+                            )
+                           .ToListAsync();
+
+            return balances;
+        }
     }
 }

@@ -85,7 +85,7 @@ input:-webkit-autofill:focus {
     }
   }
 
-  --animate-modal-out: fadeOut 0.25s ease-out forwards;
+  --animate-modal-out: fadeOut 0.20s ease-out forwards;
 
   @keyframes fadeOut {
     0% {

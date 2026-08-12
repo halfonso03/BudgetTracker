@@ -15,7 +15,7 @@ interface Props {
 const CommentsModalNewBudget = ({
   accountId,
   accountName,
-  onCancelForm,
+  onCancelForm: onCancel,
   size = 'md',
   onCommentSaved,
   isOpen,
@@ -40,11 +40,11 @@ const CommentsModalNewBudget = ({
     <Modal
       isOpen={isOpen}
       animateOut={animateOut}
-      onClose={onCancelForm}
+      onCancel={onCancel}
       size={size}
       title="Comments"
     >
-      <div className="px-5 mb-5">
+      <div className="mb-5">
         <div className="">
           <div>
             <div className="entity-label"> Account </div>
@@ -72,7 +72,7 @@ const CommentsModalNewBudget = ({
               Clear Comment
             </button>
           </div>
-          <div className="flex justify-end gap-3 pt-3 ">
+          <div className="flex justify-end gap-3 pt-2 ">
             <Button type="submit">Save</Button>
             <Button
               buttonSize="small"
@@ -84,7 +84,7 @@ const CommentsModalNewBudget = ({
                 } else {
                   setComment(priorComment);
                 }
-                onCancelForm();
+                onCancel();
               }}
             >
               Cancel

@@ -8,6 +8,7 @@ namespace Application.Interfaces
 {
     public interface ICategoryService
     {
+        Task<List<AccountDto>> GetAccountsForCategories(int categoryId);
         Task<List<CategoryDto>> GetCategoriesAndAccounts();
     }
 }

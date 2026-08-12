@@ -11,19 +11,19 @@ namespace Application.DTOs.Budgets
         public int Id { get; set; }
 
         public required string Name { get; set; }
-        public required string Number { get; set; }
+        public string? Number { get; set; }
 
         [JsonPropertyName("category_id")]
         public required int CategoryId { get; set; }
 
-        public static AccountDto Create(int id, string name, string number, int categoryId)
+        public static AccountDto Create(int id, string name, int categoryId, string number = "")
         {
             return new AccountDto
             {
                 Id = id,
                 Name = name,
+                CategoryId = categoryId,
                 Number = number,
-                CategoryId = categoryId
             };
         }
     }

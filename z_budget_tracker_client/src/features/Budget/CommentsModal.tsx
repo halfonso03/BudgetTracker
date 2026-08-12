@@ -109,11 +109,11 @@ const CommentsModal = ({
     <Modal
       isOpen={isOpen}
       animateOut={animateOut}
-      onClose={onCancelForm}
+      onCancel={onCancelForm}
       size={size}
       title="Comments"
     >
-      <div className="px-5">
+      <div>
         <div className="mb-3">
           <div className="grid grid-cols-[2fr_1fr]">
             <div>
@@ -123,9 +123,9 @@ const CommentsModal = ({
           </div>
         </div>
 
-        <div className="pb-4">
+        <div className="">
           <div className="flex justify-between pb-1">
-            <div className="entity-label self-end "> Comments </div>
+            <div className="entity-label self-end ">Comments</div>
             <div>
               <div className="text-sm text-end text-neutral-400 font-semibold">
                 {comment && comment.updateDate && 'Updated'}
@@ -178,7 +178,7 @@ const CommentsModal = ({
                 </button>
               )}
             </div>
-            <div className="flex justify-end gap-3 pt-3 ">
+            <div className="flex justify-end gap-3 pt-2">
               <Button
                 buttonSize="medium"
                 type="submit"
@@ -196,7 +196,6 @@ const CommentsModal = ({
                   'Save'
                 )}
               </Button>
-
               <Button
                 buttonSize="small"
                 type="button"

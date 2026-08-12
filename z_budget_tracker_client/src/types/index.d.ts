@@ -1,34 +1,4 @@
-
 type ItemyType = 'b' | 'r' | 'd';
-
-type Account = {
-    id: number
-    name: string
-    number: string
-    category_id: number
-}
-
-type Category = {
-    id: number
-    name: string,
-    accounts?: Account[]
-    // sort_order: number
-}
-
-type Grant = {
-    id: number
-    name: string,
-    startDate?: Date,
-    endDate?: Date
-    year?: number
-    fiduciary?: string
-}
-
-type Initiative = {
-    id: number
-    name: string
-}
-
 
 // used by BudgetSummary.tsx
 type BudgetSummary = {
@@ -131,30 +101,3 @@ type UpdateBudgetRequest = {
 type UpdateBudgetLineItemsRequest = CreateBudgetLineItemsRequest
 
 
-type BudgetComment = {
-    id: number,
-    text: string,
-    entryDate: Date,
-    enteredBy: string,
-    updateDate?: Date,
-    updatedBy?: string
-}
-
-type CreateCommentRequest = {
-    newId?: number
-    initiativeId: number,
-    grantId: number,
-    accountId: number,
-    text: string,
-    userId: number
-}
-
-type UpdateCommentRequest = {
-    id: number
-    accountId: number
-    initiativeId: number,
-    grantId: number
-    text: string,
-    userId: number,
-
-}

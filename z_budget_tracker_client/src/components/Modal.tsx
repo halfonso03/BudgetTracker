@@ -8,7 +8,7 @@ export type ModalSize = 'sm' | 'md' | 'lg' | 'xl';
 
 interface ModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onCancel: () => void;
   children: ReactNode;
   size: ModalSize;
   title?: string;
@@ -24,7 +24,7 @@ const closeButtonStyles = {
 
 const Modal = ({
   isOpen,
-  onClose,
+  onCancel,
   size,
   title,
   animateOut,
@@ -51,24 +51,24 @@ const Modal = ({
   return createPortal(
     // body
     <div
-      onClick={onClose}
+      onClick={onCancel}
       className="fixed inset-0 z-50 h-dvh w-screen bg-black/50 flex justify-center "
       style={{ backgroundColor: 'rgb(0 ,0, 0, .8)' }}
     >
       {/* modal */}
       <div
-        className={`${modalStyles} ${animateClass} max-w-md bg-white bg-dark-nav self-center rounded-sm `}
+        className={`${modalStyles} ${animateClass} p-3 pb-0 px-4 max-w-md bg-white bg-dark-nav self-center rounded-sm `}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-full h-full mb-2 p-4 flex justify-between align-center border-b border-gray-300 dark:border-b-neutral-800">
+        <div className="w-full h-full mb-2 p-2 px-1 flex justify-between align-center border-b border-gray-300 dark:border-b-neutral-800">
           <h2 className="m-0 p-0 text-2xl text-gray-800 dark:text-gray-200">
             {title}
           </h2>
-          <button style={closeButtonStyles} onClick={onClose}>
+          <button style={closeButtonStyles} onClick={onCancel}>
             <X className="text-gray-700 hover:text-gray-500 dark:text-neutral-300 dark:hover:text-neutral-100 transition-all duration-200"></X>
           </button>
         </div>
-        <div className="pt-2">{children}</div>
+        <div className="pt-2 pb-2">{children}</div>
       </div>
     </div>,
     document.body, // The target DOM container

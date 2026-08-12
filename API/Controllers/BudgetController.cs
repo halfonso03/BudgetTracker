@@ -28,6 +28,12 @@ namespace API.Controllers
             return Ok(await _budgetService.GetBudget(initiativeId, grantId));
         }
 
+        [HttpGet("balances")]
+        public async Task<IActionResult> GetAccountBalancesForCategory(int initiativeId, int grantId, int categoryId)
+        {
+            return Ok(await _budgetService.GetAccountBalancesForCategory(initiativeId, grantId, categoryId));
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateBudget(CreateBudgetRequestDto createBudgetDto)
         {

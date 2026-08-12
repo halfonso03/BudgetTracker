@@ -49,7 +49,13 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
   }
 
   return (
-    <Modal isOpen={true} onClose={onCancelForm} size="md" title="Create Budget" animateOut={false}>
+    <Modal
+      isOpen={true}
+      onCancel={onCancelForm}
+      size="md"
+      title="Create Budget"
+      animateOut={false}
+    >
       <div className="p-5 pt-1">
         <div className="flex flex-col gap-4 mb-4 ">
           <div>
@@ -68,7 +74,7 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                     if (+e.target.value == 0) return;
                     setInitiativeId(+e.target.value);
-                    setError('')
+                    setError('');
                   }}
                 >
                   {sortedInitiatives.map((i) => (
@@ -93,8 +99,7 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                     if (+e.target.value == 0) return;
                     setGrantId(+e.target.value);
-                    setError('')
-
+                    setError('');
                   }}
                 >
                   {grants.map((i) => (

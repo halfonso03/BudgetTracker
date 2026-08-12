@@ -19,7 +19,7 @@ const Budgets = () => {
           <div className="p-2 font-bold entity-label">Year:</div>
           <select
             value={year}
-            className="p-2 border border-neutral-300"
+            className="p-2 border border-neutral-300 rounded-sm "
             onChange={handleYearChange}
           >
             <option value="2026">2026</option>
