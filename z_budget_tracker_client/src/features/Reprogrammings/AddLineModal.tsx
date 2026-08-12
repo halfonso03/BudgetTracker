@@ -20,6 +20,7 @@ type Props = {
   grants: Grant[] | undefined;
   categories: Category[] | undefined;
   selections?: Selections;
+  onLineAdded: (balance: ReproLineItem) => void;
 };
 
 const AddLineModal = ({ ...props }: Props) => {
@@ -31,7 +32,7 @@ const AddLineModal = ({ ...props }: Props) => {
     selections?.categoryId,
   );
 
-  function addLine(account: ReproAccountBalance) {
+  function onLineAdded(account: ReproAccountBalance) {
     if (props.initiatives && props.grants && props.categories) {
       const newLine: ReproLineItem = {
         accountId: account.accountId,
@@ -48,21 +49,20 @@ const AddLineModal = ({ ...props }: Props) => {
         grantName: props.grants.filter((x) => x.id == selections?.grantId)[0]
           .name,
         currentBudget: account.currentAmount,
+        uuid: window.crypto.randomUUID(),
       };
-
-      console.log('newLine', newLine);
+      props.onLineAdded(newLine);
     }
   }
-  // const { data: account } = useAccounts(selections?.categoryId);
 
   return (
     <Modal size="lg" title="Add Line" {...props}>
       {/* <pre>{JSON.stringify(selections)}</pre> */}
 
       <div className="grid grid-cols-[1fr_1fr] mb-4 gap-4">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-9">
           <div>
-            <span className="entity-label">Select an Initiative...</span>
+            <span className="entity-label">Select an Initiative</span>
             <Select
               value={selections?.initiativeId}
               additionalclasses={`${selections?.initiativeId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
@@ -86,7 +86,7 @@ const AddLineModal = ({ ...props }: Props) => {
             </Select>
           </div>
           <div>
-            <span className="entity-label">Select a grant...</span>
+            <span className="entity-label">Select a Grant</span>
             <Select
               additionalclasses={`${selections?.grantId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
               value={selections?.grantId}
@@ -111,7 +111,7 @@ const AddLineModal = ({ ...props }: Props) => {
             </Select>
           </div>
           <div>
-            <span className="entity-label">Select a Category...</span>
+            <span className="entity-label">Select a Category</span>
             <Select
               additionalclasses={`${selections?.categoryId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
               value={selections?.categoryId}
@@ -147,7 +147,11 @@ const AddLineModal = ({ ...props }: Props) => {
             <div
               className="rounded-sm py-1 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-200 transition-all duration-300"
               key={b.accountId}
-              onClick={() => addLine(b)}
+              onClick={() => {
+                onLineAdded(b);
+                props.onCancel();
+
+              }}
             >
               <div className="text-neutral-700">{b.name}</div>
               <div className="text-neutral-900 font-semibold ">

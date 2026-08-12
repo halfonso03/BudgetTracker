@@ -1,4 +1,4 @@
-import { Plus, Search } from 'lucide-react';
+import { Menu, Plus, Search } from 'lucide-react';
 import useCategories from '../../api/hooks/useCategories';
 import useInitiatives from '../../api/hooks/useInitiatives';
 import Button from '../../components/Button';
@@ -6,19 +6,24 @@ import { useState } from 'react';
 import ChooseYearModal from './ChooseYearModal';
 import useGrants from '../../api/hooks/useGrants';
 import AddLineModal from './AddLineModal';
+import NumericInput from '../../components/NumericInput';
+import { formatCurrency } from '../../app/util';
+import Menus from '../../components/menus/Menus';
+import useMenuId from '../../contexts/useMenuId';
+import MenuIdProvider from '../../contexts/MenuIdContext';
 
 const ReprogrammingHome = () => {
+  const { priorId } = useMenuId();
+
+  const [reproId, setReproId] = useState('');
   const [choosingYear, setChoosingYear] = useState(false);
   const [addingLine, setAddingLine] = useState(false);
   const { data: initiatives } = useInitiatives();
   const { data: categories } = useCategories();
   const [year, setYear] = useState<number>(0);
-
   const { data: grants } = useGrants(year);
 
-  console.log('grants', grants);
-  console.log('grants', initiatives);
-  console.log('grants', categories);
+  const [lines, setLines] = useState<ReproLineItem[]>([]);
 
   const [animateOutYearSelect, setAnimateOutYearSelect] =
     useState<boolean>(false);
@@ -26,8 +31,12 @@ const ReprogrammingHome = () => {
 
   const [repro, setRepro] = useState<Repro | null>(null);
 
+  function handleLineAdded(line: ReproLineItem) {
+    setLines((prev) => [...prev, line]);
+  }
+
   return (
-    <>
+    <MenuIdProvider>
       <div className="">
         <div className="flex justify-end gap-3">
           <Button
@@ -48,6 +57,7 @@ const ReprogrammingHome = () => {
           </Button>
           <Button
             variation="danger"
+            buttonSize="small"
             disabled={year === 0}
             onClick={() => {
               setYear(0);
@@ -58,15 +68,26 @@ const ReprogrammingHome = () => {
         </div>
       </div>
 
-      <div className="mb-6">
+      <div className="flex gap-10 mb-6">
         {year > 0 && (
-          <>
+          <div>
             <span className="text-neutral-500 font-bold mr-4">Year</span>
-            <span className="font-bold">{year}</span>
-          </>
+            <span className="font-semibold">{year}</span>
+          </div>
         )}
+
+        <div>
+          {year > 0 && (
+            <div>
+              <span className="text-neutral-500 font-bold mr-4">ID</span>
+              <span className="font-semibold">
+                {reproId == '' ? '-' : reproId}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
-      <div>
+      <div className="mb-8">
         {year > 0 && (
           <Button buttonSize="small" onClick={() => setAddingLine(true)}>
             <Plus></Plus>
@@ -75,11 +96,76 @@ const ReprogrammingHome = () => {
         )}
       </div>
       <div>
-        {repro &&
-          repro.items &&
-          repro.items.map((item: ReproLineItem) => {
-            return <div>{item.accountName}</div>;
-          })}
+        {lines.length > 0 && (
+          <div>
+            <div className="grid grid-cols-[1.5fr_1fr_.8fr_1fr_1fr_.8fr_.8fr_.8fr_.4fr] px-3 py-4 font-bold text-neutral-500">
+              <div className="pl-1">Initiative</div>
+              <div>Grant</div>
+              <div>Category</div>
+              <div>Account</div>
+              <div className="text-center">Current Amount</div>
+              <div className="text-end pr-2">Increase</div>
+              <div className="text-end pr-2">Decrease</div>
+              <div className="text-end pr-2">New Amount</div>
+              <div></div>
+            </div>
+          </div>
+        )}
+        {lines.map((item: ReproLineItem) => {
+          const isLastRow = false;
+          return (
+            <div
+              className="grid grid-cols-[1.5fr_1fr_.8fr_1fr_1fr_.8fr_.8fr_.8fr_.4fr] px-3 py-4 border border-neutral-200 shadow-sm items-center mb-3"
+              key={item.uuid}
+            >
+              <div className=" pr-2">{item.initiativeName}</div>
+              <div>{item.grantName}</div>
+              <div>{item.categoryName}</div>
+              <div>{item.accountName}</div>
+              <div className="text-center">
+                {formatCurrency(item.currentBudget)}
+              </div>
+              <div className="flex justify-end">
+                <NumericInput
+                  key={item.accountId}
+                  // register={amountRegister}
+                  readOnly={false}
+                  disabled={false}
+                  className={`w-[98%] p-1 pr-2 py-2  ${isLastRow ? '  font-bold text-neutral-600  ' : ' border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+                  onClick={() => {}}
+                  onBlur={() => {}}
+                  onFocus={() => {}}
+                />
+              </div>
+              <div className="flex justify-end">
+                <NumericInput
+                  key={item.accountId}
+                  // register={amountRegister}
+                  readOnly={false}
+                  disabled={false}
+                  className={`w-[98%] p-1 pr-2 py-2  ${isLastRow ? '  font-bold text-neutral-600  ' : ' border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+                  onClick={() => {}}
+                  onBlur={() => {}}
+                  onFocus={() => {}}
+                />
+              </div>
+              <div className="text-end">{formatCurrency(1234.56)}</div>
+              <div className="flex justify-end text-neutral-400 pr-3">
+                <Menus>
+                  <Menus.Toggler id={item.uuid}>
+                    <Menu size={20}></Menu>
+                  </Menus.Toggler>
+                  <Menus.List id={item.uuid}>
+                    <Menus.MenuItem onClick={() => {}}>
+                      Duplicate Row {item.accountId}
+                    </Menus.MenuItem>
+                    <Menus.MenuItem onClick={() => {}}> Delete</Menus.MenuItem>
+                  </Menus.List>
+                </Menus>
+              </div>
+            </div>
+          );
+        })}
       </div>
       <ChooseYearModal
         isOpen={choosingYear}
@@ -104,6 +190,7 @@ const ReprogrammingHome = () => {
       ></ChooseYearModal>
 
       <AddLineModal
+        key={new Date().getMilliseconds()}
         isOpen={addingLine}
         animateOut={animateOutAddLine}
         initiatives={initiatives}
@@ -116,8 +203,9 @@ const ReprogrammingHome = () => {
             setAnimateOutAddLine(false);
           }, 500);
         }}
+        onLineAdded={handleLineAdded}
       ></AddLineModal>
-    </>
+    </MenuIdProvider>
   );
 };
 export default ReprogrammingHome;

@@ -295,20 +295,32 @@ namespace Application.services
 
         public async Task<List<AccountCurrentAmountDto>> GetAccountBalancesForCategory(int initiativeId, int grantId, int categoryId)
         {
+            _accounts ??= [.. _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId)];
+
+
             var balances = await (from b in _dbContext.BudgetLineItems
-                            join a in _dbContext.Accounts on b.AccountId equals a.Id
-                            where b.InitiativeId == initiativeId &&
-                                b.GrantId == grantId &&
-                                b.AccountId == a.Id &&
-                                a.CategoryId == categoryId &&
-                                (b.ItemType == "B" || b.ItemType == "R")
-                            group b by new { id = a.Id, name= a.Name } into catBal
-                            orderby catBal.Key.name
-                            select
-                                AccountCurrentAmountDto.Create(
-                                     catBal.Key.id, catBal.Key.name, catBal.Sum(x => x.Amount))
+                                  join a in _dbContext.Accounts on b.AccountId equals a.Id
+                                  where b.InitiativeId == initiativeId &&
+                                      b.GrantId == grantId &&
+                                      b.AccountId == a.Id &&
+                                      a.CategoryId == categoryId &&
+                                      (b.ItemType == "B" || b.ItemType == "R")
+                                  group b by new { id = a.Id, name = a.Name } into catBal
+                                  orderby catBal.Key.name
+                                  select
+                                      AccountCurrentAmountDto.Create(
+                                           catBal.Key.id, catBal.Key.name, catBal.Sum(x => x.Amount))
                             )
                            .ToListAsync();
+
+            balances = [.. (from a in _accounts join
+                        b in balances on a.Id equals b.AccountId into itemsGroup
+                        from subItems in itemsGroup.DefaultIfEmpty()
+                        orderby a.Name
+                        select AccountCurrentAmountDto.Create(a.Id, a.Name, subItems != null ? subItems.CurrentAmount : 0)
+                        
+                        )];
+
 
             return balances;
         }

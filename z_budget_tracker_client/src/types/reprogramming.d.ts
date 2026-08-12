@@ -17,6 +17,8 @@ type ReproLineItem = {
     initiativeName: string
     grantId: number,
     grantName: string
+    rowIndex?: number
+    uuid: string
 }
 
 type ReproAccountBalance = {
