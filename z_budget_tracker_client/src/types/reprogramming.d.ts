@@ -4,21 +4,25 @@ type Repro = {
     items?: ReproLineItem[]
 }
 
-type ReproLineItem = {
+type LineItem = {
     accountId: number
     accountName: string
     categoryId: number,
-    categoryName: string
-    increase?: number
-    decrease?: number
-    comment?: string
-    currentBudget: number
+    categoryName: string,
     initiativeId: number,
     initiativeName: string
     grantId: number,
-    grantName: string
+    grantName: string,
     rowIndex?: number
     uuid: string
+}
+
+type ReproLineItem = LineItem & {
+    increase?: number
+    decrease?: number
+    comment?: string
+    currentAmount?: number
+    newAmount?: number
 }
 
 type ReproAccountBalance = {

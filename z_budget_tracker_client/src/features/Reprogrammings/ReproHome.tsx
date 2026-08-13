@@ -1,38 +1,72 @@
-import { Menu, Plus, Search } from 'lucide-react';
+import { useState } from 'react';
+import { Copy, Menu, Plus, Search, Trash } from 'lucide-react';
 import useCategories from '../../api/hooks/useCategories';
 import useInitiatives from '../../api/hooks/useInitiatives';
 import Button from '../../components/Button';
-import { useState } from 'react';
 import ChooseYearModal from './ChooseYearModal';
 import useGrants from '../../api/hooks/useGrants';
 import AddLineModal from './AddLineModal';
 import NumericInput from '../../components/NumericInput';
 import { formatCurrency } from '../../app/util';
 import Menus from '../../components/menus/Menus';
-import useMenuId from '../../contexts/useMenuId';
 import MenuIdProvider from '../../contexts/MenuIdContext';
+import ConfirmModal from '../../components/ConfirmModal';
 
-const ReprogrammingHome = () => {
-  const { priorId } = useMenuId();
+import Dropdown, { type Option } from 'react-dropdown';
+import 'react-dropdown/style.css';
 
+const ReproHome = () => {
   const [reproId, setReproId] = useState('');
   const [choosingYear, setChoosingYear] = useState(false);
   const [addingLine, setAddingLine] = useState(false);
-  const { data: initiatives } = useInitiatives();
-  const { data: categories } = useCategories();
-  const [year, setYear] = useState<number>(0);
-  const { data: grants } = useGrants(year);
-
+  const [isDiscarding, setIsDiscarding] = useState(false);
   const [lines, setLines] = useState<ReproLineItem[]>([]);
 
   const [animateOutYearSelect, setAnimateOutYearSelect] =
     useState<boolean>(false);
   const [animateOutAddLine, setAnimateOutAddLine] = useState<boolean>(false);
+  const [animateOutDiscarding, setAnimateOutDiscarding] =
+    useState<boolean>(false);
+
+  const { data: initiatives } = useInitiatives();
+  const { data: categories } = useCategories();
+  const [year, setYear] = useState<number>(0);
+  const { data: grants } = useGrants(year);
 
   const [repro, setRepro] = useState<Repro | null>(null);
 
+  const handleAccountChange = (option: Option, rowUuid: string) => {
+    setLines((prev) => {
+      const otherLines = prev.filter((x) => x.uuid !== rowUuid);
+      const updatedLine = prev.filter((x) => x.uuid === rowUuid)[0];
+      updatedLine.accountId = +option.value;
+      updatedLine.accountName = option.label!.toString();
+      return [...otherLines, updatedLine];
+    });
+  };
+
   function handleLineAdded(line: ReproLineItem) {
+    setAnimateOutAddLine(true);
+    setTimeout(() => {
+      setAddingLine(false);
+      setAnimateOutAddLine(false);
+    }, 500);
     setLines((prev) => [...prev, line]);
+  }
+
+  function deleteRow(uuid: string) {
+    setLines((prev) => {
+      const newLines = prev.filter((x) => x.uuid !== uuid);
+      return newLines;
+    });
+  }
+
+  function duplicateRow(uuid: string) {
+    const line = lines.filter((x) => x.uuid == uuid)[0];
+    setLines((prev) => [
+      ...prev,
+      { ...line, uuid: window.crypto.randomUUID() },
+    ]);
   }
 
   return (
@@ -60,10 +94,13 @@ const ReprogrammingHome = () => {
             buttonSize="small"
             disabled={year === 0}
             onClick={() => {
-              setYear(0);
+              setIsDiscarding(true);
+
+              // setYear(0);
+              // setLines([]);
             }}
           >
-            Cancel
+            Discard
           </Button>
         </div>
       </div>
@@ -89,7 +126,12 @@ const ReprogrammingHome = () => {
       </div>
       <div className="mb-8">
         {year > 0 && (
-          <Button buttonSize="small" onClick={() => setAddingLine(true)}>
+          <Button
+            buttonSize="small"
+            onClick={() => {
+              setAddingLine(true);
+            }}
+          >
             <Plus></Plus>
             Add Line
           </Button>
@@ -98,7 +140,7 @@ const ReprogrammingHome = () => {
       <div>
         {lines.length > 0 && (
           <div>
-            <div className="grid grid-cols-[1.5fr_1fr_.8fr_1fr_1fr_.8fr_.8fr_.8fr_.4fr] px-3 py-4 font-bold text-neutral-500">
+            <div className="grid grid-cols-[1.5fr_1fr_.8fr_1.7fr_1fr_.8fr_.8fr_.8fr_.4fr]  px-3 py-4 font-bold text-neutral-500">
               <div className="pl-1">Initiative</div>
               <div>Grant</div>
               <div>Category</div>
@@ -113,15 +155,54 @@ const ReprogrammingHome = () => {
         )}
         {lines.map((item: ReproLineItem) => {
           const isLastRow = false;
+
+          const category = categories!.filter(
+            (x: Category) => x.id == item.categoryId,
+          )[0];
+
+          const accounts = category!.accounts!.map((a) => {
+            return {
+              value: a.id,
+              label: a.name,
+            };
+          });
+
           return (
             <div
-              className="grid grid-cols-[1.5fr_1fr_.8fr_1fr_1fr_.8fr_.8fr_.8fr_.4fr] px-3 py-4 border border-neutral-200 shadow-sm items-center mb-3"
+              className="grid grid-cols-[1.5fr_1fr_.8fr_1.7fr_1fr_.8fr_.8fr_.8fr_.4fr] px-3 py-4 border border-neutral-200 shadow-sm items-center mb-3"
               key={item.uuid}
             >
               <div className=" pr-2">{item.initiativeName}</div>
               <div>{item.grantName}</div>
               <div>{item.categoryName}</div>
-              <div>{item.accountName}</div>
+              <div>
+                <Dropdown
+                  aria-label="Number"
+                  options={accounts}
+                  renderOption={(option, { active, selected }) => (
+                    <div>
+                      <div>
+                        <div className="flex gap-1">
+                          {selected ? '✓ ' : ''}
+                          <div
+                            className={`text-neutral-900 ${selected} : "" : "pl-20"`}
+                          >
+                            {option.label}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-neutral-500 pl-4">
+                        {formatCurrency(1000)}
+                      </div>
+                    </div>
+                  )}
+                  onChange={(option) => {
+                    handleAccountChange(option, item.uuid);
+                  }}
+                  value={item.accountId}
+                  placeholder={item.accountName}
+                />
+              </div>
               <div className="text-center">
                 {formatCurrency(item.currentBudget)}
               </div>
@@ -131,7 +212,7 @@ const ReprogrammingHome = () => {
                   // register={amountRegister}
                   readOnly={false}
                   disabled={false}
-                  className={`w-[98%] p-1 pr-2 py-2  ${isLastRow ? '  font-bold text-neutral-600  ' : ' border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+                  className={`rounded-sm w-[98%] ml-2 p-1 pr-2 py-2  ${isLastRow ? '  font-bold text-neutral-600  ' : ' border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
                   onClick={() => {}}
                   onBlur={() => {}}
                   onFocus={() => {}}
@@ -143,7 +224,7 @@ const ReprogrammingHome = () => {
                   // register={amountRegister}
                   readOnly={false}
                   disabled={false}
-                  className={`w-[98%] p-1 pr-2 py-2  ${isLastRow ? '  font-bold text-neutral-600  ' : ' border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+                  className={`rounded-sm w-[98%] ml-2 p-1 pr-2 py-2  ${isLastRow ? '  font-bold text-neutral-600  ' : ' border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
                   onClick={() => {}}
                   onBlur={() => {}}
                   onFocus={() => {}}
@@ -156,10 +237,13 @@ const ReprogrammingHome = () => {
                     <Menu size={20}></Menu>
                   </Menus.Toggler>
                   <Menus.List id={item.uuid}>
-                    <Menus.MenuItem onClick={() => {}}>
-                      Duplicate Row {item.accountId}
+                    <Menus.MenuItem onClick={() => duplicateRow(item.uuid)}>
+                      <Copy></Copy>&nbsp;&nbsp;Duplicate Row
                     </Menus.MenuItem>
-                    <Menus.MenuItem onClick={() => {}}> Delete</Menus.MenuItem>
+                    <Menus.MenuItem onClick={() => deleteRow(item.uuid)}>
+                      <Trash className="text-red-500"></Trash>&nbsp;&nbsp;Delete
+                      Row
+                    </Menus.MenuItem>
                   </Menus.List>
                 </Menus>
               </div>
@@ -205,7 +289,30 @@ const ReprogrammingHome = () => {
         }}
         onLineAdded={handleLineAdded}
       ></AddLineModal>
+
+      <ConfirmModal
+        key={new Date().getMilliseconds()}
+        isOpen={isDiscarding}
+        animateOut={animateOutDiscarding}
+        onCancel={() => {
+          setAnimateOutDiscarding(true);
+          setTimeout(() => {
+            setIsDiscarding(false);
+            setAnimateOutDiscarding(false);
+          }, 500);
+        }}
+        onConfirm={() => {
+          setAnimateOutDiscarding(true);
+          setTimeout(() => {
+            setLines([]);
+            setIsDiscarding(false);
+            setAnimateOutDiscarding(false);
+            setYear(0);
+          }, 500);
+        }}
+        message={'Are you sure you wish to discard this reprogramming?'}
+      ></ConfirmModal>
     </MenuIdProvider>
   );
 };
-export default ReprogrammingHome;
+export default ReproHome;

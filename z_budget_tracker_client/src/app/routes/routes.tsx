@@ -5,7 +5,8 @@ import Budgets from '../../features/Budget/Budgets';
 import NotFound from '../../components/NotFound';
 import Details from '../../features/Budget/Details';
 import CreateBudget from '../../features/Budget/CreateBudget';
-import ReprogrammingHome from '../../features/Reprogrammings/ReprogrammingHome';
+import ReproHome from '../../features/Reprogrammings/ReproHome';
+import ReproHome2 from '../../features/Reprogrammings/ReproHome2';
 
 export const routes: RouteObject[] = [
   {
@@ -30,7 +31,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'reprogramming',
-        element: <ReprogrammingHome />,
+        element: <ReproHome2 />,
       },
       {
         path: '/reprogramming/create/:initiativeId?/:grantId?/:accountId?',

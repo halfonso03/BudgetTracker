@@ -22,7 +22,7 @@ const closeButtonStyles = {
   cursor: 'pointer',
 } as {};
 
-const Modal = ({
+const Modal2 = ({
   isOpen,
   onCancel,
   size,
@@ -75,4 +75,4 @@ const Modal = ({
   );
 };
 
-export default Modal;
+export default Modal2;

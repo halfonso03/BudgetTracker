@@ -1,9 +1,9 @@
-import Modal from '../../components/Modal';
 import Button from '../../components/Button';
 import Select from '../../components/Select';
 import { useState, type ChangeEvent } from 'react';
 import useCurrentAccountBalances from '../../api/hooks/useCurrentAccountBalances';
 import { formatCurrency } from '../../app/util';
+import Modal2 from '../../components/Modal2';
 
 type Selections = {
   initiativeId?: number;
@@ -15,7 +15,6 @@ type Selections = {
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
-  animateOut: boolean;
   initiatives: Initiative[] | undefined;
   grants: Grant[] | undefined;
   categories: Category[] | undefined;
@@ -25,6 +24,7 @@ type Props = {
 
 const AddLineModal = ({ ...props }: Props) => {
   const [selections, setSelections] = useState<Selections | null>(null);
+  const [animateOut, setAnimateOut] = useState(false);
 
   const { data: balances } = useCurrentAccountBalances(
     selections?.initiativeId,
@@ -51,12 +51,13 @@ const AddLineModal = ({ ...props }: Props) => {
         currentBudget: account.currentAmount,
         uuid: window.crypto.randomUUID(),
       };
+      setSelections(null);
       props.onLineAdded(newLine);
     }
   }
 
   return (
-    <Modal size="lg" title="Add Line" {...props}>
+    <Modal2 size="lg" title="Add a New Line" animateOut={animateOut} {...props}>
       {/* <pre>{JSON.stringify(selections)}</pre> */}
 
       <div className="grid grid-cols-[1fr_1fr] mb-4 gap-4">
@@ -138,19 +139,18 @@ const AddLineModal = ({ ...props }: Props) => {
         </div>
 
         <div className="p-2 pt-1">
-          <div className="flex justify-between mx-2 mb-2 border-b border-b-neutral-300">
+          <div className="flex justify-between mx-2 mb-2 ">
             <div className="entity-label">Account</div>
             <div className="entity-label">Current Balance</div>
           </div>
 
           {balances?.map((b) => (
             <div
-              className="rounded-sm py-1 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-200 transition-all duration-300"
+              className="rounded-sm py-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300"
               key={b.accountId}
               onClick={() => {
                 onLineAdded(b);
                 props.onCancel();
-
               }}
             >
               <div className="text-neutral-700">{b.name}</div>
@@ -167,18 +167,17 @@ const AddLineModal = ({ ...props }: Props) => {
           variation="secondary"
           onClick={() => {
             props.onCancel();
-
+            setAnimateOut(true);
             setTimeout(() => {
               setSelections(null);
-              // setReason('');
-              // setYear(0);
+              setAnimateOut(false);
             }, 500);
           }}
         >
           Cancel
         </Button>
       </div>
-    </Modal>
+    </Modal2>
   );
 };
 export default AddLineModal;
