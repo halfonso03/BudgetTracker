@@ -11,7 +11,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <NavBar></NavBar>
-        <div className="p-3 w-[75%] mx-auto">
+        <div className="p-3 w-[82%] mx-auto">
           <Outlet></Outlet>
         </div>
         <Toaster

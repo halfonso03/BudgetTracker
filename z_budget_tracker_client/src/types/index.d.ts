@@ -76,7 +76,6 @@ type CreateBudgetRequest = {
     year: number
     lineItems: CreateBudgetLineItemsRequest[]
     comments: CreateBudgetCommentRequest[]
-
 }
 
 type CreateBudgetLineItemsRequest = {

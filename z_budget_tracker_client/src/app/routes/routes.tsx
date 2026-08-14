@@ -30,7 +30,11 @@ export const routes: RouteObject[] = [
         element: <CreateBudget />,
       },
       {
-        path: 'reprogramming',
+        path: 'reprogramming1',
+        element: <ReproHome />,
+      },
+      {
+        path: 'reprogramming2',
         element: <ReproHome2 />,
       },
       {

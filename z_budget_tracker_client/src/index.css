@@ -113,9 +113,20 @@ input:-webkit-autofill:focus {
 }
 
 .Dropdown-control {
-  border: 1px solid var(--color-neutral-200) !important;
+  border: 0 !important;
+  padding: 0;
 }
 
-.Dropdown-control {
-  padding: 0;
+.Dropdown-menu {
+  border: 1px solid var(--color-neutral-300) !important;
+  overflow-y: hidden !important;
+  min-height: max-content !important;
+}
+
+.Dropdown-menu li {
+  border-bottom: 1px solid var(--color-neutral-100) !important;
+}
+
+.Dropdown-menu li:last-child {
+  border-bottom: 0 !important;
 }

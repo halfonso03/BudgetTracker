@@ -5,6 +5,9 @@ import useGrants from '../../api/hooks/useGrants';
 import useInitiatives from '../../api/hooks/useInitiatives';
 import TransactionRow from './TransactionRow';
 import { type Option } from 'react-dropdown';
+import { formatCurrency } from '../../app/util';
+import { useFieldArray, useForm } from 'react-hook-form';
+import NumericArrayInputGeneric from '../../components/NumericArrayInputGeneric';
 
 const ReproHome2 = () => {
   const [addLineModelIsOpen, setAddLineModelIsOpen] = useState(false);
@@ -12,14 +15,56 @@ const ReproHome2 = () => {
 
   const { data: initiatives } = useInitiatives();
   const { data: categories, isLoading } = useCategories();
-  const [year, setYear] = useState<number>(2026);
-  const { data: grants } = useGrants(year);
+  const { data: grants } = useGrants(2026);
+
+  const reprogRows: ReprogInputRow[] = lines
+    .map((l) => {
+      return {
+        ...l,
+        newAmount: l.newAmount ?? 0,
+        increase: l.increase ?? 0,
+        decrease: l.decrease ?? 0,
+      };
+    })
+    .map((i) => ({
+      ...i,
+      newAmount: (i.currentAmount ?? 0) + i.increase - i.decrease,
+    }));
+
+  const { register, control, getValues, setValue } = useForm<ReprogInputRows>({
+    values: {
+      rows: reprogRows,
+    },
+  });
+
+  const { fields } = useFieldArray({
+    control,
+    name: 'rows',
+  });
+  console.log('fields.length', fields.length);
 
   function handleLineAdded(line: ReproLineItem) {
     setTimeout(() => {
       setAddLineModelIsOpen(false);
     }, 500);
-    setLines((prev) => [...prev, line]);
+
+    setLines((prev) => {
+      const newLines: ReproLineItem[] = prev.map(
+        (l: ReproLineItem, i: number) => {
+          return {
+            ...l,
+            increase: getValues(`rows.${i}.increase`),
+            decrease: getValues(`rows.${i}.decrease`),
+            newAmount:
+              (l.currentAmount ?? 0) +
+              +getValues(`rows.${i}.increase`) -
+              +getValues(`rows.${i}.decrease`),
+          };
+        },
+      );
+      newLines.push(line);
+      return newLines;
+    });
   }
 
   const handleAccountChange = (option: Option, rowUuid: string) => {
@@ -31,19 +76,49 @@ const ReproHome2 = () => {
       return [...otherLines, updatedLine];
     });
   };
-
   if (isLoading) return null;
 
   return (
     <div>
       <button onClick={() => setAddLineModelIsOpen(true)}>Add Line</button>
-      <div className="grid grid-cols-[1fr_1fr_1fr_1fr]">
-        {lines.map((item) => (
+
+      <div className="grid grid-cols-[1.2fr_.8fr_.5fr_1.2fr_2.3fr_.3fr]">
+        {lines.map((item, index) => (
           <TransactionRow
             key={item.uuid}
             lineItem={item}
             categories={categories}
             handleAccountChange={handleAccountChange}
+            render={() => (
+              <div className="flex">
+                <div className="text-center flex-1 px-1 text-neutral-600 self-center">
+                  {formatCurrency(item.currentAmount)}
+                </div>
+                <NumericArrayInputGeneric
+                  index={index}
+                  setValue={setValue}
+                  register={register(`rows.${index}.increase`)}
+                  fieldName="increase"
+                  readOnly={false}
+                  disabled={false}
+                  className={` flex-1 rounded-sm w-[98%] ml-2 p-1 pr-2 py-2 text-end  ${'border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+                />
+                <NumericArrayInputGeneric
+                  index={index}
+                  register={register(`rows.${index}.decrease`)}
+                  fieldName="decrease"
+                  setValue={setValue}
+                  readOnly={false}
+                  disabled={false}
+                  className={`flex-1 rounded-sm w-[98%] ml-2 p-1 pr-2 py-2 text-end  ${' border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+                />
+                <div
+                  className={`text-center flex-1 self-center text-neutral-600 px-1 ${item.newAmount < 0 ? 'text-red-500' : ''}`}
+                >
+                  {formatCurrency(item.newAmount)}
+                </div>
+              </div>
+            )}
           ></TransactionRow>
         ))}
       </div>

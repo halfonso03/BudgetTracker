@@ -6,7 +6,7 @@ interface Props {
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick: (e: React.MouseEvent<HTMLInputElement>) => void;
-  register: UseFormRegisterReturn<`rows.${number}.amount`>;
+  register: UseFormRegisterReturn<string>;
   className?: string;
 }
 

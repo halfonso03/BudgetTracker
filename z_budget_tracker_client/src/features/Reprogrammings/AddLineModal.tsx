@@ -48,7 +48,7 @@ const AddLineModal = ({ ...props }: Props) => {
         grantId: selections!.grantId!,
         grantName: props.grants.filter((x) => x.id == selections?.grantId)[0]
           .name,
-        currentBudget: account.currentAmount,
+        currentAmount: account.currentAmount,
         uuid: window.crypto.randomUUID(),
       };
       setSelections(null);
@@ -139,9 +139,9 @@ const AddLineModal = ({ ...props }: Props) => {
         </div>
 
         <div className="p-2 pt-1">
-          <div className="flex justify-between mx-2 mb-2 ">
-            <div className="entity-label">Account</div>
-            <div className="entity-label">Current Balance</div>
+          <div className="flex justify-between py-2 px-2 mb-1">
+            <div className="entity-label">Current Amounts</div>
+            {/* <div className="entity-label">Current Balance</div> */}
           </div>
 
           {balances?.map((b) => (
@@ -150,7 +150,8 @@ const AddLineModal = ({ ...props }: Props) => {
               key={b.accountId}
               onClick={() => {
                 onLineAdded(b);
-                props.onCancel();
+                props.onCancel()
+                // setTimeout(, 2000)
               }}
             >
               <div className="text-neutral-700">{b.name}</div>
@@ -159,6 +160,26 @@ const AddLineModal = ({ ...props }: Props) => {
               </div>
             </div>
           ))}
+          <div className="flex justify-between py-2 px-2">
+            <div className="entity-label">
+              {selections &&
+                props.categories?.some(
+                  (c) => c.id == selections?.categoryId,
+                ) &&
+                props.categories?.filter(
+                  (c) => c.id == selections?.categoryId,
+                )[0].name}
+              &nbsp; Total
+            </div>
+            <div className="font-bold text-neutral-500">
+              {balances &&
+                formatCurrency(
+                  balances
+                    .map((b) => b.currentAmount)
+                    ?.reduce((acc, cur) => acc + cur, 1),
+                )}
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex justify-end gap-3 pb-3">

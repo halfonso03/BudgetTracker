@@ -21,8 +21,10 @@ type ReproLineItem = LineItem & {
     increase?: number
     decrease?: number
     comment?: string
-    currentAmount?: number
-    newAmount?: number
+    currentAmount: number
+    increase: number
+    decrease: number
+    newAmount: number
 }
 
 type ReproAccountBalance = {
@@ -31,3 +33,15 @@ type ReproAccountBalance = {
     currentAmount: number
 }
 
+type ReprogInputRows = {
+    rows: ReprogInputRow[]
+}
+
+type ReprogInputRow = {
+    accountId: number;
+    categoryId: number;
+    currentAmount?: number;
+    increase: number;
+    decrease: number
+    newAmount: number
+};
