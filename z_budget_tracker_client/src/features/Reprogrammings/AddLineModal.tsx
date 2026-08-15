@@ -19,7 +19,10 @@ type Props = {
   grants: Grant[] | undefined;
   categories: Category[] | undefined;
   selections?: Selections;
-  onLineAdded: (balance: ReproLineItem) => void;
+  onLineAdded: (
+    balance: ReproLineItem,
+    balances: AccountBalance[],
+  ) => void;
 };
 
 const AddLineModal = ({ ...props }: Props) => {
@@ -50,9 +53,10 @@ const AddLineModal = ({ ...props }: Props) => {
           .name,
         currentAmount: account.currentAmount,
         uuid: window.crypto.randomUUID(),
+        newAmount: account.currentAmount,
       };
       setSelections(null);
-      props.onLineAdded(newLine);
+      props.onLineAdded(newLine, [...(balances ?? [])]);
     }
   }
 
@@ -150,7 +154,7 @@ const AddLineModal = ({ ...props }: Props) => {
               key={b.accountId}
               onClick={() => {
                 onLineAdded(b);
-                props.onCancel()
+                props.onCancel();
                 // setTimeout(, 2000)
               }}
             >
@@ -163,9 +167,7 @@ const AddLineModal = ({ ...props }: Props) => {
           <div className="flex justify-between py-2 px-2">
             <div className="entity-label">
               {selections &&
-                props.categories?.some(
-                  (c) => c.id == selections?.categoryId,
-                ) &&
+                props.categories?.some((c) => c.id == selections?.categoryId) &&
                 props.categories?.filter(
                   (c) => c.id == selections?.categoryId,
                 )[0].name}

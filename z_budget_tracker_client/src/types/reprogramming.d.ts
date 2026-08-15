@@ -31,6 +31,12 @@ type ReproAccountBalance = {
     accountId: number
     name: string
     currentAmount: number
+    accountId: number
+    initiativeId: number,
+    grantId: number,
+
+
+
 }
 
 type ReprogInputRows = {

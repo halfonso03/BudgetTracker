@@ -12,6 +12,8 @@ import Button from '../../components/Button';
 import { Plus } from 'lucide-react';
 
 const ReproHome2 = () => {
+  const [savedBalances, setSavedBalances] = useState<ReproAccountBalance[]>([]);
+
   const [addLineModelIsOpen, setAddLineModelIsOpen] = useState(false);
   const [lines, setLines] = useState<ReproLineItem[]>([]);
 
@@ -19,19 +21,14 @@ const ReproHome2 = () => {
   const { data: categories, isLoading } = useCategories();
   const { data: grants } = useGrants(2026);
 
-  const reprogRows: ReprogInputRow[] = lines
-    .map((l) => {
-      return {
-        ...l,
-        newAmount: l.newAmount ?? 0,
-        increase: l.increase ?? 0,
-        decrease: l.decrease ?? 0,
-      };
-    })
-    .map((i) => ({
-      ...i,
-      newAmount: i.currentAmount + i.increase - i.decrease,
-    }));
+  const reprogRows: ReprogInputRow[] = lines.map((l) => {
+    return {
+      ...l,
+      increase: l.increase ?? 0,
+      decrease: l.decrease ?? 0,
+      newAmount: l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+    };
+  });
 
   const { register, getValues, setValue } = useForm<ReprogInputRows>({
     values: {
@@ -44,7 +41,7 @@ const ReproHome2 = () => {
   //   name: 'rows',
   // });
 
-  function handleLineAdded(line: ReproLineItem) {
+  function handleLineAdded(line: ReproLineItem, balances: AccountBalance[]) {
     setTimeout(() => {
       setAddLineModelIsOpen(false);
     }, 500);
@@ -58,13 +55,16 @@ const ReproHome2 = () => {
             ...l,
             increase: inc,
             decrease: dec,
-            newAmount: l.currentAmount + inc - dec,
+            newAmount: +l.currentAmount + +inc - +dec,
           };
         },
       );
       newLines.push(line);
       return newLines;
     });
+
+    //save balances
+    console.log('balances', balances)
   }
 
   const handleAccountChange = (option: Option, rowUuid: string) => {
@@ -87,26 +87,23 @@ const ReproHome2 = () => {
     });
   };
 
-  function calculateNewAmount() {
+  function recalculate() {
     setLines((prev) => {
-      const otherLines = prev
-        .map((l, i) => {
-          const inc = getValues(`rows.${i}.increase`);
-          const dec = getValues(`rows.${i}.decrease`);
-          return {
-            ...l,
-            increase: inc,
-            decrease: dec,
-          };
-        })
-        .map((i) => ({
-          ...i,
-          newAmount: +i.currentAmount + +i.increase - +i.decrease,
-        }));
+      const otherLines = prev.map((l, i) => {
+        const inc = getValues(`rows.${i}.increase`);
+        const dec = getValues(`rows.${i}.decrease`);
+        return {
+          ...l,
+          increase: inc,
+          decrease: dec,
+          newAmount: +l.currentAmount + +inc - +dec,
+        };
+      });
 
       return [...otherLines];
     });
   }
+
   if (isLoading) return null;
 
   return (
@@ -142,7 +139,7 @@ const ReproHome2 = () => {
                   fieldName="increase"
                   readOnly={false}
                   disabled={false}
-                  onBlur={calculateNewAmount}
+                  onBlur={recalculate}
                   classes={`flex-1 w-[98%] ml-2 p-1 pr-2 py-2 text-end  ${'border-b-2 border-neutral-300 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
                 />
                 <NumericArrayInputGeneric
@@ -152,7 +149,7 @@ const ReproHome2 = () => {
                   setValue={setValue}
                   readOnly={false}
                   disabled={false}
-                  onBlur={calculateNewAmount}
+                  onBlur={recalculate}
                   classes={`flex-1  w-[98%] ml-2 p-1 pr-2 py-2 text-end  ${' border-b-2 border-neutral-300 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
                 />
                 <div
