@@ -117,6 +117,13 @@ input:-webkit-autofill:focus {
   padding: 0;
 }
 
+.Dropdown-placeholder {
+  text-overflow: ellipsis !important; /* Adds the ellipsis (...) symbol */
+  overflow: hidden !important; /* Hides the content that spills out */
+  white-space: nowrap !important;
+  color: var(--color-neutral-800) !important;
+}
+
 .Dropdown-menu {
   border: 1px solid var(--color-neutral-300) !important;
   overflow-y: hidden !important;
@@ -129,4 +136,11 @@ input:-webkit-autofill:focus {
 
 .Dropdown-menu li:last-child {
   border-bottom: 0 !important;
+}
+.Dropdown-arrow-wrapper {
+  color: var(--color-red-950) !important;
+}
+
+.Dropdown-arrow {
+  color: var(--color-red-950) !important;
 }

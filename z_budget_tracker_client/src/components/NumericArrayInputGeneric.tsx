@@ -12,7 +12,8 @@ interface Props<T extends string> {
   register: UseFormRegisterReturn<T>;
   setValue: UseFormSetValue<ReprogInputRows>;
   fieldName: string;
-  className?: string;
+  classes?: string;
+  onBlur: () => void;
 }
 
 const NumericArrayInputGeneric = ({
@@ -21,8 +22,9 @@ const NumericArrayInputGeneric = ({
   disabled,
   register,
   setValue,
-  className,
+  classes,
   fieldName,
+  onBlur,
 }: Props<string>) => {
   function handleOnKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (
@@ -38,18 +40,14 @@ const NumericArrayInputGeneric = ({
     }
   }
 
-  const classes = '  ' + (className ?? '');
-
   function removeNumberFormattingFromArrayField(
     setValue: UseFormSetValue<ReprogInputRows>,
     index: number,
     amount: string,
   ) {
-    const result = amount.replace(/(?<=\d),(?=\d)/g, '');
-
     setValue(
       `rows.${index}.${fieldName}` as Path<ReprogInputRows>,
-      result as unknown as
+      amount.replace(/(?<=\d),(?=\d)/g, '') as unknown as
         | number
         | ReprogInputRow
         | ReprogInputRow[]
@@ -95,6 +93,7 @@ const NumericArrayInputGeneric = ({
       onKeyDown={handleOnKeyDown}
       onBlur={(e) => {
         formatArrayFieldAmount(setValue, index, e.target.value);
+        onBlur();
       }}
       onClick={(e: React.MouseEvent<HTMLInputElement>) => {
         const input = e.target as HTMLInputElement;

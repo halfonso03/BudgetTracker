@@ -1,19 +1,12 @@
 import Dropdown, { type Option } from 'react-dropdown';
 import { Fragment } from 'react/jsx-runtime';
 import { formatCurrency } from '../../app/util';
-import { useState } from 'react';
-
-// interface AmountfieldsData {
-//   count: number;
-//   increment: () => void;
-// }
 
 type Props = {
   lineItem: ReproLineItem;
   categories: Category[] | undefined;
   handleAccountChange: (option: Option, rowUuid: string) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  render: (data: any) => React.ReactNode;
+  render: () => React.ReactNode;
 };
 
 const TransactionRow = ({
@@ -30,9 +23,7 @@ const TransactionRow = ({
     uuid,
   },
 }: Props) => {
-  const [count, setCount] = useState<number>(0);
 
-  const increment = () => setCount((prev) => prev + 1);
 
   if (!categories) return null;
 
@@ -50,7 +41,7 @@ const TransactionRow = ({
       <div className="self-center">{initiativeName}</div>
       <div className="self-center">{grantName}</div>
       <div className="self-center">{categoryName}</div>
-      <div className="self-center">
+      <div className="self-center w-full">
         <Dropdown
           aria-label="Number"
           options={accounts}
@@ -68,7 +59,7 @@ const TransactionRow = ({
         />
       </div>
 
-      {render({ count, increment })}
+      {render()}
 
       <div className="self-center">actions</div>
     </Fragment>
