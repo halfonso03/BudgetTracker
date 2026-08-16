@@ -3,12 +3,14 @@ import { Outlet } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 function App() {
   const queryClient = new QueryClient();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools></ReactQueryDevtools>
       <AuthProvider>
         <NavBar></NavBar>
         <div className="p-3 w-[82%] mx-auto">

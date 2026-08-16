@@ -51,15 +51,17 @@ const ReproHome2 = () => {
       setAddLineModelIsOpen(false);
     }, 500);
 
-    line.rowNumber = lines.length - 1;
+    line.rowNumber = lines.length;
 
     setLines((prev) => {
       const newLines: ReproLineItem[] = prev.map(
         (l: ReproLineItem, i: number) => {
           const inc = getValues(`rows.${i}.increase`);
           const dec = getValues(`rows.${i}.decrease`);
+          console.log('set lines', l.accountName);
           return {
             ...l,
+            accountName: l.accountName,
             increase: inc,
             decrease: dec,
             newAmount: +l.currentAmount + +inc - +dec,
@@ -102,23 +104,41 @@ const ReproHome2 = () => {
     }
   }
 
-  const handleAccountChange = (option: Option, rowUuid: string) => {
+  const handleAccountChange = (accountId: number, rowUuid: string) => {
     setLines((prev) => {
-      const otherLines = prev.map((l, i) => {
-        const inc = getValues(`rows.${i}.increase`);
-        const dec = getValues(`rows.${i}.decrease`);
-        return {
-          ...l,
-          increase: inc,
-          decrease: dec,
-          newAmount: +l.currentAmount + +inc - +dec,
-          accountId: l.uuid == rowUuid ? +option.value : l.accountId,
-          accountName:
-            l.uuid == rowUuid ? option.label!.toString() : l.accountName,
-        };
+      const lines = prev.map((l: ReproLineItem, index) => {
+        const inc = getValues(`rows.${index}.increase`);
+        const dec = getValues(`rows.${index}.decrease`);
+
+        if (rowUuid == l.uuid) {
+          const currentAmount = savedBalances
+            .filter(
+              (b) =>
+                b.key.initiativeId == l.initiativeId &&
+                b.key.grantId == l.grantId &&
+                b.key.categoryId == l.categoryId,
+            )[0]
+            .balances.filter((x) => x.accountId == accountId)[0].currentAmount;
+
+          return {
+            ...l,
+            increase: inc,
+            decrease: dec,
+            newAmount: currentAmount + +inc - +dec,
+            accountId: accountId,
+            currentAmount: currentAmount,
+          };
+        } else {
+          return {
+            ...l,
+            increase: inc,
+            decrease: dec,
+            newAmount: l.currentAmount + +inc - +dec,
+          };
+        }
       });
 
-      return [...otherLines];
+      return [...lines];
     });
   };
 
@@ -155,6 +175,7 @@ const ReproHome2 = () => {
         </Button>
       </div>
 
+      {/* <pre>{JSON.stringify(savedBalances)}</pre> */}
 
       <div className="grid grid-cols-[1.2fr_.8fr_.5fr_1.1fr_2.3fr_.3fr] gap-2">
         {lines.map((item, index) => {
@@ -164,7 +185,7 @@ const ReproHome2 = () => {
               b.key.grantId == item.grantId &&
               b.key.categoryId == item.categoryId,
           )[0].balances;
-
+          // console.log('repro accountName', JSON.stringify(item.accountName));
           return (
             <TransactionRow
               key={item.uuid}

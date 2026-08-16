@@ -1,11 +1,10 @@
-import Dropdown, { type Option } from 'react-dropdown';
+import Dropdown from 'react-dropdown';
 import { Fragment } from 'react/jsx-runtime';
-import { formatCurrency } from '../../app/util';
 
 type Props = {
   lineItem: ReproLineItem;
   categories: Category[] | undefined;
-  handleAccountChange: (option: Option, rowUuid: string) => void;
+  handleAccountChange: (option: number, rowUuid: string) => void;
   balances: { accountId: number; name: string; currentAmount: number }[];
   render: () => React.ReactNode;
 };
@@ -15,26 +14,23 @@ const TransactionRow = ({
   categories,
   handleAccountChange,
   balances,
-  lineItem: {
-    initiativeName,
-    grantName,
-    categoryName,
-    accountName,
-    accountId,
-    uuid,
-  },
+  lineItem: { initiativeName, grantName, categoryName, accountId, uuid },
 }: Props) => {
   if (!categories) return null;
-  console.log('item', accountName);
+
+  // const accounts = balances.map((b) => ({
+  //   value: b.accountId,
+  //   label: (
+  //     <div className="flex justify-between gap-2">
+  //       <div>{b.name + ' - ' + b.accountId}</div>
+  //       <div>{formatCurrency(b.currentAmount)}</div>
+  //     </div>
+  //   ),
+  // }));
 
   const accounts = balances.map((b) => ({
     value: b.accountId,
-    label: (
-      <div className="flex justify-between">
-        <div>{b.name}</div>
-        <div>{formatCurrency(b.currentAmount)}</div>
-      </div>
-    ),
+    label: b.name,
   }));
 
   return (
@@ -47,7 +43,7 @@ const TransactionRow = ({
           aria-label="Number"
           options={accounts}
           onChange={(option) => {
-            handleAccountChange(option, uuid);
+            handleAccountChange(+option.value, uuid);
           }}
           // renderOption={(option) => (
           //   <div>
@@ -56,7 +52,6 @@ const TransactionRow = ({
           //   </div>
           // )}
           value={accountId}
-          placeholder={accountName}
         />
       </div>
       {render()}
