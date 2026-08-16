@@ -21,7 +21,7 @@ type Props = {
   selections?: Selections;
   onLineAdded: (
     balance: ReproLineItem,
-    balances: AccountBalance[],
+    key: { initiativeId: number; grantId: number; categoryId: number },
   ) => void;
 };
 
@@ -38,6 +38,7 @@ const AddLineModal = ({ ...props }: Props) => {
   function onLineAdded(account: ReproAccountBalance) {
     if (props.initiatives && props.grants && props.categories) {
       const newLine: ReproLineItem = {
+        rowNumber: -1,
         accountId: account.accountId,
         accountName: account.name,
         categoryId: selections!.categoryId!,
@@ -56,7 +57,11 @@ const AddLineModal = ({ ...props }: Props) => {
         newAmount: account.currentAmount,
       };
       setSelections(null);
-      props.onLineAdded(newLine, [...(balances ?? [])]);
+      props.onLineAdded(newLine, {
+        initiativeId: newLine.initiativeId,
+        grantId: newLine.grantId,
+        categoryId: selections!.categoryId!,
+      });
     }
   }
 

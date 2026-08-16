@@ -114,14 +114,6 @@ input:-webkit-autofill:focus {
 
 .Dropdown-control {
   border: 0 !important;
-  padding: 0;
-}
-
-.Dropdown-placeholder {
-  text-overflow: ellipsis !important; /* Adds the ellipsis (...) symbol */
-  overflow: hidden !important; /* Hides the content that spills out */
-  white-space: nowrap !important;
-  color: var(--color-neutral-800) !important;
 }
 
 .Dropdown-menu {
@@ -137,10 +129,20 @@ input:-webkit-autofill:focus {
 .Dropdown-menu li:last-child {
   border-bottom: 0 !important;
 }
+
 .Dropdown-arrow-wrapper {
   color: var(--color-red-950) !important;
 }
 
 .Dropdown-arrow {
   color: var(--color-red-950) !important;
+}
+
+.Dropdown-placeholder.is-selected div > div:last-child {
+  display: none !important;
+}
+
+pre {
+  white-space: pre-wrap; /* Triggers natural text wrapping */
+  overflow-wrap: break-word; /* Safely breaks long, unbroken strings */
 }

@@ -6,6 +6,7 @@ type Props = {
   lineItem: ReproLineItem;
   categories: Category[] | undefined;
   handleAccountChange: (option: Option, rowUuid: string) => void;
+  balances: { accountId: number; name: string; currentAmount: number }[];
   render: () => React.ReactNode;
 };
 
@@ -13,28 +14,28 @@ const TransactionRow = ({
   render,
   categories,
   handleAccountChange,
+  balances,
   lineItem: {
     initiativeName,
     grantName,
     categoryName,
-    categoryId,
     accountName,
     accountId,
     uuid,
   },
 }: Props) => {
-
-
   if (!categories) return null;
+  console.log('item', accountName);
 
-  const category = categories!.filter((x: Category) => x.id == categoryId)[0];
-
-  const accounts = category!.accounts!.map((a) => {
-    return {
-      value: a.id,
-      label: a.name,
-    };
-  });
+  const accounts = balances.map((b) => ({
+    value: b.accountId,
+    label: (
+      <div className="flex justify-between">
+        <div>{b.name}</div>
+        <div>{formatCurrency(b.currentAmount)}</div>
+      </div>
+    ),
+  }));
 
   return (
     <Fragment>
@@ -45,24 +46,34 @@ const TransactionRow = ({
         <Dropdown
           aria-label="Number"
           options={accounts}
-          renderOption={(option) => (
-            <div className="flex justify-between gap-1">
-              <div className="text-neutral-600">{option.label}</div>
-              <div className="text-neutral-950">{formatCurrency(1000)}</div>
-            </div>
-          )}
           onChange={(option) => {
             handleAccountChange(option, uuid);
           }}
+          // renderOption={(option) => (
+          //   <div>
+          //     <div>{option!.label!.toString().split('|')[0]}</div>
+          //     <div>{option!.label!.toString().split('|')[1]}</div>
+          //   </div>
+          // )}
           value={accountId}
           placeholder={accountName}
         />
       </div>
-
       {render()}
-
       <div className="self-center">actions</div>
     </Fragment>
   );
 };
+
+// function balanceDropdownItem(label: string) {
+//   const item1 = label.split('|')[0];
+//   const item2 = label.split('|')[1];
+
+//   return (
+//     <div className="flex justify-between border w-[100%]">
+//       <div>{item1}</div>
+//       <div>{item2}</div>
+//     </div>
+//   );
+// }
 export default TransactionRow;
