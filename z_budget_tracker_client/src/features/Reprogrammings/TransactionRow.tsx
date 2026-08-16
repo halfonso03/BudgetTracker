@@ -1,10 +1,13 @@
 import Dropdown from 'react-dropdown';
 import { Fragment } from 'react/jsx-runtime';
+import { formatCurrency } from '../../app/util';
 
 type Props = {
   lineItem: ReproLineItem;
   categories: Category[] | undefined;
-  handleAccountChange: (option: number, rowUuid: string) => void;
+  accountChange: (option: number, rowUuid: string) => void;
+  duplicateRow: (uuid: string) => void;
+  deleteRow: (uuid: string) => void;
   balances: { accountId: number; name: string; currentAmount: number }[];
   render: () => React.ReactNode;
 };
@@ -12,25 +15,22 @@ type Props = {
 const TransactionRow = ({
   render,
   categories,
-  handleAccountChange,
+  accountChange,
+  duplicateRow,
+  deleteRow,
   balances,
   lineItem: { initiativeName, grantName, categoryName, accountId, uuid },
 }: Props) => {
   if (!categories) return null;
 
-  // const accounts = balances.map((b) => ({
-  //   value: b.accountId,
-  //   label: (
-  //     <div className="flex justify-between gap-2">
-  //       <div>{b.name + ' - ' + b.accountId}</div>
-  //       <div>{formatCurrency(b.currentAmount)}</div>
-  //     </div>
-  //   ),
-  // }));
-
   const accounts = balances.map((b) => ({
     value: b.accountId,
-    label: b.name,
+    label: (
+      <div className="flex justify-between gap-2">
+        <div>{b.name}</div>
+        <div>{formatCurrency(b.currentAmount)}</div>
+      </div>
+    ),
   }));
 
   return (
@@ -43,19 +43,16 @@ const TransactionRow = ({
           aria-label="Number"
           options={accounts}
           onChange={(option) => {
-            handleAccountChange(+option.value, uuid);
+            accountChange(+option.value, uuid);
           }}
-          // renderOption={(option) => (
-          //   <div>
-          //     <div>{option!.label!.toString().split('|')[0]}</div>
-          //     <div>{option!.label!.toString().split('|')[1]}</div>
-          //   </div>
-          // )}
           value={accountId}
         />
       </div>
       {render()}
-      <div className="self-center">actions</div>
+      <div className="self-center">
+        <button onClick={() => duplicateRow(uuid)}>D</button>
+        <button onClick={() => deleteRow(uuid)}>D2</button>
+      </div>
     </Fragment>
   );
 };

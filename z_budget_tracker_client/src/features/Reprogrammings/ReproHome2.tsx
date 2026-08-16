@@ -4,7 +4,6 @@ import useCategories from '../../api/hooks/useCategories';
 import useGrants from '../../api/hooks/useGrants';
 import useInitiatives from '../../api/hooks/useInitiatives';
 import TransactionRow from './TransactionRow';
-import { type Option } from 'react-dropdown';
 import { formatCurrency } from '../../app/util';
 import { useForm } from 'react-hook-form';
 import NumericArrayInputGeneric from '../../components/NumericArrayInputGeneric';
@@ -58,7 +57,6 @@ const ReproHome2 = () => {
         (l: ReproLineItem, i: number) => {
           const inc = getValues(`rows.${i}.increase`);
           const dec = getValues(`rows.${i}.decrease`);
-          console.log('set lines', l.accountName);
           return {
             ...l,
             accountName: l.accountName,
@@ -104,13 +102,13 @@ const ReproHome2 = () => {
     }
   }
 
-  const handleAccountChange = (accountId: number, rowUuid: string) => {
+  function handleAccountChange(accountId: number, rowUuid: string) {
     setLines((prev) => {
       const lines = prev.map((l: ReproLineItem, index) => {
         const inc = getValues(`rows.${index}.increase`);
         const dec = getValues(`rows.${index}.decrease`);
 
-        if (rowUuid == l.uuid) {
+        if (rowUuid === l.uuid) {
           const currentAmount = savedBalances
             .filter(
               (b) =>
@@ -140,7 +138,21 @@ const ReproHome2 = () => {
 
       return [...lines];
     });
-  };
+  }
+
+  function handleDuplicateRow(uuid: string) {
+    const newLine = lines.filter((x) => x.uuid === uuid)[0];
+    setLines((prev) => {
+      const newLines = [...prev, { ...newLine, uuid: crypto.randomUUID() }];
+      return newLines;
+    });
+  }
+
+  function handleDeletRow(uuid: string) {
+    setLines((prev) => {
+      return prev.filter((x) => x.uuid !== uuid);
+    });
+  }
 
   function recalculate() {
     setLines((prev) => {
@@ -185,14 +197,15 @@ const ReproHome2 = () => {
               b.key.grantId == item.grantId &&
               b.key.categoryId == item.categoryId,
           )[0].balances;
-          // console.log('repro accountName', JSON.stringify(item.accountName));
           return (
             <TransactionRow
               key={item.uuid}
               lineItem={item}
               categories={categories}
               balances={balances}
-              handleAccountChange={handleAccountChange}
+              accountChange={handleAccountChange}
+              duplicateRow={handleDuplicateRow}
+              deleteRow={handleDeletRow}
               render={() => (
                 <div className="flex">
                   <div className="text-center flex-1 px-1 text-neutral-600 self-center">
