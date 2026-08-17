@@ -27,8 +27,9 @@ const BudgetInputFieldsNewBudget = ({
   onCommentSaved,
 }: Props) => {
   const [commentsOpen, setCommentsOpen] = useState<boolean>(false);
-  const [animateOut, setAnimateOut] = useState<boolean>(false);
   const [hasComment, setHasComment] = useState<boolean>(false);
+  const [animateOut, setAnimateOut] = useState<boolean>(false);
+
 
   function handleSaveComments(e: { accountId: number; text: string }) {
     try {

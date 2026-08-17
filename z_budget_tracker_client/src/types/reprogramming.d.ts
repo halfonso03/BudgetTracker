@@ -24,6 +24,7 @@ type ReproLineItem = LineItem & {
     comment?: string
     currentAmount: number
     newAmount: number
+    comment: string
 }
 
 type ReproAccountBalance = {

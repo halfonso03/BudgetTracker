@@ -1,56 +1,45 @@
-import Button from '../../components/Button';
-import Modal, { type ModalSize } from '../../components/Modal';
 import { useState, type ChangeEvent, type SubmitEvent } from 'react';
+import Button from '../../components/Button';
+import Modal2, { type ModalSize } from '../../components/Modal2';
 
-interface Props {
-  accountId: number;
+type Props = {
   size?: ModalSize;
-  onCommentSaved: (e: { accountId: number; text: string }) => void;
-  onCancelForm: () => void;
-  accountName?: string;
   isOpen: boolean;
-  animateOut: boolean;
-}
+  uuid: number;
+  accountName?: string;
+  itemComment: string;
+  onCommentSaved: (e: { uuid: number; text: string }) => void;
+  onCancel: () => void;
+};
 
-const CommentsModalNewBudget = ({
-  accountId,
-  accountName,
-  onCancelForm: onCancel,
-  size = 'md',
-  onCommentSaved,
-  isOpen,
-  animateOut,
-}: Props) => {
-  const [comment, setComment] = useState('');
+const CommentModal = ({ itemComment, uuid, ...props }: Props) => {
+  const [animateOut, setAnimateOut] = useState(false);
+  // const [hasComment, setHasComment] = useState<boolean>(false);
+  const [comment, setComment] = useState(itemComment);
   const [isDirty, setIsDirty] = useState(false);
   const [priorComment, setPriorComment] = useState('');
-  
+
   function onSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     e.stopPropagation();
     setIsDirty(true);
     setPriorComment(comment);
     try {
-      onCommentSaved({ accountId, text: comment });
+      props.onCommentSaved({ uuid, text: comment });
     } catch (error) {
       console.log(error);
     }
   }
-
   return (
-    <Modal
-      isOpen={isOpen}
-      animateOut={animateOut}
-      onCancel={onCancel}
-      size={size}
-      title="Comments"
-    >
+    <Modal2 size="lg" title="Add a New Line" animateOut={animateOut} {...props}>
+      {/* <pre>{JSON.stringify(selections)}</pre> */}
+
       <div className="mb-5">
         <div className="">
-          <div>
+          {/* <div>
             <div className="entity-label"> Account </div>
             <div className="entity-name mb-5"> {accountName} </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="entity-label mb-1"> Comments </div>
@@ -85,7 +74,13 @@ const CommentsModalNewBudget = ({
                 } else {
                   setComment(priorComment);
                 }
-                onCancel();
+
+                setAnimateOut(true);
+                setTimeout(() => {
+                  setAnimateOut(false);
+                }, 500);
+
+                props.onCancel();
               }}
             >
               Cancel
@@ -93,7 +88,7 @@ const CommentsModalNewBudget = ({
           </div>
         </form>
       </div>
-    </Modal>
+    </Modal2>
   );
 };
-export default CommentsModalNewBudget;
+export default CommentModal;

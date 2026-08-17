@@ -110,6 +110,19 @@ input:-webkit-autofill:focus {
       tranform: scale(0.7);
     }
   }
+
+  --animate-repro-comment: reproCommentFadeIn 0.7s ease-in forwards;
+
+  @keyframes reproCommentFadeIn {
+    0% {
+      /* opacity: 0; */
+      tranform: scale(0.1);
+    }
+    100% {
+      /* opacity: 1; */
+      tranform: scale(0.7);
+    }
+  }
 }
 
 .Dropdown-control {
@@ -145,4 +158,31 @@ input:-webkit-autofill:focus {
 pre {
   white-space: pre-wrap; /* Triggers natural text wrapping */
   overflow-wrap: break-word; /* Safely breaks long, unbroken strings */
+}
+
+
+.menu {
+  position: absolute;
+  right: 0;
+
+  /* 1. Set the anchor point (e.g., top-right corner near the button) */
+  transform-origin: top right;
+
+  /* 2. Hide by default using zero scale and zero opacity */
+  transform: scale(0);
+  opacity: 0;
+  visibility: hidden;
+
+  /* 3. Smooth transition curve */
+  transition:
+    transform 0.1s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.1s,
+    visibility 0.1s;
+}
+
+/* Open State Trigger */
+.menu.open {
+  transform: scale(1);
+  opacity: 1;
+  visibility: visible;
 }

@@ -10,6 +10,7 @@ import NumericArrayInputGeneric from '../../components/NumericArrayInputGeneric'
 import Button from '../../components/Button';
 import { Plus } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
+import MenuIdProvider from '../../contexts/MenuIdContext';
 
 const ReproHome2 = () => {
   const queryClient = useQueryClient();
@@ -174,7 +175,7 @@ const ReproHome2 = () => {
   if (isLoading) return null;
 
   return (
-    <div>
+    <MenuIdProvider>
       <div className="mb-8">
         <Button
           buttonSize="small"
@@ -255,7 +256,7 @@ const ReproHome2 = () => {
           }, 500);
         }}
       ></AddLineModal>
-    </div>
+    </MenuIdProvider>
   );
 };
 export default ReproHome2;

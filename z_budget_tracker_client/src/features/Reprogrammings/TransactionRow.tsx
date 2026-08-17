@@ -1,6 +1,9 @@
 import Dropdown from 'react-dropdown';
 import { Fragment } from 'react/jsx-runtime';
 import { formatCurrency } from '../../app/util';
+import Menus from '../../components/menus/Menus';
+import { Copy, EllipsisVertical, StickyNote, Trash } from 'lucide-react';
+import CommentToggler from './CommentToggler';
 
 type Props = {
   lineItem: ReproLineItem;
@@ -19,7 +22,14 @@ const TransactionRow = ({
   duplicateRow,
   deleteRow,
   balances,
-  lineItem: { initiativeName, grantName, categoryName, accountId, uuid },
+  lineItem: {
+    initiativeName,
+    grantName,
+    categoryName,
+    accountId,
+    uuid,
+    comment,
+  },
 }: Props) => {
   if (!categories) return null;
 
@@ -40,6 +50,7 @@ const TransactionRow = ({
       <div className="self-center">{categoryName}</div>
       <div className="self-center w-full">
         <Dropdown
+          tabIndex={-1}
           aria-label="Number"
           options={accounts}
           onChange={(option) => {
@@ -49,9 +60,25 @@ const TransactionRow = ({
         />
       </div>
       {render()}
-      <div className="self-center">
-        <button onClick={() => duplicateRow(uuid)}>D</button>
-        <button onClick={() => deleteRow(uuid)}>D2</button>
+      <div className="flex justify-around self-center">
+        <CommentToggler itemComment={comment}></CommentToggler>
+
+        <Menus>
+          <Menus.Toggler id={uuid}>
+            <EllipsisVertical
+              size={20}
+              className="text-neutral-500"
+            ></EllipsisVertical>
+          </Menus.Toggler>
+          <Menus.List id={uuid}>
+            <Menus.MenuItem onClick={() => duplicateRow(uuid)}>
+              <Copy></Copy>&nbsp;&nbsp;Duplicate Row
+            </Menus.MenuItem>
+            <Menus.MenuItem onClick={() => deleteRow(uuid)}>
+              <Trash className="text-red-500"></Trash>&nbsp;&nbsp;Delete Row
+            </Menus.MenuItem>
+          </Menus.List>
+        </Menus>
       </div>
     </Fragment>
   );
