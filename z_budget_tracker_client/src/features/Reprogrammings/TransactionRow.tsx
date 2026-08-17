@@ -2,16 +2,17 @@ import Dropdown from 'react-dropdown';
 import { Fragment } from 'react/jsx-runtime';
 import { formatCurrency } from '../../app/util';
 import Menus from '../../components/menus/Menus';
-import { Copy, EllipsisVertical, StickyNote, Trash } from 'lucide-react';
+import { Copy, EllipsisVertical, Trash } from 'lucide-react';
 import CommentToggler from './CommentToggler';
 
 type Props = {
   lineItem: ReproLineItem;
   categories: Category[] | undefined;
+  balances: { accountId: number; name: string; currentAmount: number }[];
   accountChange: (option: number, rowUuid: string) => void;
   duplicateRow: (uuid: string) => void;
   deleteRow: (uuid: string) => void;
-  balances: { accountId: number; name: string; currentAmount: number }[];
+  saveComment: (uuid: string, comment: string | null | undefined) => void;
   render: () => React.ReactNode;
 };
 
@@ -22,6 +23,7 @@ const TransactionRow = ({
   duplicateRow,
   deleteRow,
   balances,
+  saveComment,
   lineItem: {
     initiativeName,
     grantName,
@@ -43,6 +45,10 @@ const TransactionRow = ({
     ),
   }));
 
+  function handleSaveComment(uuid: string, comment: string | null | undefined) {
+    saveComment(uuid, comment);
+  }
+
   return (
     <Fragment>
       <div className="self-center">{initiativeName}</div>
@@ -61,7 +67,11 @@ const TransactionRow = ({
       </div>
       {render()}
       <div className="flex justify-around self-center">
-        <CommentToggler itemComment={comment}></CommentToggler>
+        <CommentToggler
+          uuid={uuid}
+          itemComment={comment}
+          saveComment={handleSaveComment}
+        ></CommentToggler>
 
         <Menus>
           <Menus.Toggler id={uuid}>

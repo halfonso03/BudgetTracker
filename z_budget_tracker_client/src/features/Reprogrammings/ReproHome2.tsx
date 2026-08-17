@@ -172,6 +172,23 @@ const ReproHome2 = () => {
     });
   }
 
+  function handleSaveComment(uuid: string, comment: string | null | undefined) {
+
+    setLines((prev) => {
+
+      const l = prev.map((line) => {
+        return {
+          ...line,
+          comment: line.uuid === uuid ? comment : line.comment,
+        };
+      });
+
+      return l;
+    });
+
+    console.log(uuid, comment);
+  }
+
   if (isLoading) return null;
 
   return (
@@ -188,7 +205,7 @@ const ReproHome2 = () => {
         </Button>
       </div>
 
-      {/* <pre>{JSON.stringify(savedBalances)}</pre> */}
+      <pre>{JSON.stringify(lines)}</pre>
 
       <div className="grid grid-cols-[1.2fr_.8fr_.5fr_1.1fr_2.3fr_.3fr] gap-2">
         {lines.map((item, index) => {
@@ -207,6 +224,7 @@ const ReproHome2 = () => {
               accountChange={handleAccountChange}
               duplicateRow={handleDuplicateRow}
               deleteRow={handleDeletRow}
+              saveComment={handleSaveComment}
               render={() => (
                 <div className="flex">
                   <div className="text-center flex-1 px-1 text-neutral-600 self-center">

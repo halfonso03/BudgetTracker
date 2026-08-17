@@ -21,7 +21,7 @@ type ReproLineItem = LineItem & {
     rowNumber: number
     increase?: number
     decrease?: number
-    comment?: string
+    comment?: string | null | undefined
     currentAmount: number
     newAmount: number
     comment: string
