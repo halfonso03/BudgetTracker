@@ -1,21 +1,21 @@
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface Props {
-  readOnly: boolean;
-  disabled: boolean;
-  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onFocus: (e: React.FocusEvent<HTMLInputElement>) => void;
-  onClick: (e: React.MouseEvent<HTMLInputElement>) => void;
+  readOnly?: boolean;
+  disabled?: boolean;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
   register?: UseFormRegisterReturn<`rows.${number}.amount`>;
   className?: string;
 }
 
 const NumericInput = ({
-  readOnly,
-  disabled,
-  onBlur,
-  onFocus,
-  onClick,
+  readOnly = true,
+  disabled = true,
+  onBlur = () => {},
+  onFocus = () => {},
+  onClick = () => {},
   register,
   className,
 }: Props) => {

@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Outlet } from 'react-router-dom';
 import NavBar from './components/NavBar';
-import { Toaster } from 'react-hot-toast';
+import { ToastBar, Toaster } from 'react-hot-toast';
 import { AuthProvider } from './contexts/AuthContext';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -18,11 +18,11 @@ function App() {
         </div>
         <Toaster
           gutter={12}
-          containerStyle={{
-            margin: '8px',
-            position: 'absolute',
-            top: '250px',
-          }}
+          // containerStyle={{
+          //   margin: '8px',
+          //   position: 'absolute',
+          //   top: '250px',
+          // }}
           toastOptions={{
             success: {
               duration: 1500,
@@ -39,7 +39,19 @@ function App() {
               border: '2px solid var(--color-neutral-400)',
             },
           }}
-        ></Toaster>
+        >
+          {(t) => (
+            <ToastBar
+              toast={t}
+              style={{
+                ...t.style,
+                animation: t.visible
+                  ? 'custom-enter 1s ease'
+                  : 'custom-exit 1s ease forwards',
+              }}
+            />
+          )}
+        </Toaster>
       </AuthProvider>
     </QueryClientProvider>
   );

@@ -169,7 +169,7 @@ const ReproHome = () => {
 
           return (
             <div
-              className="grid grid-cols-[1.5fr_1fr_.8fr_1.7fr_1fr_.8fr_.8fr_.8fr_.4fr] px-3 py-4 border border-neutral-200 shadow-sm items-center mb-3"
+              className="grid grid-cols-[1.5fr_1fr_.8fr_1.7fr_1fr_.8fr_.8fr_.8fr_.4fr] "
               key={item.uuid}
             >
               <div className=" pr-2">{item.initiativeName}</div>

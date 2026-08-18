@@ -40,11 +40,11 @@ const CommentToggler = ({ uuid, itemComment, saveComment }: Props) => {
       </div>
 
       <div
-        className={`absolute flex flex-col w-80 right-0 top-8 z-200 menu ${isOpenerClass}`}
+        className={`absolute flex flex-col w-80 right-0 top-9 z-200 menu ${isOpenerClass}`}
       >
         <div className="relative flex-col rounded-md border-2 border-yellow-400 bg-yellow-300 p-1 pt-2  ">
-          <TriangleRight className="absolute z-20001 text-white bg-clip-text border-white bg-white fill-white  rotate-180 -top-1.5 -left-1  "></TriangleRight>
-          <span className="border-0 border-b-2 left-[-0.9px] -top-0.75 w-[26.5px] h-5 rotate-[-0.69rad]  border-yellow-400  absolute origin-bottom-left  z-20002 "></span>
+          <TriangleRight className="absolute z-20001 text-white bg-clip-text border-white bg-transparent fill-white  rotate-180 -top-1.5 -left-1  "></TriangleRight>
+          <span className="border-0 border-b-2 -left-px -top-0.75 w-6.25 h-[19.5px] rotate-[-0.69rad] border-yellow-400  absolute origin-bottom-left  z-20002 "></span>
           <textarea
             placeholder="Enter a comment. Click anywhere outside of the sticky to save the comment."
             value={comment ?? ''}
@@ -60,7 +60,7 @@ const CommentToggler = ({ uuid, itemComment, saveComment }: Props) => {
               className="text-neutral-500 text-sm cursor-pointer"
               onClick={() => setComment('')}
             >
-              Clear Comment
+              Click to Clear Comment
             </button>
           </div>
 

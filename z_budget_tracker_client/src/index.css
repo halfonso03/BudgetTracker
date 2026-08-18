@@ -123,10 +123,35 @@ input:-webkit-autofill:focus {
       tranform: scale(0.7);
     }
   }
+
+  @keyframes custom-enter {
+    0% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes custom-exit {
+    0% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateX(
+        120%
+      ); /* Pushes the toast entirely off-screen to the right */
+      opacity: 0;
+    }
+  }
 }
 
 .Dropdown-control {
   border: 0 !important;
+  padding: 0 !important;
 }
 
 .Dropdown-menu {
@@ -145,10 +170,15 @@ input:-webkit-autofill:focus {
 
 .Dropdown-arrow-wrapper {
   color: var(--color-red-950) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  justify-items: end !important;
 }
 
 .Dropdown-arrow {
   color: var(--color-red-950) !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 .Dropdown-placeholder.is-selected div > div:last-child {
@@ -159,7 +189,6 @@ pre {
   white-space: pre-wrap; /* Triggers natural text wrapping */
   overflow-wrap: break-word; /* Safely breaks long, unbroken strings */
 }
-
 
 .menu {
   position: absolute;

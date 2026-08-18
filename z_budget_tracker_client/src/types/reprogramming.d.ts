@@ -19,8 +19,8 @@ type LineItem = {
 
 type ReproLineItem = LineItem & {
     rowNumber: number
-    increase?: number
-    decrease?: number
+    increase?: string | number
+    decrease?: string | number
     comment?: string | null | undefined
     currentAmount: number
     newAmount: number
@@ -44,8 +44,8 @@ type ReprogInputRow = {
     accountId: number;
     categoryId: number;
     currentAmount?: number;
-    increase: number;
-    decrease: number
+    increase: string | number;
+    decrease: string | number
     newAmount: number
 };
 

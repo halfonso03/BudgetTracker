@@ -15,7 +15,10 @@ export function formatCurrency(amount: number) {
         currencySign: 'accounting'
     });
 
-    return customFormat.format(amount)
+    const formatted = customFormat.format(amount)
+    const newFormatted = formatted === "NaN" ? customFormat.format(0) : formatted;
+
+    return newFormatted
 }
 
 export function formatNumber(amount: number): string {
