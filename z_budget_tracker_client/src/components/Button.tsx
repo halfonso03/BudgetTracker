@@ -18,7 +18,7 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   let classes =
-    'disabled:cursor-not-allowed rounded-sm shadow-sm w-25 flex justify-center items-center ';
+    'cursor-pointer disabled:cursor-not-allowed rounded-sm shadow-sm w-25 flex justify-center items-center ';
 
   if (buttonSize == 'small') {
     classes += ' p-2 w-30 ';

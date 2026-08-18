@@ -1,28 +1,34 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
-import { AlertCircle, BookOpenText, Plus, Save } from 'lucide-react';
+import {
+  AlertCircle,
+  BookOpenText,
+  LucidePencil,
+  Plus,
+  Save,
+} from 'lucide-react';
 
 import AddLineModal from './AddLineModal';
 import useCategories from '../../api/hooks/useCategories';
 import useGrants from '../../api/hooks/useGrants';
 import useInitiatives from '../../api/hooks/useInitiatives';
 import TransactionRow from './TransactionRow';
-import {
-  formatCurrency,
-  formatNumber,
-  parseFormattedNumber,
-} from '../../app/util';
+import { formatNumber, parseFormattedNumber } from '../../app/util';
 import NumericArrayInputGeneric from '../../components/NumericArrayInputGeneric';
 import Button from '../../components/Button';
 import MenuIdProvider from '../../contexts/MenuIdContext';
 import toast from 'react-hot-toast';
+import JustificaModal from './JustificaModal';
 
 const ReproHome2 = () => {
   const queryClient = useQueryClient();
 
-  const [addLineModelIsOpen, setAddLineModelIsOpen] = useState(false);
+  const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
+  const [justModalIsOpen, setJustModalIsOpen] = useState(false);
+
   const [lines, setLines] = useState<ReproLineItem[]>([]);
+  const [justification, setJustifications] = useState<string>('');
   const [savedBalances, setSavedBalances] = useState<RowBalance[]>([]);
 
   const { data: initiatives } = useInitiatives();
@@ -31,7 +37,7 @@ const ReproHome2 = () => {
   const totalIncreaseRef = useRef<HTMLInputElement | null>(null);
   const totalDecreaseRef = useRef<HTMLInputElement | null>(null);
 
-  const [hasAttemptedPost, setHasAttemptedPost] = useState(false);
+  // const [hasAttemptedPost, setHasAttemptedPost] = useState(false);
 
   const [variance, setVariance] = useState<string>('');
 
@@ -68,7 +74,7 @@ const ReproHome2 = () => {
     key: { initiativeId: number; grantId: number; categoryId: number },
   ) {
     setTimeout(() => {
-      setAddLineModelIsOpen(false);
+      setAddLineModalIsOpen(false);
     }, 500);
 
     line.rowNumber = lines.length;
@@ -227,7 +233,7 @@ const ReproHome2 = () => {
 
   const calculateVariance = useCallback(() => {
     const { inc, dec } = getTotalAmounts();
-    setVariance(formatCurrency(+(inc ?? 0) - +(dec ?? 0)));
+    setVariance(formatNumber(+(inc ?? 0) - +(dec ?? 0)));
   }, [getTotalAmounts]);
 
   function showSave() {
@@ -272,7 +278,7 @@ const ReproHome2 = () => {
       console.log('123', 123);
     } else {
       console.log('456', 456);
-      setHasAttemptedPost(true);
+      // setHasAttemptedPost(true);
     }
   }
 
@@ -303,20 +309,30 @@ const ReproHome2 = () => {
     return errors;
   }, [getTotalAmounts, lines]);
 
+  function handleSaveJust(text: string) {
+    setJustifications(text);
+    setTimeout(() => setJustModalIsOpen(false), 600);
+  }
+
   useEffect(() => {
     const { inc, dec } = getTotalAmounts();
     if (totalIncreaseRef.current && totalDecreaseRef.current) {
-      totalIncreaseRef.current.value = formatCurrency(+(inc ?? 0));
-      totalDecreaseRef.current.value = formatCurrency(+(dec ?? 0));
+      totalIncreaseRef.current.value = formatNumber(+(inc ?? 0));
+      totalDecreaseRef.current.value = formatNumber(+(dec ?? 0));
     }
     calculateVariance();
     const errors = getErrors();
 
     if (errors.length > 0) {
       toast.custom(
-        <div className="rounded-sm p-2 py-3 w-70 font-semibold border border-red-600 bg-red-500 text-neutral-50 flex gap-2">
+        <div className="hover:scale-105 transition-all duration-200 rounded-sm p-4 shadow-md w-70 font-semibold  bg-red-500 text-neutral-50 flex gap-2">
           <AlertCircle></AlertCircle>
-          <div className="self-center">{errors.length} errors</div>
+          <div
+            className="self-center hover:underline underline-offset-2 cursor-pointer"
+            onClick={() => {}}
+          >
+            {errors.length} error{errors.length > 1 && <span>s</span>}
+          </div>
         </div>,
         {
           position: 'top-right',
@@ -335,12 +351,12 @@ const ReproHome2 = () => {
 
   return (
     <MenuIdProvider>
-      <pre>{JSON.stringify(getErrors())}</pre>
-      <div className="flex gap-2 mb-8 cursor-default">
+      {/* <pre>{JSON.stringify(getErrors())}</pre> */}
+      <div className="flex gap-2 mb-4 cursor-default">
         <Button
           buttonSize="small"
           onClick={() => {
-            setAddLineModelIsOpen(true);
+            setAddLineModalIsOpen(true);
           }}
         >
           <Plus></Plus>
@@ -364,54 +380,61 @@ const ReproHome2 = () => {
         )}
       </div>
       {lines.length > 0 && (
-        <div className="grid grid-cols-[1.35fr_.5fr_.5fr_1.1fr_2fr_.3fr] w-full py-1 border border-neutral-200 mb-5 shadow-sm">
-          <div className="col-span-4"></div>
-          <div className="flex justify-between gap-1">
-            <div className="flex-1"></div>
-            <div className="flex-1 text-end font-bold text-neutral-500 px-1">
-              Increase
-            </div>
-            <div className="flex-1 text-end font-bold text-neutral-500 px-1">
-              Decrease
-            </div>
-            <div className="flex-1 text-end font-bold text-neutral-500 px-1">
-              Variance
-            </div>
-          </div>
-          <div></div>
-          <div className="col-span-4 pl-3 font-bold text-neutral-500 self-center">
-            Total
-          </div>
-          <div className="flex justify-between gap-1">
-            <div className="flex-1"></div>
-            <div className="flex justify-end flex-1 ">
-              <input
-                readOnly={true}
-                ref={totalIncreaseRef}
-                disabled={true}
-                className="border-0 text-neutral-800 font-semibold flex-1 w-[98%] px-1 pr-2  text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
-              ></input>
-            </div>
-            <div className="justify-end flex-1 ">
-              <input
-                readOnly={true}
-                disabled={true}
-                ref={totalDecreaseRef}
-                className="border-0 text-neutral-800 font-semibold flex-1 w-[98%] px-1 pr-2  text-end  focus:outline-none focus:ring-0 focus:ring-offset-0"
-              ></input>
-            </div>
-            <div className="flex-1">
-              <input
-                readOnly={true}
-                disabled={true}
-                value={variance}
-                className={`text-blue-500 border-0 font-semibold flex-1 w-[98%] px-1 pr-2 text-end focus:outline-none focus:ring-0 focus:ring-offset-0`}
-              ></input>
-            </div>
-          </div>
-          <div></div>
+        <div
+          className="flex mb-6 justify-end text-neutral-400 cursor-pointer hover:text-neutral-600 gap-1"
+          onClick={() => setJustModalIsOpen(true)}
+        >
+          <LucidePencil className='text-neutral-400 self-center' size={18}></LucidePencil>
+          <div className="self-center">Justification</div>
         </div>
       )}
+      {lines.length > 0 && (
+        <div>
+          <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3  py-1 border-b border-neutral-200 mb-5  font-bold text-neutral-500">
+            <div className="self-end col-span-4 "></div>
+            <div className="flex ">
+              <div className="flex-2 text-center w-[25%]"></div>
+              <div className="self-end  text-end w-[25%] pr-1">Increase</div>
+              <div className="self-end text-end w-[25%] pr-1">Decrease</div>
+              <div className="flex-2 text-end w-[25%] pr-1">Variance</div>
+            </div>
+            <div></div>
+            <div>Total</div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div className="flex">
+              <div className="flex-1"></div>
+              <div className="flex justify-end flex-1 ">
+                <input
+                  readOnly={true}
+                  ref={totalIncreaseRef}
+                  disabled={true}
+                  className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
+                ></input>
+              </div>
+              <div className="justify-end flex-1 ">
+                <input
+                  readOnly={true}
+                  disabled={true}
+                  ref={totalDecreaseRef}
+                  className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
+                ></input>
+              </div>
+              <div className="flex-1">
+                <input
+                  readOnly={true}
+                  disabled={true}
+                  value={variance}
+                  className={`text-blue-500 border-0 font-semibold flex-1 w-[98%] px-1 pr-1 text-end focus:outline-none focus:ring-0 focus:ring-offset-0`}
+                ></input>
+              </div>
+            </div>
+            <div></div>
+          </div>
+        </div>
+      )}
+
       {lines.length > 0 && (
         <div>
           <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-bold text-neutral-500">
@@ -440,7 +463,7 @@ const ReproHome2 = () => {
         return (
           <div
             key={index}
-            className="grid grid-cols-[1.2fr_.5fr_.5fr_1.2fr_2fr_.3fr] gap-2 px-3 py-1 border border-neutral-200 shadow-sm items-center mb-3"
+            className="grid grid-cols-[1.2fr_.5fr_.5fr_1.2fr_2fr_.3fr] gap-2 px-3 py-2 border-b border-neutral-200 shadow-sm items-center mb-3"
           >
             <TransactionRow
               key={item.uuid}
@@ -453,9 +476,9 @@ const ReproHome2 = () => {
               editRow={handleEditRow}
               saveComment={handleSaveComment}
               render={() => (
-                <div className="flex justify-between">
-                  <div className="text-center flex-1 px-1 text-neutral-600 self-center">
-                    {formatCurrency(item.currentAmount)}
+                <div className="flex gap-0">
+                  <div className="text-center flex-2 text-neutral-600 self-center w-full">
+                    {formatNumber(item.currentAmount)}
                   </div>
                   <NumericArrayInputGeneric
                     index={index}
@@ -465,7 +488,7 @@ const ReproHome2 = () => {
                     readOnly={false}
                     disabled={false}
                     onBlur={recalculateNewAmounts}
-                    classes={`flex-1 w-[98%] ml-2 p-1 pr-2 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
+                    classes={`flex-[1.5] w-full mr-1 pl-1 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
                   />
                   <NumericArrayInputGeneric
                     index={index}
@@ -475,12 +498,12 @@ const ReproHome2 = () => {
                     readOnly={false}
                     disabled={false}
                     onBlur={recalculateNewAmounts}
-                    classes={`flex-1 w-[98%] ml-2 p-1 pr-2 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
+                    classes={`flex-[1.5] w-full pl-1 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
                   />
                   <div
-                    className={`text-center flex-1 self-center text-neutral-600 px-1 ${item.newAmount < 0 ? 'text-red-500' : ''}`}
+                    className={`text-center flex-2  self-center text-neutral-600  ${item.newAmount < 0 ? 'text-red-500' : ''}`}
                   >
-                    {formatCurrency(item.newAmount)}
+                    {formatNumber(item.newAmount)}
                   </div>
                 </div>
               )}
@@ -489,17 +512,27 @@ const ReproHome2 = () => {
         );
       })}
       <AddLineModal
-        isOpen={addLineModelIsOpen}
+        isOpen={addLineModalIsOpen}
         initiatives={initiatives}
         grants={grants}
         categories={categories}
         onLineAdded={handleLineAdded}
         onCancel={() => {
           setTimeout(() => {
-            setAddLineModelIsOpen(false);
+            setAddLineModalIsOpen(false);
           }, 500);
         }}
       ></AddLineModal>
+      <JustificaModal
+        isOpen={justModalIsOpen}
+        onCommentSaved={handleSaveJust}
+        itemComment={justification}
+        onCancel={() => {
+          setTimeout(() => {
+            setJustModalIsOpen(false);
+          }, 600);
+        }}
+      ></JustificaModal>
     </MenuIdProvider>
   );
 };

@@ -5,14 +5,12 @@ import Modal2, { type ModalSize } from '../../components/Modal2';
 type Props = {
   size?: ModalSize;
   isOpen: boolean;
-  uuid: number;
-  accountName?: string;
   itemComment: string;
-  onCommentSaved: (e: { uuid: number; text: string }) => void;
+  onCommentSaved: (text: string) => void;
   onCancel: () => void;
 };
 
-const CommentModal = ({ itemComment, uuid, ...props }: Props) => {
+const JustificaModal = ({ itemComment, ...props }: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
   // const [hasComment, setHasComment] = useState<boolean>(false);
   const [comment, setComment] = useState(itemComment);
@@ -25,24 +23,21 @@ const CommentModal = ({ itemComment, uuid, ...props }: Props) => {
     setIsDirty(true);
     setPriorComment(comment);
     try {
-      props.onCommentSaved({ uuid, text: comment });
+      props.onCommentSaved(comment);
+      setAnimateOut(true);
+      setTimeout(() => {
+        setAnimateOut(false);
+      }, 600);
     } catch (error) {
       console.log(error);
     }
   }
   return (
-    <Modal2 size="lg" title="Add a New Line" animateOut={animateOut} {...props}>
+    <Modal2 size="lg" title="Justification" animateOut={animateOut} {...props}>
       {/* <pre>{JSON.stringify(selections)}</pre> */}
 
-      <div className="mb-5">
-        <div className="">
-          {/* <div>
-            <div className="entity-label"> Account </div>
-            <div className="entity-name mb-5"> {accountName} </div>
-          </div> */}
-        </div>
-
-        <div className="entity-label mb-1"> Comments </div>
+      <div className="mb-1">
+        <div className="text-neutral-700 font-semibold mb-1">Enter a Justification </div>
         <form onSubmit={onSubmit}>
           <textarea
             value={comment}
@@ -59,7 +54,7 @@ const CommentModal = ({ itemComment, uuid, ...props }: Props) => {
                 setComment('');
               }}
             >
-              Clear Comment
+              Clear
             </button>
           </div>
           <div className="flex justify-end gap-3 pt-2 ">
@@ -69,16 +64,15 @@ const CommentModal = ({ itemComment, uuid, ...props }: Props) => {
               type="button"
               variation="secondary"
               onClick={() => {
-                if (!isDirty) {
-                  setComment('');
-                } else {
-                  setComment(priorComment);
-                }
-
                 setAnimateOut(true);
                 setTimeout(() => {
+                  if (!isDirty) {
+                    setComment('');
+                  } else {
+                    setComment(priorComment);
+                  }
                   setAnimateOut(false);
-                }, 500);
+                }, 600);
 
                 props.onCancel();
               }}
@@ -91,4 +85,4 @@ const CommentModal = ({ itemComment, uuid, ...props }: Props) => {
     </Modal2>
   );
 };
-export default CommentModal;
+export default JustificaModal;

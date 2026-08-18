@@ -32,7 +32,7 @@ const Modal2 = ({
 }: ModalProps) => {
   let animateClass = '';
 
-  if (!isOpen && !animateOut) return null;
+  if (!isOpen && !animateOut) return '';
   if (isOpen && animateOut) animateClass = 'animate-modal-out';
   if (isOpen && !animateOut) animateClass = 'animate-modal-in';
 
