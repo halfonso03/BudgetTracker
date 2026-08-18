@@ -268,12 +268,11 @@ const ReproHome2 = () => {
   function saveRepro() {}
 
   function postRepro() {
-    setHasAttemptedPost(true);
     if (canPost()) {
       console.log('123', 123);
     } else {
-      // setErrorMessages(true);
       console.log('456', 456);
+      setHasAttemptedPost(true);
     }
   }
 
@@ -356,7 +355,7 @@ const ReproHome2 = () => {
         {showSave() && (
           <Button
             buttonSize="small"
-            disabled={!canPost() && hasAttemptedPost}
+            disabled={!canPost() || getErrors().length > 0}
             onClick={postRepro}
           >
             <BookOpenText className="mr-1"></BookOpenText>
