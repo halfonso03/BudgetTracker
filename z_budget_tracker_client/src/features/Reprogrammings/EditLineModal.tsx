@@ -4,6 +4,7 @@ import { useState, type ChangeEvent } from 'react';
 import useCurrentAccountBalances from '../../api/hooks/useCurrentAccountBalances';
 import { formatCurrency } from '../../app/util';
 import Modal2 from '../../components/Modal2';
+import { ArrowRight } from 'lucide-react';
 
 type Selections = {
   initiativeId?: number;
@@ -18,15 +19,23 @@ type Props = {
   initiatives: Initiative[] | undefined;
   grants: Grant[] | undefined;
   categories: Category[] | undefined;
-  selections?: Selections;
+  selections?: Selections | null;
   onLineAdded: (
     balance: ReproLineItem,
     key: { initiativeId: number; grantId: number; categoryId: number },
   ) => void;
 };
 
-const AddLineModal = ({ ...props }: Props) => {
-  const [selections, setSelections] = useState<Selections | null>(null);
+const EditLineModal = ({ ...props }: Props) => {
+  const [selections, setSelections] = useState<Selections>({
+    initiativeId: props.selections!.initiativeId!,
+    grantId: props.selections!.grantId!,
+    categoryId: props.selections!.categoryId!,
+    accountId: props.selections!.accountId!,
+  });
+
+  // console.log('selections state', selections);
+
   const [animateOut, setAnimateOut] = useState(false);
 
   const { data: balances } = useCurrentAccountBalances(
@@ -37,36 +46,35 @@ const AddLineModal = ({ ...props }: Props) => {
 
   function onLineAdded(account: ReproAccountBalance) {
     if (props.initiatives && props.grants && props.categories) {
-      const newLine: ReproLineItem = {
-        rowNumber: -1,
-        accountId: account.accountId,
-        accountName: account.name,
-        categoryId: selections!.categoryId!,
-        categoryName: props.categories.filter(
-          (x) => x.id == selections?.categoryId,
-        )[0].name,
-        initiativeId: selections!.initiativeId!,
-        initiativeName: props.initiatives.filter(
-          (x) => x.id == selections?.initiativeId,
-        )[0].name,
-        grantId: selections!.grantId!,
-        grantName: props.grants.filter((x) => x.id == selections?.grantId)[0]
-          .name,
-        currentAmount: account.currentAmount,
-        uuid: window.crypto.randomUUID(),
-        newAmount: account.currentAmount,
-      };
-      setSelections(null);
-      props.onLineAdded(newLine, {
-        initiativeId: newLine.initiativeId,
-        grantId: newLine.grantId,
-        categoryId: selections!.categoryId!,
-      });
+      // const newLine: ReproLineItem = {
+      //   rowNumber: -1,
+      //   accountId: account.accountId,
+      //   accountName: account.name,
+      //   categoryId: selections!.categoryId!,
+      //   categoryName: props.categories.filter(
+      //     (x) => x.id == selections?.categoryId,
+      //   )[0].name,
+      //   initiativeId: selections!.initiativeId!,
+      //   initiativeName: props.initiatives.filter(
+      //     (x) => x.id == selections?.initiativeId,
+      //   )[0].name,
+      //   grantId: selections!.grantId!,
+      //   grantName: props.grants.filter((x) => x.id == selections?.grantId)[0]
+      //     .name,
+      //   currentAmount: account.currentAmount,
+      //   uuid: window.crypto.randomUUID(),
+      //   newAmount: account.currentAmount,
+      // };
+      // props.onLineAdded(newLine, {
+      //   initiativeId: newLine.initiativeId,
+      //   grantId: newLine.grantId,
+      //   categoryId: selections!.categoryId!,
+      // });
     }
   }
 
   return (
-    <Modal2 size="lg" title="Add a New Line" animateOut={animateOut} {...props}>
+    <Modal2 size="lg" title="Edit Line" animateOut={animateOut} {...props}>
       {/* <pre>{JSON.stringify(selections)}</pre> */}
 
       <div className="grid grid-cols-[1fr_1fr] mb-4 gap-4">
@@ -147,53 +155,51 @@ const AddLineModal = ({ ...props }: Props) => {
           </div>
         </div>
 
-        <div>
-          {balances && (
-            <div className="flex justify-between py-2 px-2 pt-0 ">
-              <div className="entity-label">Current Amounts</div>
-            </div>
-          )}
+        <div className=" ">
+          <div className="flex justify-between py-2 px-2 pt-0 ">
+            <div className="entity-label">Current Amounts</div>
+            {/* <div className="entity-label">Current Balance</div> */}
+          </div>
 
-          {balances &&
-            balances?.map((b) => (
-              <div
-                className="rounded-sm py-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300"
-                key={b.accountId}
-                onClick={() => {
-                  onLineAdded(b);
-                  props.onCancel();
-                  // setTimeout(, 2000)
-                }}
-              >
-                <div className="text-neutral-700">{b.name}</div>
-                <div className="text-neutral-900  ">
-                  {formatCurrency(b.currentAmount)}
-                </div>
+          {balances?.map((b) => (
+            <div
+              className="rounded-sm py-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300"
+              key={b.accountId}
+              onClick={() => {
+                onLineAdded(b);
+                props.onCancel();
+                // setTimeout(, 2000)
+              }}
+            >
+              <div className="flex text-neutral-700 items-center gap-1">
+                {b.accountId == selections.accountId && (
+                  <ArrowRight size={16} className='text-blue-500'></ArrowRight>
+                )}
+                {b.name}
               </div>
-            ))}
-
-          {balances && (
-            <div className="flex justify-between py-2 px-2">
-              <div className="entity-label">
-                {selections &&
-                  props.categories?.some(
-                    (c) => c.id == selections?.categoryId,
-                  ) &&
-                  props.categories?.filter(
-                    (c) => c.id == selections?.categoryId,
-                  )[0].name}
-                &nbsp;Total
-              </div>
-              <div className="font-semibold text-neutral-800">
-                {balances &&
-                  formatCurrency(
-                    balances
-                      .map((b) => b.currentAmount)
-                      ?.reduce((acc, cur) => acc + cur, 0),
-                  )}
+              <div className="text-neutral-900  ">
+                {formatCurrency(b.currentAmount)}
               </div>
             </div>
-          )}
+          ))}
+          <div className="flex justify-between py-2 px-2">
+            <div className="entity-label">
+              {selections &&
+                props.categories?.some((c) => c.id == selections?.categoryId) &&
+                props.categories?.filter(
+                  (c) => c.id == selections?.categoryId,
+                )[0].name}
+              &nbsp;Total
+            </div>
+            <div className="font-semibold text-neutral-800">
+              {balances &&
+                formatCurrency(
+                  balances
+                    .map((b) => b.currentAmount)
+                    ?.reduce((acc, cur) => acc + cur, 0),
+                )}
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex justify-end gap-3 pb-3">
@@ -204,7 +210,7 @@ const AddLineModal = ({ ...props }: Props) => {
             props.onCancel();
             setAnimateOut(true);
             setTimeout(() => {
-              setSelections(null);
+              // setSelections(null);
               setAnimateOut(false);
             }, 500);
           }}
@@ -215,4 +221,4 @@ const AddLineModal = ({ ...props }: Props) => {
     </Modal2>
   );
 };
-export default AddLineModal;
+export default EditLineModal;

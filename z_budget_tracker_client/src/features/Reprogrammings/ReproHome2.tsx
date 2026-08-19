@@ -3,8 +3,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import {
   AlertCircle,
+  AlertTriangle,
   BookOpenText,
-  LucidePencil,
+  CheckCircle2,
   Plus,
   Save,
 } from 'lucide-react';
@@ -20,12 +21,23 @@ import Button from '../../components/Button';
 import MenuIdProvider from '../../contexts/MenuIdContext';
 import toast from 'react-hot-toast';
 import JustificaModal from './JustificaModal';
+import ErrorsModal from './ErrorsModal';
+import EditLineModal from './EditLineModal';
+
+type Selections = {
+  initiativeId?: number;
+  grantId?: number;
+  categoryId?: number;
+  accountId?: number;
+};
 
 const ReproHome2 = () => {
   const queryClient = useQueryClient();
 
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
+  const [editSelections, setEditSelections] = useState<Selections | null>(null);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
 
   const [lines, setLines] = useState<ReproLineItem[]>([]);
   const [justification, setJustifications] = useState<string>('');
@@ -41,13 +53,15 @@ const ReproHome2 = () => {
 
   const [variance, setVariance] = useState<string>('');
 
-  const DUP_LINES = 'There are duplicate lines.';
+  const DUP_LINES =
+    'There are duplicate lines (Look for same account selections within the same Initiative/Grant/Category)';
   const NO_INC_AND_NO_DEC_LINES =
-    'There are lines with no increase and no decrease';
+    'There are lines with $0 for increase and $0 decrease';
   const HAS_VARIANCE = 'There is a variance in the reprogramming';
   const LINES_WITH_INC_AND_DEC =
-    'One or more lines has an increase and a decrease';
-  const NEGATIVE_BALANCE = 'There is a negative balance';
+    'One or more lines has an increase and a decrease amount entered';
+  const NEGATIVE_BALANCE = 'There is a negative balance in one or more lines';
+  const NO_JUSTIFICATION = 'Justification has not been entered';
 
   const reprogRows: ReprogInputRow[] = lines.map((l) => {
     return {
@@ -217,7 +231,16 @@ const ReproHome2 = () => {
   }
 
   function handleEditRow(uuid: string) {
-    console.log('uuid', uuid);
+    const lineToEdit = lines.filter((x) => x.uuid == uuid)[0];
+
+    console.log('uuid', lineToEdit);
+    setEditSelections((prev) => ({
+      ...prev,
+      initiativeId: lineToEdit.initiativeId,
+      grantId: lineToEdit.grantId,
+      categoryId: lineToEdit.categoryId,
+      accountId: lineToEdit.accountId,
+    }));
   }
 
   const getTotalAmounts = useCallback((): { inc: number; dec: number } => {
@@ -306,8 +329,12 @@ const ReproHome2 = () => {
       errors.push(NEGATIVE_BALANCE);
     }
 
+    if (!justification || justification.trim().length === 0) {
+      errors.push(NO_JUSTIFICATION);
+    }
+
     return errors;
-  }, [getTotalAmounts, lines]);
+  }, [getTotalAmounts, justification, lines]);
 
   function handleSaveJust(text: string) {
     setJustifications(text);
@@ -323,13 +350,13 @@ const ReproHome2 = () => {
     calculateVariance();
     const errors = getErrors();
 
-    if (errors.length > 0) {
+    if (errors.length > 0 && lines.length > 0) {
       toast.custom(
         <div className="hover:scale-105 transition-all duration-200 rounded-sm p-4 shadow-md w-70 font-semibold  bg-red-500 text-neutral-50 flex gap-2">
           <AlertCircle></AlertCircle>
           <div
             className="self-center hover:underline underline-offset-2 cursor-pointer"
-            onClick={() => {}}
+            onClick={() => setErrorModalOpen(true)}
           >
             {errors.length} error{errors.length > 1 && <span>s</span>}
           </div>
@@ -344,15 +371,15 @@ const ReproHome2 = () => {
       toast.dismissAll();
     }
 
-    // return () => toast.dismissAll('errors');
+    return () => toast.dismissAll('errors');
   }, [calculateVariance, getErrors, getTotalAmounts, lines]);
 
   if (isLoading) return null;
 
   return (
     <MenuIdProvider>
-      {/* <pre>{JSON.stringify(getErrors())}</pre> */}
-      <div className="flex gap-2 mb-4 cursor-default">
+      {/* <pre>{JSON.stringify(lines)}</pre> */}
+      <div className="flex gap-2 mb-2 cursor-default">
         <Button
           buttonSize="small"
           onClick={() => {
@@ -381,16 +408,28 @@ const ReproHome2 = () => {
       </div>
       {lines.length > 0 && (
         <div
-          className="flex mb-6 justify-end text-neutral-400 cursor-pointer hover:text-neutral-600 gap-1"
+          className="flex mb-8 justify-end text-neutral-400 cursor-pointer hover:text-neutral-600 gap-1 mr-3 "
           onClick={() => setJustModalIsOpen(true)}
         >
-          <LucidePencil className='text-neutral-400 self-center' size={18}></LucidePencil>
-          <div className="self-center">Justification</div>
+          <div className="flex gap-1">
+            <div className="self-center">Justification</div>
+            {!justification ? (
+              <AlertTriangle
+                className="self-center text-orange-300"
+                size={17}
+              ></AlertTriangle>
+            ) : (
+              <CheckCircle2
+                className="self-center text-green-500"
+                size={19}
+              ></CheckCircle2>
+            )}
+          </div>
         </div>
       )}
       {lines.length > 0 && (
         <div>
-          <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3  py-1 border-b border-neutral-200 mb-5  font-bold text-neutral-500">
+          <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-14 font-bold text-neutral-500">
             <div className="self-end col-span-4 "></div>
             <div className="flex ">
               <div className="flex-2 text-center w-[25%]"></div>
@@ -523,6 +562,22 @@ const ReproHome2 = () => {
           }, 500);
         }}
       ></AddLineModal>
+      {editSelections && (
+        <EditLineModal
+          isOpen={editSelections !== null}
+          selections={editSelections}
+          initiatives={initiatives}
+          grants={grants}
+          categories={categories}
+          onLineAdded={handleLineAdded}
+          onCancel={() => {
+            setTimeout(() => {
+              // setEditLineModalIsOpen(false);
+              setEditSelections(null);
+            }, 500);
+          }}
+        ></EditLineModal>
+      )}
       <JustificaModal
         isOpen={justModalIsOpen}
         onCommentSaved={handleSaveJust}
@@ -533,6 +588,15 @@ const ReproHome2 = () => {
           }, 600);
         }}
       ></JustificaModal>
+      <ErrorsModal
+        isOpen={errorModalOpen}
+        errors={getErrors()}
+        onCancel={() => {
+          setTimeout(() => {
+            setErrorModalOpen(false);
+          }, 500);
+        }}
+      ></ErrorsModal>
     </MenuIdProvider>
   );
 };
