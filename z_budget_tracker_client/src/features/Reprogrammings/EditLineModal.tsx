@@ -16,6 +16,7 @@ type Selections = {
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
+  uuid: string;
   initiatives: Initiative[] | undefined;
   grants: Grant[] | undefined;
   categories: Category[] | undefined;
@@ -52,8 +53,10 @@ const EditLineModal = ({ ...props }: Props) => {
   function onLineUpdated(account: ReproAccountBalance) {
     setAnimateOut(true);
     if (props.initiatives && props.grants && props.categories) {
+      console.log('selections!.initiativeId!', selections!.initiativeId!);
       const newLine: ReproLineItem = {
         rowNumber: -1,
+        uuid: props.uuid,
         accountId: account.accountId,
         accountName: account.name,
         categoryId: selections!.categoryId!,
@@ -68,21 +71,20 @@ const EditLineModal = ({ ...props }: Props) => {
         grantName: props.grants.filter((x) => x.id == selections?.grantId)[0]
           .name,
         currentAmount: account.currentAmount,
-        uuid: window.crypto.randomUUID(),
         newAmount: account.currentAmount,
       };
 
       props.onLineUpdated(newLine, {
         initiativeId: newLine.initiativeId,
         grantId: newLine.grantId,
-        categoryId: selections!.categoryId!,
+        categoryId: newLine.categoryId,
       });
     }
   }
 
   return (
     <Modal2 size="lg" title="Edit Line" animateOut={animateOut} {...props}>
-      {/* <pre>{JSON.stringify(selections)}</pre> */}
+      <pre>{JSON.stringify(selections)}</pre>
 
       <div className="grid grid-cols-[1fr_1fr] mb-4 gap-4">
         <div className="flex flex-col gap-9">

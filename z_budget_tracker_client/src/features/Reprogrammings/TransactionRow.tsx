@@ -36,7 +36,9 @@ const TransactionRow = ({
   },
 }: Props) => {
   if (!categories) return null;
+  console.log('initiativeName', initiativeName)
 
+  console.log('uuid', uuid)
   const accounts = balances.map((b) => ({
     value: b.accountId,
     label: (

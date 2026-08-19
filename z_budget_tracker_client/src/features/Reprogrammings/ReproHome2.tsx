@@ -25,6 +25,7 @@ import ErrorsModal from './ErrorsModal';
 import EditLineModal from './EditLineModal';
 
 type Selections = {
+  uuid: string;
   initiativeId?: number;
   grantId?: number;
   categoryId?: number;
@@ -155,30 +156,50 @@ const ReproHome2 = () => {
       setEditSelections(null);
     }, 500);
 
-    setLines((prev) => {
-      const newLines = prev.map((l: ReproLineItem, i: number) => {
-        const inc = getValues(`rows.${i}.increase`);
-        const dec = getValues(`rows.${i}.decrease`);
-        return {
-          ...l,
-          initiativeId:
-            l.uuid === updatedLine.uuid
-              ? updatedLine.initiativeId
-              : l.initiativeId,
-          grantId:
-            l.uuid === updatedLine.uuid ? updatedLine.grantId : l.grantId,
-          categoryId:
-            l.uuid === updatedLine.uuid ? updatedLine.categoryId : l.categoryId,
-          accountId:
-            l.uuid === updatedLine.uuid ? updatedLine.accountId : l.accountId,
-          accountName: l.accountName,
-          increase: inc,
-          decrease: dec,
-          newAmount: +l.currentAmount + +inc - +dec,
-        };
-      });
-      return newLines;
+    const newLines = lines.map((l: ReproLineItem, i: number) => {
+      const inc = getValues(`rows.${i}.increase`);
+      const dec = getValues(`rows.${i}.decrease`);
+
+      return {
+        ...l,
+        initiativeId:
+          l.uuid === updatedLine.uuid
+            ? updatedLine.initiativeId
+            : l.initiativeId,
+        initiativeName:
+          l.uuid === updatedLine.uuid
+            ? updatedLine.initiativeName
+            : l.initiativeName,
+        grantId: l.uuid === updatedLine.uuid ? updatedLine.grantId : l.grantId,
+        grantName:
+          l.uuid === updatedLine.uuid ? updatedLine.grantName : l.grantName,
+        categoryId:
+          l.uuid === updatedLine.uuid ? updatedLine.categoryId : l.categoryId,
+        categoryName:
+          l.uuid === updatedLine.uuid
+            ? updatedLine.categoryName
+            : l.categoryName,
+        accountId:
+          l.uuid === updatedLine.uuid ? updatedLine.accountId : l.accountId,
+        accountName:
+          l.uuid === updatedLine.uuid ? updatedLine.accountName : l.accountName,
+        increase: inc,
+        decrease: dec,
+        currentAmount:
+          l.uuid === updatedLine.uuid
+            ? updatedLine.currentAmount
+            : l.currentAmount,
+        newAmount:
+          (l.uuid === updatedLine.uuid
+            ? updatedLine.currentAmount
+            : l.currentAmount) +
+          +inc -
+          +dec,
+      };
     });
+
+    console.log('newLines', newLines);
+    setLines(newLines);
 
     const t = true;
     if (t) {
@@ -303,15 +324,13 @@ const ReproHome2 = () => {
 
   function handleEditRow(uuid: string) {
     const lineToEdit = lines.filter((x) => x.uuid == uuid)[0];
-
-    console.log('uuid', lineToEdit);
-    setEditSelections((prev) => ({
-      ...prev,
+    setEditSelections({
+      uuid: uuid,
       initiativeId: lineToEdit.initiativeId,
       grantId: lineToEdit.grantId,
       categoryId: lineToEdit.categoryId,
       accountId: lineToEdit.accountId,
-    }));
+    });
   }
 
   const getTotalAmounts = useCallback((): { inc: number; dec: number } => {
@@ -635,6 +654,7 @@ const ReproHome2 = () => {
       ></AddLineModal>
       {editSelections && (
         <EditLineModal
+          uuid={editSelections.uuid}
           isOpen={editSelections !== null}
           selections={editSelections}
           initiatives={initiatives}
