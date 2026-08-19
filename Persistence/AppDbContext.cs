@@ -32,9 +32,9 @@ namespace Persistence
             builder.Entity<Initiative>().HasData(
                 new Initiative() { Id = 1, Name = "Management & Coordination" },
                 new Initiative() { Id = 2, Name = "Training" },
-                new Initiative() { Id = 3, Name = "Overdose Response Strategy" },
+                new Initiative() { Id = 3, Name = "ORS" },
                 new Initiative() { Id = 4, Name = "Multimedia & Technology Unit" },
-                new Initiative() { Id = 5, Name = "Domestic Highway Enforcement" }
+                new Initiative() { Id = 5, Name = "DHE" }
             );
 
             builder.Entity<Grant>().HasData(

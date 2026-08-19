@@ -89,7 +89,7 @@ const ReproHome2 = () => {
   ) {
     setTimeout(() => {
       setAddLineModalIsOpen(false);
-    }, 500);
+    }, 400);
 
     line.rowNumber = lines.length;
 
@@ -110,38 +110,109 @@ const ReproHome2 = () => {
 
     setLines(newLines);
 
-    const balances = queryClient.getQueryData<
-      { accountId: number; name: string; currentAmount: number }[]
-    >([
-      'repro_account_balances',
-      key.initiativeId,
-      key.grantId,
-      key.categoryId,
-    ]);
+    const t = true;
+    if (t) {
+      const balances = queryClient.getQueryData<
+        { accountId: number; name: string; currentAmount: number }[]
+      >([
+        'repro_account_balances',
+        key.initiativeId,
+        key.grantId,
+        key.categoryId,
+      ]);
 
-    if (
-      !savedBalances.some(
-        (b) =>
-          b.key.initiativeId == key.initiativeId &&
-          b.key.grantId == key.grantId &&
-          b.key.categoryId == key.categoryId,
-      )
-    ) {
-      setSavedBalances((prev) => {
-        const newArray = [
-          ...prev,
-          {
-            key: {
-              ...key,
+      if (
+        !savedBalances.some(
+          (b) =>
+            b.key.initiativeId == key.initiativeId &&
+            b.key.grantId == key.grantId &&
+            b.key.categoryId == key.categoryId,
+        )
+      ) {
+        setSavedBalances((prev) => {
+          const newArray = [
+            ...prev,
+            {
+              key: {
+                ...key,
+              },
+              balances: balances!,
             },
-            balances: balances!,
-          },
-        ];
-        return newArray;
-      });
+          ];
+          return newArray;
+        });
+      }
     }
+
     calculateVariance();
-    // setErrorMessages(newLines);
+  }
+
+  function handleLineUpdated(
+    updatedLine: ReproLineItem,
+    key: { initiativeId: number; grantId: number; categoryId: number },
+  ) {
+    setTimeout(() => {
+      setEditSelections(null);
+    }, 500);
+
+    setLines((prev) => {
+      const newLines = prev.map((l: ReproLineItem, i: number) => {
+        const inc = getValues(`rows.${i}.increase`);
+        const dec = getValues(`rows.${i}.decrease`);
+        return {
+          ...l,
+          initiativeId:
+            l.uuid === updatedLine.uuid
+              ? updatedLine.initiativeId
+              : l.initiativeId,
+          grantId:
+            l.uuid === updatedLine.uuid ? updatedLine.grantId : l.grantId,
+          categoryId:
+            l.uuid === updatedLine.uuid ? updatedLine.categoryId : l.categoryId,
+          accountId:
+            l.uuid === updatedLine.uuid ? updatedLine.accountId : l.accountId,
+          accountName: l.accountName,
+          increase: inc,
+          decrease: dec,
+          newAmount: +l.currentAmount + +inc - +dec,
+        };
+      });
+      return newLines;
+    });
+
+    const t = true;
+    if (t) {
+      const balances = queryClient.getQueryData<
+        { accountId: number; name: string; currentAmount: number }[]
+      >([
+        'repro_account_balances',
+        key.initiativeId,
+        key.grantId,
+        key.categoryId,
+      ]);
+
+      if (
+        !savedBalances.some(
+          (b) =>
+            b.key.initiativeId == key.initiativeId &&
+            b.key.grantId == key.grantId &&
+            b.key.categoryId == key.categoryId,
+        )
+      ) {
+        setSavedBalances((prev) => {
+          const newArray = [
+            ...prev,
+            {
+              key: {
+                ...key,
+              },
+              balances: balances!,
+            },
+          ];
+          return newArray;
+        });
+      }
+    }
   }
 
   function handleAccountChange(accountId: number, rowUuid: string) {
@@ -569,10 +640,9 @@ const ReproHome2 = () => {
           initiatives={initiatives}
           grants={grants}
           categories={categories}
-          onLineAdded={handleLineAdded}
+          onLineUpdated={handleLineUpdated}
           onCancel={() => {
             setTimeout(() => {
-              // setEditLineModalIsOpen(false);
               setEditSelections(null);
             }, 500);
           }}

@@ -308,18 +308,18 @@ namespace Application.services
                                   group b by new { id = a.Id, name = a.Name } into catBal
                                   orderby catBal.Key.name
                                   select
-                                      AccountCurrentAmountDto.Create(
+                                      AccountCurrentAmountDto.Create(initiativeId, grantId, 
                                            catBal.Key.id, catBal.Key.name, catBal.Sum(x => x.Amount))
                             )
                            .ToListAsync();
 
-            balances = [.. (from a in _accounts join
+            balances = [.. from a in _accounts join
                         b in balances on a.Id equals b.AccountId into itemsGroup
                         from subItems in itemsGroup.DefaultIfEmpty()
                         orderby a.Name
-                        select AccountCurrentAmountDto.Create(a.Id, a.Name, subItems != null ? subItems.CurrentAmount : 0)
-                        
-                        )];
+                        select AccountCurrentAmountDto.Create(initiativeId, grantId, a.Id, a.Name, subItems != null ? subItems.CurrentAmount : 0)
+
+                        ];
 
 
             return balances;

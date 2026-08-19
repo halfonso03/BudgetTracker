@@ -36,6 +36,7 @@ const AddLineModal = ({ ...props }: Props) => {
   );
 
   function onLineAdded(account: ReproAccountBalance) {
+    // setAnimateOut(true);
     if (props.initiatives && props.grants && props.categories) {
       const newLine: ReproLineItem = {
         rowNumber: -1,
@@ -56,12 +57,14 @@ const AddLineModal = ({ ...props }: Props) => {
         uuid: window.crypto.randomUUID(),
         newAmount: account.currentAmount,
       };
-      setSelections(null);
+
       props.onLineAdded(newLine, {
         initiativeId: newLine.initiativeId,
         grantId: newLine.grantId,
         categoryId: selections!.categoryId!,
       });
+      setSelections(null);
+      // setAnimateOut(true);
     }
   }
 

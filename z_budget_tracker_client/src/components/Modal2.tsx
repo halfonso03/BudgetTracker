@@ -52,7 +52,7 @@ const Modal2 = ({
     // body
     <div
       onClick={onCancel}
-      className="fixed inset-0 z-50 h-dvh w-screen bg-black/50 flex justify-center "
+      className="fixed inset-0 z-10000 h-dvh w-screen bg-black/50 flex justify-center "
       style={{ backgroundColor: 'rgb(0 ,0, 0, .8)' }}
     >
       {/* modal */}

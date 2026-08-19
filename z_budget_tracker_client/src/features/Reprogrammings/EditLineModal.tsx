@@ -20,7 +20,7 @@ type Props = {
   grants: Grant[] | undefined;
   categories: Category[] | undefined;
   selections?: Selections | null;
-  onLineAdded: (
+  onLineUpdated: (
     balance: ReproLineItem,
     key: { initiativeId: number; grantId: number; categoryId: number },
   ) => void;
@@ -34,7 +34,12 @@ const EditLineModal = ({ ...props }: Props) => {
     accountId: props.selections!.accountId!,
   });
 
-  // console.log('selections state', selections);
+  const [originalSlections] = useState<Selections>({
+    initiativeId: props.selections!.initiativeId!,
+    grantId: props.selections!.grantId!,
+    categoryId: props.selections!.categoryId!,
+    accountId: props.selections!.accountId!,
+  });
 
   const [animateOut, setAnimateOut] = useState(false);
 
@@ -44,32 +49,34 @@ const EditLineModal = ({ ...props }: Props) => {
     selections?.categoryId,
   );
 
-  function onLineAdded(account: ReproAccountBalance) {
+  function onLineUpdated(account: ReproAccountBalance) {
+    setAnimateOut(true);
     if (props.initiatives && props.grants && props.categories) {
-      // const newLine: ReproLineItem = {
-      //   rowNumber: -1,
-      //   accountId: account.accountId,
-      //   accountName: account.name,
-      //   categoryId: selections!.categoryId!,
-      //   categoryName: props.categories.filter(
-      //     (x) => x.id == selections?.categoryId,
-      //   )[0].name,
-      //   initiativeId: selections!.initiativeId!,
-      //   initiativeName: props.initiatives.filter(
-      //     (x) => x.id == selections?.initiativeId,
-      //   )[0].name,
-      //   grantId: selections!.grantId!,
-      //   grantName: props.grants.filter((x) => x.id == selections?.grantId)[0]
-      //     .name,
-      //   currentAmount: account.currentAmount,
-      //   uuid: window.crypto.randomUUID(),
-      //   newAmount: account.currentAmount,
-      // };
-      // props.onLineAdded(newLine, {
-      //   initiativeId: newLine.initiativeId,
-      //   grantId: newLine.grantId,
-      //   categoryId: selections!.categoryId!,
-      // });
+      const newLine: ReproLineItem = {
+        rowNumber: -1,
+        accountId: account.accountId,
+        accountName: account.name,
+        categoryId: selections!.categoryId!,
+        categoryName: props.categories.filter(
+          (x) => x.id == selections?.categoryId,
+        )[0].name,
+        initiativeId: selections!.initiativeId!,
+        initiativeName: props.initiatives.filter(
+          (x) => x.id == selections?.initiativeId,
+        )[0].name,
+        grantId: selections!.grantId!,
+        grantName: props.grants.filter((x) => x.id == selections?.grantId)[0]
+          .name,
+        currentAmount: account.currentAmount,
+        uuid: window.crypto.randomUUID(),
+        newAmount: account.currentAmount,
+      };
+
+      props.onLineUpdated(newLine, {
+        initiativeId: newLine.initiativeId,
+        grantId: newLine.grantId,
+        categoryId: selections!.categoryId!,
+      });
     }
   }
 
@@ -93,9 +100,6 @@ const EditLineModal = ({ ...props }: Props) => {
                 }
               }}
             >
-              <option value={0} className="text-neutral-600">
-                Select...
-              </option>
               {props.initiatives?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
@@ -118,9 +122,6 @@ const EditLineModal = ({ ...props }: Props) => {
                 }
               }}
             >
-              <option value={0} className="text-neutral-600">
-                Select...
-              </option>
               {props.grants?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
@@ -143,9 +144,6 @@ const EditLineModal = ({ ...props }: Props) => {
                 }
               }}
             >
-              <option value={0} className="text-neutral-600">
-                Select...
-              </option>
               {props.categories?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
@@ -166,15 +164,20 @@ const EditLineModal = ({ ...props }: Props) => {
               className="rounded-sm py-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300"
               key={b.accountId}
               onClick={() => {
-                onLineAdded(b);
+                onLineUpdated(b);
                 props.onCancel();
                 // setTimeout(, 2000)
               }}
             >
               <div className="flex text-neutral-700 items-center gap-1">
-                {b.accountId == selections.accountId && (
-                  <ArrowRight size={16} className='text-blue-500'></ArrowRight>
-                )}
+                {b.accountId == originalSlections.accountId &&
+                  b.initiativeId == originalSlections.initiativeId &&
+                  b.grantId == originalSlections.grantId && (
+                    <ArrowRight
+                      size={16}
+                      className="text-blue-500"
+                    ></ArrowRight>
+                  )}
                 {b.name}
               </div>
               <div className="text-neutral-900  ">

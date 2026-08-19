@@ -29,10 +29,10 @@ export const routes: RouteObject[] = [
         path: '/budget/new/:year/:initiativeId/:grantId',
         element: <CreateBudget />,
       },
-      // {
-      //   path: 'reprogramming1',
-      //   element: <ReproHome />,
-      // },
+      {
+        path: 'reprogramming1',
+        element: <ReproHome />,
+      },
       {
         path: 'reprogramming2',
         element: <ReproHome2 />,
