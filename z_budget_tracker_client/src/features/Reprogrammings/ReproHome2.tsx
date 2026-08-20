@@ -85,14 +85,12 @@ const ReproHome2 = () => {
   // });
 
   function handleLineAdded(
-    line: ReproLineItem,
+    newLine: ReproLineItem,
     key: { initiativeId: number; grantId: number; categoryId: number },
   ) {
     setTimeout(() => {
       setAddLineModalIsOpen(false);
     }, 400);
-
-    line.rowNumber = lines.length;
 
     const newLines: ReproLineItem[] = lines.map(
       (l: ReproLineItem, i: number) => {
@@ -100,6 +98,7 @@ const ReproHome2 = () => {
         const dec = getValues(`rows.${i}.decrease`);
         return {
           ...l,
+          row_id: i,
           accountName: l.accountName,
           increase: inc,
           decrease: dec,
@@ -107,7 +106,7 @@ const ReproHome2 = () => {
         };
       },
     );
-    newLines.push(line);
+    newLines.push({...newLine, row_id: newLines.length});
 
     setLines(newLines);
 
@@ -162,6 +161,7 @@ const ReproHome2 = () => {
 
       return {
         ...l,
+        row_id: i,
         initiativeId:
           l.uuid === updatedLine.uuid
             ? updatedLine.initiativeId
@@ -279,7 +279,10 @@ const ReproHome2 = () => {
   function handleDuplicateRow(uuid: string) {
     const newLine = lines.filter((x) => x.uuid === uuid)[0];
     setLines((prev) => {
-      const newLines = [...prev, { ...newLine, uuid: crypto.randomUUID() }];
+      const newLines = [
+        ...prev,
+        { ...newLine, row_id: prev.length, uuid: crypto.randomUUID() },
+      ];
       return newLines;
     });
     calculateVariance();
@@ -287,7 +290,10 @@ const ReproHome2 = () => {
 
   function handleDeletRow(uuid: string) {
     setLines((prev) => {
-      return prev.filter((x) => x.uuid !== uuid);
+      const newLines = prev
+        .filter((x) => x.uuid !== uuid)
+        .map((l: ReproLineItem, i: number) => ({ ...l, row_id: i }));
+      return newLines;
     });
     calculateVariance();
   }
@@ -468,7 +474,7 @@ const ReproHome2 = () => {
 
   return (
     <MenuIdProvider>
-      {/* <pre>{JSON.stringify(lines)}</pre> */}
+      <pre>{JSON.stringify(lines)}</pre>
       <div className="flex gap-2 mb-2 cursor-default">
         <Button
           buttonSize="small"

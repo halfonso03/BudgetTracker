@@ -1,7 +1,10 @@
 type Repro = {
     id: number
-    comment?: string
+    justification?: string
     items?: ReproLineItem[]
+    createDate: Date
+    postedBy?: string
+    postedDate?: Date
 }
 
 type LineItem = {
@@ -13,12 +16,11 @@ type LineItem = {
     initiativeName: string
     grantId: number,
     grantName: string,
-    rowIndex?: number
     uuid: string
 }
 
 type ReproLineItem = LineItem & {
-    rowNumber: number
+    row_id: number
     increase?: string | number
     decrease?: string | number
     comment?: string | null | undefined

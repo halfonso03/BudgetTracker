@@ -4,7 +4,7 @@ import { useState, type ChangeEvent } from 'react';
 import useCurrentAccountBalances from '../../api/hooks/useCurrentAccountBalances';
 import { formatCurrency } from '../../app/util';
 import Modal2 from '../../components/Modal2';
-import { ArrowRight } from 'lucide-react';
+import { Check } from 'lucide-react';
 
 type Selections = {
   initiativeId?: number;
@@ -55,7 +55,7 @@ const EditLineModal = ({ ...props }: Props) => {
     if (props.initiatives && props.grants && props.categories) {
       console.log('selections!.initiativeId!', selections!.initiativeId!);
       const newLine: ReproLineItem = {
-        rowNumber: -1,
+        row_id: -1,
         uuid: props.uuid,
         accountId: account.accountId,
         accountName: account.name,
@@ -84,8 +84,6 @@ const EditLineModal = ({ ...props }: Props) => {
 
   return (
     <Modal2 size="lg" title="Edit Line" animateOut={animateOut} {...props}>
-      <pre>{JSON.stringify(selections)}</pre>
-
       <div className="grid grid-cols-[1fr_1fr] mb-4 gap-4">
         <div className="flex flex-col gap-9">
           <div>
@@ -156,7 +154,10 @@ const EditLineModal = ({ ...props }: Props) => {
         </div>
 
         <div className=" ">
-          <div className="flex justify-between py-2 px-2 pt-0 ">
+          <div className="py-2 px-2 pt-0 ">
+            <div className="entity-label mb-3 border-b border-b-neutral-200">
+              Select an Account
+            </div>
             <div className="entity-label">Current Amounts</div>
             {/* <div className="entity-label">Current Balance</div> */}
           </div>
@@ -175,10 +176,7 @@ const EditLineModal = ({ ...props }: Props) => {
                 {b.accountId == originalSlections.accountId &&
                   b.initiativeId == originalSlections.initiativeId &&
                   b.grantId == originalSlections.grantId && (
-                    <ArrowRight
-                      size={16}
-                      className="text-blue-500"
-                    ></ArrowRight>
+                    <Check size={16} className="text-blue-500"></Check>
                   )}
                 {b.name}
               </div>

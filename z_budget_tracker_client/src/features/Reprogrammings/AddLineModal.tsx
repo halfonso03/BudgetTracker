@@ -39,7 +39,7 @@ const AddLineModal = ({ ...props }: Props) => {
     // setAnimateOut(true);
     if (props.initiatives && props.grants && props.categories) {
       const newLine: ReproLineItem = {
-        rowNumber: -1,
+        row_id: -1,
         accountId: account.accountId,
         accountName: account.name,
         categoryId: selections!.categoryId!,

@@ -27,6 +27,7 @@ const TransactionRow = ({
   balances,
   saveComment,
   lineItem: {
+    row_id,
     initiativeName,
     grantName,
     categoryName,
@@ -55,7 +56,7 @@ const TransactionRow = ({
 
   return (
     <Fragment>
-      <div className="self-center">{initiativeName}</div>
+      <div className="self-center">{initiativeName} {row_id}</div>
       <div className="self-center">{grantName}</div>
       <div className="self-center">{categoryName}</div>
       <div className="self-center ">

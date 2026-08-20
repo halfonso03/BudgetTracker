@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260819203827_Repro1")]
+    partial class Repro1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -576,7 +579,7 @@ namespace Persistence.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("posted");
 
-                    b.Property<int?>("PostedById")
+                    b.Property<int>("PostedById")
                         .HasColumnType("int")
                         .HasColumnName("posted_by");
 
@@ -752,7 +755,9 @@ namespace Persistence.Migrations
 
                     b.HasOne("Domain.AuthorizedUser", "PostedBy")
                         .WithMany()
-                        .HasForeignKey("PostedById");
+                        .HasForeignKey("PostedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CreatedBy");
 

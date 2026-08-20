@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.Budgets
+namespace Application.DTOs.Common
 {
     public class AccountDto
     {

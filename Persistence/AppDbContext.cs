@@ -13,6 +13,8 @@ namespace Persistence
         public required DbSet<Grant> Grants { get; set; }
         public required DbSet<BudgetLineItem> BudgetLineItems { get; set; }
         public required DbSet<BudgetComment> BudgetComments { get; set; }
+        public required DbSet<Repro> Repros { get; set; }
+        public required DbSet<ReproLineItem> ReproLineItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -266,11 +268,9 @@ namespace Persistence
                 .WithOne(x => x.Category)
                 .HasForeignKey(x => x.CategoryId);
 
-
             builder.Entity<AuthorizedUser>().Property(x => x.Id).HasColumnName("id");
             builder.Entity<AuthorizedUser>().Property(x => x.WindowsLogin).HasColumnName("windows_login").HasColumnType("varchar(50)");
             builder.Entity<AuthorizedUser>().Property(x => x.LastLoginDate).HasColumnName("last_login_date").HasColumnType("datetime");
-
 
             builder.Entity<Account>().Property(x => x.Id).HasColumnName("id");
             builder.Entity<Account>().Property(x => x.Number).HasColumnName("number").HasColumnType("varchar(50)");
@@ -289,7 +289,6 @@ namespace Persistence
             builder.Entity<Grant>().Property(x => x.Fiduciary).HasColumnName("fiduciary");
 
             builder.Entity<Grant>().Property(x => x.Name).HasColumnName("name").HasColumnType("varchar(50)"); ;
-
 
             builder.Entity<BudgetLineItem>().Property(x => x.Amount).HasColumnName("amount");
             builder.Entity<BudgetLineItem>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
@@ -310,6 +309,31 @@ namespace Persistence
             builder.Entity<BudgetComment>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
             builder.Entity<BudgetComment>().Property(x => x.GrantId).HasColumnName("grant_id");
             builder.Entity<BudgetComment>().Property(x => x.AccountId).HasColumnName("account_id");
+
+            builder.Entity<Repro>().Property(x => x.Id).HasColumnName("id");
+            builder.Entity<Repro>().Property(x => x.CreatedDate).HasColumnName("create_date").HasColumnType("DATETIME");
+            builder.Entity<Repro>().Property(x => x.CreatedById).HasColumnName("created_by");
+            builder.Entity<Repro>().Property(x => x.Posted).HasColumnName("posted");
+            builder.Entity<Repro>().Property(x => x.PostedById).HasColumnName("posted_by");
+            builder.Entity<Repro>().Property(x => x.PostedDate).HasColumnName("posted_date").HasColumnType("DATETIME");
+            builder.Entity<Repro>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
+            builder.Entity<Repro>().Property(x => x.Justification).HasColumnName("justification").HasColumnType("VARCHAR(MAX)");
+
+            builder.Entity<ReproLineItem>().Property(x => x.Id).HasColumnName("id");
+            builder.Entity<ReproLineItem>().Property(x => x.ReproId).HasColumnName("repro_id");
+            builder.Entity<ReproLineItem>().Property(x => x.RowId).HasColumnName("row_id");
+            builder.Entity<ReproLineItem>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
+            builder.Entity<ReproLineItem>().Property(x => x.GrantId).HasColumnName("grant_id");
+            builder.Entity<ReproLineItem>().Property(x => x.CategoryId).HasColumnName("category_id");
+            builder.Entity<ReproLineItem>().Property(x => x.AccountId).HasColumnName("account_id");
+            builder.Entity<ReproLineItem>().Property(x => x.Increase).HasColumnName("increase").HasColumnType("NUMERIC(15,2)");
+            builder.Entity<ReproLineItem>().Property(x => x.Decrease).HasColumnName("decrease").HasColumnType("NUMERIC(15,2)");
+            builder.Entity<ReproLineItem>().Property(x => x.Year).HasColumnName("year");
+            builder.Entity<ReproLineItem>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME");
+
+
+
+
         }
     }
 }
