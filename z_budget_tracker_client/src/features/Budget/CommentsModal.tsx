@@ -1,6 +1,6 @@
 import Button from '../../components/Button';
 import Modal, { type ModalSize } from '../../components/Modal';
-import { useCommentActions } from '../../api/hooks/useCommentsActions';
+import { useCommentActions } from '../../api/hooks/budgets/useCommentsActions';
 import { useForm } from 'react-hook-form';
 import { CheckCircle } from 'lucide-react';
 import { useState, type ChangeEvent } from 'react';

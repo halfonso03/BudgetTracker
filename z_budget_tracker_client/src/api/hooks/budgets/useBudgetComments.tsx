@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import agent from '../agent';
+import agent from '../../agent';
 
 const useBudgetLlineItemComment = (
   initiativeId: number,
@@ -25,8 +25,6 @@ const useBudgetLlineItemComment = (
     queryKey: ['comment', initiativeId, grantId, accountId],
     enabled: enabled,
   });
-
-  console.log(initiativeId, grantId, accountId, comment);
 
   return {
     comment,

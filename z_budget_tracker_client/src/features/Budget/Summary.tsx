@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { formatCurrency } from '../../app/util';
 import { ArrowLeftRight, ChevronDownSquare, DollarSign } from 'lucide-react';
-import useBudgetSummary from '../../api/hooks/useBudgetSummary.tsx';
+import useBudgetSummary from '../../api/hooks/budgets/useBudgetSummary.tsx';
 import { useState } from 'react';
 
 // const grid_columns = '1fr_.5fr_1fr_1fr_1fr_1fr_.5fr_.3fr';

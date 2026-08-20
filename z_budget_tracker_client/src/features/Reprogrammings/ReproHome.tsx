@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Copy, Menu, Plus, Search, Trash } from 'lucide-react';
 import useCategories from '../../api/hooks/useCategories';
-import useInitiatives from '../../api/hooks/useInitiatives';
+import useInitiatives from '../../api/hooks/common/useInitiatives';
 import Button from '../../components/Button';
 import ChooseYearModal from './ChooseYearModal';
-import useGrants from '../../api/hooks/useGrants';
+import useGrants from '../../api/hooks/common/useGrants';
 import AddLineModal from './AddLineModal';
 import NumericInput from '../../components/NumericInput';
 import { formatCurrency } from '../../app/util';

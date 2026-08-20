@@ -1,23 +1,23 @@
 import { useForm, useFieldArray } from 'react-hook-form';
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import useGrants from '../../api/hooks/useGrants';
+import useGrants from '../../api/hooks/common/useGrants';
 import {
   formatCurrency,
   formatNumber,
   parseFormattedNumber,
 } from '../../app/util';
 import BudgetInputFields from './BudgetInputFields';
-import useInitiatives from '../../api/hooks/useInitiatives';
+import useInitiatives from '../../api/hooks/common/useInitiatives';
 import {
   formatArrayFieldAmount,
   removeNumberFormattingFromArrayField,
 } from './utils';
 import { ChevronDownSquare } from 'lucide-react';
-import useBudgetDetails from '../../api/hooks/useBudgetDetails';
+import useBudgetDetails from '../../api/hooks/budgets/useBudgetDetails';
 import BudgetHeader from './BudgetHeader';
 import toast from 'react-hot-toast';
-import { useBudgetActions } from '../../api/hooks/useBudgetActions';
+import { useBudgetActions } from '../../api/hooks/budgets/useBudgetActions';
 import Button from '../../components/Button';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';

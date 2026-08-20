@@ -5,8 +5,8 @@ import { useParams } from 'react-router-dom';
 
 import BudgetInputFieldsNewBudget from './BudgetInputFieldsNewBudget';
 import useCategories from '../../api/hooks/useCategories';
-import useInitiatives from '../../api/hooks/useInitiatives';
-import useGrants from '../../api/hooks/useGrants';
+import useInitiatives from '../../api/hooks/common/useInitiatives';
+import useGrants from '../../api/hooks/common/useGrants';
 import {
   formatCurrency,
   formatNumber,
@@ -18,7 +18,7 @@ import {
 } from './utils';
 import BudgetHeaderCreate from './BudgetHeaderCreate';
 import { ChevronDownSquare } from 'lucide-react';
-import { useBudgetActions } from '../../api/hooks/useBudgetActions';
+import { useBudgetActions } from '../../api/hooks/budgets/useBudgetActions';
 import Button from '../../components/Button';
 import toast from 'react-hot-toast';
 
@@ -132,7 +132,7 @@ const CreateBudget = () => {
 
   const calculateTotals = useCallback(() => {
     calculateTotalBudgeted();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories, categoryAccountIndexes]);
 
   useEffect(() => {

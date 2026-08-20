@@ -12,8 +12,8 @@ import {
 
 import AddLineModal from './AddLineModal';
 import useCategories from '../../api/hooks/useCategories';
-import useGrants from '../../api/hooks/useGrants';
-import useInitiatives from '../../api/hooks/useInitiatives';
+import useGrants from '../../api/hooks/common/useGrants';
+import useInitiatives from '../../api/hooks/common/useInitiatives';
 import TransactionRow from './TransactionRow';
 import { formatNumber, parseFormattedNumber } from '../../app/util';
 import NumericArrayInputGeneric from '../../components/NumericArrayInputGeneric';
@@ -106,7 +106,7 @@ const ReproHome2 = () => {
         };
       },
     );
-    newLines.push({...newLine, row_id: newLines.length});
+    newLines.push({ ...newLine, row_id: newLines.length });
 
     setLines(newLines);
 

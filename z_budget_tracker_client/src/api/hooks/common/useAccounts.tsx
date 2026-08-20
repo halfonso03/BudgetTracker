@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import agent from '../agent';
+import agent from '../../agent';
 
 const fetchInitiatives = async (categoryId: number | undefined): Promise<Account[]> => {
   const response = await agent.get<Account[]>(`/Category/${categoryId}`);

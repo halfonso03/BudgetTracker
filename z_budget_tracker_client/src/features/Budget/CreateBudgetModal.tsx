@@ -2,8 +2,8 @@ import { useState } from 'react';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import Select from '../../components/Select';
-import useInitiatives from '../../api/hooks/useInitiatives';
-import useGrants from '../../api/hooks/useGrants';
+import useInitiatives from '../../api/hooks/common/useInitiatives';
+import useGrants from '../../api/hooks/common/useGrants';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 

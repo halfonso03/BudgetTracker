@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import agent from '../agent';
+import agent from '../../agent';
 
 const fetchBalances = async (
   initiativeId?: number,

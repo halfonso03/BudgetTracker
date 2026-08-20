@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import agent from '../agent';
+import agent from '../../agent';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
