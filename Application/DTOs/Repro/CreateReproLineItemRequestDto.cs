@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Repro
 {
-    public class CreateReproLineItemRequestDto
+    public class ReproRequestLineItemDto
     {
         [Required]
         [Range(0, int.MaxValue)]
@@ -31,12 +31,16 @@ namespace Application.DTOs.Repro
         public int AccountId { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue)]
-        public double Increase { get; set; }
+        [Range(0, 1000000)]
+        public decimal Increase { get; set; }
 
         [Required]
-        [Range(0, double.MaxValue)]
-        public double Decrease { get; set; }
+        [Range(0, 1000000)]
+        public decimal Decrease { get; set; }
+    }
+    public class CreateReproLineItemRequestDto : ReproRequestLineItemDto
+    {
+
 
     }
 }

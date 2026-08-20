@@ -1,10 +1,14 @@
 type Repro = {
     id: number
     justification?: string
-    items?: ReproLineItem[]
     createDate: Date
+    createdById: number
+    updateDate: Date
+    updatedById: number
     postedBy?: string
-    postedDate?: Date
+    posted: boolean
+    postedById?: number
+    lineItems?: ReproLineItem[]
 }
 
 type LineItem = {

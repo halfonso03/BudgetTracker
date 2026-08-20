@@ -19,21 +19,25 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            // var budgets = await _reproService.GetBudgetsForYear(year);
-
-            return Ok(id);
+            return HandleResult(await _reproService.GetRepro(id));
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> GetAccountBalancesForCategory(int id)
+        [HttpPut]
+        public async Task<IActionResult> Put(UpdateReproRequestDto reproRequestDto)
         {
-            return Ok();
+            return HandleResult(await _reproService.UpdateRepro(reproRequestDto));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateReproRequestDto reproRequestDto)
+        public async Task<IActionResult> Post(CreateReproRequestDto reproRequestDto)
         {
             return HandleResult(await _reproService.CreateRepro(reproRequestDto));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            return HandleResult(await _reproService.DeleteRepro(id));
         }
     }
 }

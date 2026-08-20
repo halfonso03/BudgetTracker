@@ -204,11 +204,11 @@ namespace Application.services
             }
             catch (DbException ex)
             {
-                return Result<Unit>.Failure(ex.Message, 400);
+                return Result<Unit>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
             catch (Exception ex)
             {
-                return Result<Unit>.Failure(ex.Message, 400);
+                return Result<Unit>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
 
             return Result<Unit>.Success(Unit.Value);
@@ -283,11 +283,11 @@ namespace Application.services
             }
             catch (DbException ex)
             {
-                return Result<Unit>.Failure(ex.Message, 400);
+                return Result<Unit>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
             catch (Exception ex)
             {
-                return Result<Unit>.Failure(ex.Message, 400);
+                return Result<Unit>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
 
             return Result<Unit>.Success(Unit.Value);
@@ -318,9 +318,7 @@ namespace Application.services
                         from subItems in itemsGroup.DefaultIfEmpty()
                         orderby a.Name
                         select AccountCurrentAmountDto.Create(initiativeId, grantId, a.Id, a.Name, subItems != null ? subItems.CurrentAmount : 0)
-
                         ];
-
 
             return balances;
         }

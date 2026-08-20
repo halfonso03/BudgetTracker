@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260820142501_Repro8")]
+    partial class Repro8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -584,13 +587,8 @@ namespace Persistence.Migrations
                         .HasColumnType("DATETIME")
                         .HasColumnName("posted_date");
 
-                    b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("DATETIME")
-                        .HasColumnName("updated_date");
-
                     b.Property<int?>("UpdatedById")
-                        .HasColumnType("int")
-                        .HasColumnName("updated_by");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -653,22 +651,13 @@ namespace Persistence.Migrations
                         .HasColumnName("update_date");
 
                     b.Property<int?>("UpdatedById")
-                        .HasColumnType("int")
-                        .HasColumnName("updated_by");
+                        .HasColumnType("int");
 
                     b.Property<int>("Year")
                         .HasColumnType("int")
                         .HasColumnName("year");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("GrantId");
-
-                    b.HasIndex("InitiativeId");
 
                     b.HasIndex("ReproId");
 
@@ -795,30 +784,6 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.ReproLineItem", b =>
                 {
-                    b.HasOne("Domain.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Grant", "Grant")
-                        .WithMany()
-                        .HasForeignKey("GrantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Initiative", "Initiative")
-                        .WithMany()
-                        .HasForeignKey("InitiativeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Repro", "Repro")
                         .WithMany("Items")
                         .HasForeignKey("ReproId")
@@ -828,14 +793,6 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.AuthorizedUser", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Grant");
-
-                    b.Navigation("Initiative");
 
                     b.Navigation("Repro");
 

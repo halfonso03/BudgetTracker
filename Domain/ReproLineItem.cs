@@ -19,12 +19,23 @@ namespace Domain
         public required int GrantId { get; set; }
         public required int CategoryId { get; set; }
         public required int AccountId { get; set; }
-        public double? Increase { get; set; }
-        public double? Decrease { get; set; }
+        public decimal? Increase { get; set; }
+        public decimal? Decrease { get; set; }
         public required int Year { get; set; }
         public required DateTime EntryDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public int? UpdatedById { get; set; }
+
+        [ForeignKey("UpdatedById")]
+        public AuthorizedUser? UpdatedBy { get; set; }
 
         [ForeignKey("ReproId")]
         public Repro? Repro { get; set; }
+
+        
+        public Initiative? Initiative { get; set; }
+        public Grant? Grant { get; set; }
+        public Category? Category { get; set; }
+        public Account? Account { get; set; }
     }
 }

@@ -15,15 +15,20 @@ namespace Domain
         public int Id { get; set; }
         public required DateTime CreatedDate { get; set; }
         public required int CreatedById { get; set; }
+        public int? UpdatedById { get; set; }
         public required bool Posted { get; set; }
         public int? PostedById { get; set; }
         public DateTime? PostedDate { get; set; }
-        public required double Amount { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public required decimal Amount { get; set; }
         public required string Justification { get; set; }
         public required IList<ReproLineItem> Items { get; set; }
 
         [ForeignKey("CreatedById")]
         public AuthorizedUser? CreatedBy { get; set; }
+
+        [ForeignKey("UpdatedById")]
+        public AuthorizedUser? UpdatedBy { get; set; }
 
         [ForeignKey("PostedById")]
         public AuthorizedUser? PostedBy { get; set; }

@@ -9,6 +9,10 @@ namespace Application.Interfaces
 {
     public interface IReproService
     {
+
+        Task<Result<ReproResponseDto>> GetRepro(int id);
         Task<Result<Unit>> CreateRepro(CreateReproRequestDto reproRequestDto);
+        Task<Result<Unit>> DeleteRepro(int id);
+        Task<Result<Unit>> UpdateRepro(UpdateReproRequestDto reproRequestDto);
     }
 }

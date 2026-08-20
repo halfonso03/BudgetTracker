@@ -313,6 +313,8 @@ namespace Persistence
             builder.Entity<Repro>().Property(x => x.Id).HasColumnName("id");
             builder.Entity<Repro>().Property(x => x.CreatedDate).HasColumnName("create_date").HasColumnType("DATETIME");
             builder.Entity<Repro>().Property(x => x.CreatedById).HasColumnName("created_by");
+            builder.Entity<Repro>().Property(x => x.UpdateDate).HasColumnName("updated_date").HasColumnType("DATETIME");
+            builder.Entity<Repro>().Property(x => x.UpdatedById).HasColumnName("updated_by");
             builder.Entity<Repro>().Property(x => x.Posted).HasColumnName("posted");
             builder.Entity<Repro>().Property(x => x.PostedById).HasColumnName("posted_by");
             builder.Entity<Repro>().Property(x => x.PostedDate).HasColumnName("posted_date").HasColumnType("DATETIME");
@@ -330,6 +332,9 @@ namespace Persistence
             builder.Entity<ReproLineItem>().Property(x => x.Decrease).HasColumnName("decrease").HasColumnType("NUMERIC(15,2)");
             builder.Entity<ReproLineItem>().Property(x => x.Year).HasColumnName("year");
             builder.Entity<ReproLineItem>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME");
+            builder.Entity<ReproLineItem>().Property(x => x.UpdatedById).HasColumnName("updated_by");
+            builder.Entity<ReproLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME");
+
 
 
 
