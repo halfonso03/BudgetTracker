@@ -219,7 +219,7 @@ namespace Persistence
                 new BudgetLineItem()
                 {
                     AccountId = 5,
-                    Amount = 596.01,
+                    Amount = 596.0M,
                     CreatedBy = 1,
                     CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
                     GrantId = 1,

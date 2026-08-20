@@ -27,7 +27,7 @@ const TransactionRow = ({
   balances,
   saveComment,
   lineItem: {
-    row_id,
+    rowId,
     initiativeName,
     grantName,
     categoryName,
@@ -37,9 +37,7 @@ const TransactionRow = ({
   },
 }: Props) => {
   if (!categories) return null;
-  console.log('initiativeName', initiativeName)
 
-  console.log('uuid', uuid)
   const accounts = balances.map((b) => ({
     value: b.accountId,
     label: (
@@ -56,7 +54,9 @@ const TransactionRow = ({
 
   return (
     <Fragment>
-      <div className="self-center">{initiativeName} {row_id}</div>
+      <div className="self-center">
+        {initiativeName} {rowId}
+      </div>
       <div className="self-center">{grantName}</div>
       <div className="self-center">{categoryName}</div>
       <div className="self-center ">

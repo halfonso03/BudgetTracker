@@ -12,7 +12,7 @@ namespace Domain
         [Column(Order = 0)]
         public required int Id { get; set; } = 0;
         [Column(Order = 4)]
-        public required double Amount { get; set; }
+        public required decimal Amount { get; set; }
         [Column(Order = 5)]
         public required string ItemType { get; set; }
 

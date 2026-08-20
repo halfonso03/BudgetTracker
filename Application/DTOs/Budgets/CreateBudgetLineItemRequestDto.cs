@@ -19,7 +19,7 @@ namespace Application.DTOs.Budgets
         public required int AccountId { get; set; }
 
         [Required]
-        public required double Amount { get; set; }
+        public required decimal Amount { get; set; }
 
     }
 }

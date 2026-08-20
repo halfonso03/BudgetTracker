@@ -25,7 +25,7 @@ namespace Application.DTOs.Budgets
 
         // public string? Comment { get; set; }
 
-        public required double Amount { get; set; } = 0;
+        public required decimal Amount { get; set; } = 0;
 
         [JsonPropertyName("item_type")]
         public required string ItemType { get; set; }
@@ -35,7 +35,7 @@ namespace Application.DTOs.Budgets
         [JsonPropertyName("category_id")]
         public required int CategoryId { get; set; }
 
-        public static BudgetLineItemResponseDto Create(int grantId, int initiativeId, int accountId, string name, double amount, int categoryId, string itemType, string comment = "", string accountNumber = "", CategoryDto? category = null)
+        public static BudgetLineItemResponseDto Create(int grantId, int initiativeId, int accountId, string name, decimal amount, int categoryId, string itemType, string comment = "", string accountNumber = "", CategoryDto? category = null)
         {
             return new BudgetLineItemResponseDto
             {

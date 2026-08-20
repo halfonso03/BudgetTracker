@@ -1,31 +1,32 @@
-import { useCallback, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useForm } from 'react-hook-form';
 import {
   AlertCircle,
-  AlertTriangle,
-  BookOpenText,
-  CheckCircle2,
   Plus,
   Save,
+  BookOpenText,
+  AlertTriangle,
+  CheckCircle2,
 } from 'lucide-react';
-
-import AddLineModal from './AddLineModal';
-import useGrants from '../../api/hooks/common/useGrants';
-import useInitiatives from '../../api/hooks/common/useInitiatives';
-import TransactionRow from './TransactionRow';
-import { formatNumber, parseFormattedNumber } from '../../app/util';
-import NumericArrayInputGeneric from '../../components/NumericArrayInputGeneric';
-import Button from '../../components/Button';
-import MenuIdProvider from '../../contexts/MenuIdContext';
+import { useState, useCallback, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import JustificaModal from './JustificaModal';
-import ErrorsModal from './ErrorsModal';
+import useGrants from '../../api/hooks/common/useGrants';
+import { formatNumber, parseFormattedNumber } from '../../app/util';
+import Button from '../../components/Button';
+import NumericArrayInputGeneric from '../../components/NumericArrayInputGeneric';
+import MenuIdProvider from '../../contexts/MenuIdContext';
+import AddLineModal from './AddLineModal';
 import EditLineModal from './EditLineModal';
-import useCategories from '../../api/hooks/common/useCategories';
-import useGetRepro from '../../api/hooks/repro/useGetRepro';
-import { useParams } from 'react-router-dom';
-import { isCancel } from 'axios';
+import ErrorsModal from './ErrorsModal';
+import JustificaModal from './JustificaModal';
+import TransactionRow from './TransactionRow';
+
+interface Props {
+  reproFromDb: Repro;
+  initiatives: Initiative[];
+  categories: Category[];
+  startYear: number;
+}
 
 type Selections = {
   uuid: string;
@@ -35,53 +36,32 @@ type Selections = {
   accountId?: number;
 };
 
-const ReproHome2 = () => {
+const ReproForm = ({
+  initiatives,
+  categories,
+  reproFromDb,
+  startYear,
+}: Props) => {
   const queryClient = useQueryClient();
-  const { id } = useParams();
 
-  const reproId = id !== undefined ? +id : undefined;
-  const {
-    data: reproFromDb,
-    isFetching,
-    isSuccess,
-  } = useGetRepro(reproId);
-
-  let startYear = new Date().getFullYear();
-
-  if (
-    reproFromDb &&
-    reproFromDb.lineItems &&
-    reproFromDb.lineItems.length > 0
-  ) {
-    startYear = reproFromDb.lineItems[0].year!;
-  }
-
-  const { data: initiatives } = useInitiatives();
-  const { data: categories, isLoading } = useCategories();
   const { data: grants } = useGrants(startYear);
 
-  const [choosingYear, setChoosingYear] = useState(false);
-  const [year, setYear] = useState<number>(startYear);
+  //   const [choosingYear, setChoosingYear] = useState(false);
+  //   const [year, setYear] = useState<number>(startYear);
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [justification, setJustifications] = useState<string>(() => {
-    if (isSuccess && reproFromDb) {
-      return reproFromDb.justification;
-    }
-    return 'xxx';
+    return reproFromDb.justification!;
   });
 
   const [lines, setLines] = useState<ReproLineItem[]>(() => {
-    if (isSuccess) return reproFromDb!.lineItems!;
-    else return [];
+    return reproFromDb.lineItems!;
   });
-  const [savedBalances, setSavedBalances] = useState<RowBalance[]>([]);
-
-  if (isSuccess) console.log('reproFromDb', reproFromDb);
-  console.log('justification', justification);
-
+  const [savedBalances, setSavedBalances] = useState<RowBalance[]>(
+    reproFromDb.rowBalances!,
+  );
   // const [variance, setVariance] = useState<string>('');
 
   const DUP_LINES =
@@ -109,7 +89,7 @@ const ReproHome2 = () => {
     },
   });
 
-  const getTotalAmounts = useCallback((): { inc: number; dec: number } => {
+  const getTotalAmounts = useCallback((): { inc: string; dec: string } => {
     const inc = lines
       .map((l) => l.increase ?? 0)
       .reduce((acc, cum) => +acc! + +cum!, 0);
@@ -117,7 +97,7 @@ const ReproHome2 = () => {
       .map((l) => l.decrease ?? 0)
       .reduce((acc, cum) => +acc! + +cum!, 0);
 
-    return { inc: +inc, dec: +dec };
+    return { inc: Number(inc).toFixed(2), dec: Number(dec).toFixed(2) };
   }, [lines]);
 
   const getErrors = useCallback(() => {
@@ -132,7 +112,7 @@ const ReproHome2 = () => {
     }
 
     const { inc: totalInc, dec: totalDec } = getTotalAmounts();
-    if (totalInc - totalDec !== 0) {
+    if (+totalInc - +totalDec !== 0) {
       errors.push(HAS_VARIANCE);
     }
 
@@ -180,7 +160,7 @@ const ReproHome2 = () => {
     return () => toast.dismissAll('errors');
   }, [getErrors, getTotalAmounts, lines]);
 
-  if (reproId && isFetching) return <div>Loadiig...</div>;
+  //   if (reproId && isFetching) return <div>Loadiig...</div>;
 
   // const { fields } = useFieldArray({
   //   control,
@@ -454,7 +434,7 @@ const ReproHome2 = () => {
 
     // no variance
     const { inc: totalInc, dec: totalDec } = getTotalAmounts();
-    result = result && totalInc - totalDec === 0;
+    result = result && +totalInc - +totalDec === 0;
 
     // amounts balance
     result = result && totalInc === totalDec;
@@ -487,12 +467,10 @@ const ReproHome2 = () => {
     setTimeout(() => setJustModalIsOpen(false), 600);
   }
 
-  if (isLoading) return null;
-
   return (
     <MenuIdProvider>
-      <pre>{JSON.stringify(lines)}</pre>
-      <div className="flex gap-2 mb-2 cursor-default">
+      {/* <pre>{JSON.stringify(lines)}</pre> */}
+      <div className="flex gap-2 cursor-default">
         <Button
           buttonSize="small"
           onClick={() => {
@@ -520,11 +498,11 @@ const ReproHome2 = () => {
         )}
       </div>
       {lines.length > 0 && (
-        <div
-          className="flex mb-8 justify-end text-neutral-400 cursor-pointer hover:text-neutral-600 gap-1 mr-3 "
-          onClick={() => setJustModalIsOpen(true)}
-        >
-          <div className="flex gap-1">
+        <div className="flex mb-8 justify-end text-neutral-400  gap-1 mr-3 ">
+          <div
+            className="flex gap-1 cursor-pointer hover:text-neutral-600 "
+            onClick={() => setJustModalIsOpen(true)}
+          >
             <div className="self-center">Justification</div>
             {!justification ? (
               <AlertTriangle
@@ -542,7 +520,7 @@ const ReproHome2 = () => {
       )}
       {lines.length > 0 && (
         <div>
-          <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-14 font-bold text-neutral-500">
+          <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 font-bold text-neutral-500">
             <div className="self-end col-span-4 "></div>
             <div className="flex ">
               <div className="flex-2 text-center w-[25%]"></div>
@@ -606,12 +584,14 @@ const ReproHome2 = () => {
       )}
       {/* <pre>{JSON.stringify(reprogRows)}</pre> */}
       {lines.map((item, index) => {
+        console.log('savedBalances', savedBalances);
         const balances = savedBalances.filter(
           (b) =>
             b.key.initiativeId === item.initiativeId &&
             b.key.grantId == item.grantId &&
             b.key.categoryId == item.categoryId,
         )[0].balances;
+
         return (
           <div
             key={index}
@@ -766,4 +746,4 @@ function noDupLines(lines: ReproLineItem[]): boolean {
   return !counts.some((x) => x.count > 1);
 }
 
-export default ReproHome2;
+export default ReproForm;

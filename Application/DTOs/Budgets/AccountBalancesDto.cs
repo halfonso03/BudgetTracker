@@ -20,13 +20,13 @@ namespace Application.DTOs.Budgets
 
         public CommentDto? Comment { get; set; }
 
-        public required double Amount { get; set; } = 0;
+        public required decimal Amount { get; set; } = 0;
 
         [JsonPropertyName("current_amount")]
-        public required double CurrentAmount { get; set; } = 0;
+        public required decimal CurrentAmount { get; set; } = 0;
 
         [JsonPropertyName("spent_amount")]
-        public required double SpentAmount { get; set; } = 0;
+        public required decimal SpentAmount { get; set; } = 0;
 
         public CategoryDto? Category { get; set; } = null;
 

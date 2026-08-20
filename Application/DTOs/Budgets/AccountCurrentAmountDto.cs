@@ -13,9 +13,9 @@ namespace Application.DTOs.Budgets
 
         public required int AccountId { get; set; }
         public required string Name { get; set; }
-        public required double CurrentAmount { get; set; } = 0;
+        public required decimal CurrentAmount { get; set; } = 0;
 
-        public static AccountCurrentAmountDto Create(int initiativeId, int grantId, int accountId, string name, double currentAmount)
+        public static AccountCurrentAmountDto Create(int initiativeId, int grantId, int accountId, string name, decimal currentAmount)
         {
             return new AccountCurrentAmountDto
             {

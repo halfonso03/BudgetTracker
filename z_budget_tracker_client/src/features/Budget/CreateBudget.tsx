@@ -4,7 +4,6 @@ import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import BudgetInputFieldsNewBudget from './BudgetInputFieldsNewBudget';
-import useCategories from '../../api/hooks/useCategories';
 import useInitiatives from '../../api/hooks/common/useInitiatives';
 import useGrants from '../../api/hooks/common/useGrants';
 import {
@@ -21,6 +20,7 @@ import { ChevronDownSquare } from 'lucide-react';
 import { useBudgetActions } from '../../api/hooks/budgets/useBudgetActions';
 import Button from '../../components/Button';
 import toast from 'react-hot-toast';
+import useCategories from '../../api/hooks/common/useCategories';
 
 const userId = 1;
 

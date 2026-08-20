@@ -1,6 +1,7 @@
 type Repro = {
     id: number
     justification?: string
+    craetedBy: string
     createDate: Date
     createdById: number
     updateDate: Date
@@ -9,9 +10,11 @@ type Repro = {
     posted: boolean
     postedById?: number
     lineItems?: ReproLineItem[]
+    rowBalances?: RowBalance[]
 }
 
 type LineItem = {
+    year?: number
     accountId: number
     accountName: string
     categoryId: number,
@@ -24,7 +27,7 @@ type LineItem = {
 }
 
 type ReproLineItem = LineItem & {
-    row_id: number
+    rowId: number
     increase?: string | number
     decrease?: string | number
     comment?: string | null | undefined

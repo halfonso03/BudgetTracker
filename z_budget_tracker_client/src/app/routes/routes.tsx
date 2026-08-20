@@ -6,7 +6,7 @@ import NotFound from '../../components/NotFound';
 import Details from '../../features/Budget/Details';
 import CreateBudget from '../../features/Budget/CreateBudget';
 import ReproHome from '../../features/Reprogrammings/ReproHome';
-import ReproHome2 from '../../features/Reprogrammings/ReproHome2';
+import ReproMain from '../../features/Reprogrammings/ReproMain';
 
 export const routes: RouteObject[] = [
   {
@@ -35,7 +35,11 @@ export const routes: RouteObject[] = [
       },
       {
         path: 'reprogramming2',
-        element: <ReproHome2 />,
+        element: <ReproMain />,
+      },
+      {
+        path: 'reprogramming2/:id',
+        element: <ReproMain />,
       },
       {
         path: '/reprogramming/create/:initiativeId?/:grantId?/:accountId?',

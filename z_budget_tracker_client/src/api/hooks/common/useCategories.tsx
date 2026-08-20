@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import agent from '../agent';
+import agent from '../../agent';
 
 const fetchCategories = async (): Promise<Category[]> => {
   const response = await agent.get<Category[]>(`/Category`);
@@ -13,7 +13,7 @@ const useCategories = () => {
     placeholderData: [],
   });
 
-  return { data, isLoading };
+  return { data, loadingCat: isLoading };
 };
 
 export default useCategories;

@@ -13,7 +13,7 @@ using Persistence;
 
 namespace Application.Services
 {
-    public class ReproService(AppDbContext _dbContext) : IReproService
+    public class ReproService(AppDbContext _dbContext, IBudgetService _budgetService) : IReproService
     {
         public async Task<Result<ReproResponseDto>> GetRepro(int id)
         {
@@ -25,11 +25,12 @@ namespace Application.Services
 
             if (reproFromDb is null)
             {
-                return Result<ReproResponseDto>.Failure($"Repro not found", 400);
+                return Result<ReproResponseDto>.Failure($"Reprogramming not found", 400);
             }
 
             try
             {
+
 
                 var lineItems = await _dbContext.ReproLineItems
                                         .Include(x => x.UpdatedBy)
@@ -39,8 +40,30 @@ namespace Application.Services
                                         .Include(x => x.Account)
                                         .Where(x => x.ReproId == id).ToListAsync();
 
+
+                var keys = lineItems.Select(x => new { x.InitiativeId, x.GrantId, x.CategoryId }).Distinct();
+
+                var rowBalances = new List<BalancesResponseDto>();
+
+                foreach (var key in keys)
+                {
+                    var balances = await _budgetService.GetAccountBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
+                    rowBalances.Add(new BalancesResponseDto()
+                    {
+                        Key = new()
+                        {
+                            InitiativeId = key.InitiativeId,
+                            GrantId = key.GrantId,
+                            CategoryId = key.CategoryId
+                        },
+                        Balances = [.. balances.Select(x => new BalancesResponseDto.Balance1 { AccountId = x.AccountId, CurrentAmount = x.CurrentAmount, Name = x.Name })]
+                    });
+                }
+
+
                 var response = new ReproResponseDto
                 {
+                    RowBalances = rowBalances,
                     Id = reproFromDb.Id,
                     Justification = reproFromDb.Justification,
                     CreatedBy = reproFromDb.CreatedBy!.WindowsLogin,
@@ -65,7 +88,8 @@ namespace Application.Services
                             InitiativeName = x.Initiative!.Name,
                             GrantName = x.Grant!.Name,
                             CategoryName = x.Category!.Name,
-                            AccountName = x.Account!.Name
+                            AccountName = x.Account!.Name,
+                            Year = x.Year
                         })]
                 };
 

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Copy, Menu, Plus, Search, Trash } from 'lucide-react';
-import useCategories from '../../api/hooks/useCategories';
 import useInitiatives from '../../api/hooks/common/useInitiatives';
 import Button from '../../components/Button';
 import ChooseYearModal from './ChooseYearModal';
@@ -14,10 +13,13 @@ import ConfirmModal from '../../components/ConfirmModal';
 
 import Dropdown, { type Option } from 'react-dropdown';
 import 'react-dropdown/style.css';
+import useCategories from '../../api/hooks/common/useCategories';
 
 const ReproHome = () => {
   const [reproId, setReproId] = useState('');
   const [choosingYear, setChoosingYear] = useState(false);
+  const [year, setYear] = useState<number>(0);
+
   const [addingLine, setAddingLine] = useState(false);
   const [isDiscarding, setIsDiscarding] = useState(false);
   const [lines, setLines] = useState<ReproLineItem[]>([]);
@@ -30,7 +32,6 @@ const ReproHome = () => {
 
   const { data: initiatives } = useInitiatives();
   const { data: categories } = useCategories();
-  const [year, setYear] = useState<number>(0);
   const { data: grants } = useGrants(year);
 
   const [repro, setRepro] = useState<Repro | null>(null);

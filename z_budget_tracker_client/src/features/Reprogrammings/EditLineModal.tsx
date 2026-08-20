@@ -55,7 +55,7 @@ const EditLineModal = ({ ...props }: Props) => {
     if (props.initiatives && props.grants && props.categories) {
       console.log('selections!.initiativeId!', selections!.initiativeId!);
       const newLine: ReproLineItem = {
-        row_id: -1,
+        rowId: -1,
         uuid: props.uuid,
         accountId: account.accountId,
         accountName: account.name,
