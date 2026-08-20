@@ -25,7 +25,7 @@ const ReproMain = () => {
     startYear = reproFromDb.lineItems[0].year!;
   }
 
-  const repro2: Repro = {
+  const repro: Repro = {
     ...reproFromDb,
     lineItems: reproFromDb.lineItems!.map((l) => ({
       ...l,
@@ -42,14 +42,14 @@ const ReproMain = () => {
     rowBalances: reproFromDb.rowBalances,
   };
 
-  console.log('reproFromDb', reproFromDb.lineItems);
+  console.log('repro main render')
 
   return (
     <ReproForm
       startYear={startYear}
       initiatives={initiatives}
       categories={categories}
-      reproFromDb={repro2}
+      reproFromDb={repro}
     ></ReproForm>
   );
 };

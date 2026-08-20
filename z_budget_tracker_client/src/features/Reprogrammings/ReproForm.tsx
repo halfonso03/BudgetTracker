@@ -43,7 +43,6 @@ const ReproForm = ({
   startYear,
 }: Props) => {
   const queryClient = useQueryClient();
-
   const { data: grants } = useGrants(startYear);
 
   //   const [choosingYear, setChoosingYear] = useState(false);
@@ -584,7 +583,6 @@ const ReproForm = ({
       )}
       {/* <pre>{JSON.stringify(reprogRows)}</pre> */}
       {lines.map((item, index) => {
-        console.log('savedBalances', savedBalances);
         const balances = savedBalances.filter(
           (b) =>
             b.key.initiativeId === item.initiativeId &&
