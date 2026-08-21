@@ -8,11 +8,11 @@ const fetchGrants = async (year: number): Promise<Grant[]> => {
   return response.data;
 };
 
-const useGrants = (year: number) => {
+const useGrants = (year: number, getData: boolean) => {
   const { data, isLoading } = useQuery<Grant[]>({
     queryKey: ['grants', year],
     queryFn: () => fetchGrants(year),
-    enabled: year > 0,
+    enabled: year > 0 && getData,
   });
 
   return { data, isLoading };

@@ -10,7 +10,6 @@ import {
 import { useState, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import useGrants from '../../api/hooks/common/useGrants';
 import { formatNumber, parseFormattedNumber } from '../../app/util';
 import Button from '../../components/Button';
 import NumericArrayInputGeneric from '../../components/NumericArrayInputGeneric';
@@ -22,9 +21,7 @@ import JustificaModal from './JustificaModal';
 import TransactionRow from './TransactionRow';
 
 interface Props {
-  reproFromDb: Repro;
-  initiatives: Initiative[];
-  categories: Category[];
+  repro: Repro;
   startYear: number;
 }
 
@@ -36,14 +33,8 @@ type Selections = {
   accountId?: number;
 };
 
-const ReproForm = ({
-  initiatives,
-  categories,
-  reproFromDb,
-  startYear,
-}: Props) => {
+const ReproForm = ({ repro, startYear }: Props) => {
   const queryClient = useQueryClient();
-  const { data: grants } = useGrants(startYear);
 
   //   const [choosingYear, setChoosingYear] = useState(false);
   //   const [year, setYear] = useState<number>(startYear);
@@ -51,17 +42,17 @@ const ReproForm = ({
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
+  console.log('repro form render');
   const [justification, setJustifications] = useState<string>(() => {
-    return reproFromDb.justification!;
+    return repro.justification!;
   });
 
   const [lines, setLines] = useState<ReproLineItem[]>(() => {
-    return reproFromDb.lineItems!;
+    return repro.lineItems!;
   });
   const [savedBalances, setSavedBalances] = useState<RowBalance[]>(
-    reproFromDb.rowBalances!,
+    repro.rowBalances!,
   );
-  // const [variance, setVariance] = useState<string>('');
 
   const DUP_LINES =
     'There are duplicate lines (Look for same account selections within the same Initiative/Grant/Category)';
@@ -158,13 +149,6 @@ const ReproForm = ({
 
     return () => toast.dismissAll('errors');
   }, [getErrors, getTotalAmounts, lines]);
-
-  //   if (reproId && isFetching) return <div>Loadiig...</div>;
-
-  // const { fields } = useFieldArray({
-  //   control,
-  //   name: 'rows',
-  // });
 
   function handleLineAdded(
     newLine: ReproLineItem,
@@ -581,7 +565,6 @@ const ReproForm = ({
           </div>
         </div>
       )}
-      {/* <pre>{JSON.stringify(reprogRows)}</pre> */}
       {lines.map((item, index) => {
         const balances = savedBalances.filter(
           (b) =>
@@ -598,7 +581,6 @@ const ReproForm = ({
             <TransactionRow
               key={item.uuid}
               lineItem={item}
-              categories={categories}
               balances={balances}
               accountChange={handleAccountChange}
               duplicateRow={handleDuplicateRow}
@@ -642,10 +624,8 @@ const ReproForm = ({
         );
       })}
       <AddLineModal
+        year={startYear}
         isOpen={addLineModalIsOpen}
-        initiatives={initiatives}
-        grants={grants}
-        categories={categories}
         onLineAdded={handleLineAdded}
         onCancel={() => {
           setTimeout(() => {
@@ -655,12 +635,10 @@ const ReproForm = ({
       ></AddLineModal>
       {editSelections && (
         <EditLineModal
+          year={startYear}
           uuid={editSelections.uuid}
           isOpen={editSelections !== null}
           selections={editSelections}
-          initiatives={initiatives}
-          grants={grants}
-          categories={categories}
           onLineUpdated={handleLineUpdated}
           onCancel={() => {
             setTimeout(() => {

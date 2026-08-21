@@ -7,7 +7,6 @@ import CommentToggler from './CommentToggler';
 
 type Props = {
   lineItem: ReproLineItem;
-  categories: Category[] | undefined;
   balances: { accountId: number; name: string; currentAmount: number }[];
   accountChange: (option: number, rowUuid: string) => void;
   duplicateRow: (uuid: string) => void;
@@ -19,7 +18,6 @@ type Props = {
 
 const TransactionRow = ({
   render,
-  categories,
   accountChange,
   duplicateRow,
   deleteRow,
@@ -36,7 +34,6 @@ const TransactionRow = ({
     comment,
   },
 }: Props) => {
-  if (!categories) return null;
 
   const accounts = balances.map((b) => ({
     value: b.accountId,

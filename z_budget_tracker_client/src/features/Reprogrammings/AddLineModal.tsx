@@ -4,6 +4,9 @@ import { useState, type ChangeEvent } from 'react';
 import useCurrentAccountBalances from '../../api/hooks/repro/useCurrentAccountBalances';
 import { formatCurrency } from '../../app/util';
 import Modal2 from '../../components/Modal2';
+import useInitiatives from '../../api/hooks/common/useInitiatives';
+import useCategories from '../../api/hooks/common/useCategories';
+import useGrants from '../../api/hooks/common/useGrants';
 
 type Selections = {
   initiativeId?: number;
@@ -15,10 +18,8 @@ type Selections = {
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
-  initiatives: Initiative[] | undefined;
-  grants: Grant[] | undefined;
-  categories: Category[] | undefined;
   selections?: Selections;
+  year: number;
   onLineAdded: (
     balance: ReproLineItem,
     key: { initiativeId: number; grantId: number; categoryId: number },
@@ -28,6 +29,9 @@ type Props = {
 const AddLineModal = ({ ...props }: Props) => {
   const [selections, setSelections] = useState<Selections | null>(null);
   const [animateOut, setAnimateOut] = useState(false);
+  const { data: grants } = useGrants(props.year, props.isOpen);
+  const { data: initiatives } = useInitiatives(props.isOpen);
+  const { data: categories } = useCategories(props.isOpen);
 
   const { data: balances } = useCurrentAccountBalances(
     selections?.initiativeId,
@@ -37,21 +41,21 @@ const AddLineModal = ({ ...props }: Props) => {
 
   function onLineAdded(account: ReproAccountBalance) {
     // setAnimateOut(true);
-    if (props.initiatives && props.grants && props.categories) {
+    if (initiatives && grants && categories) {
       const newLine: ReproLineItem = {
         rowId: -1,
         accountId: account.accountId,
         accountName: account.name,
         categoryId: selections!.categoryId!,
-        categoryName: props.categories.filter(
+        categoryName: categories.filter(
           (x) => x.id == selections?.categoryId,
         )[0].name,
         initiativeId: selections!.initiativeId!,
-        initiativeName: props.initiatives.filter(
+        initiativeName: initiatives.filter(
           (x) => x.id == selections?.initiativeId,
         )[0].name,
         grantId: selections!.grantId!,
-        grantName: props.grants.filter((x) => x.id == selections?.grantId)[0]
+        grantName: grants.filter((x) => x.id == selections?.grantId)[0]
           .name,
         currentAmount: account.currentAmount,
         uuid: window.crypto.randomUUID(),
@@ -91,7 +95,7 @@ const AddLineModal = ({ ...props }: Props) => {
               <option value={0} className="text-neutral-600">
                 Select...
               </option>
-              {props.initiatives?.map((i) => (
+              {initiatives?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
                 </option>
@@ -116,7 +120,7 @@ const AddLineModal = ({ ...props }: Props) => {
               <option value={0} className="text-neutral-600">
                 Select...
               </option>
-              {props.grants?.map((i) => (
+              {grants?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
                 </option>
@@ -141,7 +145,7 @@ const AddLineModal = ({ ...props }: Props) => {
               <option value={0} className="text-neutral-600">
                 Select...
               </option>
-              {props.categories?.map((i) => (
+              {categories?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
                 </option>
@@ -179,12 +183,9 @@ const AddLineModal = ({ ...props }: Props) => {
             <div className="flex justify-between py-2 px-2">
               <div className="entity-label">
                 {selections &&
-                  props.categories?.some(
-                    (c) => c.id == selections?.categoryId,
-                  ) &&
-                  props.categories?.filter(
-                    (c) => c.id == selections?.categoryId,
-                  )[0].name}
+                  categories?.some((c) => c.id == selections?.categoryId) &&
+                  categories?.filter((c) => c.id == selections?.categoryId)[0]
+                    .name}
                 &nbsp;Total
               </div>
               <div className="font-semibold text-neutral-800">

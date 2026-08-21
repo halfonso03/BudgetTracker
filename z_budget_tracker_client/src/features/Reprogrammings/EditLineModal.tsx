@@ -5,6 +5,9 @@ import useCurrentAccountBalances from '../../api/hooks/repro/useCurrentAccountBa
 import { formatCurrency } from '../../app/util';
 import Modal2 from '../../components/Modal2';
 import { Check } from 'lucide-react';
+import useCategories from '../../api/hooks/common/useCategories';
+import useInitiatives from '../../api/hooks/common/useInitiatives';
+import useGrants from '../../api/hooks/common/useGrants';
 
 type Selections = {
   initiativeId?: number;
@@ -17,9 +20,7 @@ type Props = {
   isOpen: boolean;
   onCancel: () => void;
   uuid: string;
-  initiatives: Initiative[] | undefined;
-  grants: Grant[] | undefined;
-  categories: Category[] | undefined;
+  year: number;
   selections?: Selections | null;
   onLineUpdated: (
     balance: ReproLineItem,
@@ -28,6 +29,10 @@ type Props = {
 };
 
 const EditLineModal = ({ ...props }: Props) => {
+  const { data: initiatives } = useInitiatives(props.isOpen);
+  const { data: categories } = useCategories(props.isOpen);
+  const { data: grants } = useGrants(props.year, props.isOpen);
+
   const [selections, setSelections] = useState<Selections>({
     initiativeId: props.selections!.initiativeId!,
     grantId: props.selections!.grantId!,
@@ -52,7 +57,7 @@ const EditLineModal = ({ ...props }: Props) => {
 
   function onLineUpdated(account: ReproAccountBalance) {
     setAnimateOut(true);
-    if (props.initiatives && props.grants && props.categories) {
+    if (initiatives && grants && categories) {
       console.log('selections!.initiativeId!', selections!.initiativeId!);
       const newLine: ReproLineItem = {
         rowId: -1,
@@ -60,16 +65,15 @@ const EditLineModal = ({ ...props }: Props) => {
         accountId: account.accountId,
         accountName: account.name,
         categoryId: selections!.categoryId!,
-        categoryName: props.categories.filter(
+        categoryName: categories.filter(
           (x) => x.id == selections?.categoryId,
         )[0].name,
         initiativeId: selections!.initiativeId!,
-        initiativeName: props.initiatives.filter(
+        initiativeName: initiatives.filter(
           (x) => x.id == selections?.initiativeId,
         )[0].name,
         grantId: selections!.grantId!,
-        grantName: props.grants.filter((x) => x.id == selections?.grantId)[0]
-          .name,
+        grantName: grants.filter((x) => x.id == selections?.grantId)[0].name,
         currentAmount: account.currentAmount,
         newAmount: account.currentAmount,
       };
@@ -100,7 +104,7 @@ const EditLineModal = ({ ...props }: Props) => {
                 }
               }}
             >
-              {props.initiatives?.map((i) => (
+              {initiatives?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
                 </option>
@@ -122,7 +126,7 @@ const EditLineModal = ({ ...props }: Props) => {
                 }
               }}
             >
-              {props.grants?.map((i) => (
+              {grants?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
                 </option>
@@ -144,7 +148,7 @@ const EditLineModal = ({ ...props }: Props) => {
                 }
               }}
             >
-              {props.categories?.map((i) => (
+              {categories?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
                 </option>
@@ -188,10 +192,9 @@ const EditLineModal = ({ ...props }: Props) => {
           <div className="flex justify-between py-2 px-2">
             <div className="entity-label">
               {selections &&
-                props.categories?.some((c) => c.id == selections?.categoryId) &&
-                props.categories?.filter(
-                  (c) => c.id == selections?.categoryId,
-                )[0].name}
+                categories?.some((c) => c.id == selections?.categoryId) &&
+                categories?.filter((c) => c.id == selections?.categoryId)[0]
+                  .name}
               &nbsp;Total
             </div>
             <div className="font-semibold text-neutral-800">

@@ -6,11 +6,13 @@ const fetchCategories = async (): Promise<Category[]> => {
   return response.data;
 };
 
-const useCategories = () => {
+const useCategories = (getData: boolean) => {
   const { data, isLoading } = useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: fetchCategories,
     placeholderData: [],
+    staleTime: 1 * 60 * 60 * 1000,
+    enabled: getData,
   });
 
   return { data, loadingCat: isLoading };
