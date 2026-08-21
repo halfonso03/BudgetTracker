@@ -1,45 +1,101 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import useGetRepro from '../../api/hooks/repro/useGetRepro';
 import ReproForm from './ReproForm';
 
 import { useState } from 'react';
+import Button from '../../components/Button';
+import { Search } from 'lucide-react';
+import ChooseYearModal from './ChooseYearModal';
+import useRepro from '../../contexts/useRepro';
 
 const ReproMain = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [choosingYear, setChoosingYear] = useState(false);
+  const [year, setYear] = useState<number>(0);
+  const [justification, setJustification] = useState('');
+
+  const { getSearchParams } = useRepro();
+
   const reproId = id !== undefined ? +id : undefined;
   const { data: reproFromDb, isLoading, isSuccess } = useGetRepro(reproId);
 
-  const [year] = useState<number>(() => {
-    if (
-      reproFromDb &&
-      reproFromDb !== undefined &&
-      reproFromDb.lineItems !== undefined &&
-      reproFromDb.lineItems.length > 0
-    ) {
-      return reproFromDb.lineItems[0]!.year!;
-    } else {
-      return new Date().getFullYear();
-    }
-  });
+  if (year == 0 && reproFromDb && reproFromDb.lineItems.length > 0) {
+    setJustification(reproFromDb.justification);
+    setYear(reproFromDb.lineItems[0]!.year!);
+  }
+
+  // const justification = (reproFromDb && reproFromDb.lineItems.length > 0) ? reproFromDb.justification : '';
 
   if (isLoading) return <div>Loading...</div>;
   if (reproId && (!isSuccess || !reproFromDb)) return <div>Error1</div>;
 
+  console.log('getSearchParams', getSearchParams())
   const repro: Repro =
     reproFromDb !== undefined
       ? createRepro(reproFromDb)
       : {
           id: 0,
-          justification: '',
+          justification: justification,
           createdBy: '',
           createdById: 0,
           posted: false,
           createDate: new Date(),
           lineItems: [],
+          started: false,
         };
 
-  return <ReproForm startYear={year} repro={repro}></ReproForm>;
+  return (
+    <>
+      <div className="flex justify-end gap-3">
+        <Button
+          buttonSize="small"
+          variation="primary"
+          onClick={() => setChoosingYear(true)}
+          disabled={year !== 0}
+        >
+          Start New...
+        </Button>
+        {/*  disabled based on status */}
+        <Button
+          buttonSize="xsmall"
+          variation="secondary"
+          disabled={year > 0}
+          onClick={() => navigate('search')}
+        >
+          <Search></Search>
+        </Button>
+        {/* <Button
+          variation="danger"
+          buttonSize="small"
+          disabled={year === 0}
+          onClick={() => {
+            setIsDiscarding(true);
+          }}
+        >
+          Discard
+        </Button> */}
+      </div>
+      {year !== 0 && <ReproForm startYear={year} repro={repro}></ReproForm>}
+      <ChooseYearModal
+        isOpen={choosingYear}
+        onYearSelected={({ year, justification }) => {
+          setYear(year);
+          setJustification(justification);
+          setTimeout(() => {
+            setChoosingYear(false);
+          }, 500);
+        }}
+        onCancel={() => {
+          setTimeout(() => {
+            setChoosingYear(false);
+          }, 500);
+        }}
+      ></ChooseYearModal>
+    </>
+  );
 };
+
 export default ReproMain;
 
 function createRepro(repro2: Repro): Repro {

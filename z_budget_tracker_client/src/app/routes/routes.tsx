@@ -5,8 +5,9 @@ import Budgets from '../../features/Budget/Budgets';
 import NotFound from '../../components/NotFound';
 import Details from '../../features/Budget/Details';
 import CreateBudget from '../../features/Budget/CreateBudget';
-import ReproHome from '../../features/Reprogrammings/ReproHome';
 import ReproMain from '../../features/Reprogrammings/ReproMain';
+import ReproLanding from '../../features/Reprogrammings/ReproLanding';
+import Search from '../../features/Reprogrammings/Search';
 
 export const routes: RouteObject[] = [
   {
@@ -30,17 +31,24 @@ export const routes: RouteObject[] = [
         element: <CreateBudget />,
       },
       {
-        path: 'reprogramming1',
-        element: <ReproHome />,
+        path: '/reprogramming',
+        element: <ReproLanding></ReproLanding>,
+        children: [
+          {
+            path: '',
+            element: <ReproMain />,
+          },
+          {
+            path: ':id',
+            element: <ReproMain />,
+          },
+          {
+            path: 'search',
+            element: <Search />,
+          },
+        ],
       },
-      {
-        path: 'reprogramming2',
-        element: <ReproMain />,
-      },
-      {
-        path: 'reprogramming2/:id',
-        element: <ReproMain />,
-      },
+
       {
         path: '/reprogramming/create/:initiativeId?/:grantId?/:accountId?',
         element: <Home />,

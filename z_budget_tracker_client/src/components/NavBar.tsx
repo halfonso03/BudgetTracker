@@ -14,11 +14,11 @@ const NavBar = () => {
         <NavLink to="/budget" className="nav-link">
           Budgets
         </NavLink>
-           <NavLink to="/reprogramming1" className="nav-link">
+        {/* <NavLink to="/reprogramming" className="nav-link">
           Reprogrammings v1
-        </NavLink>
-        <NavLink to="/reprogramming2" className="nav-link">
-          Reprogrammings v2
+        </NavLink> */}
+        <NavLink to="/reprogramming" className="nav-link">
+          Reprogrammings
         </NavLink>
       </div>
       <div className="flex justify-center items-center w-full flex-0 mr-2">

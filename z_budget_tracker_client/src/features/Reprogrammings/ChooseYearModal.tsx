@@ -1,17 +1,17 @@
 import { useState, type ChangeEvent } from 'react';
-import Modal from '../../components/Modal';
 import Button from '../../components/Button';
+import Modal2 from '../../components/Modal2';
 
 type Props = {
   isOpen: boolean;
-  animateOut: boolean;
-  onYearSelected: (year: number) => void;
+  onYearSelected: (e: { year: number; justification: string }) => void;
   onCancel: () => void;
 };
 
 const ChooseYearModal = ({ ...props }: Props) => {
   const [year, setYear] = useState<number>(0);
-  const [reason, setReason] = useState('');
+  const [justification, setJustification] = useState('');
+  const [animateOut, setAnimateOut] = useState(false);
 
   function handleYearChange(e: ChangeEvent<HTMLSelectElement>) {
     if (+e.target.value !== 0) {
@@ -20,8 +20,13 @@ const ChooseYearModal = ({ ...props }: Props) => {
   }
 
   return (
-    <Modal size="sm" title="New Reprogamming" {...props}>
-      <div >
+    <Modal2
+      size="sm"
+      title="New Reprogamming"
+      animateOut={animateOut}
+      {...props}
+    >
+      <div>
         <div className="mb-3">
           <div className="entity-label mb-1">Year</div>
           <select
@@ -40,9 +45,9 @@ const ChooseYearModal = ({ ...props }: Props) => {
           Reason
           <textarea
             className="font-normal text-neutral-950 w-full border border-neutral-300 rounded-sm p-2 outline-none focus:outline-none focus:ring-1 focus:ring-neutral-300 transition-all duration-300 ease-in-out"
-            value={reason}
+            value={justification}
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-              setReason(e.target.value)
+              setJustification(e.target.value)
             }
           ></textarea>
         </div>
@@ -50,7 +55,7 @@ const ChooseYearModal = ({ ...props }: Props) => {
           <Button
             disabled={year === 0}
             onClick={() => {
-              props.onYearSelected(year);
+              props.onYearSelected({ year, justification });
             }}
           >
             Continue...
@@ -59,8 +64,10 @@ const ChooseYearModal = ({ ...props }: Props) => {
             variation="secondary"
             onClick={() => {
               props.onCancel();
+              setAnimateOut(true);
               setTimeout(() => {
-                setReason('');
+                setAnimateOut(false);
+                setJustification('');
                 setYear(0);
               }, 500);
             }}
@@ -69,7 +76,7 @@ const ChooseYearModal = ({ ...props }: Props) => {
           </Button>
         </div>
       </div>
-    </Modal>
+    </Modal2>
   );
 };
 export default ChooseYearModal;

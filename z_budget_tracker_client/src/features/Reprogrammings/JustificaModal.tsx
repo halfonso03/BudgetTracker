@@ -43,7 +43,7 @@ const JustificaModal = ({ itemComment, ...props }: Props) => {
             value={comment}
             className="w-full border border-neutral-300 rounded-sm p-2 outline-none focus:outline-none focus:ring-2 focus:ring-neutral-400 transition-all duration-300 ease-in-out"
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
-              setComment(e.target.value.trim());
+              setComment(e.target.value);
             }}
           ></textarea>
           <div className="text-end">

@@ -10,7 +10,8 @@ type Repro = {
     posted: boolean
     postedById?: number
     lineItems: ReproLineItem[]
-    rowBalances?: RowBalance[]
+    rowBalances?: RowBalance[],
+    started?: boolean
 }
 
 type LineItem = {
@@ -63,3 +64,12 @@ type RowBalance = {
     key: { initiativeId: number; grantId: number; categoryId: number };
     balances: { accountId: number; name: string; currentAmount: number }[];
 };
+
+type SearchParams = {
+    id?: number,
+    initiativeName?: string
+    grantName?: string
+    categoryName?: string
+    accountName?: string
+    year?: number
+}

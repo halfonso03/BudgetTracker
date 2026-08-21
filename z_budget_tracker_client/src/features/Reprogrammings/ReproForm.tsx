@@ -19,7 +19,7 @@ import EditLineModal from './EditLineModal';
 import ErrorsModal from './ErrorsModal';
 import JustificaModal from './JustificaModal';
 import TransactionRow from './TransactionRow';
-
+import 'react-dropdown/style.css';
 interface Props {
   repro: Repro;
   startYear: number;
@@ -40,6 +40,7 @@ const ReproForm = ({ repro, startYear }: Props) => {
     return repro.justification;
   });
 
+  console.log('repro.justification', repro.justification);
   const [lines, setLines] = useState<ReproLineItem[]>(() => {
     return repro.lineItems;
   });
@@ -415,10 +416,10 @@ const ReproForm = ({ repro, startYear }: Props) => {
     });
   }
 
-  function showSave() {
-    const result = lines.length > 0;
-    return result;
-  }
+  // function showSave() {
+  //   const result = lines.length > 0;
+  //   return result;
+  // }
 
   function canSave() {
     let result = lines.length > 0;
@@ -472,58 +473,72 @@ const ReproForm = ({ repro, startYear }: Props) => {
     setJustifications(text);
     setTimeout(() => setJustModalIsOpen(false), 600);
   }
-
+  // console.log('repro form startYear', startYear)
   return (
     <MenuIdProvider>
       {/* <pre>{JSON.stringify(lines)}</pre> */}
       <div className="flex gap-2 cursor-default">
-        <Button
-          buttonSize="small"
-          onClick={() => {
-            setAddLineModalIsOpen(true);
-          }}
-        >
-          <Plus></Plus>
-          Add Line
-        </Button>
-        {showSave() && (
-          <Button buttonSize="small" disabled={!canSave()} onClick={saveRepro}>
-            <Save className="mr-1"></Save>
-            Save
-          </Button>
-        )}
-        {showSave() && (
+        {repro !== undefined && startYear !== 0 && (
           <Button
             buttonSize="small"
-            disabled={!canPost() || getErrors().length > 0}
-            onClick={postRepro}
+            onClick={() => {
+              setAddLineModalIsOpen(true);
+            }}
           >
-            <BookOpenText className="mr-1"></BookOpenText>
-            Post
+            <Plus></Plus>
+            Add Line
           </Button>
         )}
+        <Button buttonSize="small" disabled={!canSave()} onClick={saveRepro}>
+          <Save className="mr-1"></Save>
+          Save
+        </Button>
+        <Button
+          buttonSize="small"
+          disabled={!canPost() || getErrors().length > 0}
+          onClick={postRepro}
+        >
+          <BookOpenText className="mr-1"></BookOpenText>
+          Post
+        </Button>
       </div>
-      {lines.length > 0 && (
-        <div className="flex mb-8 justify-end text-neutral-400  gap-1 mr-3 ">
-          <div
-            className="flex gap-1 cursor-pointer hover:text-neutral-600 "
-            onClick={() => setJustModalIsOpen(true)}
-          >
-            <div className="self-center">Justification</div>
-            {!justification ? (
-              <AlertTriangle
-                className="self-center text-orange-300"
-                size={17}
-              ></AlertTriangle>
-            ) : (
-              <CheckCircle2
-                className="self-center text-green-500"
-                size={19}
-              ></CheckCircle2>
-            )}
-          </div>
+      <div className="flex mb-8 justify-end text-neutral-400  gap-1 mr-3 ">
+        <div
+          className="flex gap-1 cursor-pointer hover:text-neutral-600 "
+          onClick={() => setJustModalIsOpen(true)}
+        >
+          <div className="self-center">Justification</div>
+          {!justification ? (
+            <AlertTriangle
+              className="self-center text-orange-300"
+              size={17}
+            ></AlertTriangle>
+          ) : (
+            <CheckCircle2
+              className="self-center text-green-500"
+              size={19}
+            ></CheckCircle2>
+          )}
         </div>
-      )}
+      </div>
+
+      <div className="flex gap-10 mb-1 border-b border-b-neutral-200 pb-6">
+        <div className="flex gap-3 ml-3">
+          <span className="font-semibold text-neutral-500">ID</span>
+          <div>{repro.id == 0 ? <div>-</div> : <div>{repro.id}</div>}</div>
+        </div>
+        <div className="flex gap-3 font-semibold">
+          <span className=" text-neutral-500">STATUS</span>
+          {repro.id == 0 ? (
+            <div>Draft</div>
+          ) : repro.posted ? (
+            <div>Posted</div>
+          ) : (
+            <div>Saved</div>
+          )}
+        </div>
+      </div>
+
       {lines.length > 0 && (
         <div>
           <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 font-bold text-neutral-500">
@@ -588,64 +603,66 @@ const ReproForm = ({ repro, startYear }: Props) => {
           </div>
         </div>
       )}
-      {lines.map((item, index) => {
-        const balances = savedBalances.filter(
-          (b) =>
-            b.key.initiativeId === item.initiativeId &&
-            b.key.grantId == item.grantId &&
-            b.key.categoryId == item.categoryId,
-        )[0].balances;
+      <div className="pb-100">
+        {lines.map((item, index) => {
+          const balances = savedBalances.filter(
+            (b) =>
+              b.key.initiativeId === item.initiativeId &&
+              b.key.grantId == item.grantId &&
+              b.key.categoryId == item.categoryId,
+          )[0].balances;
 
-        return (
-          <div
-            key={index}
-            className="grid grid-cols-[1.2fr_.5fr_.5fr_1.2fr_2fr_.3fr] gap-2 px-3 py-2 border-b border-neutral-200 shadow-sm items-center mb-3"
-          >
-            <TransactionRow
-              key={item.uuid}
-              lineItem={item}
-              balances={balances}
-              accountChange={handleAccountChange}
-              duplicateRow={handleDuplicateRow}
-              deleteRow={handleDeletRow}
-              editRow={handleEditRow}
-              saveComment={handleSaveComment}
-              render={() => (
-                <div className="flex gap-0">
-                  <div className="text-center flex-2 text-neutral-600 self-center w-full">
-                    {formatNumber(item.currentAmount)}
+          return (
+            <div
+              key={index}
+              className="grid grid-cols-[1.2fr_.5fr_.5fr_1.2fr_2fr_.3fr] gap-2 px-3 py-2 border border-neutral-200  items-center mb-3 "
+            >
+              <TransactionRow
+                key={item.uuid}
+                lineItem={item}
+                balances={balances}
+                accountChange={handleAccountChange}
+                duplicateRow={handleDuplicateRow}
+                deleteRow={handleDeletRow}
+                editRow={handleEditRow}
+                saveComment={handleSaveComment}
+                render={() => (
+                  <div className="flex gap-0">
+                    <div className="text-center flex-2 text-neutral-600 self-center w-full">
+                      {formatNumber(item.currentAmount)}
+                    </div>
+                    <NumericArrayInputGeneric
+                      index={index}
+                      setValue={setValue}
+                      register={register(`rows.${index}.increase`)}
+                      fieldName="increase"
+                      readOnly={false}
+                      disabled={false}
+                      onBlur={recalculateNewAmounts}
+                      classes={`flex-[1.5] w-full mr-1 pl-1 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
+                    />
+                    <NumericArrayInputGeneric
+                      index={index}
+                      register={register(`rows.${index}.decrease`)}
+                      fieldName="decrease"
+                      setValue={setValue}
+                      readOnly={false}
+                      disabled={false}
+                      onBlur={recalculateNewAmounts}
+                      classes={`flex-[1.5] w-full pl-1 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
+                    />
+                    <div
+                      className={`text-center flex-2  self-center text-neutral-600  ${item.newAmount < 0 ? 'text-red-500' : ''}`}
+                    >
+                      {formatNumber(item.newAmount)}
+                    </div>
                   </div>
-                  <NumericArrayInputGeneric
-                    index={index}
-                    setValue={setValue}
-                    register={register(`rows.${index}.increase`)}
-                    fieldName="increase"
-                    readOnly={false}
-                    disabled={false}
-                    onBlur={recalculateNewAmounts}
-                    classes={`flex-[1.5] w-full mr-1 pl-1 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
-                  />
-                  <NumericArrayInputGeneric
-                    index={index}
-                    register={register(`rows.${index}.decrease`)}
-                    fieldName="decrease"
-                    setValue={setValue}
-                    readOnly={false}
-                    disabled={false}
-                    onBlur={recalculateNewAmounts}
-                    classes={`flex-[1.5] w-full pl-1 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
-                  />
-                  <div
-                    className={`text-center flex-2  self-center text-neutral-600  ${item.newAmount < 0 ? 'text-red-500' : ''}`}
-                  >
-                    {formatNumber(item.newAmount)}
-                  </div>
-                </div>
-              )}
-            ></TransactionRow>
-          </div>
-        );
-      })}
+                )}
+              ></TransactionRow>
+            </div>
+          );
+        })}
+      </div>
       <AddLineModal
         year={startYear}
         isOpen={addLineModalIsOpen}

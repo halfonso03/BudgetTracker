@@ -1,5 +1,5 @@
 type ButtonStyle = 'primary' | 'secondary' | 'danger' | 'danger2';
-type Sizes = 'small' | 'medium' | 'large';
+type Sizes = 'xsmall' | 'small' | 'medium' | 'large';
 type ButtonType = 'button' | 'submit';
 
 interface ButtonProps extends React.InputHTMLAttributes<HTMLButtonElement> {
@@ -18,9 +18,11 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   let classes =
-    'cursor-pointer disabled:cursor-not-allowed rounded-sm shadow-sm w-25 flex justify-center items-center ';
+    'cursor-pointer disabled:cursor-not-allowed rounded-sm shadow-sm flex justify-center items-center ';
 
-  if (buttonSize == 'small') {
+  if (buttonSize == 'xsmall') {
+    classes += ' w-15 ';
+  } else if (buttonSize == 'small') {
     classes += ' p-2 w-30 ';
   } else if (buttonSize == 'medium') {
     classes += 'text-base p-3 w-40 ';
@@ -39,10 +41,12 @@ const Button = ({
       ' text-neutral-100 bg-red-500 border border-red-600 hover:bg-red-600 shadow-md transition-all duration-300 disabled:opacity-50';
   }
 
-  classes += ' ' + additionalclasses;
-
   return (
-    <button type={type} className={classes} {...props}>
+    <button
+      type={type}
+      className={`${classes} ${additionalclasses}`}
+      {...props}
+    >
       {children}
     </button>
   );
