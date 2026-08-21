@@ -1,15 +1,15 @@
 type Repro = {
     id: number
-    justification?: string
-    craetedBy: string
+    justification: string
+    createdBy: string
     createDate: Date
     createdById: number
-    updateDate: Date
-    updatedById: number
+    updateDate?: Date
+    updatedById?: number
     postedBy?: string
     posted: boolean
     postedById?: number
-    lineItems?: ReproLineItem[]
+    lineItems: ReproLineItem[]
     rowBalances?: RowBalance[]
 }
 

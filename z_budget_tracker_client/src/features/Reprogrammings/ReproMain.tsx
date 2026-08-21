@@ -23,13 +23,31 @@ const ReproMain = () => {
   });
 
   if (isLoading) return <div>Loading...</div>;
-  if (!isSuccess || !reproFromDb) return <div>Error</div>;
+  if (reproId && (!isSuccess || !reproFromDb)) return <div>Error1</div>;
 
+  const repro: Repro =
+    reproFromDb !== undefined
+      ? createRepro(reproFromDb)
+      : {
+          id: 0,
+          justification: '',
+          createdBy: '',
+          createdById: 0,
+          posted: false,
+          createDate: new Date(),
+          lineItems: [],
+        };
+
+  return <ReproForm startYear={year} repro={repro}></ReproForm>;
+};
+export default ReproMain;
+
+function createRepro(repro2: Repro): Repro {
   const repro: Repro = {
-    ...reproFromDb,
-    lineItems: reproFromDb.lineItems!.map((l) => {
+    ...repro2,
+    lineItems: repro2.lineItems!.map((l) => {
       const curAmount =
-        reproFromDb.rowBalances
+        repro2.rowBalances
           ?.filter(
             (x) =>
               x.key.initiativeId == l.initiativeId &&
@@ -43,13 +61,10 @@ const ReproMain = () => {
         uuid: window.crypto.randomUUID(),
         currentAmount: curAmount,
         newAmount: curAmount + Number(l.increase) - Number(l.decrease),
-        rowBalances: reproFromDb.rowBalances,
+        rowBalances: repro2.rowBalances,
       };
     }),
   };
 
-  console.log('repro main render');
-
-  return <ReproForm startYear={year} repro={repro}></ReproForm>;
-};
-export default ReproMain;
+  return repro;
+}

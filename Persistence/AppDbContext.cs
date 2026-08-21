@@ -336,7 +336,9 @@ namespace Persistence
             builder.Entity<ReproLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME");
 
 
-
+            builder.Entity<ReproLineItem>()
+                    .HasIndex(a => new { a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
+                    .IsUnique();
 
 
         }

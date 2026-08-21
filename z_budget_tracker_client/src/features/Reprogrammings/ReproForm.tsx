@@ -36,23 +36,26 @@ type Selections = {
 const ReproForm = ({ repro, startYear }: Props) => {
   const queryClient = useQueryClient();
 
+  const [justification, setJustifications] = useState<string>(() => {
+    return repro.justification;
+  });
+
+  const [lines, setLines] = useState<ReproLineItem[]>(() => {
+    return repro.lineItems;
+  });
+
+  const _savedBalances: RowBalance[] =
+    repro && repro.rowBalances ? repro.rowBalances! : [];
+
+  const [savedBalances, setSavedBalances] =
+    useState<RowBalance[]>(_savedBalances);
+
   //   const [choosingYear, setChoosingYear] = useState(false);
   //   const [year, setYear] = useState<number>(startYear);
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
-  console.log('repro form render');
-  const [justification, setJustifications] = useState<string>(() => {
-    return repro.justification!;
-  });
-
-  const [lines, setLines] = useState<ReproLineItem[]>(() => {
-    return repro.lineItems!;
-  });
-  const [savedBalances, setSavedBalances] = useState<RowBalance[]>(
-    repro.rowBalances!,
-  );
 
   const DUP_LINES =
     'There are duplicate lines (Look for same account selections within the same Initiative/Grant/Category)';
@@ -186,8 +189,8 @@ const ReproForm = ({ repro, startYear }: Props) => {
         key.grantId,
         key.categoryId,
       ]);
-
       if (
+        !savedBalances ||
         !savedBalances.some(
           (b) =>
             b.key.initiativeId == key.initiativeId &&
@@ -195,6 +198,17 @@ const ReproForm = ({ repro, startYear }: Props) => {
             b.key.categoryId == key.categoryId,
         )
       ) {
+        console.log('123', 123);
+        const x = [
+          ...savedBalances,
+          {
+            key: {
+              ...key,
+            },
+            balances: balances!,
+          },
+        ];
+        console.log('x', x);
         setSavedBalances((prev) => {
           const newArray = [
             ...prev,
@@ -205,6 +219,8 @@ const ReproForm = ({ repro, startYear }: Props) => {
               balances: balances!,
             },
           ];
+
+          console.log('newArray', newArray);
           return newArray;
         });
       }
@@ -405,7 +421,11 @@ const ReproForm = ({ repro, startYear }: Props) => {
   }
 
   function canSave() {
-    const result = lines.length > 0;
+    let result = lines.length > 0;
+
+    // no duplicate lines
+    result = result && noDupLines(lines);
+
     return result;
   }
 
@@ -434,7 +454,10 @@ const ReproForm = ({ repro, startYear }: Props) => {
     return result;
   }
 
-  function saveRepro() {}
+  function saveRepro() {
+    console.log('justification', justification);
+    console.log('lines', lines);
+  }
 
   function postRepro() {
     if (canPost()) {
