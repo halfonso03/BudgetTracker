@@ -44,9 +44,9 @@ const ReproMain = () => {
         };
 
   function handleInitialSaved(newId: boolean) {
-    setTimeout(() => {
-      navigate(`/reprogramming/${newId}`);
-    }, 2000);
+    // setTimeout(() => {
+    //   navigate(`/reprogramming/${newId}`);
+    // }, 2000);
   }
 
   function handleLogin() {

@@ -23,6 +23,16 @@ import 'react-dropdown/style.css';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import useAuth from '../../contexts/useAuth';
 
+// 1 = not saved
+// 2 = saved
+// 3 = posted
+
+type ReproStatus = 1 | 2 | 3;
+type ReproState = {
+  id: number;
+  status: ReproStatus;
+};
+
 interface Props {
   repro: Repro;
   startYear: number;
@@ -42,11 +52,15 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
 
   const queryClient = useQueryClient();
 
+  const [reproId, setReproId] = useState<ReproState>({
+    id: repro.id,
+    status: 1,
+  });
+
   const [justification, setJustifications] = useState<string>(() => {
     return repro.justification;
   });
 
-  console.log('repro.justification', repro.justification);
   const [lines, setLines] = useState<ReproLineItem[]>(() => {
     return repro.lineItems;
   });
@@ -460,34 +474,20 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
 
     return result;
   }
-  console.log('userId ', userId);
 
   async function saveRepro(posted: boolean = false) {
-    console.log('justification', justification);
-    console.log('lines', lines);
-
     const reproToSave: ReproRequest = {
       createdById: userId!,
       posted: posted,
       justification: justification,
-      lineItems: lines.map((l) => {
-        const l2: ReproLineItemRequest = {
-          rowId: l.rowId,
-          initiativeId: l.initiativeId,
-          grantId: l.grantId,
-          categoryId: l.categoryId,
-          accountId: l.accountId,
-          increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
-          decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
-          comment: l.comment ?? null,
-        };
-
-        return l2;
-      }),
+      lineItems: lines.map((l) => ({
+        ...l,
+        increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
+        decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
+      })),
     };
 
     try {
-      console.log('reproToSave', reproToSave);
       if (repro.id === 0) {
         await createRepro.mutateAsync(reproToSave, {
           onSuccess: (id) => {
@@ -495,9 +495,13 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
               ? 'Reprogramming Posted.'
               : 'Reprogramming Saved.';
             toast.success(message, {
-              duration: 2000,
+              duration: 1500,
             });
-
+            setReproId((prev) => ({
+              ...prev,
+              id: id,
+              status: posted ? 3 : 2,
+            }));
             onInitialSave(id);
           },
         });
@@ -547,8 +551,10 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
         </Button>
         <Button
           buttonSize="small"
-          disabled={!canPost() || getErrors().length > 0}
-          onClick={() => saveRepro(false)}
+          disabled={
+            !canPost() || getErrors().length > 0 || reproId.status === 3
+          }
+          onClick={() => saveRepro(true)}
         >
           <BookOpenText className="mr-1"></BookOpenText>
           Post
@@ -577,13 +583,19 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
       <div className="flex gap-10 mb-1 border-b border-b-neutral-200 pb-6">
         <div className="flex gap-3 ml-3">
           <span className="font-semibold text-neutral-500">ID</span>
-          <div>{repro.id == 0 ? <div>-</div> : <div>{repro.id}</div>}</div>
+          <div>
+            {reproId.id == 0 ? (
+              <div className="font-semibold">-</div>
+            ) : (
+              <div className="font-semibold">{reproId.id}</div>
+            )}
+          </div>
         </div>
         <div className="flex gap-3 font-semibold">
           <span className=" text-neutral-500">STATUS</span>
-          {repro.id == 0 ? (
+          {reproId.id == 0 ? (
             <div>Draft</div>
-          ) : repro.posted ? (
+          ) : reproId.status === 3 ? (
             <div>Posted</div>
           ) : (
             <div>Saved</div>
