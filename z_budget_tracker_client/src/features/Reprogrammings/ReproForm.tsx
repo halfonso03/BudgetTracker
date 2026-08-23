@@ -20,9 +20,13 @@ import ErrorsModal from './ErrorsModal';
 import JustificaModal from './JustificaModal';
 import TransactionRow from './TransactionRow';
 import 'react-dropdown/style.css';
+import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
+import useAuth from '../../contexts/useAuth';
+
 interface Props {
   repro: Repro;
   startYear: number;
+  onInitialSave: (newId: boolean) => void;
 }
 
 type Selections = {
@@ -33,7 +37,9 @@ type Selections = {
   accountId?: number;
 };
 
-const ReproForm = ({ repro, startYear }: Props) => {
+const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
+  const { userId } = useAuth();
+
   const queryClient = useQueryClient();
 
   const [justification, setJustifications] = useState<string>(() => {
@@ -67,7 +73,6 @@ const ReproForm = ({ repro, startYear }: Props) => {
     'One or more lines has an increase and a decrease amount entered';
   const NEGATIVE_BALANCE = 'There is a negative balance in one or more lines';
   const NO_JUSTIFICATION = 'Justification has not been entered';
-
   const reprogRows: ReprogInputRow[] = lines.map((l) => {
     return {
       ...l,
@@ -76,12 +81,13 @@ const ReproForm = ({ repro, startYear }: Props) => {
       newAmount: l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
     };
   });
-
   const { register, getValues, setValue } = useForm<ReprogInputRows>({
     values: {
       rows: reprogRows,
     },
   });
+
+  const { createRepro } = useReproMutations();
 
   const getTotalAmounts = useCallback((): { inc: string; dec: string } => {
     const inc = lines
@@ -454,19 +460,61 @@ const ReproForm = ({ repro, startYear }: Props) => {
 
     return result;
   }
+  console.log('userId ', userId);
 
-  function saveRepro() {
+  async function saveRepro(posted: boolean = false) {
     console.log('justification', justification);
     console.log('lines', lines);
-  }
 
-  function postRepro() {
-    if (canPost()) {
-      console.log('123', 123);
-    } else {
-      console.log('456', 456);
-      // setHasAttemptedPost(true);
+    const reproToSave: ReproRequest = {
+      createdById: userId!,
+      posted: posted,
+      justification: justification,
+      lineItems: lines.map((l) => {
+        const l2: ReproLineItemRequest = {
+          rowId: l.rowId,
+          initiativeId: l.initiativeId,
+          grantId: l.grantId,
+          categoryId: l.categoryId,
+          accountId: l.accountId,
+          increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
+          decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
+          comment: l.comment ?? null,
+        };
+
+        return l2;
+      }),
+    };
+
+    try {
+      console.log('reproToSave', reproToSave);
+      if (repro.id === 0) {
+        await createRepro.mutateAsync(reproToSave, {
+          onSuccess: (id) => {
+            const message = posted
+              ? 'Reprogramming Posted.'
+              : 'Reprogramming Saved.';
+            toast.success(message, {
+              duration: 2000,
+            });
+
+            onInitialSave(id);
+          },
+        });
+      } else {
+        // await updateTrip.mutateAsync(data, {
+        //   onSuccess: () => {
+        //     const id = data.id;
+        //     navigate(`/trips/${id}`);
+        //   },
+        // });
+      }
+    } catch (error) {
+      alert(error);
+      console.log('error', error);
     }
+
+    console.log('reproToSave', reproToSave);
   }
 
   function handleSaveJust(text: string) {
@@ -489,14 +537,18 @@ const ReproForm = ({ repro, startYear }: Props) => {
             Add Line
           </Button>
         )}
-        <Button buttonSize="small" disabled={!canSave()} onClick={saveRepro}>
+        <Button
+          buttonSize="small"
+          disabled={!canSave()}
+          onClick={() => saveRepro(false)}
+        >
           <Save className="mr-1"></Save>
           Save
         </Button>
         <Button
           buttonSize="small"
           disabled={!canPost() || getErrors().length > 0}
-          onClick={postRepro}
+          onClick={() => saveRepro(false)}
         >
           <BookOpenText className="mr-1"></BookOpenText>
           Post

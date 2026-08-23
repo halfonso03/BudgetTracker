@@ -73,3 +73,21 @@ type SearchParams = {
     accountName?: string
     year?: number
 }
+
+type ReproRequest = {
+    justification: string
+    createdById: number
+    posted: boolean
+    lineItems: ReproLineItemRequest[]
+}
+
+type ReproLineItemRequest = {
+    rowId: number
+    initiativeId: number
+    grantId: number
+    categoryId: number
+    accountId: number
+    increase: number
+    decrease: number
+    comment?: string | null
+}

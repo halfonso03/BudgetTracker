@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Button from '../../components/Button';
 import { Search } from 'lucide-react';
 import ChooseYearModal from './ChooseYearModal';
-import useRepro from '../../contexts/useRepro';
+import useAuth from '../../contexts/useAuth';
 
 const ReproMain = () => {
   const { id } = useParams();
@@ -15,7 +15,7 @@ const ReproMain = () => {
   const [year, setYear] = useState<number>(0);
   const [justification, setJustification] = useState('');
 
-  const { getSearchParams } = useRepro();
+  const { login, userId } = useAuth();
 
   const reproId = id !== undefined ? +id : undefined;
   const { data: reproFromDb, isLoading, isSuccess } = useGetRepro(reproId);
@@ -24,13 +24,11 @@ const ReproMain = () => {
     setJustification(reproFromDb.justification);
     setYear(reproFromDb.lineItems[0]!.year!);
   }
-
   // const justification = (reproFromDb && reproFromDb.lineItems.length > 0) ? reproFromDb.justification : '';
 
   if (isLoading) return <div>Loading...</div>;
   if (reproId && (!isSuccess || !reproFromDb)) return <div>Error1</div>;
 
-  console.log('getSearchParams', getSearchParams())
   const repro: Repro =
     reproFromDb !== undefined
       ? createRepro(reproFromDb)
@@ -45,14 +43,26 @@ const ReproMain = () => {
           started: false,
         };
 
+  function handleInitialSaved(newId: boolean) {
+    setTimeout(() => {
+      navigate(`/reprogramming/${newId}`);
+    }, 2000);
+  }
+
+  function handleLogin() {
+    login(1);
+  }
+  console.log('userId', userId)
+
   return (
     <>
       <div className="flex justify-end gap-3">
+        {!userId && <Button onClick={handleLogin}>Login </Button>}
         <Button
           buttonSize="small"
           variation="primary"
           onClick={() => setChoosingYear(true)}
-          disabled={year !== 0}
+          disabled={year > 0}
         >
           Start New...
         </Button>
@@ -76,7 +86,13 @@ const ReproMain = () => {
           Discard
         </Button> */}
       </div>
-      {year !== 0 && <ReproForm startYear={year} repro={repro}></ReproForm>}
+      {year !== 0 && (
+        <ReproForm
+          startYear={year}
+          repro={repro}
+          onInitialSave={handleInitialSaved}
+        ></ReproForm>
+      )}
       <ChooseYearModal
         isOpen={choosingYear}
         onYearSelected={({ year, justification }) => {

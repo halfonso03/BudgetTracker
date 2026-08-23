@@ -337,7 +337,7 @@ namespace Persistence
 
 
             builder.Entity<ReproLineItem>()
-                    .HasIndex(a => new { a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
+                    .HasIndex(a => new { a.ReproId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
                     .IsUnique();
 
 

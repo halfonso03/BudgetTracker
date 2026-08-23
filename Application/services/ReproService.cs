@@ -101,8 +101,11 @@ namespace Application.Services
             }
         }
 
-        public async Task<Result<Unit>> CreateRepro(CreateReproRequestDto reproRequestDto)
+        public async Task<Result<int>> CreateRepro(CreateReproRequestDto reproRequestDto)
         {
+
+            var newId = 0;
+
             try
             {
                 var grant = await _dbContext.Grants.FirstAsync(x => x.Id == reproRequestDto.LineItems.First().GrantId);
@@ -135,17 +138,19 @@ namespace Application.Services
                 _dbContext.Repros.Add(newRepro);
 
                 await _dbContext.SaveChangesAsync();
+
+                newId = newRepro.Id;
             }
             catch (DbException ex)
             {
-                return Result<Unit>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+                return Result<int>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
             catch (Exception ex)
             {
-                return Result<Unit>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+                return Result<int>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
 
-            return Result<Unit>.Success(Unit.Value);
+            return Result<int>.Success(newId);
         }
 
         public async Task<Result<Unit>> UpdateRepro(UpdateReproRequestDto reproRequestDto)

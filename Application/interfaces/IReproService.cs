@@ -11,7 +11,7 @@ namespace Application.Interfaces
     {
 
         Task<Result<ReproResponseDto>> GetRepro(int id);
-        Task<Result<Unit>> CreateRepro(CreateReproRequestDto reproRequestDto);
+        Task<Result<int>> CreateRepro(CreateReproRequestDto reproRequestDto);
         Task<Result<Unit>> DeleteRepro(int id);
         Task<Result<Unit>> UpdateRepro(UpdateReproRequestDto reproRequestDto);
     }
