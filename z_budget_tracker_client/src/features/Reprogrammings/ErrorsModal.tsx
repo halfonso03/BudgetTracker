@@ -15,7 +15,7 @@ const ErrorsModal = ({ ...props }: Props) => {
     <Modal2
       size="lg"
       title={
-        props.errors.length + ' Error' + (props.errors.length > 0 ? 's' : '')
+        props.errors.length + ' Error' + (props.errors.length > 1 ? 's' : '')
       }
       animateOut={animateOut}
       {...props}

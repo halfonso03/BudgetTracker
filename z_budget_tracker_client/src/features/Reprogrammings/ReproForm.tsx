@@ -53,23 +53,33 @@ type Selections = {
 };
 
 const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
-  const { userId } = useAuth();
+  const DUP_LINES =
+    'There are duplicate lines (Look for same account selections within the same Initiative/Grant/Category)';
+  const NO_INC_AND_NO_DEC_LINES =
+    'There are lines with $0 for increase and $0 decrease';
+  const HAS_VARIANCE = 'There is a variance in the reprogramming';
+  const LINES_WITH_INC_AND_DEC =
+    'One or more lines has an increase and a decrease amount entered';
+  const NEGATIVE_BALANCE = 'There is a negative balance in one or more lines';
+  const NO_JUSTIFICATION = 'Justification has not been entered';
 
+  const { userId } = useAuth();
   const queryClient = useQueryClient();
+
+  console.log('startYear', startYear);
 
   const [reproInfo, setReproInfo] = useState<ReproState>({
     id: repro.id,
-    status: SAVED,
+    status: repro.posted ? POSTED : SAVED,
   });
 
-  const [justification, setJustifications] = useState<string>(() => {
-    return repro.justification;
-  });
+  const [justification, setJustifications] = useState<string>(
+    repro.justification,
+  );
+  console.log('repro form', repro);
+  console.log('lines', repro.lineItems);
 
-  const [lines, setLines] = useState<ReproLineItem[]>(() => {
-    return repro.lineItems;
-  });
-
+  const [lines, setLines] = useState<ReproLineItem[]>(repro.lineItems);
   const _savedBalances: RowBalance[] =
     repro && repro.rowBalances ? repro.rowBalances! : [];
 
@@ -82,16 +92,8 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
+  const [confirmPostModalIsOpen, setConfirmPostModal] = useState(false);
 
-  const DUP_LINES =
-    'There are duplicate lines (Look for same account selections within the same Initiative/Grant/Category)';
-  const NO_INC_AND_NO_DEC_LINES =
-    'There are lines with $0 for increase and $0 decrease';
-  const HAS_VARIANCE = 'There is a variance in the reprogramming';
-  const LINES_WITH_INC_AND_DEC =
-    'One or more lines has an increase and a decrease amount entered';
-  const NEGATIVE_BALANCE = 'There is a negative balance in one or more lines';
-  const NO_JUSTIFICATION = 'Justification has not been entered';
   const reprogRows: ReprogInputRow[] = lines.map((l) => {
     return {
       ...l,
@@ -445,6 +447,11 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
     // no duplicate lines
     result = result && noDupLines(lines);
 
+    result = result && reproInfo.status !== POSTED;
+
+    result =
+      result && justification !== null && justification.trim().length > 0;
+
     return result;
   }
 
@@ -543,11 +550,7 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
     setTimeout(() => setJustModalIsOpen(false), 500);
   }
 
-  const [confirmPostModalIsOpen, setConfirmPostModal] = useState(false);
-
   async function onConfirmPost() {
-    setConfirmPostModal(false);
-
     if (reproInfo.id === 0) {
       const reproToSave: CreateReproRequest = {
         createdById: userId!,
@@ -604,38 +607,43 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
   return (
     <MenuIdProvider>
       {/* <pre>{JSON.stringify(lines)}</pre> */}
-      <div className="flex gap-2 cursor-default">
-        {repro !== undefined && startYear !== 0 && (
+      {reproInfo.status !== POSTED && (
+        <div className="flex gap-2 cursor-default">
+          {repro !== undefined && startYear !== 0 && (
+            <Button
+              buttonSize="small"
+              onClick={() => {
+                setAddLineModalIsOpen(true);
+              }}
+            >
+              <Plus></Plus>
+              Add Line
+            </Button>
+          )}
           <Button
             buttonSize="small"
-            onClick={() => {
-              setAddLineModalIsOpen(true);
-            }}
+            disabled={!canSave()}
+            onClick={() => saveReproButtonClick(false)}
           >
-            <Plus></Plus>
-            Add Line
+            <Save className="mr-1"></Save>
+            Save
           </Button>
-        )}
-        <Button
-          buttonSize="small"
-          disabled={!canSave()}
-          onClick={() => saveReproButtonClick(false)}
-        >
-          <Save className="mr-1"></Save>
-          Save
-        </Button>
-        <Button
-          buttonSize="small"
-          disabled={
-            !canPost() || getErrors().length > 0 || reproInfo.status === POSTED
-          }
-          onClick={() => setConfirmPostModal(true)}
-        >
-          <BookOpenText className="mr-1"></BookOpenText>
-          Post
-        </Button>
-      </div>
-      <div className="flex mb-8 justify-end text-neutral-400  gap-1 mr-3 ">
+          <Button
+            buttonSize="small"
+            disabled={
+              !canPost() ||
+              getErrors().length > 0 ||
+              reproInfo.status === Number(POSTED)
+            }
+            onClick={() => setConfirmPostModal(true)}
+          >
+            <BookOpenText className="mr-1"></BookOpenText>
+            Post
+          </Button>
+        </div>
+      )}
+
+      <div className="flex mb-8 justify-end text-neutral-400  gap-1 mr-3 mt-14">
         <div
           className="flex gap-1 cursor-pointer hover:text-neutral-600 "
           onClick={() => setJustModalIsOpen(true)}
@@ -678,6 +686,18 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
             <div>Editing</div>
           )}
         </div>
+        {reproInfo.status === POSTED && (
+          <div className="flex gap-12 ml-2">
+            <div className="flex gap-3 font-semibold">
+              <div className=" text-neutral-500">POSTED ON</div>
+              <div>3-5-2026</div>
+            </div>
+            <div className="flex gap-3 font-semibold">
+              <div className=" text-neutral-500">POSTED BY</div>
+              <div>Rosanna Leopold</div>
+            </div>
+          </div>
+        )}
       </div>
 
       {lines.length > 0 && (
@@ -770,15 +790,16 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
                 render={() => (
                   <div className="flex gap-0">
                     <div className="text-center flex-2 text-neutral-600 self-center w-full">
-                      {formatNumber(item.currentAmount)}
+                      {reproInfo.status !== POSTED &&
+                        formatNumber(item.currentAmount)}
                     </div>
                     <NumericArrayInputGeneric
                       index={index}
                       setValue={setValue}
                       register={register(`rows.${index}.increase`)}
                       fieldName="increase"
-                      readOnly={false}
-                      disabled={false}
+                      readOnly={reproInfo.status === POSTED}
+                      disabled={reproInfo.status === POSTED}
                       onBlur={recalculateNewAmounts}
                       classes={`flex-[1.5] w-full mr-1 pl-1 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
                     />
@@ -787,18 +808,20 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
                       register={register(`rows.${index}.decrease`)}
                       fieldName="decrease"
                       setValue={setValue}
-                      readOnly={false}
-                      disabled={false}
+                      readOnly={reproInfo.status === POSTED}
+                      disabled={reproInfo.status === POSTED}
                       onBlur={recalculateNewAmounts}
                       classes={`flex-[1.5] w-full pl-1 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
                     />
                     <div
                       className={`text-center flex-2  self-center text-neutral-600  ${item.newAmount < 0 ? 'text-red-500' : ''}`}
                     >
-                      {formatNumber(item.newAmount)}
+                      {reproInfo.status !== POSTED &&
+                        formatNumber(item.newAmount)}
                     </div>
                   </div>
                 )}
+                canEdit={reproInfo.status !== POSTED}
               ></TransactionRow>
             </div>
           );
@@ -835,7 +858,7 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
         onCancel={() => {
           setTimeout(() => {
             setJustModalIsOpen(false);
-          }, 600);
+          }, 500);
         }}
       ></JustificaModal>
       <ErrorsModal
@@ -849,8 +872,17 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
       ></ErrorsModal>
       <ConfirmModal
         isOpen={confirmPostModalIsOpen}
-        onConfirm={onConfirmPost}
-        onCancel={() => setConfirmPostModal(false)}
+        onConfirm={() => {
+          setTimeout(() => {
+            setConfirmPostModal(false);
+            onConfirmPost();
+          }, 500);
+        }}
+        onCancel={() => {
+          setTimeout(() => {
+            setConfirmPostModal(false);
+          }, 500);
+        }}
         message="This reprogramming wil be posted. Click OK to continue."
       ></ConfirmModal>
     </MenuIdProvider>

@@ -26,6 +26,7 @@ namespace Application.DTOs.Repro
 
         public required decimal Decrease { get; set; }
         public required int Year { get; set; }
+        public string? Comment { get; set; }
 
     }
 }

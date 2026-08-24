@@ -24,7 +24,7 @@ const ConfirmModal = ({ ...props }: Props) => {
               setAnimateOut(true);
               setTimeout(() => {
                 setAnimateOut(false);
-              }, 600);
+              }, 500);
             }}
           >
             OK

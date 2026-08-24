@@ -31,8 +31,6 @@ namespace Application.Services
 
             try
             {
-
-
                 var lineItems = await _dbContext.ReproLineItems
                                         .Include(x => x.UpdatedBy)
                                         .Include(x => x.Initiative)
@@ -79,6 +77,7 @@ namespace Application.Services
                     LineItems = [.. lineItems.Select(x =>
                         new ReproLineItemResponseDto
                         {
+                            Comment = x.Comment,
                             RowId = x.RowId,
                             InitiativeId = x.InitiativeId,
                             GrantId = x.GrantId,

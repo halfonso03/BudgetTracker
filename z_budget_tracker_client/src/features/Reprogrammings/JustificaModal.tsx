@@ -74,7 +74,7 @@ const JustificaModal = ({ itemComment, ...props }: Props) => {
                     setComment(priorComment);
                   }
                   setAnimateOut(false);
-                }, 600);
+                }, 500);
 
                 props.onCancel();
               }}

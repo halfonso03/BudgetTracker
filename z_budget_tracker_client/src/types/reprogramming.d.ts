@@ -12,6 +12,7 @@ type Repro = {
     lineItems: ReproLineItem[]
     rowBalances?: RowBalance[],
     started?: boolean
+    uuid?: string
 }
 
 type LineItem = {

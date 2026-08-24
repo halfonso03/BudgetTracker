@@ -4,13 +4,16 @@ import Modal2 from '../../components/Modal2';
 
 type Props = {
   isOpen: boolean;
+  newReproJustification: string;
   onYearSelected: (e: { year: number; justification: string }) => void;
   onCancel: () => void;
 };
 
 const ChooseYearModal = ({ ...props }: Props) => {
   const [year, setYear] = useState<number>(0);
-  const [justification, setJustification] = useState('');
+  const [justification, setJustification] = useState(
+    props.newReproJustification,
+  );
   const [animateOut, setAnimateOut] = useState(false);
 
   function handleYearChange(e: ChangeEvent<HTMLSelectElement>) {
@@ -56,6 +59,7 @@ const ChooseYearModal = ({ ...props }: Props) => {
             disabled={year === 0}
             onClick={() => {
               props.onYearSelected({ year, justification });
+              setJustification('');
               setAnimateOut(true);
               setTimeout(() => {
                 setAnimateOut(false);

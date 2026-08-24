@@ -13,53 +13,71 @@ const ReproMain = () => {
   const navigate = useNavigate();
   const [choosingYear, setChoosingYear] = useState(false);
   const [year, setYear] = useState<number>(0);
-  const [justification, setJustification] = useState('');
+  const [newReproJustification, setNewReproJustification] = useState('');
+
+  const [repro, setRepro] = useState<Repro | null>(null);
 
   const { login, userId } = useAuth();
 
   const reproId = id !== undefined ? +id : undefined;
   const { data: reproFromDb, isLoading, isSuccess } = useGetRepro(reproId);
+  const defaultRepro = {
+    id: 0,
+    justification: '',
+    createdBy: '',
+    createdById: 0,
+    posted: false,
+    createDate: new Date(),
+    lineItems: [],
+    uuid: crypto.randomUUID(),
+  };
 
-  if (year == 0 && reproFromDb && reproFromDb.lineItems.length > 0) {
-    setJustification(reproFromDb.justification);
+  if (reproFromDb && reproFromDb.lineItems.length > 0 && repro === null) {
     setYear(reproFromDb.lineItems[0]!.year!);
+    setRepro(createReproFromDb(reproFromDb));
   }
+
+  console.log('repro state', repro);
   // const justification = (reproFromDb && reproFromDb.lineItems.length > 0) ? reproFromDb.justification : '';
 
   if (isLoading) return <div>Loading...</div>;
   if (reproId && (!isSuccess || !reproFromDb)) return <div>Error1</div>;
 
-  const repro: Repro =
-    reproFromDb !== undefined
-      ? createRepro(reproFromDb)
-      : {
-          id: 0,
-          justification: justification,
-          createdBy: '',
-          createdById: 0,
-          posted: false,
-          createDate: new Date(),
-          lineItems: [],
-          started: false,
-        };
+  function handleInitialSaved() {}
 
-  function handleInitialSaved() {
-  }
+  const handleYearSelected = (e: { year: number; justification: string }) => {
+    setYear(e.year);
+    setNewReproJustification('');
+    setRepro({
+      ...defaultRepro,
+      justification: e.justification,
+      uuid: crypto.randomUUID(),
+    });
+    navigate('/reprogramming');
+
+    setTimeout(() => {
+      setChoosingYear(false);
+    }, 500);
+  };
 
   function handleLogin() {
     login(1);
   }
-  console.log('userId', userId)
 
   return (
     <>
       <div className="flex justify-end gap-3">
-        {!userId && <Button onClick={handleLogin}>Login </Button>}
+        {!userId && (
+          <Button buttonSize="small" onClick={handleLogin}>
+            Login{' '}
+          </Button>
+        )}
         <Button
           buttonSize="small"
           variation="primary"
-          onClick={() => setChoosingYear(true)}
-          disabled={year > 0}
+          onClick={() => {
+            setChoosingYear(true);
+          }}
         >
           Start New...
         </Button>
@@ -83,22 +101,19 @@ const ReproMain = () => {
           Discard
         </Button> */}
       </div>
-      {year !== 0 && (
+      {year !== 0 && repro && (
         <ReproForm
+          key={repro.uuid}
           startYear={year}
           repro={repro}
           onInitialSave={handleInitialSaved}
         ></ReproForm>
       )}
+      {year}
       <ChooseYearModal
         isOpen={choosingYear}
-        onYearSelected={({ year, justification }) => {
-          setYear(year);
-          setJustification(justification);
-          setTimeout(() => {
-            setChoosingYear(false);
-          }, 500);
-        }}
+        newReproJustification={newReproJustification}
+        onYearSelected={handleYearSelected}
         onCancel={() => {
           setTimeout(() => {
             setChoosingYear(false);
@@ -111,9 +126,11 @@ const ReproMain = () => {
 
 export default ReproMain;
 
-function createRepro(repro2: Repro): Repro {
+function createReproFromDb(repro2: Repro): Repro {
   const repro: Repro = {
     ...repro2,
+    justification: repro2.justification.trim(),
+    uuid: crypto.randomUUID(),
     lineItems: repro2.lineItems!.map((l) => {
       const curAmount =
         repro2.rowBalances

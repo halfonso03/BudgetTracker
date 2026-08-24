@@ -4,11 +4,12 @@ import { StickyNote, TriangleRight } from 'lucide-react';
 
 interface Props {
   uuid: string;
+  canEdit: boolean;
   itemComment?: string | null | undefined;
   saveComment: (uuid: string, comment: string | null | undefined) => void;
 }
 
-const CommentToggler = ({ uuid, itemComment, saveComment }: Props) => {
+const CommentToggler = ({ uuid, itemComment, saveComment, canEdit }: Props) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const [isOpenerClass, setIsOpenerClass] = useState<string>('');
@@ -50,18 +51,21 @@ const CommentToggler = ({ uuid, itemComment, saveComment }: Props) => {
             value={comment ?? ''}
             ref={textAreaRef}
             rows={7}
+            disabled={!canEdit}
             className="w-full text-neutral-700  p-2 outline-none focus:outline-none  transition-all duration-300 ease-in-out resize-none"
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
               setComment(e.target.value);
             }}
           ></textarea>
           <div className="flex justify-end">
-            <button
-              className="text-neutral-500 text-sm cursor-pointer"
-              onClick={() => setComment('')}
-            >
-              Click to Clear Comment
-            </button>
+            {canEdit && (
+              <button
+                className="text-neutral-500 text-sm cursor-pointer"
+                onClick={() => setComment('')}
+              >
+                Click to Clear Comment
+              </button>
+            )}
           </div>
 
           {/* <div className="flex justify-between gap-2 my-1">
