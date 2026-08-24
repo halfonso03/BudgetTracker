@@ -56,6 +56,10 @@ const ChooseYearModal = ({ ...props }: Props) => {
             disabled={year === 0}
             onClick={() => {
               props.onYearSelected({ year, justification });
+              setAnimateOut(true);
+              setTimeout(() => {
+                setAnimateOut(false);
+              }, 500);
             }}
           >
             Continue...

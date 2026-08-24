@@ -40,7 +40,11 @@ const AddLineModal = ({ ...props }: Props) => {
   );
 
   function onLineAdded(account: ReproAccountBalance) {
-    // setAnimateOut(true);
+    setSelections(null);
+    setAnimateOut(true);
+    setTimeout(() => {
+      setAnimateOut(false);
+    }, 500);
     if (initiatives && grants && categories) {
       const newLine: ReproLineItem = {
         rowId: -1,
@@ -55,8 +59,7 @@ const AddLineModal = ({ ...props }: Props) => {
           (x) => x.id == selections?.initiativeId,
         )[0].name,
         grantId: selections!.grantId!,
-        grantName: grants.filter((x) => x.id == selections?.grantId)[0]
-          .name,
+        grantName: grants.filter((x) => x.id == selections?.grantId)[0].name,
         currentAmount: account.currentAmount,
         uuid: window.crypto.randomUUID(),
         newAmount: account.currentAmount,
@@ -67,8 +70,6 @@ const AddLineModal = ({ ...props }: Props) => {
         grantId: newLine.grantId,
         categoryId: selections!.categoryId!,
       });
-      setSelections(null);
-      // setAnimateOut(true);
     }
   }
 

@@ -295,15 +295,15 @@ namespace Persistence
             builder.Entity<BudgetLineItem>().Property(x => x.GrantId).HasColumnName("grant_id");
             builder.Entity<BudgetLineItem>().Property(x => x.AccountId).HasColumnName("account_id");
             builder.Entity<BudgetLineItem>().Property(x => x.ItemType).HasColumnName("item_type");
-            builder.Entity<BudgetLineItem>().Property(x => x.CreateDate).HasColumnName("create_date").HasColumnType("datetime");
+            builder.Entity<BudgetLineItem>().Property(x => x.CreateDate).HasColumnName("create_date").HasColumnType("DATETIME");
             builder.Entity<BudgetLineItem>().Property(x => x.CreatedBy).HasColumnName("created_by");
-            builder.Entity<BudgetLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("datetime");
+            builder.Entity<BudgetLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME");
             builder.Entity<BudgetLineItem>().Property(x => x.UpdatedBy).HasColumnName("updated_by");
 
-            builder.Entity<BudgetComment>().Property(x => x.Text).HasColumnName("comment_text").HasColumnType("varchar(max)"); ;
-            builder.Entity<BudgetComment>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+            builder.Entity<BudgetComment>().Property(x => x.Text).HasColumnName("comment_text").HasColumnType("VARCHAR(MAX)"); ;
+            builder.Entity<BudgetComment>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME").HasDefaultValueSql("GETDATE()");
             builder.Entity<BudgetComment>().Property(x => x.EntryPersonId).HasColumnName("entry_user_id");
-            builder.Entity<BudgetComment>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("datetime").HasDefaultValueSql("GETDATE()");
+            builder.Entity<BudgetComment>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME").HasDefaultValueSql("GETDATE()");
             builder.Entity<BudgetComment>().Property(x => x.UpdatePersonId).HasColumnName("update_user_id");
 
             builder.Entity<BudgetComment>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
@@ -334,6 +334,7 @@ namespace Persistence
             builder.Entity<ReproLineItem>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME");
             builder.Entity<ReproLineItem>().Property(x => x.UpdatedById).HasColumnName("updated_by");
             builder.Entity<ReproLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME");
+            builder.Entity<ReproLineItem>().Property(x => x.Comment).HasColumnName("comment").HasColumnType("VARCHAR(MAX)");
 
 
             builder.Entity<ReproLineItem>()

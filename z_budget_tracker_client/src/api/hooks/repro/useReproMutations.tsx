@@ -7,10 +7,14 @@ export const useReproMutations = () => {
       const response = await agent.post('/repro', repro);
       return response.data;
     },
-    // onSuccess: () => {
-    //   toast.success('Trip created');
-    // },
   });
 
-  return { createRepro };
+  const updateRepro = useMutation({
+    mutationFn: async (repro: ReproRequest) => {
+      const response = await agent.put('/repro', repro);
+      return response.data;
+    },
+  });
+
+  return { createRepro, updateRepro };
 };

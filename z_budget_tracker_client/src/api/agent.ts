@@ -44,13 +44,13 @@ agent.interceptors.response.use(
         return response;
     },
     async (error) => {
-
+        console.log('error', error.response)
         if (error.response) {
             // Handle specific HTTP error status codes globally
             switch (error.response.status) {
                 case 400: {
 
-                    toast.error(error.response.data)
+                    toast.error(error.response.data.title)
                     break;
                 }
                 case 401: {

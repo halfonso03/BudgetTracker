@@ -22,12 +22,17 @@ import TransactionRow from './TransactionRow';
 import 'react-dropdown/style.css';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import useAuth from '../../contexts/useAuth';
+import ConfirmModal from '../../components/ConfirmModal';
 
 // 1 = not saved
 // 2 = saved
 // 3 = posted
 
-type ReproStatus = 1 | 2 | 3;
+const EDITING = 1;
+const SAVED = 2;
+const POSTED = 3;
+
+type ReproStatus = typeof EDITING | typeof SAVED | typeof POSTED;
 type ReproState = {
   id: number;
   status: ReproStatus;
@@ -52,9 +57,9 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
 
   const queryClient = useQueryClient();
 
-  const [reproId, setReproId] = useState<ReproState>({
+  const [reproInfo, setReproInfo] = useState<ReproState>({
     id: repro.id,
-    status: 1,
+    status: SAVED,
   });
 
   const [justification, setJustifications] = useState<string>(() => {
@@ -101,7 +106,7 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
     },
   });
 
-  const { createRepro } = useReproMutations();
+  const { createRepro, updateRepro } = useReproMutations();
 
   const getTotalAmounts = useCallback((): { inc: string; dec: string } => {
     const inc = lines
@@ -178,9 +183,7 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
     newLine: ReproLineItem,
     key: { initiativeId: number; grantId: number; categoryId: number },
   ) {
-    setTimeout(() => {
-      setAddLineModalIsOpen(false);
-    }, 400);
+    setTimeout(() => setAddLineModalIsOpen(false), 500);
 
     const newLines: ReproLineItem[] = lines.map(
       (l: ReproLineItem, i: number) => {
@@ -199,7 +202,7 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
     newLines.push({ ...newLine, rowId: newLines.length });
 
     setLines(newLines);
-
+    setReproInfo((prev) => ({ ...prev, status: EDITING }));
     const t = true;
     if (t) {
       const balances = queryClient.getQueryData<
@@ -436,11 +439,6 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
     });
   }
 
-  // function showSave() {
-  //   const result = lines.length > 0;
-  //   return result;
-  // }
-
   function canSave() {
     let result = lines.length > 0;
 
@@ -475,55 +473,132 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
     return result;
   }
 
-  async function saveRepro(posted: boolean = false) {
-    const reproToSave: ReproRequest = {
-      createdById: userId!,
-      posted: posted,
-      justification: justification,
-      lineItems: lines.map((l) => ({
-        ...l,
-        increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
-        decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
-      })),
-    };
-
+  async function saveReproButtonClick(posted: boolean = false) {
     try {
-      if (repro.id === 0) {
+      if (reproInfo.id === 0) {
+        const reproToSave: CreateReproRequest = {
+          createdById: userId!,
+          posted: posted,
+          justification: justification,
+          lineItems: lines.map((l) => ({
+            rowId: l.rowId,
+            initiativeId: l.initiativeId,
+            grantId: l.grantId,
+            categoryId: l.categoryId,
+            accountId: l.accountId,
+            comment: l.comment,
+            increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
+            decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
+          })),
+        };
         await createRepro.mutateAsync(reproToSave, {
           onSuccess: (id) => {
-            const message = posted
-              ? 'Reprogramming Posted.'
-              : 'Reprogramming Saved.';
-            toast.success(message, {
-              duration: 1500,
-            });
-            setReproId((prev) => ({
-              ...prev,
-              id: id,
-              status: posted ? 3 : 2,
-            }));
+            onServerSuccess(posted, id);
             onInitialSave(id);
           },
         });
       } else {
-        // await updateTrip.mutateAsync(data, {
-        //   onSuccess: () => {
-        //     const id = data.id;
-        //     navigate(`/trips/${id}`);
-        //   },
-        // });
+        const reproToSave: UpdateReproRequest = {
+          id: reproInfo.id,
+          updatedById: userId!,
+          posted: posted,
+          justification: justification,
+          lineItems: lines.map((l) => ({
+            rowId: l.rowId,
+            initiativeId: l.initiativeId,
+            grantId: l.grantId,
+            categoryId: l.categoryId,
+            accountId: l.accountId,
+            comment: l.comment,
+            increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
+            decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
+          })),
+        };
+        await updateRepro.mutateAsync(reproToSave, {
+          onSuccess: () => {
+            onServerSuccess(posted);
+          },
+        });
       }
     } catch (error) {
       alert(error);
       console.log('error', error);
     }
+  }
 
-    console.log('reproToSave', reproToSave);
+  function onServerSuccess(posted: boolean, id: number = 0) {
+    const message = posted ? 'Reprogramming Posted.' : 'Reprogramming Saved.';
+    toast.success(message, {
+      duration: 1500,
+    });
+    setReproInfo((prev) => ({
+      ...prev,
+      id: id !== 0 ? id : prev.id,
+      status: posted ? POSTED : SAVED,
+    }));
   }
 
   function handleSaveJust(text: string) {
     setJustifications(text);
-    setTimeout(() => setJustModalIsOpen(false), 600);
+    setTimeout(() => setJustModalIsOpen(false), 500);
+  }
+
+  const [confirmPostModalIsOpen, setConfirmPostModal] = useState(false);
+
+  async function onConfirmPost() {
+    setConfirmPostModal(false);
+
+    if (reproInfo.id === 0) {
+      const reproToSave: CreateReproRequest = {
+        createdById: userId!,
+        posted: true,
+        justification: justification,
+        lineItems: lines.map((l) => ({
+          rowId: l.rowId,
+          initiativeId: l.initiativeId,
+          grantId: l.grantId,
+          categoryId: l.categoryId,
+          accountId: l.accountId,
+          comment: l.comment,
+          increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
+          decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
+        })),
+      };
+      await createRepro.mutateAsync(reproToSave, {
+        onSuccess: (id) => {
+          onServerSuccess(true, id);
+          onInitialSave(id);
+        },
+      });
+    } else {
+      const reproToSave: UpdateReproRequest = {
+        id: reproInfo.id,
+        updatedById: userId!,
+        posted: true,
+        justification: justification,
+        lineItems: lines.map((l) => ({
+          rowId: l.rowId,
+          initiativeId: l.initiativeId,
+          grantId: l.grantId,
+          categoryId: l.categoryId,
+          accountId: l.accountId,
+          comment: l.comment,
+          increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
+          decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
+        })),
+      };
+      await updateRepro.mutateAsync(reproToSave, {
+        onSuccess: () => {
+          onServerSuccess(true);
+        },
+      });
+    }
+
+    // function creaeateReproHandler() {}
+
+    // function updateReproHandler() {}
+
+    // saveRepro(true)
   }
   // console.log('repro form startYear', startYear)
   return (
@@ -544,7 +619,7 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
         <Button
           buttonSize="small"
           disabled={!canSave()}
-          onClick={() => saveRepro(false)}
+          onClick={() => saveReproButtonClick(false)}
         >
           <Save className="mr-1"></Save>
           Save
@@ -552,9 +627,9 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
         <Button
           buttonSize="small"
           disabled={
-            !canPost() || getErrors().length > 0 || reproId.status === 3
+            !canPost() || getErrors().length > 0 || reproInfo.status === POSTED
           }
-          onClick={() => saveRepro(true)}
+          onClick={() => setConfirmPostModal(true)}
         >
           <BookOpenText className="mr-1"></BookOpenText>
           Post
@@ -584,21 +659,23 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
         <div className="flex gap-3 ml-3">
           <span className="font-semibold text-neutral-500">ID</span>
           <div>
-            {reproId.id == 0 ? (
+            {reproInfo.id == 0 ? (
               <div className="font-semibold">-</div>
             ) : (
-              <div className="font-semibold">{reproId.id}</div>
+              <div className="font-semibold">{reproInfo.id}</div>
             )}
           </div>
         </div>
         <div className="flex gap-3 font-semibold">
           <span className=" text-neutral-500">STATUS</span>
-          {reproId.id == 0 ? (
+          {reproInfo.id == 0 ? (
             <div>Draft</div>
-          ) : reproId.status === 3 ? (
+          ) : reproInfo.status === POSTED ? (
             <div>Posted</div>
-          ) : (
+          ) : reproInfo.status === SAVED ? (
             <div>Saved</div>
+          ) : (
+            <div>Editing</div>
           )}
         </div>
       </div>
@@ -770,6 +847,12 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
           }, 500);
         }}
       ></ErrorsModal>
+      <ConfirmModal
+        isOpen={confirmPostModalIsOpen}
+        onConfirm={onConfirmPost}
+        onCancel={() => setConfirmPostModal(false)}
+        message="This reprogramming wil be posted. Click OK to continue."
+      ></ConfirmModal>
     </MenuIdProvider>
   );
 };

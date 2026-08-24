@@ -14,7 +14,6 @@ namespace Application.DTOs.Repro
         [Required]
         public required int Id { get; set; }
 
-        [JsonPropertyName("updated_by_id")]
         public required int UpdatedById { get; set; }
     }
 }

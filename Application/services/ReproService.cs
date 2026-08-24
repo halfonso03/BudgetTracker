@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Application.Core;
@@ -131,11 +132,49 @@ namespace Application.Services
                         Decrease = x.Decrease,
                         CategoryId = x.CategoryId,
                         RowId = x.RowId,
-                        Year = grant.Year
+                        Year = grant.Year,
+                        Comment = x.Comment
                     })]
                 };
 
                 _dbContext.Repros.Add(newRepro);
+
+
+                if (newRepro.Posted)
+                {
+                    foreach (var line in newRepro.Items)
+                    {
+                        var amount = 0M;
+
+                        if (line.Increase > 0)
+                        {
+                            amount = Convert.ToDecimal(line.Increase ?? 0M);
+                        }
+                        else if (line.Decrease > 0)
+                        {
+                            amount = Convert.ToDecimal(line.Decrease ?? 0M) * -1;
+                        }
+                        else
+                        {
+                            throw new Exception($"Error in {nameof(CreateRepro)}. Increase and decrease are both zero.");
+                        }
+
+                        var budgetLineItem = new BudgetLineItem
+                        {
+                            Id = 0,
+                            InitiativeId = line.InitiativeId,
+                            GrantId = line.GrantId,
+                            AccountId = line.AccountId,
+                            Amount = amount,
+                            ItemType = "R",
+                            CreateDate = DateTime.Now,
+                            CreatedBy = reproRequestDto.CreatedById
+                        };
+
+                        _dbContext.BudgetLineItems.Add(budgetLineItem);
+                    }
+
+                }
 
                 await _dbContext.SaveChangesAsync();
 
@@ -206,18 +245,20 @@ namespace Application.Services
                             lineFromDb.Decrease != req.Decrease ||
                             lineFromDb.InitiativeId != req.InitiativeId ||
                             lineFromDb.GrantId != req.GrantId ||
-                            lineFromDb.AccountId != req.AccountId)
+                            lineFromDb.AccountId != req.AccountId ||
+                            lineFromDb.Comment != req.Comment)
                         {
                             lineFromDb.UpdateDate = DateTime.Now;
                             lineFromDb.UpdatedById = reproRequestDto.UpdatedById;
+                            lineFromDb.Increase = req.Increase;
+                            lineFromDb.Decrease = req.Decrease;
+                            lineFromDb.InitiativeId = req.InitiativeId;
+                            lineFromDb.GrantId = req.GrantId;
+                            lineFromDb.AccountId = req.AccountId;
+                            lineFromDb.CategoryId = req.CategoryId;
+                            lineFromDb.Comment = string.IsNullOrEmpty(req.Comment) ? null
+                            : req.Comment.Trim();
                         }
-
-                        lineFromDb.Increase = req.Increase;
-                        lineFromDb.Decrease = req.Decrease;
-                        lineFromDb.InitiativeId = req.InitiativeId;
-                        lineFromDb.GrantId = req.GrantId;
-                        lineFromDb.AccountId = req.AccountId;
-                        lineFromDb.CategoryId = req.CategoryId;
                     }
                     else
                     {
@@ -234,7 +275,9 @@ namespace Application.Services
                             Decrease = req.Decrease,
                             Year = grant.Year,
                             EntryDate = DateTime.Now,
-                            CategoryId = req.CategoryId
+                            CategoryId = req.CategoryId,
+                            Comment = string.IsNullOrEmpty(req.Comment) ? null
+                            : req.Comment.Trim()
                         };
 
                         _dbContext.ReproLineItems.Add(newLineItem);
@@ -250,6 +293,44 @@ namespace Application.Services
                         _dbContext.ReproLineItems.Remove(d);
                     }
                 }
+
+
+                if (reproRequestDto.Posted)
+                {
+                    foreach (var line in reproRequestDto.LineItems)
+                    {
+                        var amount = 0M;
+
+                        if (line.Increase > 0)
+                        {
+                            amount = line.Increase;
+                        }
+                        else if (line.Decrease > 0)
+                        {
+                            amount = line.Decrease * -1;
+                        }
+                        else
+                        {
+                            throw new Exception($"Error in {nameof(CreateRepro)}. Increase and decrease are both zero.");
+                        }
+
+                        var budgetLineItem = new BudgetLineItem
+                        {
+                            Id = 0,
+                            InitiativeId = line.InitiativeId,
+                            GrantId = line.GrantId,
+                            AccountId = line.AccountId,
+                            Amount = amount,
+                            ItemType = "R",
+                            CreateDate = DateTime.Now,
+                            CreatedBy = reproRequestDto.UpdatedById
+                        };
+
+                        _dbContext.BudgetLineItems.Add(budgetLineItem);
+                    }
+
+                }
+
 
                 await _dbContext.SaveChangesAsync();
 

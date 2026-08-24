@@ -27,7 +27,7 @@ const JustificaModal = ({ itemComment, ...props }: Props) => {
       setAnimateOut(true);
       setTimeout(() => {
         setAnimateOut(false);
-      }, 600);
+      }, 500);
     } catch (error) {
       console.log(error);
     }
@@ -37,7 +37,9 @@ const JustificaModal = ({ itemComment, ...props }: Props) => {
       {/* <pre>{JSON.stringify(selections)}</pre> */}
 
       <div className="mb-1">
-        <div className="text-neutral-700 font-semibold mb-1">Enter a Justification </div>
+        <div className="text-neutral-700 font-semibold mb-1">
+          Enter a Justification{' '}
+        </div>
         <form onSubmit={onSubmit}>
           <textarea
             value={comment}

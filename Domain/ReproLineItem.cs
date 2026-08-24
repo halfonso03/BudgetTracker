@@ -32,10 +32,10 @@ namespace Domain
         [ForeignKey("ReproId")]
         public Repro? Repro { get; set; }
 
-        
         public Initiative? Initiative { get; set; }
         public Grant? Grant { get; set; }
         public Category? Category { get; set; }
         public Account? Account { get; set; }
+        public string? Comment { get; set; }
     }
 }

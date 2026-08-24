@@ -74,9 +74,17 @@ type SearchParams = {
     year?: number
 }
 
-type ReproRequest = {
+type CreateReproRequest = {
     justification: string
     createdById: number
+    posted: boolean
+    lineItems: ReproLineItemRequest[]
+}
+
+type UpdateReproRequest = {
+    id: number
+    justification: string
+    updatedById: number
     posted: boolean
     lineItems: ReproLineItemRequest[]
 }

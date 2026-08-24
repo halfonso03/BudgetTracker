@@ -209,7 +209,7 @@ function CategorySummary({
           <div
             className={`pb-0  box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}  mt-1  `}
           >
-            <div className="pl-6 pb-0 font-semibold entity-label">Account</div>
+            <div className="pl-5 pb-0 font-semibold entity-label">Account</div>
             <div className="py-1 bg-neutral-50 border-t border-t-neutral-300  ">
               {items
                 .filter((x) => x.category?.name == c.category)
@@ -219,7 +219,7 @@ function CategorySummary({
                     className="my-0 p-1 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 mb-1 last:mb-0 transition-all duration-200 hover:bg-neutral-200"
                     key={i.account_id}
                   >
-                    <div className="italic pl-5">{i.account_name}</div>
+                    <div className="italic pl-8">{i.account_name}</div>
                     <div></div>
                     <div className="text-end italic text-neutral-700">
                       {formatCurrency(i.amount)}

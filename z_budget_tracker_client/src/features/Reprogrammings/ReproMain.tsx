@@ -43,10 +43,7 @@ const ReproMain = () => {
           started: false,
         };
 
-  function handleInitialSaved(newId: boolean) {
-    // setTimeout(() => {
-    //   navigate(`/reprogramming/${newId}`);
-    // }, 2000);
+  function handleInitialSaved() {
   }
 
   function handleLogin() {
