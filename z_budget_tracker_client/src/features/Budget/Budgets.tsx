@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Summary from './Summary';
 import Button from '../../components/Button';
 import CreateBudgetModal from './CreateBudgetModal';
+import toast from 'react-hot-toast';
 
 const Budgets = () => {
   const [year, setYear] = useState<number>(2026);
@@ -11,6 +12,10 @@ const Budgets = () => {
   const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(+e.target.value);
   };
+
+  useEffect(() => {
+    toast.dismissAll();
+  }, []);
 
   return (
     <div className="">

@@ -1,5 +1,6 @@
 type Repro = {
     id: number
+    year: number
     justification: string
     createdBy: string
     createDate: Date

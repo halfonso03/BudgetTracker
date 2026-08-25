@@ -6,24 +6,33 @@ import { useState } from 'react';
 import Button from '../../components/Button';
 import { Search } from 'lucide-react';
 import ChooseYearModal from './ChooseYearModal';
-import useAuth from '../../contexts/useAuth';
 
 const ReproMain = () => {
-  const { id } = useParams();
   const navigate = useNavigate();
-  const [choosingYear, setChoosingYear] = useState(false);
-  const [year, setYear] = useState<number>(0);
-  const [newReproJustification, setNewReproJustification] = useState('');
-
-  const [repro, setRepro] = useState<Repro | null>(null);
-
-  const { login, userId } = useAuth();
-
+  const { id } = useParams();
   const reproId = id !== undefined ? +id : undefined;
-  const { data: reproFromDb, isLoading, isSuccess } = useGetRepro(reproId);
-  const defaultRepro = {
+
+  const {
+    data: reproFromDb,
+    isLoading,
+    isFetching,
+    isSuccess,
+  } = useGetRepro(reproId);
+
+  const [choosingYear, setChoosingYear] = useState(false);
+  const [newReproJustification, setNewReproJustification] = useState('');
+  const [savedJustification, setSavedJustification] = useState('');
+
+  const initialyear = reproFromDb?.lineItems[0]?.year ?? 0;
+
+  const [year, setYear] = useState<number>(initialyear);
+
+  let repro: Repro;
+
+  const defaultRepro: Repro = {
     id: 0,
-    justification: '',
+    year: year,
+    justification: savedJustification,
     createdBy: '',
     createdById: 0,
     posted: false,
@@ -32,46 +41,47 @@ const ReproMain = () => {
     uuid: crypto.randomUUID(),
   };
 
-  if (reproFromDb && reproFromDb.lineItems.length > 0 && repro === null) {
-    setYear(reproFromDb.lineItems[0]!.year!);
-    setRepro(createReproFromDb(reproFromDb));
+  if (reproId !== 0 && reproFromDb) {
+    repro = createReproFromDb(reproFromDb);
+  } else if (year > 0) {
+    repro = defaultRepro;
   }
 
-  console.log('repro state', repro);
-  // const justification = (reproFromDb && reproFromDb.lineItems.length > 0) ? reproFromDb.justification : '';
-
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading || isFetching) return <div>Loading...</div>;
   if (reproId && (!isSuccess || !reproFromDb)) return <div>Error1</div>;
 
-  function handleInitialSaved() {}
+  // console.log('reproFromDb', reproFromDb);
 
   const handleYearSelected = (e: { year: number; justification: string }) => {
     setYear(e.year);
     setNewReproJustification('');
-    setRepro({
-      ...defaultRepro,
-      justification: e.justification,
-      uuid: crypto.randomUUID(),
-    });
+    setSavedJustification(e.justification);
     navigate('/reprogramming');
-
     setTimeout(() => {
       setChoosingYear(false);
     }, 500);
   };
 
-  function handleLogin() {
-    login(1);
+  function handleInitialSaved(id: number) {
+    setTimeout(() => navigate(`/reprogramming/${id}`), 1600);
   }
+
+  const body = () => {
+    if (repro) {
+      return (
+        <ReproForm
+          key={repro.uuid}
+          repro={repro}
+          onInitialSave={handleInitialSaved}
+        ></ReproForm>
+      );
+    }
+    return null;
+  };
 
   return (
     <>
       <div className="flex justify-end gap-3">
-        {!userId && (
-          <Button buttonSize="small" onClick={handleLogin}>
-            Login{' '}
-          </Button>
-        )}
         <Button
           buttonSize="small"
           variation="primary"
@@ -81,7 +91,6 @@ const ReproMain = () => {
         >
           Start New...
         </Button>
-        {/*  disabled based on status */}
         <Button
           buttonSize="xsmall"
           variation="secondary"
@@ -90,26 +99,8 @@ const ReproMain = () => {
         >
           <Search></Search>
         </Button>
-        {/* <Button
-          variation="danger"
-          buttonSize="small"
-          disabled={year === 0}
-          onClick={() => {
-            setIsDiscarding(true);
-          }}
-        >
-          Discard
-        </Button> */}
       </div>
-      {year !== 0 && repro && (
-        <ReproForm
-          key={repro.uuid}
-          startYear={year}
-          repro={repro}
-          onInitialSave={handleInitialSaved}
-        ></ReproForm>
-      )}
-      {year}
+      {body()}
       <ChooseYearModal
         isOpen={choosingYear}
         newReproJustification={newReproJustification}
@@ -129,6 +120,7 @@ export default ReproMain;
 function createReproFromDb(repro2: Repro): Repro {
   const repro: Repro = {
     ...repro2,
+    year: repro2.lineItems[0].year!,
     justification: repro2.justification.trim(),
     uuid: crypto.randomUUID(),
     lineItems: repro2.lineItems!.map((l) => {

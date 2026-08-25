@@ -24,10 +24,6 @@ import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import useAuth from '../../contexts/useAuth';
 import ConfirmModal from '../../components/ConfirmModal';
 
-// 1 = not saved
-// 2 = saved
-// 3 = posted
-
 const EDITING = 1;
 const SAVED = 2;
 const POSTED = 3;
@@ -40,8 +36,7 @@ type ReproState = {
 
 interface Props {
   repro: Repro;
-  startYear: number;
-  onInitialSave: (newId: boolean) => void;
+  onInitialSave: (newId: number) => void;
 }
 
 type Selections = {
@@ -52,7 +47,7 @@ type Selections = {
   accountId?: number;
 };
 
-const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
+const ReproForm = ({ repro, onInitialSave }: Props) => {
   const DUP_LINES =
     'There are duplicate lines (Look for same account selections within the same Initiative/Grant/Category)';
   const NO_INC_AND_NO_DEC_LINES =
@@ -65,8 +60,7 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
 
   const { userId } = useAuth();
   const queryClient = useQueryClient();
-
-  console.log('startYear', startYear);
+  // const navigate = useNavigate();
 
   const [reproInfo, setReproInfo] = useState<ReproState>({
     id: repro.id,
@@ -76,8 +70,11 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
   const [justification, setJustifications] = useState<string>(
     repro.justification,
   );
-  console.log('repro form', repro);
-  console.log('lines', repro.lineItems);
+
+  console.log('startYear', repro.year);
+
+  // console.log('repro form', repro);
+  // console.log('lines', repro.lineItems);
 
   const [lines, setLines] = useState<ReproLineItem[]>(repro.lineItems);
   const _savedBalances: RowBalance[] =
@@ -175,10 +172,10 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
         },
       );
     } else {
-      toast.dismissAll();
+      toast.remove();
     }
 
-    return () => toast.dismissAll('errors');
+    return () => toast.remove();
   }, [getErrors, getTotalAmounts, lines]);
 
   function handleLineAdded(
@@ -480,59 +477,6 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
     return result;
   }
 
-  async function saveReproButtonClick(posted: boolean = false) {
-    try {
-      if (reproInfo.id === 0) {
-        const reproToSave: CreateReproRequest = {
-          createdById: userId!,
-          posted: posted,
-          justification: justification,
-          lineItems: lines.map((l) => ({
-            rowId: l.rowId,
-            initiativeId: l.initiativeId,
-            grantId: l.grantId,
-            categoryId: l.categoryId,
-            accountId: l.accountId,
-            comment: l.comment,
-            increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
-            decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
-          })),
-        };
-        await createRepro.mutateAsync(reproToSave, {
-          onSuccess: (id) => {
-            onServerSuccess(posted, id);
-            onInitialSave(id);
-          },
-        });
-      } else {
-        const reproToSave: UpdateReproRequest = {
-          id: reproInfo.id,
-          updatedById: userId!,
-          posted: posted,
-          justification: justification,
-          lineItems: lines.map((l) => ({
-            rowId: l.rowId,
-            initiativeId: l.initiativeId,
-            grantId: l.grantId,
-            categoryId: l.categoryId,
-            accountId: l.accountId,
-            comment: l.comment,
-            increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
-            decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
-          })),
-        };
-        await updateRepro.mutateAsync(reproToSave, {
-          onSuccess: () => {
-            onServerSuccess(posted);
-          },
-        });
-      }
-    } catch (error) {
-      alert(error);
-      console.log('error', error);
-    }
-  }
-
   function onServerSuccess(posted: boolean, id: number = 0) {
     const message = posted ? 'Reprogramming Posted.' : 'Reprogramming Saved.';
     toast.success(message, {
@@ -550,66 +494,112 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
     setTimeout(() => setJustModalIsOpen(false), 500);
   }
 
-  async function onConfirmPost() {
-    if (reproInfo.id === 0) {
-      const reproToSave: CreateReproRequest = {
-        createdById: userId!,
-        posted: true,
-        justification: justification,
-        lineItems: lines.map((l) => ({
-          rowId: l.rowId,
-          initiativeId: l.initiativeId,
-          grantId: l.grantId,
-          categoryId: l.categoryId,
-          accountId: l.accountId,
-          comment: l.comment,
-          increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
-          decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
-        })),
-      };
-      await createRepro.mutateAsync(reproToSave, {
-        onSuccess: (id) => {
-          onServerSuccess(true, id);
-          onInitialSave(id);
-        },
-      });
-    } else {
-      const reproToSave: UpdateReproRequest = {
-        id: reproInfo.id,
-        updatedById: userId!,
-        posted: true,
-        justification: justification,
-        lineItems: lines.map((l) => ({
-          rowId: l.rowId,
-          initiativeId: l.initiativeId,
-          grantId: l.grantId,
-          categoryId: l.categoryId,
-          accountId: l.accountId,
-          comment: l.comment,
-          increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
-          decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
-        })),
-      };
-      await updateRepro.mutateAsync(reproToSave, {
-        onSuccess: () => {
-          onServerSuccess(true);
-        },
-      });
-    }
-
-    // function creaeateReproHandler() {}
-
-    // function updateReproHandler() {}
-
-    // saveRepro(true)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function sendCreateRepro(lineItems: any, posted: boolean) {
+    const reproToSave: CreateReproRequest = {
+      createdById: userId!,
+      posted: posted,
+      justification: justification,
+      lineItems: lineItems,
+    };
+    await createRepro.mutateAsync(reproToSave, {
+      onSuccess: (id) => {
+        onServerSuccess(posted, id);
+        onInitialSave(id);
+      },
+    });
   }
-  // console.log('repro form startYear', startYear)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function sendUpdateRepro(lineItems: any, posted: true) {
+    const reproToSave: UpdateReproRequest = {
+      id: reproInfo.id,
+      updatedById: userId!,
+      posted: posted,
+      justification: justification,
+      lineItems: lineItems,
+    };
+    await updateRepro.mutateAsync(reproToSave, {
+      onSuccess: () => {
+        onServerSuccess(posted);
+      },
+    });
+  }
+
+  async function saveReproButtonClick(posted: boolean = false) {
+    try {
+      const lineItems = lines.map((l) => ({
+        rowId: l.rowId,
+        initiativeId: l.initiativeId,
+        grantId: l.grantId,
+        categoryId: l.categoryId,
+        accountId: l.accountId,
+        comment: l.comment,
+        increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
+        decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
+      }));
+      if (reproInfo.id === 0) {
+        const reproToSave: CreateReproRequest = {
+          createdById: userId!,
+          posted: posted,
+          justification: justification,
+          lineItems: lineItems,
+        };
+        await createRepro.mutateAsync(reproToSave, {
+          onSuccess: (id) => {
+            onServerSuccess(posted, id);
+            onInitialSave(id);
+          },
+        });
+      } else {
+        const reproToSave: UpdateReproRequest = {
+          id: reproInfo.id,
+          updatedById: userId!,
+          posted: posted,
+          justification: justification,
+          lineItems: lineItems,
+        };
+        await updateRepro.mutateAsync(reproToSave, {
+          onSuccess: () => {
+            onServerSuccess(posted);
+          },
+        });
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
+
+  async function onConfirmPost() {
+    const lineItems = lines.map((l) => ({
+      rowId: l.rowId,
+      initiativeId: l.initiativeId,
+      grantId: l.grantId,
+      categoryId: l.categoryId,
+      accountId: l.accountId,
+      comment: l.comment,
+      increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
+      decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
+    }));
+
+    if (reproInfo.id === 0) {
+      sendCreateRepro(lineItems, true);
+    } else {
+      sendUpdateRepro(lineItems, true);
+    }
+  }
+
   return (
     <MenuIdProvider>
-      {/* <pre>{JSON.stringify(lines)}</pre> */}
-      {reproInfo.status !== POSTED && (
-        <div className="flex gap-2 cursor-default">
-          {repro !== undefined && startYear !== 0 && (
+      {!userId && (
+        <div className="text-lg p-2 border border-red-600">Must log in !</div>
+      )}
+
+      <div className="flex mb-16 justify-between text-neutral-400 mr-3 mt-14">
+        <div
+          className={`flex gap-2 cursor-default ${reproInfo.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
+        >
+          {repro !== undefined && (
             <Button
               buttonSize="small"
               onClick={() => {
@@ -641,14 +631,16 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
             Post
           </Button>
         </div>
-      )}
-
-      <div className="flex mb-8 justify-end text-neutral-400  gap-1 mr-3 mt-14">
-        <div
+        <Button
           className="flex gap-1 cursor-pointer hover:text-neutral-600 "
           onClick={() => setJustModalIsOpen(true)}
         >
-          <div className="self-center">Justification</div>
+          {reproInfo.status === Number(POSTED) ? (
+            <div className="self-center">View Justification</div>
+          ) : (
+            <div className="self-center">Justification</div>
+          )}
+
           {!justification ? (
             <AlertTriangle
               className="self-center text-orange-300"
@@ -660,34 +652,37 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
               size={19}
             ></CheckCircle2>
           )}
-        </div>
+        </Button>
       </div>
 
-      <div className="flex gap-10 mb-1 border-b border-b-neutral-200 pb-6">
-        <div className="flex gap-3 ml-3">
-          <span className="font-semibold text-neutral-500">ID</span>
-          <div>
+      <div className="flex justify-between mb-12 border-b border-b-neutral-200 pb-2">
+        <div className="flex gap-10">
+          <div className="flex gap-3 ml-3">
+            <span className="font-semibold text-neutral-500">ID</span>
+            <div>
+              {reproInfo.id == 0 ? (
+                <div className="font-semibold">-</div>
+              ) : (
+                <div className="font-semibold">{reproInfo.id}</div>
+              )}
+            </div>
+          </div>
+          <div className="flex gap-3 font-semibold">
+            <span className=" text-neutral-500">STATUS</span>
             {reproInfo.id == 0 ? (
-              <div className="font-semibold">-</div>
+              <div>Draft</div>
+            ) : reproInfo.status === POSTED ? (
+              <div>Posted</div>
+            ) : reproInfo.status === SAVED ? (
+              <div>Saved</div>
             ) : (
-              <div className="font-semibold">{reproInfo.id}</div>
+              <div>Editing</div>
             )}
           </div>
         </div>
-        <div className="flex gap-3 font-semibold">
-          <span className=" text-neutral-500">STATUS</span>
-          {reproInfo.id == 0 ? (
-            <div>Draft</div>
-          ) : reproInfo.status === POSTED ? (
-            <div>Posted</div>
-          ) : reproInfo.status === SAVED ? (
-            <div>Saved</div>
-          ) : (
-            <div>Editing</div>
-          )}
-        </div>
+
         {reproInfo.status === POSTED && (
-          <div className="flex gap-12 ml-2">
+          <div className="flex gap-12 mr-4">
             <div className="flex gap-3 font-semibold">
               <div className=" text-neutral-500">POSTED ON</div>
               <div>3-5-2026</div>
@@ -699,57 +694,61 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
           </div>
         )}
       </div>
-
-      {lines.length > 0 && (
-        <div>
-          <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 font-bold text-neutral-500">
-            <div className="self-end col-span-4 "></div>
-            <div className="flex ">
-              <div className="flex-2 text-center w-[25%]"></div>
-              <div className="self-end  text-end w-[25%] pr-1">Increase</div>
-              <div className="self-end text-end w-[25%] pr-1">Decrease</div>
-              <div className="flex-2 text-end w-[25%] pr-1">Variance</div>
-            </div>
-            <div></div>
-            <div>Total</div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div className="flex">
-              <div className="flex-1"></div>
-              <div className="flex justify-end flex-1 ">
-                <input
-                  readOnly={true}
-                  value={inc}
-                  disabled={true}
-                  className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
-                ></input>
-              </div>
-              <div className="justify-end flex-1 ">
-                <input
-                  readOnly={true}
-                  disabled={true}
-                  value={dec}
-                  className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
-                ></input>
-              </div>
-              <div className="flex-1">
-                <input
-                  readOnly={true}
-                  disabled={true}
-                  value={formatNumber(+(inc ?? 0) - +(dec ?? 0))}
-                  className={`text-blue-500 border-0 font-semibold flex-1 w-[98%] px-1 pr-1 text-end focus:outline-none focus:ring-0 focus:ring-offset-0`}
-                ></input>
-              </div>
-            </div>
-            <div></div>
+      {repro.posted && (
+        <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500">
+          <div>Total</div>
+          <div className="text-neutral-900">{inc}</div>
+          <div></div>
+        </div>
+      )}
+      {lines.length > 0 && !repro.posted && (
+        <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500">
+          <div className="self-end col-span-4 "></div>
+          <div className="flex ">
+            <div className="flex-2 text-center w-[25%]"></div>
+            <div className="self-end text-end w-[25%] pr-1">Increase</div>
+            <div className="self-end text-end w-[25%] pr-1">Decrease</div>
+            <div className="flex-2 text-end w-[25%] pr-1">Variance</div>
           </div>
+          <div></div>
+          <div>Total</div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div className="flex">
+            <div className="flex-1"></div>
+            <div className="flex justify-end flex-1 ">
+              <input
+                readOnly={true}
+                value={inc}
+                disabled={true}
+                className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
+              ></input>
+            </div>
+            <div className="justify-end flex-1 ">
+              <input
+                readOnly={true}
+                disabled={true}
+                value={dec}
+                className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
+              ></input>
+            </div>
+            <div className="flex-1">
+              <input
+                readOnly={true}
+                disabled={true}
+                value={formatNumber(+(inc ?? 0) - +(dec ?? 0))}
+                className={`text-blue-500 border-0 font-semibold flex-1 w-[98%] px-1 pr-1 text-end focus:outline-none focus:ring-0 focus:ring-offset-0`}
+              ></input>
+            </div>
+          </div>
+          <div></div>
         </div>
       )}
 
       {lines.length > 0 && (
         <div>
-          <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-bold text-neutral-500">
+          <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-semibold text-neutral-500">
             <div className="self-end">Initiative</div>
             <div className="self-end">Grant</div>
             <div className="self-end">Category</div>
@@ -801,8 +800,11 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
                       readOnly={reproInfo.status === POSTED}
                       disabled={reproInfo.status === POSTED}
                       onBlur={recalculateNewAmounts}
-                      classes={`flex-[1.5] w-full mr-1 pl-1 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
+                      classes={`flex-[1.5] w-full mr-1 pl-1 py-2 text-end border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
+                       ${repro.posted ? 'border-b-0' : 'border-b-2 '}
+                       ${repro.posted && +item.increase! === 0 ? '  opacity-0  ' : '  '}`}
                     />
+
                     <NumericArrayInputGeneric
                       index={index}
                       register={register(`rows.${index}.decrease`)}
@@ -811,7 +813,9 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
                       readOnly={reproInfo.status === POSTED}
                       disabled={reproInfo.status === POSTED}
                       onBlur={recalculateNewAmounts}
-                      classes={`flex-[1.5] w-full pl-1 py-2 text-end border-b-2 border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0`}
+                      classes={`flex-[1.5] w-full pl-1 py-2 text-end  border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
+                       ${repro.posted ? 'border-b-0' : 'border-b-2 '}
+                       ${repro.posted && +item.decrease! === 0 ? '  opacity-0  ' : '  '}`}
                     />
                     <div
                       className={`text-center flex-2  self-center text-neutral-600  ${item.newAmount < 0 ? 'text-red-500' : ''}`}
@@ -828,7 +832,7 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
         })}
       </div>
       <AddLineModal
-        year={startYear}
+        year={repro.year}
         isOpen={addLineModalIsOpen}
         onLineAdded={handleLineAdded}
         onCancel={() => {
@@ -839,7 +843,7 @@ const ReproForm = ({ repro, startYear, onInitialSave }: Props) => {
       ></AddLineModal>
       {editSelections && (
         <EditLineModal
-          year={startYear}
+          year={repro.year}
           uuid={editSelections.uuid}
           isOpen={editSelections !== null}
           selections={editSelections}

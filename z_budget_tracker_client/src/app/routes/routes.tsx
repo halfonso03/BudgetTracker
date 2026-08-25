@@ -8,6 +8,7 @@ import CreateBudget from '../../features/Budget/CreateBudget';
 import ReproMain from '../../features/Reprogrammings/ReproMain';
 import ReproLanding from '../../features/Reprogrammings/ReproLanding';
 import Search from '../../features/Reprogrammings/Search';
+import Login from '../../features/Auth/Login';
 
 export const routes: RouteObject[] = [
   {
@@ -17,6 +18,10 @@ export const routes: RouteObject[] = [
       {
         path: '/',
         element: <Home></Home>,
+      },
+      {
+        path: '/login',
+        element: <Login></Login>,
       },
       {
         path: '/budget',

@@ -44,14 +44,14 @@ const TransactionRow = ({
       </div>
     ),
   }));
-  console.log('trx row', {
-    initiativeName,
-    grantName,
-    categoryName,
-    accountId,
-    uuid,
-    comment,
-  });
+  // console.log('trx row', {
+  //   initiativeName,
+  //   grantName,
+  //   categoryName,
+  //   accountId,
+  //   uuid,
+  //   comment,
+  // });
   function handleSaveComment(uuid: string, comment: string | null | undefined) {
     saveComment(uuid, comment);
   }
