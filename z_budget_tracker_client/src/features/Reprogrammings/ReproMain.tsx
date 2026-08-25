@@ -81,7 +81,7 @@ const ReproMain = () => {
 
   return (
     <>
-      <div className="flex justify-end gap-3">
+      <div className="flex justify-end gap-3 mt-6">
         <Button
           buttonSize="small"
           variation="primary"

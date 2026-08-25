@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 
 export function formatDate(date: Date) {
-    return format(date, "M/d/yy ");
+    return format(date, "M-d-yyyy ");
 }
 
 export function formatDateForCalendar(date: Date) {

@@ -6,6 +6,7 @@ interface AuthContextType {
   // token: string | null;
   // user: string | null;
   userId: number | null;
+  loginId: string | null;
   login: (userId: number) => void;
   // login: (accessToken: string, userData: string, userId: number) => void;
 
@@ -22,6 +23,8 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider = ({ children }: AuthProps) => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState<number | null>(null);
+  const [loginId, setloginId] = useState<string | null>(null);
+
   // const [token, setToken] = useState<string | null>(() => {
   //   const i = localStorage.getItem('token');
   //   if (i) return i;
@@ -36,6 +39,7 @@ export const AuthProvider = ({ children }: AuthProps) => {
 
   const login = (userId: number) => {
     setUserId(userId);
+    setloginId('rxleopold');
     // setToken(token);
     // setUser(userData);
     // localStorage.setItem('token', token);
@@ -69,7 +73,9 @@ export const AuthProvider = ({ children }: AuthProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ userId, login, logout, isLoggedIn }}>
+    <AuthContext.Provider
+      value={{ userId, loginId, login, logout, isLoggedIn }}
+    >
       {children}
     </AuthContext.Provider>
   );
