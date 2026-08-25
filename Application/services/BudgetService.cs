@@ -297,6 +297,10 @@ namespace Application.services
         {
             _accounts ??= [.. _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId)];
 
+            var initiative = await _dbContext.Initiatives.FirstAsync(x => x.Id == initiativeId);
+            var grant = await _dbContext.Grants.FirstAsync(x => x.Id == grantId);
+            var category = await _dbContext.Categories.FirstAsync(x => x.Id == categoryId);
+
 
             var balances = await (from b in _dbContext.BudgetLineItems
                                   join a in _dbContext.Accounts on b.AccountId equals a.Id
@@ -308,7 +312,7 @@ namespace Application.services
                                   group b by new { id = a.Id, name = a.Name } into catBal
                                   orderby catBal.Key.name
                                   select
-                                      AccountCurrentAmountDto.Create(initiativeId, grantId, 
+                                      AccountCurrentAmountDto.Create(initiativeId, grantId,
                                            catBal.Key.id, catBal.Key.name, catBal.Sum(x => x.Amount))
                             )
                            .ToListAsync();
@@ -317,7 +321,14 @@ namespace Application.services
                         b in balances on a.Id equals b.AccountId into itemsGroup
                         from subItems in itemsGroup.DefaultIfEmpty()
                         orderby a.Name
-                        select AccountCurrentAmountDto.Create(initiativeId, grantId, a.Id, a.Name, subItems != null ? subItems.CurrentAmount : 0)
+                        select AccountCurrentAmountDto.Create(initiativeId,
+                                    grantId,
+                                    a.Id,
+                                    a.Name,
+                                    subItems != null ? subItems.CurrentAmount : 0,
+                                    initiative.Name,
+                                    grant.Name,
+                                    category.Name)
                         ];
 
             return balances;

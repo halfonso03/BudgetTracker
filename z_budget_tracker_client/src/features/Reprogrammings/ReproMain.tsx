@@ -14,8 +14,6 @@ const ReproMain = () => {
 
   const preloadState = location.state;
 
-  console.log('state2', preloadState);
-
   const reproId = id !== undefined ? +id : undefined;
 
   const {
@@ -62,9 +60,9 @@ const ReproMain = () => {
       grantId: preloadState.ids.grantId,
       categoryId: preloadState.ids.categoryId,
       accountId: preloadState.ids.accountId,
-      initiativeName: '',
-      grantName: '',
-      categoryName: '',
+      initiativeName: preloadState.ids.initiativeName,
+      grantName: preloadState.ids.grantName,
+      categoryName: preloadState.ids.categoryName,
       accountName: '',
       currentAmount: preloadState.balances.filter(
         (x: ReproLineItem) => x.accountId === preloadState.ids.accountId,
@@ -72,8 +70,6 @@ const ReproMain = () => {
       newAmount: 0,
     });
   }
-  // if (preloadState && preloadState.balances)
-  //   console.log('preloadState.balances', preloadState.balances);
 
   const defaultRepro: Repro = {
     uuid: crypto.randomUUID(),
@@ -88,9 +84,6 @@ const ReproMain = () => {
     lineItems: lineItems,
   };
 
-  console.log('defaultRepro', defaultRepro);
-
-  // console.log('defaultRepro', defaultRepro);
 
   if (reproId !== 0 && reproFromDb) {
     repro = createReproFromDb(reproFromDb);
@@ -114,7 +107,7 @@ const ReproMain = () => {
   };
 
   function handleInitialSaved(id: number) {
-    setTimeout(() => navigate(`/reprogramming/${id}`), 1600);
+    // setTimeout(() => navigate(`/reprogramming/${id}`), 1600);
   }
 
   const body = () => {

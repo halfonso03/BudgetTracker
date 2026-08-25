@@ -14,8 +14,7 @@ const ReproPreload = () => {
 
   useEffect(() => {
     if (data) {
-
-      console.log('data', data)
+      console.log('data', data);
       navigate('/reprogramming', {
         state: {
           balances: data,
@@ -25,6 +24,9 @@ const ReproPreload = () => {
             grantId: +grantId!,
             categoryId: +categoryId!,
             accountId: +accountId!,
+            initiativeName: data[0].initiativeName,
+            grantName: data[0].grantName,
+            categoryName: data[0].categoryName,
           },
         },
       });
