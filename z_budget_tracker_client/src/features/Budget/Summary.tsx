@@ -100,6 +100,7 @@ const Summary = ({ year }: Props) => {
             className={` pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}`}
           >
             <CategorySummary
+              year={year}
               initiativeId={budget.initiative_id}
               grantId={budget.grant_id}
               items={
@@ -115,12 +116,14 @@ const Summary = ({ year }: Props) => {
 };
 
 interface CategorySummaryProps {
+  year: number;
   initiativeId: number;
   grantId: number;
   items: AccountBalance[];
 }
 
 function CategorySummary({
+  year,
   initiativeId,
   grantId,
   items,
@@ -232,13 +235,11 @@ function CategorySummary({
                     </div>
                     <div></div>
                     <div className="flex justify-around text-blue-500 text-[.9rem] cursor-pointer">
-                      <ArrowLeftRight
-                        onClick={() => {
-                          navigate(
-                            `/reprogramming/create/${initiativeId}/${grantId}/${i.account_id}`,
-                          );
-                        }}
-                      ></ArrowLeftRight>
+                      <Link
+                        to={`/reprogramming/${year}/${initiativeId}/${grantId}/${i.category_id}/${i.account_id}`}
+                      >
+                        <ArrowLeftRight></ArrowLeftRight>
+                      </Link>
                       <DollarSign
                         onClick={() => {
                           navigate(

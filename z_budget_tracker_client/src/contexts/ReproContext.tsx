@@ -1,6 +1,8 @@
 import { createContext, useState, type ReactNode } from 'react';
 
 interface ReproContextType {
+  reproPreloadLine: ReproPreloadLine | null;
+  setPreloadedLine: (param: ReproPreloadLine) => void;
   saveSearchParams: (params: SearchParams) => void;
   getSearchParams: () => SearchParams | null;
 }
@@ -12,17 +14,25 @@ interface ReproProps {
 const ReproContext = createContext<ReproContextType | null>(null);
 
 export const ReproProvider = ({ children }: ReproProps) => {
-  const [isSearching, setIsSearching] = useState(false);
-  const [resultCount, setResultCount] = useState(0);
-  const [searchParams, setSarchParams] = useState<SearchParams | null>(null);
+  // const [isSearching, setIsSearching] = useState(false);
+  // const [resultCount, setResultCount] = useState(0);
+  const [searchParams, setSearchParams] = useState<SearchParams | null>(null);
+
+  const [reproPreloadLine, setPreloadLine] = useState<ReproPreloadLine | null>(
+    null,
+  );
+
+  const setPreloadedLine = (param: ReproPreloadLine) => {
+    setPreloadLine(param);
+  };
 
   const saveSearchParams = (params: SearchParams) => {
-    setSarchParams(params);
+    setSearchParams(params);
   };
 
   const getSearchParams = () => {
     return searchParams;
-  }
+  };
 
   // const [userId, setUserId] = useState<number | null>(null);
   // const [token, setToken] = useState<string | null>(() => {
@@ -55,7 +65,9 @@ export const ReproProvider = ({ children }: ReproProps) => {
   // };
 
   return (
-    <ReproContext.Provider value={{ saveSearchParams, getSearchParams }}>
+    <ReproContext.Provider
+      value={{ saveSearchParams, getSearchParams, reproPreloadLine, setPreloadedLine }}
+    >
       {children}
     </ReproContext.Provider>
   );

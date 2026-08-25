@@ -47,6 +47,9 @@ type ReproAccountBalance = {
     accountId: number
     initiativeId: number,
     grantId: number,
+    initiativeName?: string
+    grantName?: string
+    categoryName?: string
 }
 
 type ReprogInputRows = {
@@ -101,4 +104,16 @@ type ReproLineItemRequest = {
     increase: number
     decrease: number
     comment?: string | null
+}
+
+
+type ReproPreloadLine = {
+    initiativeId: number
+    grantId: number
+    categoryId: number
+    accountId: number
+    initiativeName?: string
+    grantName?: string
+    categoryName?: string
+    accountName?: string
 }

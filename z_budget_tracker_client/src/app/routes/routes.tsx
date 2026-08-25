@@ -9,6 +9,7 @@ import ReproMain from '../../features/Reprogrammings/ReproMain';
 import ReproLanding from '../../features/Reprogrammings/ReproLanding';
 import Search from '../../features/Reprogrammings/Search';
 import Login from '../../features/Auth/Login';
+import ReproPreload from '../../features/Reprogrammings/ReproPreload';
 
 export const routes: RouteObject[] = [
   {
@@ -46,6 +47,10 @@ export const routes: RouteObject[] = [
           {
             path: ':id',
             element: <ReproMain />,
+          },
+          {
+            path: ':year/:initiativeId/:grantId/:categoryId/:accountId',
+            element: <ReproPreload></ReproPreload>,
           },
           {
             path: 'search',

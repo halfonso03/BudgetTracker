@@ -33,6 +33,7 @@ const AddLineModal = ({ ...props }: Props) => {
   const { data: initiatives } = useInitiatives(props.isOpen);
   const { data: categories } = useCategories(props.isOpen);
 
+
   const { data: balances } = useCurrentAccountBalances(
     selections?.initiativeId,
     selections?.grantId,

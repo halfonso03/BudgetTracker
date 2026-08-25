@@ -51,7 +51,7 @@ type Selections = {
 
 const ReproForm = ({ repro, onInitialSave }: Props) => {
   const DUP_LINES =
-    'There are duplicate lines (Look for same account selections within the same Initiative/Grant/Category)';
+    'There are duplicate lines (Look for the duplicate selections for an Initiative, Grant, Category and Account)';
   const NO_INC_AND_NO_DEC_LINES =
     'There are lines with $0 for increase and $0 decrease';
   const HAS_VARIANCE = 'There is a variance in the reprogramming';
@@ -63,6 +63,8 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
   const { userId, loginId } = useAuth();
   const queryClient = useQueryClient();
 
+  if (repro.year == 0) throw new Error('no year');
+
   const [reproInfo, setReproInfo] = useState<ReproState>({
     id: repro.id,
     status: repro.posted ? POSTED : SAVED,
@@ -73,8 +75,9 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     repro.justification,
   );
   const [lines, setLines] = useState<ReproLineItem[]>(repro.lineItems);
-  const [savedBalances, setSavedBalances] =
-    useState<RowBalance[]>(repro && repro.rowBalances ? repro.rowBalances! : []);
+  const [savedBalances, setSavedBalances] = useState<RowBalance[]>(
+    repro && repro.rowBalances ? repro.rowBalances! : [],
+  );
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
@@ -144,7 +147,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
   useEffect(() => {
     const errors = getErrors();
 
-    if (errors.length > 0 && lines.length > 0) {
+    if (errors.length > 0 && lines.length > 0 && reproInfo.status !== POSTED) {
       toast.custom(
         <div className="animate-right-to-in  rounded-sm p-4 shadow-md w-70 font-semibold  bg-red-500 text-neutral-50 flex gap-2">
           <AlertCircle></AlertCircle>
@@ -166,7 +169,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     }
 
     return () => toast.remove();
-  }, [getErrors, getTotalAmounts, lines]);
+  }, [getErrors, getTotalAmounts, lines, reproInfo.status]);
 
   function handleLineAdded(
     newLine: ReproLineItem,
@@ -482,44 +485,14 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     }));
   }
 
+  console.log('loginId', loginId);
+
   function handleSaveJust(text: string) {
     setJustifications(text);
     setTimeout(() => setJustModalIsOpen(false), 500);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function sendCreateRepro(lineItems: any, posted: boolean) {
-    const reproToSave: CreateReproRequest = {
-      createdById: userId!,
-      posted: posted,
-      justification: justification,
-      lineItems: lineItems,
-    };
-    await createRepro.mutateAsync(reproToSave, {
-      onSuccess: (id) => {
-        onServerSuccess(posted, id);
-        onInitialSave(id);
-      },
-    });
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function sendUpdateRepro(lineItems: any, posted: true) {
-    const reproToSave: UpdateReproRequest = {
-      id: reproInfo.id,
-      updatedById: userId!,
-      posted: posted,
-      justification: justification,
-      lineItems: lineItems,
-    };
-    await updateRepro.mutateAsync(reproToSave, {
-      onSuccess: () => {
-        onServerSuccess(posted);
-      },
-    });
-  }
-
-  async function saveReproButtonClick(posted: boolean = false) {
+  async function saveReproButtonClick() {
     try {
       const lineItems = lines.map((l) => ({
         rowId: l.rowId,
@@ -532,31 +505,9 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
         decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
       }));
       if (reproInfo.id === 0) {
-        const reproToSave: CreateReproRequest = {
-          createdById: userId!,
-          posted: posted,
-          justification: justification,
-          lineItems: lineItems,
-        };
-        await createRepro.mutateAsync(reproToSave, {
-          onSuccess: (id) => {
-            onServerSuccess(posted, id);
-            onInitialSave(id);
-          },
-        });
+        sendCreateRepro(lineItems);
       } else {
-        const reproToSave: UpdateReproRequest = {
-          id: reproInfo.id,
-          updatedById: userId!,
-          posted: posted,
-          justification: justification,
-          lineItems: lineItems,
-        };
-        await updateRepro.mutateAsync(reproToSave, {
-          onSuccess: () => {
-            onServerSuccess(posted);
-          },
-        });
+        sendUpdateRepro(lineItems);
       }
     } catch (error) {
       console.log('error', error);
@@ -580,6 +531,38 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     } else {
       sendUpdateRepro(lineItems, true);
     }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function sendCreateRepro(lineItems: any, posted: boolean = false) {
+    const reproToSave: CreateReproRequest = {
+      createdById: userId!,
+      posted: posted,
+      justification: justification,
+      lineItems: lineItems,
+    };
+    await createRepro.mutateAsync(reproToSave, {
+      onSuccess: (id) => {
+        onServerSuccess(posted, id);
+        onInitialSave(id);
+      },
+    });
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function sendUpdateRepro(lineItems: any, posted: boolean = false) {
+    const reproToSave: UpdateReproRequest = {
+      id: reproInfo.id,
+      updatedById: userId!,
+      posted: posted,
+      justification: justification,
+      lineItems: lineItems,
+    };
+    await updateRepro.mutateAsync(reproToSave, {
+      onSuccess: () => {
+        onServerSuccess(posted);
+      },
+    });
   }
 
   return (
@@ -607,7 +590,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
             <Button
               buttonSize="small"
               disabled={!canSave()}
-              onClick={() => saveReproButtonClick(false)}
+              onClick={saveReproButtonClick}
             >
               <Save className="mr-1"></Save>
               Save
