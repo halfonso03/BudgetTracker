@@ -60,12 +60,23 @@ input:-webkit-autofill:focus {
   z-index: 10;
 }
 
-.s{
-  animation: sds 0.45s ease-in-out 1
+.s {
+  animation: sds 0.45s ease-in-out 1;
 }
 
 @theme {
-  --animate-right-to-in: fromRightToIn 0.45s ease-in-out forwards ;
+  --animate-repro-fade-in: reproIn .25s ease-in-out forwards;
+
+  @keyframes reproIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  --animate-right-to-in: fromRightToIn 0.45s ease-in-out forwards;
 
   @keyframes fromRightToIn {
     0% {

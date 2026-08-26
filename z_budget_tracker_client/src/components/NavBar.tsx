@@ -12,7 +12,9 @@ const NavBar = () => {
       '`/reprogramming/${reproInputRef.current!.value}`',
       `/reprogramming/${reproInputRef.current!.value}`,
     );
-    navigate(`/reprogramming/${reproInputRef.current!.value}`);
+    navigate(`/reprogramming/${reproInputRef.current!.value}`, {
+      replace: true,
+    });
   }
 
   function gotoPrev() {
@@ -24,7 +26,9 @@ const NavBar = () => {
       +reproInputRef.current!.value - 1
     ).toString();
 
-    navigate(`/reprogramming/${reproInputRef.current!.value}`);
+    navigate(`/reprogramming/${reproInputRef.current!.value}`, {
+      replace: true,
+    });
   }
 
   function gotoNext() {
@@ -37,7 +41,9 @@ const NavBar = () => {
       +reproInputRef.current!.value + 1
     ).toString();
 
-    navigate(`/reprogramming/${reproInputRef.current!.value}`);
+    navigate(`/reprogramming/${reproInputRef.current!.value}`, {
+      replace: true,
+    });
   }
   // const { logout, user } = useAuth();
 

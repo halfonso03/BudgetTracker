@@ -31,6 +31,7 @@ const POSTED = 3;
 type ReproStatus = typeof EDITING | typeof SAVED | typeof POSTED;
 type ReproState = {
   id: number;
+  justification: string;
   status: ReproStatus;
   postedDate?: Date | null;
   postedBy?: string | null;
@@ -38,7 +39,7 @@ type ReproState = {
 
 interface Props {
   repro: Repro;
-  onInitialSave: (newId: number) => void;
+  onInitialSave?: (newId: number) => void;
 }
 
 type Selections = {
@@ -63,26 +64,33 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
   const { userId, loginId } = useAuth();
   const queryClient = useQueryClient();
 
-  if (repro.year == 0) throw new Error('no year');
-
-  const [reproInfo, setReproInfo] = useState<ReproState>({
-    id: repro.id,
-    status: repro.posted ? POSTED : SAVED,
-    postedDate: repro.postedDate,
-    postedBy: repro.postedBy,
-  });
-  const [justification, setJustifications] = useState<string>(
-    repro.justification,
-  );
-  const [lines, setLines] = useState<ReproLineItem[]>(repro.lineItems);
-  const [savedBalances, setSavedBalances] = useState<RowBalance[]>(
-    repro && repro.rowBalances ? repro.rowBalances! : [],
-  );
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [confirmPostModalIsOpen, setConfirmPostModal] = useState(false);
+  // console.log('repro.year from form', repro.year)
+  if (repro.year === 0) throw new Error('no year');
+
+  const [reproInfo, setReproInfo] = useState<ReproState>({
+    id: repro.id,
+    justification: repro.justification,
+    status: repro.posted ? POSTED : SAVED,
+    postedDate: repro.postedDate,
+    postedBy: repro.postedBy,
+  });
+
+  const [lines, setLines] = useState<ReproLineItem[]>(
+    repro.lineItems.map((l) => {
+      return {
+        ...l,
+        newAmount: l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+      };
+    }),
+  );
+  const [savedBalances, setSavedBalances] = useState<RowBalance[]>(
+    repro && repro.rowBalances ? repro.rowBalances! : [],
+  );
 
   const reprogRows: ReprogInputRow[] = lines.map((l) => {
     return {
@@ -135,19 +143,22 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
       errors.push(NEGATIVE_BALANCE);
     }
 
-    if (!justification || justification.trim().length === 0) {
+    if (
+      !reproInfo.justification ||
+      reproInfo.justification.trim().length === 0
+    ) {
       errors.push(NO_JUSTIFICATION);
     }
 
     return errors;
-  }, [getTotalAmounts, justification, lines]);
+  }, [getTotalAmounts, lines, reproInfo.justification]);
 
   const { inc, dec } = getTotalAmounts();
 
   useEffect(() => {
     const errors = getErrors();
 
-    if (errors.length > 0 && lines.length > 0 && reproInfo.status !== POSTED) {
+    if (errors.length > 0 && lines.length > 0) {
       toast.custom(
         <div className="animate-right-to-in  rounded-sm p-4 shadow-md w-70 font-semibold  bg-red-500 text-neutral-50 flex gap-2">
           <AlertCircle></AlertCircle>
@@ -169,7 +180,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     }
 
     return () => toast.remove();
-  }, [getErrors, getTotalAmounts, lines, reproInfo.status]);
+  }, [getErrors, getTotalAmounts, lines]);
 
   function handleLineAdded(
     newLine: ReproLineItem,
@@ -440,7 +451,9 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     result = result && reproInfo.status !== POSTED;
 
     result =
-      result && justification !== null && justification.trim().length > 0;
+      result &&
+      reproInfo.justification !== null &&
+      reproInfo.justification.trim().length > 0;
 
     return result;
   }
@@ -472,9 +485,6 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
 
   function onServerSuccess(posted: boolean, id: number = 0) {
     const message = posted ? 'Reprogramming Posted.' : 'Reprogramming Saved.';
-    toast.success(message, {
-      duration: 1500,
-    });
 
     setReproInfo((prev) => ({
       ...prev,
@@ -483,12 +493,18 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
       postedDate: posted ? new Date() : null,
       postedBy: posted ? loginId : '',
     }));
+
+    toast.success(message, {
+      duration: 1500,
+    });
   }
 
-  console.log('loginId', loginId);
-
   function handleSaveJust(text: string) {
-    setJustifications(text);
+    // setJustification(text);
+    setReproInfo((prev) => ({
+      ...prev,
+      justification: text,
+    }));
     setTimeout(() => setJustModalIsOpen(false), 500);
   }
 
@@ -538,13 +554,34 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     const reproToSave: CreateReproRequest = {
       createdById: userId!,
       posted: posted,
-      justification: justification,
+      justification: reproInfo.justification,
       lineItems: lineItems,
     };
     await createRepro.mutateAsync(reproToSave, {
       onSuccess: (id) => {
+        queryClient.setQueryData(['repro', id], () => {
+          const r: Repro = {
+            ...reproToSave,
+            id: id,
+            year: repro.year,
+            createdBy: loginId!,
+            createDate: new Date(),
+            lineItems: lines.map((l) => {
+              return {
+                ...l,
+                newAmount:
+                  l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+              };
+            }),
+            rowBalances: savedBalances,
+          };
+
+          console.log('r', r);
+          return r;
+        });
+
         onServerSuccess(posted, id);
-        onInitialSave(id);
+        onInitialSave?.(id);
       },
     });
   }
@@ -555,12 +592,13 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
       id: reproInfo.id,
       updatedById: userId!,
       posted: posted,
-      justification: justification,
+      justification: reproInfo.justification,
       lineItems: lineItems,
     };
     await updateRepro.mutateAsync(reproToSave, {
       onSuccess: () => {
         onServerSuccess(posted);
+        // onInitialSave?.(0);
       },
     });
   }
@@ -617,8 +655,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
             ) : (
               <div className="self-center">Justification</div>
             )}
-
-            {!justification ? (
+            {reproInfo.justification?.trim() === '' ? (
               <AlertTriangle
                 className="self-center text-orange-300"
                 size={17}
@@ -668,7 +705,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
               </div>
               <div className="flex gap-3 font-semibold">
                 <div className=" text-neutral-500">POSTED BY</div>
-                <div>{repro.postedBy}</div>
+                <div>{reproInfo.postedBy}</div>
               </div>
             </div>
           )}
@@ -837,7 +874,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
         <JustificaModal
           isOpen={justModalIsOpen}
           onCommentSaved={handleSaveJust}
-          itemComment={justification}
+          itemComment={reproInfo.justification}
           onCancel={() => {
             setTimeout(() => {
               setJustModalIsOpen(false);

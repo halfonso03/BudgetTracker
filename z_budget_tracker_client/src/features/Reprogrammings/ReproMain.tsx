@@ -6,40 +6,37 @@ import { useState } from 'react';
 import Button from '../../components/Button';
 import { Search } from 'lucide-react';
 import ChooseYearModal from './ChooseYearModal';
+import useAuth from '../../contexts/useAuth';
 
 const ReproMain = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
+  const { userId } = useAuth();
 
   const preloadState = location.state;
 
   const reproId = id !== undefined ? +id : undefined;
 
-  const {
-    data: reproFromDb,
-    isLoading,
-    isFetching,
-    isSuccess,
-  } = useGetRepro(reproId);
+  const { data: reproFromDb, isFetching, isSuccess } = useGetRepro(reproId);
 
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
-  const [savedJustification, setSavedJustification] = useState('');
+  // const [savedJustification, setSavedJustification] = useState('');
   const [selectedYear, setSelectedYear] = useState<number>(0);
 
-  let initialYear = 0;
+  let initialYear;
 
-  if (reproFromDb?.lineItems[0]?.year) {
+  if (isSuccess) {
     initialYear = reproFromDb?.lineItems[0]?.year;
-  } else if (preloadState && preloadState.ids && preloadState.ids.year) {
+  } else if (preloadState?.ids.year) {
     initialYear = preloadState.ids.year;
   } else if (selectedYear !== 0) {
     initialYear = selectedYear;
+  } else {
+    initialYear = 0;
   }
-  const [year, setYear] = useState<number>(initialYear);
 
-  let repro: Repro;
   const rowBalances: RowBalance[] = [];
   const lineItems: ReproLineItem[] = [];
 
@@ -54,15 +51,9 @@ const ReproMain = () => {
     });
 
     lineItems.push({
+      ...preloadState.ids,
       rowId: 0,
       uuid: crypto.randomUUID(),
-      initiativeId: preloadState.ids.initiativeId,
-      grantId: preloadState.ids.grantId,
-      categoryId: preloadState.ids.categoryId,
-      accountId: preloadState.ids.accountId,
-      initiativeName: preloadState.ids.initiativeName,
-      grantName: preloadState.ids.grantName,
-      categoryName: preloadState.ids.categoryName,
       accountName: '',
       currentAmount: preloadState.balances.filter(
         (x: ReproLineItem) => x.accountId === preloadState.ids.accountId,
@@ -74,48 +65,75 @@ const ReproMain = () => {
   const defaultRepro: Repro = {
     uuid: crypto.randomUUID(),
     id: 0,
-    year: initialYear,
-    justification: savedJustification,
+    year: selectedYear,
+    justification: '',
     createdBy: '',
-    createdById: 0,
+    createdById: userId!,
     posted: false,
     createDate: new Date(),
     rowBalances: rowBalances,
     lineItems: lineItems,
   };
 
+  const [reproState, setReproState] = useState<Repro | null>(null);
 
-  if (reproId !== 0 && reproFromDb) {
-    repro = createReproFromDb(reproFromDb);
-  } else if (year > 0) {
-    repro = defaultRepro;
+  if (selectedYear !== 0) {
+    console.log('123');
+  } else if (isSuccess && reproId) {
+    if (selectedYear !== 0) setSelectedYear(0);
+
+    if (isSuccess) {
+      if (reproFromDb) {
+        if (selectedYear !== 0) setSelectedYear(0);
+        if (!reproState) {
+          setReproState(createReproFromDb(reproFromDb));
+        } else if (reproState && reproId !== reproState.id) {
+          setReproState(createReproFromDb(reproFromDb));
+        }
+      }
+    }
+  } else {
+    if (preloadState && !isFetching) {
+      if (!reproState) {
+        setReproState({
+          ...defaultRepro,
+          year: defaultRepro.lineItems[0].year!,
+        });
+      }
+    }
   }
 
-  if (isLoading || isFetching) return <div>Loading...</div>;
-  if (reproId && (!isSuccess || !reproFromDb)) return <div>Error1</div>;
-
   const handleYearSelected = (e: { year: number; justification: string }) => {
-    setYear(e.year);
     setSelectedYear(e.year);
-    setNewReproJustification('');
-    setSavedJustification(e.justification);
+    setReproState(() => ({
+      ...defaultRepro,
+      uuid: crypto.randomUUID(),
+      justification: e.justification,
+      year: e.year,
+    }));
 
-    if (location.pathname !== '/reprogramming') navigate('/reprogramming');
+    // if (location.pathname !== '/reprogramming') {
+    //   navigate('/reprogramming');
+    // }
+
     setTimeout(() => {
       setChoosingYear(false);
     }, 500);
   };
 
   function handleInitialSaved(id: number) {
-    // setTimeout(() => navigate(`/reprogramming/${id}`), 1600);
+    setTimeout(() => navigate(`/reprogramming/${id}`), 1600);
   }
 
   const body = () => {
-    if (repro) {
+    console.log('reproState', reproState);
+
+    if (reproState && reproState.year !== 0) {
+      console.log('rendring form', reproState);
       return (
         <ReproForm
-          key={repro.uuid}
-          repro={repro}
+          key={reproState.uuid}
+          repro={reproState}
           onInitialSave={handleInitialSaved}
         ></ReproForm>
       );
@@ -131,6 +149,7 @@ const ReproMain = () => {
           variation="primary"
           onClick={() => {
             setChoosingYear(true);
+            setNewReproJustification('');
           }}
         >
           Start New...
@@ -138,7 +157,7 @@ const ReproMain = () => {
         <Button
           buttonSize="xsmall"
           variation="secondary"
-          disabled={year > 0}
+          disabled={selectedYear > 0}
           onClick={() => navigate('search')}
         >
           <Search></Search>
@@ -164,7 +183,6 @@ export default ReproMain;
 function createReproFromDb(repro2: Repro): Repro {
   const repro: Repro = {
     ...repro2,
-    year: repro2.lineItems[0].year!,
     justification: repro2.justification.trim(),
     uuid: crypto.randomUUID(),
     lineItems: repro2.lineItems!.map((l) => {

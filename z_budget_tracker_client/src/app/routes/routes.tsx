@@ -10,6 +10,8 @@ import ReproLanding from '../../features/Reprogrammings/ReproLanding';
 import Search from '../../features/Reprogrammings/Search';
 import Login from '../../features/Auth/Login';
 import ReproPreload from '../../features/Reprogrammings/ReproPreload';
+import ReproNew from '../../features/Reprogrammings/new/ReproNew';
+import ReproDetails from '../../features/Reprogrammings/new/ReproDetails';
 
 export const routes: RouteObject[] = [
   {
@@ -42,11 +44,15 @@ export const routes: RouteObject[] = [
         children: [
           {
             path: '',
-            element: <ReproMain />,
+            element: <ReproNew />,
+          },
+          {
+            path: 'new',
+            element: <ReproNew />,
           },
           {
             path: ':id',
-            element: <ReproMain />,
+            element: <ReproDetails />,
           },
           {
             path: ':year/:initiativeId/:grantId/:categoryId/:accountId',
@@ -70,3 +76,22 @@ export const routes: RouteObject[] = [
 ];
 
 export const router = createBrowserRouter(routes);
+
+// children: [
+//         {
+//           path: '',
+//           element: <ReproMain />,
+//         },
+//         {
+//           path: ':id',
+//           element: <ReproMain />,
+//         },
+//         {
+//           path: ':year/:initiativeId/:grantId/:categoryId/:accountId',
+//           element: <ReproPreload></ReproPreload>,
+//         },
+//         {
+//           path: 'search',
+//           element: <Search />,
+//         },
+//       ],

@@ -44,7 +44,9 @@ agent.interceptors.response.use(
         return response;
     },
     async (error) => {
-        console.log('error', error.response)
+        
+        console.log('agent error', error)
+
         if (error.response) {
             // Handle specific HTTP error status codes globally
             switch (error.response.status) {

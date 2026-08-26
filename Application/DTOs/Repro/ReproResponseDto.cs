@@ -21,7 +21,7 @@ namespace Application.DTOs.Repro
         public string? Justification { get; set; }
         public List<ReproLineItemResponseDto> LineItems { get; set; } = [];
         public required List<BalancesResponseDto> RowBalances { get; set; }
-        public string? Comment { get; set; }
+        public int Year { get; internal set; }
 
         // type RowBalance = {
         //     key: { initiativeId: number; grantId: number; categoryId: number };

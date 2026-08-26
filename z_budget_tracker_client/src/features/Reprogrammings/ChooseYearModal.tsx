@@ -63,6 +63,7 @@ const ChooseYearModal = ({ ...props }: Props) => {
               setAnimateOut(true);
               setTimeout(() => {
                 setAnimateOut(false);
+                setYear(0);
               }, 500);
             }}
           >

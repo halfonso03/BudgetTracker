@@ -295,7 +295,7 @@ namespace Application.services
 
         public async Task<List<AccountCurrentAmountDto>> GetAccountBalancesForCategory(int initiativeId, int grantId, int categoryId)
         {
-            _accounts ??= [.. _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId)];
+            var acounts = _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId).Select(x => x).ToList();
 
             var initiative = await _dbContext.Initiatives.FirstAsync(x => x.Id == initiativeId);
             var grant = await _dbContext.Grants.FirstAsync(x => x.Id == grantId);
@@ -317,7 +317,7 @@ namespace Application.services
                             )
                            .ToListAsync();
 
-            balances = [.. from a in _accounts join
+            balances = [.. from a in acounts join
                         b in balances on a.Id equals b.AccountId into itemsGroup
                         from subItems in itemsGroup.DefaultIfEmpty()
                         orderby a.Name

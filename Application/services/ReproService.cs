@@ -64,6 +64,7 @@ namespace Application.Services
                 {
                     RowBalances = rowBalances,
                     Id = reproFromDb.Id,
+                    Year = lineItems.First().Year,
                     Justification = reproFromDb.Justification,
                     CreatedBy = reproFromDb.CreatedBy!.WindowsLogin,
                     CreateDate = reproFromDb.CreatedDate,

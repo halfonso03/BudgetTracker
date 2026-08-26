@@ -1,10 +1,17 @@
 import { createContext, useState, type ReactNode } from 'react';
 
+export type NewReproState = {
+  year: number;
+  justification: string;
+};
+
 interface ReproContextType {
   reproPreloadLine: ReproPreloadLine | null;
   setPreloadedLine: (param: ReproPreloadLine) => void;
   saveSearchParams: (params: SearchParams) => void;
   getSearchParams: () => SearchParams | null;
+  setNewReproState: (year: number, justification: string) => void;
+  getNewReproState: () => void;
 }
 
 interface ReproProps {
@@ -22,6 +29,8 @@ export const ReproProvider = ({ children }: ReproProps) => {
     null,
   );
 
+  const [newState, setNewState] = useState<NewReproState | null>(null);
+
   const setPreloadedLine = (param: ReproPreloadLine) => {
     setPreloadLine(param);
   };
@@ -33,6 +42,12 @@ export const ReproProvider = ({ children }: ReproProps) => {
   const getSearchParams = () => {
     return searchParams;
   };
+
+  const setNewReproState = (year: number, justification: string) => {
+    setNewState({ year, justification });
+  };
+
+  const getNewReproState = () => newState;
 
   // const [userId, setUserId] = useState<number | null>(null);
   // const [token, setToken] = useState<string | null>(() => {
@@ -66,7 +81,14 @@ export const ReproProvider = ({ children }: ReproProps) => {
 
   return (
     <ReproContext.Provider
-      value={{ saveSearchParams, getSearchParams, reproPreloadLine, setPreloadedLine }}
+      value={{
+        saveSearchParams,
+        getSearchParams,
+        reproPreloadLine,
+        setPreloadedLine,
+        setNewReproState,
+        getNewReproState,
+      }}
     >
       {children}
     </ReproContext.Provider>

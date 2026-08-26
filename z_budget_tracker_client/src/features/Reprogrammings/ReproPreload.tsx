@@ -12,10 +12,10 @@ const ReproPreload = () => {
     +categoryId!,
   );
 
+
   useEffect(() => {
     if (data) {
-      console.log('data', data);
-      navigate('/reprogramming', {
+      navigate('/reprogramming/new', {
         state: {
           balances: data,
           ids: {
