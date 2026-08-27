@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useNavigate, useParams } from 'react-router-dom';
 import useGetRepro from '../../../api/hooks/repro/useGetRepro';
 import ReproForm from '../ReproForm';
 import NewReproButton from './NewReproButton';
@@ -8,6 +8,7 @@ const ReproDetails = () => {
   const { id } = useParams();
 
   const reproId = id !== undefined ? +id : undefined;
+
 
   const {
     data: reproFromDb,

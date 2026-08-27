@@ -72,7 +72,16 @@ const ReproNew = () => {
   };
 
   function handleInitialSaved(id: number) {
-    setTimeout(() => navigate(`/reprogramming/${id}`), 1600);
+    setTimeout(
+      () =>
+        navigate(`/reprogramming/${id}`, {
+          state: {
+            created: true,
+          },
+        }),
+
+      1600,
+    );
   }
 
   const body = () => {

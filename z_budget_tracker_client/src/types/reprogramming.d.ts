@@ -10,7 +10,7 @@ type Repro = {
     postedBy?: string
     posted: boolean
     postedById?: number
-    postedDate?: Date
+    postedDate?: Date | null
     lineItems: ReproLineItem[]
     rowBalances?: RowBalance[],
     started?: boolean

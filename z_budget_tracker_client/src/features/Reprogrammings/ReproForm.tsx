@@ -23,13 +23,15 @@ import 'react-dropdown/style.css';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import useAuth from '../../contexts/useAuth';
 import ConfirmModal from '../../components/ConfirmModal';
+import ReproHeader from './new/ReproHeader';
+import { useLocation } from 'react-router-dom';
 
 const EDITING = 1;
 const SAVED = 2;
 const POSTED = 3;
 
 type ReproStatus = typeof EDITING | typeof SAVED | typeof POSTED;
-type ReproState = {
+type ReproHeader = {
   id: number;
   justification: string;
   status: ReproStatus;
@@ -63,7 +65,8 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
 
   const { userId, loginId } = useAuth();
   const queryClient = useQueryClient();
-
+  const location = useLocation();
+  const created = location.state?.created ? location.state.created : false;
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
@@ -72,7 +75,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
   // console.log('repro.year from form', repro.year)
   if (repro.year === 0) throw new Error('no year');
 
-  const [reproInfo, setReproInfo] = useState<ReproState>({
+  const [reproHeader, setReproHeader] = useState<ReproHeader>({
     id: repro.id,
     justification: repro.justification,
     status: repro.posted ? POSTED : SAVED,
@@ -144,14 +147,14 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     }
 
     if (
-      !reproInfo.justification ||
-      reproInfo.justification.trim().length === 0
+      !reproHeader.justification ||
+      reproHeader.justification.trim().length === 0
     ) {
       errors.push(NO_JUSTIFICATION);
     }
 
     return errors;
-  }, [getTotalAmounts, lines, reproInfo.justification]);
+  }, [getTotalAmounts, lines, reproHeader.justification]);
 
   const { inc, dec } = getTotalAmounts();
 
@@ -205,7 +208,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     newLines.push({ ...newLine, rowId: newLines.length });
 
     setLines(newLines);
-    setReproInfo((prev) => ({ ...prev, status: EDITING }));
+    setReproHeader((prev) => ({ ...prev, status: EDITING }));
     const t = true;
     if (t) {
       const balances = queryClient.getQueryData<
@@ -225,17 +228,6 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
             b.key.categoryId == key.categoryId,
         )
       ) {
-        console.log('123', 123);
-        const x = [
-          ...savedBalances,
-          {
-            key: {
-              ...key,
-            },
-            balances: balances!,
-          },
-        ];
-        console.log('x', x);
         setSavedBalances((prev) => {
           const newArray = [
             ...prev,
@@ -247,7 +239,6 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
             },
           ];
 
-          console.log('newArray', newArray);
           return newArray;
         });
       }
@@ -448,12 +439,12 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     // no duplicate lines
     result = result && noDupLines(lines);
 
-    result = result && reproInfo.status !== POSTED;
+    result = result && reproHeader.status !== POSTED;
 
     result =
       result &&
-      reproInfo.justification !== null &&
-      reproInfo.justification.trim().length > 0;
+      reproHeader.justification !== null &&
+      reproHeader.justification.trim().length > 0;
 
     return result;
   }
@@ -486,7 +477,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
   function onServerSuccess(posted: boolean, id: number = 0) {
     const message = posted ? 'Reprogramming Posted.' : 'Reprogramming Saved.';
 
-    setReproInfo((prev) => ({
+    setReproHeader((prev) => ({
       ...prev,
       id: id !== 0 ? id : prev.id,
       status: posted ? POSTED : SAVED,
@@ -501,7 +492,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
 
   function handleSaveJust(text: string) {
     // setJustification(text);
-    setReproInfo((prev) => ({
+    setReproHeader((prev) => ({
       ...prev,
       justification: text,
     }));
@@ -520,7 +511,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
         increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
         decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
       }));
-      if (reproInfo.id === 0) {
+      if (reproHeader.id === 0) {
         sendCreateRepro(lineItems);
       } else {
         sendUpdateRepro(lineItems);
@@ -542,7 +533,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
       decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
     }));
 
-    if (reproInfo.id === 0) {
+    if (reproHeader.id === 0) {
       sendCreateRepro(lineItems, true);
     } else {
       sendUpdateRepro(lineItems, true);
@@ -554,31 +545,27 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     const reproToSave: CreateReproRequest = {
       createdById: userId!,
       posted: posted,
-      justification: reproInfo.justification,
+      justification: reproHeader.justification,
       lineItems: lineItems,
     };
     await createRepro.mutateAsync(reproToSave, {
       onSuccess: (id) => {
-        queryClient.setQueryData(['repro', id], () => {
-          const r: Repro = {
-            ...reproToSave,
-            id: id,
-            year: repro.year,
-            createdBy: loginId!,
-            createDate: new Date(),
-            lineItems: lines.map((l) => {
-              return {
-                ...l,
-                newAmount:
-                  l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
-              };
-            }),
-            rowBalances: savedBalances,
-          };
-
-          console.log('r', r);
-          return r;
-        });
+        queryClient.setQueryData<Repro>(['repro', id], () => ({
+          ...reproToSave,
+          id: id,
+          year: repro.year,
+          justification: reproHeader.justification,
+          createdBy: loginId!,
+          createDate: new Date(),
+          lineItems: lines.map((l) => {
+            return {
+              ...l,
+              newAmount:
+                l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+            };
+          }),
+          rowBalances: savedBalances,
+        }));
 
         onServerSuccess(posted, id);
         onInitialSave?.(id);
@@ -589,14 +576,31 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function sendUpdateRepro(lineItems: any, posted: boolean = false) {
     const reproToSave: UpdateReproRequest = {
-      id: reproInfo.id,
+      id: reproHeader.id,
       updatedById: userId!,
       posted: posted,
-      justification: reproInfo.justification,
+      justification: reproHeader.justification,
       lineItems: lineItems,
     };
     await updateRepro.mutateAsync(reproToSave, {
       onSuccess: () => {
+        console.log('reproInfo', reproHeader);
+        // queryClient.setQueryData<Repro>(['repro', reproHeader.id], () => ({
+        //   ...reproToSave,
+        //   createdBy: '',
+        //   createdById: 0,
+        //   createDate: new Date(),
+        //   id: reproHeader.id,
+        //   year: repro.year,
+        //   lineItems: lines.map((l) => {
+        //     return {
+        //       ...l,
+        //       newAmount:
+        //         l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+        //     };
+        //   }),
+        //   rowBalances: savedBalances,
+        // }));
         onServerSuccess(posted);
         // onInitialSave?.(0);
       },
@@ -612,7 +616,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
 
         <div className="flex mb-16 justify-between text-neutral-400 mr-3 mt-14 ">
           <div
-            className={`flex gap-2 cursor-default ${reproInfo.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
+            className={`flex gap-2 cursor-default ${reproHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
           >
             {repro !== undefined && (
               <Button
@@ -638,7 +642,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
               disabled={
                 !canPost() ||
                 getErrors().length > 0 ||
-                reproInfo.status === Number(POSTED)
+                reproHeader.status === Number(POSTED)
               }
               onClick={() => setConfirmPostModal(true)}
             >
@@ -650,12 +654,12 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
             className="flex gap-1 cursor-pointer hover:text-neutral-600 "
             onClick={() => setJustModalIsOpen(true)}
           >
-            {reproInfo.status === Number(POSTED) ? (
+            {reproHeader.status === Number(POSTED) ? (
               <div className="self-center">View Justification</div>
             ) : (
               <div className="self-center">Justification</div>
             )}
-            {reproInfo.justification?.trim() === '' ? (
+            {reproHeader.justification?.trim() === '' ? (
               <AlertTriangle
                 className="self-center text-orange-300"
                 size={17}
@@ -670,54 +674,37 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
         </div>
 
         <div className="flex justify-between mb-12 border-b border-b-neutral-200 pb-2 ">
-          <div className="flex gap-10 animate-page-fade-in">
-            <div className="flex gap-3 ml-3">
-              <span className="font-semibold text-neutral-500">ID</span>
-              <div>
-                {reproInfo.id == 0 ? (
-                  <div className="font-semibold">-</div>
-                ) : (
-                  <div className="font-semibold">{reproInfo.id}</div>
-                )}
-              </div>
-            </div>
-            <div className="flex gap-3 font-semibold">
-              <span className=" text-neutral-500">STATUS</span>
-              {reproInfo.id == 0 ? (
-                <div>Draft</div>
-              ) : reproInfo.status === POSTED ? (
-                <div>Posted</div>
-              ) : reproInfo.status === SAVED ? (
-                <div>Saved</div>
-              ) : (
-                <div>Editing</div>
-              )}
-            </div>
-          </div>
+          <ReproHeader
+            id={reproHeader.id}
+            status={reproHeader.status}
+            created={created}
+          ></ReproHeader>
 
-          {reproInfo.status === POSTED && (
+          {reproHeader.status === POSTED && (
             <div className="flex gap-12 mr-4  ">
               <div className="flex gap-3 font-semibold">
                 <div className=" text-neutral-500">POSTED ON</div>
                 <div>
-                  {reproInfo.postedDate ? formatDate(reproInfo.postedDate) : ''}
+                  {reproHeader.postedDate
+                    ? formatDate(reproHeader.postedDate)
+                    : ''}
                 </div>
               </div>
               <div className="flex gap-3 font-semibold">
                 <div className=" text-neutral-500">POSTED BY</div>
-                <div>{reproInfo.postedBy}</div>
+                <div>{reproHeader.postedBy}</div>
               </div>
             </div>
           )}
         </div>
-        {reproInfo.status === POSTED && (
+        {reproHeader.status === POSTED && (
           <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 ">
             <div>Total</div>
             <div className="text-neutral-900">{inc}</div>
             <div></div>
           </div>
         )}
-        {lines.length > 0 && reproInfo.status !== POSTED && (
+        {lines.length > 0 && reproHeader.status !== POSTED && (
           <div className=" grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500">
             <div className="self-end col-span-4 "></div>
             <div className="flex ">
@@ -805,7 +792,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
                   render={() => (
                     <div className="flex gap-0">
                       <div className="text-center flex-2 text-neutral-600 self-center w-full">
-                        {reproInfo.status !== POSTED &&
+                        {reproHeader.status !== POSTED &&
                           formatNumber(item.currentAmount)}
                       </div>
                       <NumericArrayInputGeneric
@@ -813,12 +800,12 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
                         setValue={setValue}
                         register={register(`rows.${index}.increase`)}
                         fieldName="increase"
-                        readOnly={reproInfo.status === POSTED}
-                        disabled={reproInfo.status === POSTED}
+                        readOnly={reproHeader.status === POSTED}
+                        disabled={reproHeader.status === POSTED}
                         onBlur={recalculateNewAmounts}
                         classes={`flex-[1.5] w-full mr-1 pl-1 py-2 text-end border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
-                       ${reproInfo.status === POSTED ? 'border-b-0' : 'border-b-2 '}
-                       ${reproInfo.status === POSTED && +item.increase! === 0 ? '  opacity-0  ' : '  '}`}
+                       ${reproHeader.status === POSTED ? 'border-b-0' : 'border-b-2 '}
+                       ${reproHeader.status === POSTED && +item.increase! === 0 ? '  opacity-0  ' : '  '}`}
                       />
 
                       <NumericArrayInputGeneric
@@ -826,22 +813,22 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
                         register={register(`rows.${index}.decrease`)}
                         fieldName="decrease"
                         setValue={setValue}
-                        readOnly={reproInfo.status === POSTED}
-                        disabled={reproInfo.status === POSTED}
+                        readOnly={reproHeader.status === POSTED}
+                        disabled={reproHeader.status === POSTED}
                         onBlur={recalculateNewAmounts}
                         classes={`flex-[1.5] w-full pl-1 py-2 text-end  border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
-                       ${reproInfo.status === POSTED ? 'border-b-0' : 'border-b-2 '}
-                       ${reproInfo.status === POSTED && +item.decrease! === 0 ? '  opacity-0  ' : '  '}`}
+                       ${reproHeader.status === POSTED ? 'border-b-0' : 'border-b-2 '}
+                       ${reproHeader.status === POSTED && +item.decrease! === 0 ? '  opacity-0  ' : '  '}`}
                       />
                       <div
                         className={`text-center flex-2  self-center text-neutral-600  ${item.newAmount < 0 ? 'text-red-500' : ''}`}
                       >
-                        {reproInfo.status !== POSTED &&
+                        {reproHeader.status !== POSTED &&
                           formatNumber(item.newAmount)}
                       </div>
                     </div>
                   )}
-                  canEdit={reproInfo.status !== POSTED}
+                  canEdit={reproHeader.status !== POSTED}
                 ></TransactionRow>
               </div>
             );
@@ -872,9 +859,10 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
           ></EditLineModal>
         )}
         <JustificaModal
+          canEdit={reproHeader.status !== POSTED}
           isOpen={justModalIsOpen}
           onCommentSaved={handleSaveJust}
-          itemComment={reproInfo.justification}
+          itemComment={reproHeader.justification}
           onCancel={() => {
             setTimeout(() => {
               setJustModalIsOpen(false);

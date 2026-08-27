@@ -6,6 +6,7 @@ type Props = {
   size?: ModalSize;
   isOpen: boolean;
   itemComment: string;
+  canEdit: boolean;
   onCommentSaved: (text: string) => void;
   onCancel: () => void;
 };
@@ -43,45 +44,71 @@ const JustificaModal = ({ itemComment, ...props }: Props) => {
         <form onSubmit={onSubmit}>
           <textarea
             value={comment}
+            readOnly={!props.canEdit}
+            disabled={!props.canEdit}
             className="w-full border border-neutral-300 rounded-sm p-2 outline-none focus:outline-none focus:ring-2 focus:ring-neutral-400 transition-all duration-300 ease-in-out"
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
               setComment(e.target.value);
             }}
           ></textarea>
-          <div className="text-end">
-            <button
-              type="button"
-              className="text-sm text-neutral-600 mb-2 hover:text-neutral-950 cursor-pointer"
-              onClick={() => {
-                setComment('');
-              }}
-            >
-              Clear
-            </button>
-          </div>
-          <div className="flex justify-end gap-3 pt-2 ">
-            <Button type="submit">Save</Button>
-            <Button
-              buttonSize="small"
-              type="button"
-              variation="secondary"
-              onClick={() => {
-                setAnimateOut(true);
-                setTimeout(() => {
-                  if (!isDirty) {
-                    setComment('');
-                  } else {
-                    setComment(priorComment);
-                  }
-                  setAnimateOut(false);
-                }, 500);
+          {props.canEdit && (
+            <div className="text-end">
+              <button
+                type="button"
+                className="text-sm text-neutral-600 mb-2 hover:text-neutral-950 cursor-pointer"
+                onClick={() => {
+                  setComment('');
+                }}
+              >
+                Clear
+              </button>
+            </div>
+          )}
 
-                props.onCancel();
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
+          {props.canEdit && (
+            <div className="flex justify-end gap-3 pt-2 ">
+              <Button type="submit">Save</Button>
+              <Button
+                buttonSize="small"
+                type="button"
+                variation="secondary"
+                onClick={() => {
+                  setAnimateOut(true);
+                  setTimeout(() => {
+                    if (!isDirty) {
+                      setComment('');
+                    } else {
+                      setComment(priorComment);
+                    }
+                    setAnimateOut(false);
+                  }, 500);
+
+                  props.onCancel();
+                }}
+              >
+                Cancel
+              </Button>
+            </div>
+          )}
+          {!props.canEdit && (
+            <div className="flex justify-end mt-3">
+              <Button
+                buttonSize="small"
+                type="button"
+                variation="secondary"
+                onClick={() => {
+                  setAnimateOut(true);
+                  setTimeout(() => {
+                    setAnimateOut(false);
+                  }, 500);
+
+                  props.onCancel();
+                }}
+              >
+                Close
+              </Button>
+            </div>
+          )}
         </form>
       </div>
     </Modal2>
