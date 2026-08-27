@@ -121,7 +121,10 @@ const BudgetInputFields = ({
           onClick={(e) => (onClick ? onClick(e) : null)}
           onBlur={(e) => {
             if (onBlur) {
-              const budgeted = parseFormattedNumber(e.target.value);
+              const budgeted =
+                e.target.value.trim() === ''
+                  ? 0.00
+                  : parseFormattedNumber(e.target.value);
 
               if (budgeted + reprogrammed !== 0) {
                 setCurrent(formatNumber(budgeted + reprogrammed));
@@ -169,7 +172,12 @@ const BudgetInputFields = ({
                 <button
                   type="button"
                   onClick={() =>
-                    showAccountHistory(initiativeId, grantId, accountId, fieldName)
+                    showAccountHistory(
+                      initiativeId,
+                      grantId,
+                      accountId,
+                      fieldName,
+                    )
                   }
                   className=" underline underline-offset-3 text-blue-600 cursor-pointer"
                 >

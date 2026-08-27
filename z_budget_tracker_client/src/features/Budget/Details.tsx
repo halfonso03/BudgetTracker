@@ -181,7 +181,6 @@ const Details = () => {
         return parseFormattedNumber(value);
       })
       .reduce((acc, cur) => cur + acc, 0);
-
     setValue(`rows.${totalsIndex}.current_amount`, formatNumber(totalCurrent));
 
     i = -1;

@@ -620,7 +620,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
           <div className="text-lg p-2 border border-red-600">Must log in !</div>
         )}
 
-        <div className="flex mb-16 justify-between text-neutral-400 mr-3 mt-14 ">
+        <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           <div
             className={`flex gap-2 cursor-default ${reproHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
           >

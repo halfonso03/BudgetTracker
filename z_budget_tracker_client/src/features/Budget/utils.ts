@@ -15,7 +15,8 @@ export function formatArrayFieldAmount<T extends FieldValues>(
         index++;
     }
 
-
+    if (amount.trim() === "") amount = 0;
+    
     if (formatter.format(+amount) === 'NaN') {
         setValue(`rows.${index}.amount` as Path<T>, '0.00' as any);
         return;
