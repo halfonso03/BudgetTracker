@@ -9,7 +9,7 @@ type Props = {
 const SAVED = 2;
 const POSTED = 3;
 
-const ReproHeader = React.memo(({ id, status, created }: Props) => {
+const IdHeader = React.memo(({ id, status, created }: Props) => {
   return (
     <div className={`flex gap-10 ${created ? '' : 'animate-page-fade-in'}`}>
       <div className="flex gap-3 ml-3">
@@ -37,4 +37,4 @@ const ReproHeader = React.memo(({ id, status, created }: Props) => {
     </div>
   );
 });
-export default ReproHeader;
+export default IdHeader;

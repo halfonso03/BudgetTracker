@@ -8,7 +8,7 @@ SELECT *
 
 --   select * from tblBudget
 
---   delete tblBudget
+--   delete tblBudget where item_type='R'
 
 -- delete tblRepro where id < 24
 

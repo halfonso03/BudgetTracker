@@ -46,5 +46,13 @@ namespace API.Controllers
         {
             return HandleResult(await _budgetService.UpdateBudget(updateBudgetDto));
         }
+
+        [HttpGet("GetLineItemsForAccount")]
+        public async Task<IActionResult> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)
+        {
+            var budgets = await _budgetService.GetLineItemsForAccount(initiativeId, grantId, accountId);
+
+            return Ok(budgets);
+        }
     }
 }

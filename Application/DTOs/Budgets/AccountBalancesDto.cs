@@ -35,7 +35,7 @@ namespace Application.DTOs.Budgets
 
         [JsonPropertyName("comment_count")]
         public int CommentCount { get; set; } = 0;
-
+        public bool HasRepro { get; internal set; }
 
         public override string ToString()
         {

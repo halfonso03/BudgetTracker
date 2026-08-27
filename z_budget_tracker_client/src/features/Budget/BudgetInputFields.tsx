@@ -8,36 +8,46 @@ import {
 } from '../../app/util';
 import CommentsModal from './CommentsModal';
 import { AlertTriangle, ArrowLeftRight, DollarSign } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface Props {
   rowIndex: number;
   isLastRow: boolean;
+  year: number;
   initiativeId: number;
   grantId: number;
+  categoryId: number;
   accountId: number;
   comment?: BudgetComment;
   fieldName: string;
   budgetedAmount: string;
   currentAmount: string;
   spentAmount: string;
+  hasRepro: boolean;
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
   remainingAmountRegister?: UseFormRegisterReturn<`rows.${number}.remaining_amount`>;
   currentAmountRegister?: UseFormRegisterReturn<`rows.${number}.current_amount`>;
-
   onBlur?: (data: {
     e: React.FocusEvent<HTMLInputElement>;
     rowIndex: number;
   }) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
+  onShowAccountHistory?: (
+    initiativeId: number,
+    grantId: number,
+    accountId: number,
+  ) => void;
 }
 const BudgetInputFields = ({
   rowIndex,
   fieldName,
   accountId,
+  hasRepro,
+  year,
   initiativeId,
   grantId,
+  categoryId,
   comment,
   budgetedAmount,
   currentAmount,
@@ -49,9 +59,9 @@ const BudgetInputFields = ({
   amountRegister,
   remainingAmountRegister,
   currentAmountRegister,
+  onShowAccountHistory
 }: Props) => {
   const navigate = useNavigate();
-
   let reprogrammed =
     parseFormattedNumber(currentAmount) - parseFormattedNumber(budgetedAmount);
 
@@ -80,6 +90,14 @@ const BudgetInputFields = ({
     if (isLastRow) return 'bg-neutral-100 font-bold text-neutral-600 ';
     if (isNaN(parseFormattedNumber(amount))) return 'text-neutral-400';
     if (parseFormattedNumber(amount) === 0) return 'text-neutral-400';
+  }
+
+  function showAccountHistory(
+    initiativeId: number,
+    grantId: number,
+    accountId: number,
+  ) {
+    onShowAccountHistory?.(initiativeId, grantId, accountId);
   }
 
   return (
@@ -136,12 +154,28 @@ const BudgetInputFields = ({
         className={`text-end self-center py-1 ${getCellColor(isLastRow, current)} ${isLastRow} ? " py-2 ":""`}
       >
         {!isLastRow ? (
-          <span>
-            {parseFormattedNumber(current) == 0 ||
-            isNaN(parseFormattedNumber(current))
-              ? '- '
-              : current}
-          </span>
+          <>
+            <span>
+              {!hasRepro ? (
+                parseFormattedNumber(current) == 0 ||
+                isNaN(parseFormattedNumber(current)) ? (
+                  '- '
+                ) : (
+                  current
+                )
+              ) : (
+                <button
+                  type="button"
+                  onClick={() =>
+                    showAccountHistory(initiativeId, grantId, accountId)
+                  }
+                  className=" underline underline-offset-3 text-blue-600 cursor-pointer"
+                >
+                  {current}
+                </button>
+              )}
+            </span>
+          </>
         ) : (
           <div>
             <input
@@ -209,13 +243,12 @@ const BudgetInputFields = ({
       >
         {!isLastRow ? (
           <>
-            <ArrowLeftRight
-              onClick={() => {
-                navigate(
-                  `/reprogramming/create/${initiativeId}/${grantId}/${accountId}`,
-                );
-              }}
-            ></ArrowLeftRight>
+            <Link
+              to={`/reprogramming/${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`}
+            >
+              <ArrowLeftRight></ArrowLeftRight>
+            </Link>
+
             <DollarSign
               onClick={() => {
                 navigate(

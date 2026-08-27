@@ -14,5 +14,6 @@ namespace Application.Interfaces
         Task<Result<Unit>> CreateBudget(CreateBudgetRequestDto createBudgetDtos);
         Task<Result<Unit>> UpdateBudget(UpdateBudgetRequestDto updateBudgetDto);
         Task<List<AccountCurrentAmountDto>> GetAccountBalancesForCategory(int initiativeId, int grantId, int categoryId);
+        Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId);
     }
 }

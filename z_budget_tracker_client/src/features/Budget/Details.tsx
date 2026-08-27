@@ -19,12 +19,23 @@ import BudgetHeader from './BudgetHeader';
 import toast from 'react-hot-toast';
 import { useBudgetActions } from '../../api/hooks/budgets/useBudgetActions';
 import Button from '../../components/Button';
+import TransactionsModal from './TransactionsModal';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
-
+type TrxIds = {
+  initiativeId: number;
+  grantId: number;
+  accountId: number;
+};
 const Details = () => {
   const userId = 1;
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
+  const [trxModalIsOpen, setTrxModalIsOpen] = useState(false);
+  const [trxIds, setTrxIds] = useState<TrxIds>({
+    initiativeId: 0,
+    grantId: 0,
+    accountId: 0,
+  });
 
   const { updateBudget } = useBudgetActions();
 
@@ -76,16 +87,19 @@ const Details = () => {
       const accounts: BudgetInputRow[] = budget.account_balances
         .filter((i) => i.category_id == cat.id)
         .sort((a, b) => a.account_name.localeCompare(b.account_name))
-        .map((item: AccountBalance) => ({
-          accountId: item.account_id,
-          categoryId: item.category_id!,
-          spent_amount: formatNumber(item.spent_amount),
-          remaining_amount: formatNumber(item.amount - item.spent_amount),
-          current_amount: formatNumber(item.current_amount),
-          amount: formatNumber(item.amount),
-          name: item.account_name,
-          comment: item.comment,
-        }));
+        .map((item: AccountBalance) => {
+          return {
+            accountId: item.account_id,
+            categoryId: item.category_id!,
+            spent_amount: formatNumber(item.spent_amount),
+            remaining_amount: formatNumber(item.amount - item.spent_amount),
+            current_amount: formatNumber(item.current_amount),
+            amount: formatNumber(item.amount),
+            name: item.account_name,
+            comment: item.comment,
+            hasRepro: item.hasRepro,
+          };
+        });
 
       const totalBudgeted = budget?.account_balances
         .filter((x) => x.category_id == cat.id)
@@ -113,6 +127,7 @@ const Details = () => {
         current_amount: formatterTotalCurrent,
         spent_amount: formattedTotalSpent,
         remaining_amount: formatNumber(totalBudgeted + totalSpent),
+        hasRepro: false,
         name: 'Total',
       };
 
@@ -120,7 +135,6 @@ const Details = () => {
       budgetRows.push(totalRow);
     }
   }
-
   // combine for later access
   // calculate the start and end index of each group for totaling
   let runningTotal = 0;
@@ -240,6 +254,15 @@ const Details = () => {
     }
   };
 
+  const handleShowAccountHistory = (
+    initiativeId: number,
+    grantId: number,
+    accountId: number,
+  ) => {
+    setTrxIds({ initiativeId, grantId, accountId });
+    setTrxModalIsOpen(true);
+  };
+
   useEffect(() => {
     calculateTotals();
   }, [calculateTotals]);
@@ -249,16 +272,6 @@ const Details = () => {
 
   let indexRunningTotal = -1;
 
-  // function testCommetnField() {
-  //   const c = fields.filter((x) => x.accountId == 1)[0];
-
-  //   console.log('c', c.id);
-
-  //   // setValue(
-  //   //   `rows.${totalsIndex}.remaining_amount`,
-  //   //   formatNumber(categoryTotal + totalSpent),
-  //   // );
-  // }
   return (
     <div className="w-full mx-auto">
       {/* <Button onClick={testCommetnField}>Comment</Button> */}
@@ -348,11 +361,18 @@ const Details = () => {
                     `rows.${indexRunningTotal}.amount`,
                   );
 
+                  const hasRero: boolean = getValues(
+                    `rows.${indexRunningTotal}.hasRepro`,
+                  );
+
                   return (
                     <Fragment key={field.id}>
                       <BudgetInputFields
                         rowIndex={indexRunningTotal}
+                        hasRepro={hasRero}
                         isLastRow={false}
+                        year={+year!}
+                        categoryId={field.categoryId}
                         accountId={field.accountId}
                         initiativeId={+initiativeId!}
                         grantId={+grantId!}
@@ -396,6 +416,7 @@ const Details = () => {
                             categoryAccountIndexes[field.categoryId].totalIndex,
                           );
                         }}
+                        onShowAccountHistory={handleShowAccountHistory}
                       ></BudgetInputFields>
                     </Fragment>
                   );
@@ -411,8 +432,11 @@ const Details = () => {
                   >
                     <BudgetInputFields
                       rowIndex={indexRunningTotal}
+                      hasRepro={field.hasRepro}
                       isLastRow={true}
                       accountId={field.accountId}
+                      categoryId={field.categoryId}
+                      year={+year!}
                       initiativeId={+initiativeId!}
                       grantId={+grantId!}
                       fieldName={field.name}
@@ -437,6 +461,15 @@ const Details = () => {
           );
         })}
       </form>
+      <TransactionsModal
+        {...trxIds}
+        isOpen={trxModalIsOpen}
+        onCancel={() => {
+          setTimeout(() => {
+            setTrxModalIsOpen(false);
+          }, 500);
+        }}
+      ></TransactionsModal>
     </div>
   );
 };

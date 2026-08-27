@@ -25,6 +25,7 @@ type AccountBalance = {
     category?: Category
     category_id?: number
     item_type?: ItemyType
+    hasRepro: boolean
 }
 
 // child of Budget Type
@@ -63,6 +64,7 @@ type BudgetInputRow = {
     current_amount?: string;
     spent_amount?: string;
     remaining_amount?: string;
+    hasRepro: bolean
 };
 
 

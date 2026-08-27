@@ -23,7 +23,7 @@ import 'react-dropdown/style.css';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import useAuth from '../../contexts/useAuth';
 import ConfirmModal from '../../components/ConfirmModal';
-import ReproHeader from './new/ReproHeader';
+import IdHeader from './new/IdHeader';
 import { useLocation } from 'react-router-dom';
 
 const EDITING = 1;
@@ -31,7 +31,7 @@ const SAVED = 2;
 const POSTED = 3;
 
 type ReproStatus = typeof EDITING | typeof SAVED | typeof POSTED;
-type ReproHeader = {
+type IdHeader = {
   id: number;
   justification: string;
   status: ReproStatus;
@@ -75,7 +75,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
   // console.log('repro.year from form', repro.year)
   if (repro.year === 0) throw new Error('no year');
 
-  const [reproHeader, setReproHeader] = useState<ReproHeader>({
+  const [reproHeader, setReproHeader] = useState<IdHeader>({
     id: repro.id,
     justification: repro.justification,
     status: repro.posted ? POSTED : SAVED,
@@ -540,8 +540,10 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function sendCreateRepro(lineItems: any, posted: boolean = false) {
+  async function sendCreateRepro(
+    lineItems: ReproLineItemRequest[],
+    posted: boolean = false,
+  ) {
     const reproToSave: CreateReproRequest = {
       createdById: userId!,
       posted: posted,
@@ -573,8 +575,10 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async function sendUpdateRepro(lineItems: any, posted: boolean = false) {
+  async function sendUpdateRepro(
+    lineItems: ReproLineItemRequest[],
+    posted: boolean = false,
+  ) {
     const reproToSave: UpdateReproRequest = {
       id: reproHeader.id,
       updatedById: userId!,
@@ -584,7 +588,6 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     };
     await updateRepro.mutateAsync(reproToSave, {
       onSuccess: () => {
-        console.log('reproInfo', reproHeader);
         // queryClient.setQueryData<Repro>(['repro', reproHeader.id], () => ({
         //   ...reproToSave,
         //   createdBy: '',
@@ -602,7 +605,6 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
         //   rowBalances: savedBalances,
         // }));
         onServerSuccess(posted);
-        // onInitialSave?.(0);
       },
     });
   }
@@ -674,11 +676,11 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
         </div>
 
         <div className="flex justify-between mb-12 border-b border-b-neutral-200 pb-2 ">
-          <ReproHeader
+          <IdHeader
             id={reproHeader.id}
             status={reproHeader.status}
             created={created}
-          ></ReproHeader>
+          ></IdHeader>
 
           {reproHeader.status === POSTED && (
             <div className="flex gap-12 mr-4  ">

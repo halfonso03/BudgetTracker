@@ -136,6 +136,7 @@ namespace Application.services
                                  Amount = items.Where(x => x.ItemType == "B" && x.AccountId == a.Id).Sum(x => x.Amount),
                                  SpentAmount = items.Where(x => x.ItemType == "D" && x.AccountId == a.Id).Sum(x => x.Amount),
                                  CurrentAmount = items.Where(x => (x.ItemType == "R" || x.ItemType == "B") && x.AccountId == a.Id).Sum(x => x.Amount),
+                                 HasRepro = items.Any(x => x.ItemType == "R" && x.AccountId == a.Id),
                                  Category = CategoryDto.CreateFromDomain(_accounts.First(x => x.CategoryId == a.CategoryId).Category),
                                  Comment = CreateCommentDto(a.Id, comments)
                              }).ToList();
@@ -332,6 +333,16 @@ namespace Application.services
                         ];
 
             return balances;
+        }
+
+        public async Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)
+        {
+            var lineItems = await _dbContext.BudgetLineItems
+                .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId && x.AccountId == accountId)
+                .Select(x => TransactionResponseDto.Create(x.Id, x.ItemType, x.CreateDate, x.Amount))
+                .ToListAsync();
+                
+            return lineItems;
         }
     }
 }
