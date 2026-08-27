@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260827145837_Repro_Budget_line_id")]
+    partial class Repro_Budget_line_id
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -616,7 +619,7 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("account_id");
 
-                    b.Property<int?>("BudgetLineItemId")
+                    b.Property<int?>("BudgetLineId")
                         .HasColumnType("int")
                         .HasColumnName("budget_line_id");
 
@@ -671,8 +674,6 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
-
-                    b.HasIndex("BudgetLineItemId");
 
                     b.HasIndex("CategoryId");
 
@@ -812,10 +813,6 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.BudgetLineItem", "BudgetLineItem")
-                        .WithMany()
-                        .HasForeignKey("BudgetLineItemId");
-
                     b.HasOne("Domain.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
@@ -845,8 +842,6 @@ namespace Persistence.Migrations
                         .HasForeignKey("UpdatedById");
 
                     b.Navigation("Account");
-
-                    b.Navigation("BudgetLineItem");
 
                     b.Navigation("Category");
 

@@ -107,6 +107,8 @@ namespace Application.Services
 
             var newId = 0;
 
+            await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
             try
             {
                 var grant = await _dbContext.Grants.FirstAsync(x => x.Id == reproRequestDto.LineItems.First().GrantId);
@@ -133,63 +135,102 @@ namespace Application.Services
                         CategoryId = x.CategoryId,
                         RowId = x.RowId,
                         Year = grant.Year,
-                        Comment = x.Comment
+                        Comment = x.Comment,
+                        BudgetLineItemId = null
                     })]
                 };
 
                 _dbContext.Repros.Add(newRepro);
 
+                await _dbContext.SaveChangesAsync();
 
                 if (newRepro.Posted)
                 {
-                    foreach (var line in newRepro.Items)
-                    {
-                        var amount = 0M;
-
-                        if (line.Increase > 0)
-                        {
-                            amount = Convert.ToDecimal(line.Increase ?? 0M);
-                        }
-                        else if (line.Decrease > 0)
-                        {
-                            amount = Convert.ToDecimal(line.Decrease ?? 0M) * -1;
-                        }
-                        else
-                        {
-                            throw new Exception($"Error in {nameof(CreateRepro)}. Increase and decrease are both zero.");
-                        }
-
-                        var budgetLineItem = new BudgetLineItem
-                        {
-                            Id = 0,
-                            InitiativeId = line.InitiativeId,
-                            GrantId = line.GrantId,
-                            AccountId = line.AccountId,
-                            Amount = amount,
-                            ItemType = "R",
-                            CreateDate = DateTime.Now,
-                            CreatedBy = reproRequestDto.CreatedById
-                        };
-
-                        _dbContext.BudgetLineItems.Add(budgetLineItem);
-                    }
-
+                    await PostRepro(newRepro.Items, reproRequestDto.CreatedById);
                 }
 
-                await _dbContext.SaveChangesAsync();
-
                 newId = newRepro.Id;
+
+                await transaction.CommitAsync();
             }
             catch (DbException ex)
             {
+                await transaction.RollbackAsync();
                 return Result<int>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
             catch (Exception ex)
             {
+                await transaction.RollbackAsync();
                 return Result<int>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
 
             return Result<int>.Success(newId);
+        }
+
+        private async Task<bool> PostRepro(IList<ReproLineItem> items, int createdById)
+        {
+
+            var postedBudgetLineItems = new List<BudgetLineItem>();
+
+            foreach (var line in items)
+            {
+                var amount = line.Increase > 0
+                        ? Convert.ToDecimal(line.Increase ?? 0M)
+                        : (line.Decrease > 0)
+                        ? Convert.ToDecimal(line.Decrease ?? 0M) * -1
+                        : 0;
+
+                if (amount == 0)
+                {
+                    throw new Exception($"Error in {nameof(CreateRepro)}. Increase and decrease are both zero.");
+                }
+
+                // check if there is more than the reduction amount
+                if (amount < 0)
+                {
+                    var availableForAccount = _dbContext.BudgetLineItems
+                                                   .Where(x => x.InitiativeId == line.InitiativeId
+                                                        && x.GrantId == line.GrantId
+                                                        && x.AccountId == line.AccountId)
+                                                    .Sum(x => x.Amount);
+
+                    if (availableForAccount - Math.Abs(amount) < 0)
+                    {
+                        throw new Exception("Account being reduced by more that is available.");
+                    }
+                }
+
+                var budgetLineItem = new BudgetLineItem
+                {
+                    Id = 0,
+                    InitiativeId = line.InitiativeId,
+                    GrantId = line.GrantId,
+                    AccountId = line.AccountId,
+                    Amount = amount,
+                    ItemType = "R",
+                    CreateDate = DateTime.Now,
+                    CreatedBy = createdById
+                };
+
+                postedBudgetLineItems.Add(budgetLineItem);
+
+                _dbContext.BudgetLineItems.Add(budgetLineItem);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            foreach (var item in postedBudgetLineItems)
+            {
+                var reproLine = items.Single(x => x.InitiativeId == item.InitiativeId
+                                        && x.GrantId == item.GrantId
+                                        && x.AccountId == item.AccountId);
+
+                reproLine.BudgetLineItemId = item.Id;
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<Result<Unit>> UpdateRepro(UpdateReproRequestDto reproRequestDto)

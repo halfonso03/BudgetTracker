@@ -37,6 +37,7 @@ interface Props {
     initiativeId: number,
     grantId: number,
     accountId: number,
+    category: string,
   ) => void;
 }
 const BudgetInputFields = ({
@@ -59,7 +60,7 @@ const BudgetInputFields = ({
   amountRegister,
   remainingAmountRegister,
   currentAmountRegister,
-  onShowAccountHistory
+  onShowAccountHistory,
 }: Props) => {
   const navigate = useNavigate();
   let reprogrammed =
@@ -96,8 +97,9 @@ const BudgetInputFields = ({
     initiativeId: number,
     grantId: number,
     accountId: number,
+    category: string,
   ) {
-    onShowAccountHistory?.(initiativeId, grantId, accountId);
+    onShowAccountHistory?.(initiativeId, grantId, accountId, category);
   }
 
   return (
@@ -167,7 +169,7 @@ const BudgetInputFields = ({
                 <button
                   type="button"
                   onClick={() =>
-                    showAccountHistory(initiativeId, grantId, accountId)
+                    showAccountHistory(initiativeId, grantId, accountId, fieldName)
                   }
                   className=" underline underline-offset-3 text-blue-600 cursor-pointer"
                 >

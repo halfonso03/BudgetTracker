@@ -26,6 +26,7 @@ type TrxIds = {
   initiativeId: number;
   grantId: number;
   accountId: number;
+  category: string;
 };
 const Details = () => {
   const userId = 1;
@@ -35,6 +36,7 @@ const Details = () => {
     initiativeId: 0,
     grantId: 0,
     accountId: 0,
+    category: '',
   });
 
   const { updateBudget } = useBudgetActions();
@@ -258,8 +260,9 @@ const Details = () => {
     initiativeId: number,
     grantId: number,
     accountId: number,
+    category: string,
   ) => {
-    setTrxIds({ initiativeId, grantId, accountId });
+    setTrxIds({ initiativeId, grantId, accountId, category });
     setTrxModalIsOpen(true);
   };
 

@@ -56,7 +56,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
   const DUP_LINES =
     'There are duplicate lines (Look for the duplicate selections for an Initiative, Grant, Category and Account)';
   const NO_INC_AND_NO_DEC_LINES =
-    'There are lines with $0 for increase and $0 decrease';
+    'There are lines with a $0 increase and a $0 decrease';
   const HAS_VARIANCE = 'There is a variance in the reprogramming';
   const LINES_WITH_INC_AND_DEC =
     'One or more lines has an increase and a decrease amount entered';
@@ -559,6 +559,10 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
           justification: reproHeader.justification,
           createdBy: loginId!,
           createDate: new Date(),
+          posted: posted,
+          postedDate: posted ? new Date() : null,
+          postedBy: posted ? loginId! : null,
+          postedById: posted ? userId! : null,
           lineItems: lines.map((l) => {
             return {
               ...l,

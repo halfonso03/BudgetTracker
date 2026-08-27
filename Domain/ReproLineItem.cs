@@ -37,5 +37,7 @@ namespace Domain
         public Category? Category { get; set; }
         public Account? Account { get; set; }
         public string? Comment { get; set; }
+        public int? BudgetLineItemId { get; set; }
+        public BudgetLineItem? BudgetLineItem { get; set; }
     }
 }

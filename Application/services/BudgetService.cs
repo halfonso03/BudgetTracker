@@ -339,6 +339,7 @@ namespace Application.services
         {
             var lineItems = await _dbContext.BudgetLineItems
                 .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId && x.AccountId == accountId)
+                .OrderBy(x => x.CreateDate)
                 .Select(x => TransactionResponseDto.Create(x.Id, x.ItemType, x.CreateDate, x.Amount))
                 .ToListAsync();
                 

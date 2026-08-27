@@ -1,4 +1,3 @@
-import { Fragment } from 'react/jsx-runtime';
 import useTransactions from '../../api/hooks/budgets/useTransactions';
 import { formatDate, formatNumber } from '../../app/util';
 import Modal2 from '../../components/Modal2';
@@ -9,6 +8,7 @@ type Props = {
   initiativeId: number;
   grantId: number;
   accountId: number;
+  category: string;
   isOpen: boolean;
   onCancel: () => void;
 };
@@ -26,10 +26,26 @@ const TransactionsModal = (props: Props) => {
   if (!data.length) return null;
 
   let remaining = data[0].amount;
+
+  const handleCancel = () => {
+    props.onCancel();
+    setAnimateOut(true);
+    setTimeout(() => {
+      setAnimateOut(false);
+    }, 500);
+  };
   return (
-    <Modal2 size="md" title="Transactions" animateOut={animateOut} {...props}>
+    <Modal2
+      size="md"
+      title="Transactions"
+      animateOut={animateOut}
+      {...props}
+      onCancel={handleCancel}
+    >
       <div className="p-2 ">
-        <div className="grid grid-cols-[1fr_1fr_1fr_1fr] gap-2 my-3 border-b border-b-neutral-200">
+        <div className="font-semibold self-end mb-3">{props.category}</div>
+
+        <div className="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-2 my-3 border-b border-b-neutral-200">
           <div></div>
           <div className="text-center font-semibold text-neutral-600">
             Post Date
@@ -43,7 +59,7 @@ const TransactionsModal = (props: Props) => {
           if (i > 0) remaining += data[i].amount;
           return (
             <div
-              className="grid grid-cols-[1fr_1fr_1fr_1fr] gap-2 my-3"
+              className="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-2 my-3"
               key={i}
             >
               <div>{t.typeName}</div>
@@ -54,16 +70,7 @@ const TransactionsModal = (props: Props) => {
           );
         })}
         <div className="flex justify-end mt-8">
-          <Button
-            variation="secondary"
-            onClick={() => {
-              props.onCancel();
-              setAnimateOut(true);
-              setTimeout(() => {
-                setAnimateOut(false);
-              }, 500);
-            }}
-          >
+          <Button variation="secondary" onClick={handleCancel}>
             Close
           </Button>
         </div>

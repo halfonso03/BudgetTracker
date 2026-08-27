@@ -335,6 +335,7 @@ namespace Persistence
             builder.Entity<ReproLineItem>().Property(x => x.UpdatedById).HasColumnName("updated_by");
             builder.Entity<ReproLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME");
             builder.Entity<ReproLineItem>().Property(x => x.Comment).HasColumnName("comment").HasColumnType("VARCHAR(MAX)");
+            builder.Entity<ReproLineItem>().Property(x => x.BudgetLineItemId).HasColumnName("budget_line_id");
 
 
             builder.Entity<ReproLineItem>()

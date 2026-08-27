@@ -7,9 +7,9 @@ type Repro = {
     createdById: number
     updateDate?: Date
     updatedById?: number
-    postedBy?: string
+    postedBy?: string | null
     posted: boolean
-    postedById?: number
+    postedById?: number | null
     postedDate?: Date | null
     lineItems: ReproLineItem[]
     rowBalances?: RowBalance[],
