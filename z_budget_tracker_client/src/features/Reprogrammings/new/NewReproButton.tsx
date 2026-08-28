@@ -1,11 +1,18 @@
 import { useState } from 'react';
 import Button from '../../../components/Button';
 import ChooseYearModal from '../ChooseYearModal';
+import { Search } from 'lucide-react';
 
 type Props = {
   onYearSelected: (year: number, justification: string) => void;
+  raiseConfirmOnSearch: boolean;
+  onSearchClick: () => void;
 };
-const NewReproButton = ({ onYearSelected }: Props) => {
+const NewReproButton = ({
+  onYearSelected,
+  onSearchClick,
+  raiseConfirmOnSearch,
+}: Props) => {
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
 
@@ -16,6 +23,13 @@ const NewReproButton = ({ onYearSelected }: Props) => {
       setChoosingYear(false);
     }, 500);
   };
+
+  function handleSearchClick() {
+    if (raiseConfirmOnSearch) {
+      confirm('are you sure?');
+    }
+    // onSearchClick();
+  }
 
   return (
     <>
@@ -29,6 +43,13 @@ const NewReproButton = ({ onYearSelected }: Props) => {
           }}
         >
           Start New...
+        </Button>
+        <Button
+          buttonSize="xsmall"
+          variation="secondary"
+          onClick={handleSearchClick}
+        >
+          <Search></Search>
         </Button>
       </div>
       <ChooseYearModal

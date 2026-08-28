@@ -71,14 +71,6 @@ type RowBalance = {
     balances: { accountId: number; name: string; currentAmount: number }[];
 };
 
-type SearchParams = {
-    id?: number,
-    initiativeName?: string
-    grantName?: string
-    categoryName?: string
-    accountName?: string
-    year?: number
-}
 
 type CreateReproRequest = {
     justification: string
@@ -116,4 +108,36 @@ type ReproPreloadLine = {
     grantName?: string
     categoryName?: string
     accountName?: string
+}
+
+
+type ReporSearchParams = {
+    year: number
+    initiativeIds?: number[] | null
+    grantIds?: number[] | null
+    accountIds?: number[] | null
+    posted?: boolean | null | undefined
+}
+
+type ReprLineItemSearchResult = {
+    rowId: number
+    reproId: number
+    initiativeName: string
+    grantName: string
+    categoryName: string
+    accountName: string
+    increase: number
+    decrease: number
+}
+
+type ReproSearchResult = {
+    id: number,
+    year: number
+    createdDate: Date
+    createdBy: string
+    postedBy: string | null
+    postedDate: Date | null
+    posted: boolean,
+    justification: string | null,
+    lineItems: ReprLineItemSearchResult
 }

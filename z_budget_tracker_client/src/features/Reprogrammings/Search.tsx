@@ -1,19 +1,14 @@
-import Button from '../../components/Button';
-import useRepro from '../../contexts/useRepro';
 
 const Search = () => {
-  const { saveSearchParams } = useRepro();
-
   return (
     <div>
-      Search
-      <Button
+      {/* <Button
         onClick={() => {
-          saveSearchParams({ initiativeName: 'test' });
+          saveSearchParams({ year: 2026, initiativeIds: [1, 2, 3] });
         }}
       >
         Save Params
-      </Button>
+      </Button> */}
     </div>
   );
 };

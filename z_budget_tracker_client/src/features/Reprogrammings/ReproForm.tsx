@@ -26,11 +26,17 @@ import ConfirmModal from '../../components/ConfirmModal';
 import IdHeader from './new/IdHeader';
 import { useLocation } from 'react-router-dom';
 
-const EDITING = 1;
+const EDITED = 1;
 const SAVED = 2;
 const POSTED = 3;
 
-type ReproStatus = typeof EDITING | typeof SAVED | typeof POSTED;
+export type ReproStatus = typeof EDITED | typeof SAVED | typeof POSTED;
+
+export type DirtyState = {
+  formValuesIsDirty: boolean;
+  numbersAresDirty: boolean;
+};
+
 type IdHeader = {
   id: number;
   justification: string;
@@ -42,6 +48,7 @@ type IdHeader = {
 interface Props {
   repro: Repro;
   onInitialSave?: (newId: number) => void;
+  onIsDirtyStateChanged: (isiDirtyState: DirtyState) => void;
 }
 
 type Selections = {
@@ -52,7 +59,7 @@ type Selections = {
   accountId?: number;
 };
 
-const ReproForm = ({ repro, onInitialSave }: Props) => {
+const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
   const DUP_LINES =
     'There are duplicate lines (Look for the duplicate selections for an Initiative, Grant, Category and Account)';
   const NO_INC_AND_NO_DEC_LINES =
@@ -72,6 +79,10 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [confirmPostModalIsOpen, setConfirmPostModal] = useState(false);
+  const [isDirtyState, setIsDirtyState] = useState<DirtyState>({
+    formValuesIsDirty: false,
+    numbersAresDirty: false,
+  });
   // console.log('repro.year from form', repro.year)
   if (repro.year === 0) throw new Error('no year');
 
@@ -208,7 +219,9 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     newLines.push({ ...newLine, rowId: newLines.length });
 
     setLines(newLines);
-    setReproHeader((prev) => ({ ...prev, status: EDITING }));
+
+    //flagIfIsDirty();
+
     const t = true;
     if (t) {
       const balances = queryClient.getQueryData<
@@ -250,6 +263,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     key: { initiativeId: number; grantId: number; categoryId: number },
   ) {
     setTimeout(() => {
+      //flagIfIsDirty();
       setEditSelections(null);
     }, 500);
 
@@ -334,6 +348,8 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
   }
 
   function handleAccountChange(accountId: number, rowUuid: string) {
+    //flagIfIsDirty();
+
     setLines((prev) => {
       const lines = prev.map((l: ReproLineItem, index) => {
         const inc = getValues(`rows.${index}.increase`);
@@ -375,6 +391,9 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
 
   function handleDuplicateRow(uuid: string) {
     const newLine = lines.filter((x) => x.uuid === uuid)[0];
+
+    //flagIfIsDirty();
+
     setLines((prev) => {
       const newLines = [
         ...prev,
@@ -385,6 +404,8 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
   }
 
   function handleDeletRow(uuid: string) {
+    //flagIfIsDirty();
+
     setLines((prev) => {
       const newLines = prev
         .filter((x) => x.uuid !== uuid)
@@ -393,7 +414,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     });
   }
 
-  function recalculateNewAmounts() {
+  function recalculateNewAmounts(isDirty: boolean) {
     const newLines = lines.map((l, i) => {
       const inc = parseFormattedNumber(
         getValues(`rows.${i}.increase`) as string,
@@ -409,9 +430,42 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
       };
     });
     setLines(newLines);
+
+    if (isDirty && !isDirtyState.numbersAresDirty) {
+      const newIsDirtyState = { ...isDirtyState, numbersAresDirty: true };
+      setIsDirtyState(newIsDirtyState);
+      onIsDirtyStateChanged(newIsDirtyState);
+    }
+
+    if (isDirtyState.numbersAresDirty && !isDirty) {
+      const newIsDirtyState = { ...isDirtyState, numbersAresDirty: false };
+      setIsDirtyState(newIsDirtyState);
+      onIsDirtyStateChanged(newIsDirtyState);
+    }
+
+    // if (!isDirtyState.numbersAresDirty) {
+    //   if (isDirty) {
+    //     const newIsDirtyState = { ...isDirtyState, numbersAresDirty: true };
+    //     setIsDirtyState(newIsDirtyState);
+    //     onIsDirtyStateChanged(newIsDirtyState);
+    //   }
+    // }
+
+    // const newIsDirtyState = { ...isDirtyState, numbersAresDirty: isDirty };
+    // setIsDirtyState(newIsDirtyState);
+
+    // if (isDirty) {
+    //   if (reproHeader.status !== EDITED) {
+    //     setReproHeader((prev) => ({ ...prev, status: EDITED }));
+    //     onIsDirtyStateChanged(newIsDirtyState);
+    //   }
+    //   // flagIfIsDirty();
+    // }
   }
 
   function handleSaveComment(uuid: string, comment: string | null | undefined) {
+    //flagIfIsDirty();
+
     setLines((prev) => {
       const l = prev.map((line) => ({
         ...line,
@@ -495,7 +549,9 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
     setReproHeader((prev) => ({
       ...prev,
       justification: text,
+      status: EDITED,
     }));
+
     setTimeout(() => setJustModalIsOpen(false), 500);
   }
 
@@ -575,6 +631,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
 
         onServerSuccess(posted, id);
         onInitialSave?.(id);
+        // onSave();
       },
     });
   }
@@ -609,12 +666,21 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
         //   rowBalances: savedBalances,
         // }));
         onServerSuccess(posted);
+        // onSave();
       },
     });
   }
 
+  // function flagIfIsDirty() {
+  //   if (reproHeader.status !== EDITED) {
+  //     setReproHeader((prev) => ({ ...prev, status: EDITED }));
+  //     onIsDirty();
+  //   }
+  // }
+
   return (
     <MenuIdProvider>
+      <div>{reproHeader.status}</div>
       <div className="">
         {!userId && (
           <div className="text-lg p-2 border border-red-600">Must log in !</div>
@@ -804,6 +870,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
                       <NumericArrayInputGeneric
                         index={index}
                         setValue={setValue}
+                        getValues={getValues}
                         register={register(`rows.${index}.increase`)}
                         fieldName="increase"
                         readOnly={reproHeader.status === POSTED}
@@ -819,6 +886,7 @@ const ReproForm = ({ repro, onInitialSave }: Props) => {
                         register={register(`rows.${index}.decrease`)}
                         fieldName="decrease"
                         setValue={setValue}
+                        getValues={getValues}
                         readOnly={reproHeader.status === POSTED}
                         disabled={reproHeader.status === POSTED}
                         onBlur={recalculateNewAmounts}

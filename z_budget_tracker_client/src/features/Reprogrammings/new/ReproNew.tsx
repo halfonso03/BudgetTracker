@@ -84,16 +84,18 @@ const ReproNew = () => {
     );
   }
 
-  const body = () => {
-    console.log('repro', repro);
+  function handleSaved() {}
 
+  console.log('repro new render');
+
+  const body = () => {
     if (repro && repro.year !== 0) {
-      console.log('rendring form', repro);
       return (
         <ReproForm
           key={repro.uuid}
           repro={repro}
           onInitialSave={handleInitialSaved}
+          onIsDirtyStateChanged={handleSaved}
         ></ReproForm>
       );
     }
@@ -102,7 +104,11 @@ const ReproNew = () => {
 
   return (
     <>
-      <NewReproButton onYearSelected={handleYearSelected}></NewReproButton>
+      <NewReproButton
+        onYearSelected={handleYearSelected}
+        onSearchClick={() => {}}
+        raiseConfirmOnSearch={false}
+      ></NewReproButton>
       {body()}
     </>
   );

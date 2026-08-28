@@ -17,8 +17,10 @@ const CommentToggler = ({ uuid, itemComment, saveComment, canEdit }: Props) => {
     itemComment,
   );
   const close = () => {
-    setIsOpenerClass('');
-    saveComment(uuid, comment);
+    if (isOpenerClass !== '') {
+      setIsOpenerClass('');
+      saveComment(uuid, comment);
+    }
   };
 
   const ref = useOutsideClick<HTMLDivElement>(close, false);
