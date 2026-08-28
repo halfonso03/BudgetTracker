@@ -49,6 +49,9 @@ const ReproDetails = () => {
     }
   }
 
+  function handleSaved() {
+    setIsDirty({ numbersAresDirty: false, formValuesIsDirty: false });
+  }
 
   const body = () => {
     if (reproFromDb && reproFromDb.year !== 0) {
@@ -59,6 +62,7 @@ const ReproDetails = () => {
             key={repro2.uuid}
             repro={repro2}
             onInitialSave={handleInitialSaved}
+            onSaved={handleSaved}
             onIsDirtyStateChanged={handleIsDirty}
           ></ReproForm>
         </>

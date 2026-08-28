@@ -49,6 +49,7 @@ interface Props {
   repro: Repro;
   onInitialSave?: (newId: number) => void;
   onIsDirtyStateChanged: (isiDirtyState: DirtyState) => void;
+  onSaved: () => void;
 }
 
 type Selections = {
@@ -59,7 +60,7 @@ type Selections = {
   accountId?: number;
 };
 
-const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
+const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirtyStateChanged }: Props) => {
   const DUP_LINES =
     'There are duplicate lines (Look for the duplicate selections for an Initiative, Grant, Category and Account)';
   const NO_INC_AND_NO_DEC_LINES =
@@ -644,7 +645,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
 
         onServerSuccess(posted, id);
         onInitialSave?.(id);
-        // onSave();
+        onSaved();
       },
     });
   }
@@ -679,7 +680,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
         //   rowBalances: savedBalances,
         // }));
         onServerSuccess(posted);
-        // onSave();
+        onSaved();
       },
     });
   }
@@ -693,9 +694,12 @@ const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
 
   return (
     <MenuIdProvider>
-      <div >
+      {repro.uuid}
+      <div>
         {!userId && (
-          <div className="text-lg p-2 border border-red-600">Must log in !</div>
+          <div className="text-xl p-1 text-red-500 font-semibold">
+            Your are not logged in!
+          </div>
         )}
 
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">

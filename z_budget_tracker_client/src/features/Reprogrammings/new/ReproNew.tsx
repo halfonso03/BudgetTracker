@@ -3,7 +3,7 @@ import useAuth from '../../../contexts/useAuth';
 // import { useState } from 'react';
 import ReproForm, { type DirtyState } from '../ReproForm';
 import NewReproButton from './NewReproButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ConfirmModal from '../../../components/ConfirmModal';
 
 const ReproNew = () => {
@@ -18,6 +18,10 @@ const ReproNew = () => {
     numbersAresDirty: false,
     formValuesIsDirty: false,
   });
+
+  //  preloadState
+  //     ? preloadState?.year !== undefined || preloadState?.ids !== undefined
+  //     :
 
   let initialYear = 0;
   let justification = '';
@@ -67,9 +71,20 @@ const ReproNew = () => {
     lineItems: lineItems,
   };
 
-  const repro: Repro = defaultRepro;
+  const [repro, setRepro] = useState<Repro>(defaultRepro);
+
+  useEffect(() => {
+    navigate(location.pathname, { replace: true, state: {} });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleYearSelected = (year: number, justification: string) => {
+    setRepro({
+      ...defaultRepro,
+      year: year,
+      justification: justification,
+      uuid: crypto.randomUUID(),
+    });
     navigate('/reprogramming/new', {
       state: {
         year: year,
@@ -103,9 +118,6 @@ const ReproNew = () => {
     setIsDirty(newState);
   }
 
-
-  console.log('repro new render');
-
   const body = () => {
     if (repro && repro.year !== 0) {
       return (
@@ -129,6 +141,8 @@ const ReproNew = () => {
           isDirty.formValuesIsDirty || isDirty.numbersAresDirty
         }
       ></NewReproButton>
+      {JSON.stringify(isDirty)}
+      <br />
       {body()}
       <ConfirmModal
         isOpen={confirmModalIsOpen}
