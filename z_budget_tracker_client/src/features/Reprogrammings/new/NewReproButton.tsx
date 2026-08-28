@@ -5,13 +5,11 @@ import { Search } from 'lucide-react';
 
 type Props = {
   onYearSelected: (year: number, justification: string) => void;
-  raiseConfirmOnSearch: boolean;
   onSearchClick: () => void;
 };
 const NewReproButton = ({
   onYearSelected,
   onSearchClick,
-  raiseConfirmOnSearch,
 }: Props) => {
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
@@ -25,10 +23,7 @@ const NewReproButton = ({
   };
 
   function handleSearchClick() {
-    if (raiseConfirmOnSearch) {
-      confirm('are you sure?');
-    }
-    // onSearchClick();
+    onSearchClick();
   }
 
   return (

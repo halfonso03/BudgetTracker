@@ -3,6 +3,7 @@ import useGetRepro from '../../../api/hooks/repro/useGetRepro';
 import ReproForm, { type DirtyState } from '../ReproForm';
 import NewReproButton from './NewReproButton';
 import { useState } from 'react';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 const ReproDetails = () => {
   const navigate = useNavigate();
@@ -11,6 +12,8 @@ const ReproDetails = () => {
     numbersAresDirty: false,
     formValuesIsDirty: false,
   });
+
+  const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
 
   const reproId = id !== undefined ? +id : undefined;
 
@@ -35,15 +38,17 @@ const ReproDetails = () => {
     setTimeout(() => navigate(`/reprogramming/${id}`), 1600);
   }
 
-  console.log('details rerender');
   function handleIsDirty(newState: DirtyState) {
     setIsDirty(newState);
-    console.log('state', newState);
-    // if (!isDirty) setIsDirty(true);
   }
 
   function handleSearchClick() {
-    if (isDirty) alert('repo has been updated');
+    console.log('isDorty', isDirty);
+    if (isDirty.formValuesIsDirty || isDirty.numbersAresDirty) {
+      setConfirmModalIsOpen(true);
+    } else {
+      navigate('/reprogramming/search');
+    }
   }
 
   const body = () => {
@@ -68,12 +73,20 @@ const ReproDetails = () => {
       <NewReproButton
         onYearSelected={handleYearSelected}
         onSearchClick={handleSearchClick}
-        raiseConfirmOnSearch={
-          isDirty.numbersAresDirty || isDirty.formValuesIsDirty
-        }
       ></NewReproButton>
       {JSON.stringify(isDirty)}
       {body()}
+
+      <ConfirmModal
+        isOpen={confirmModalIsOpen}
+        onCancel={() => {
+          setTimeout(() => {
+            setConfirmModalIsOpen(false);
+          }, 500);
+        }}
+        onConfirm={() => navigate('/reprogramming/search')}
+        message="Are you sure you wish to leave this page? Any changes made to this reprogramming will be lost. Click OK to continue."
+      ></ConfirmModal>
     </>
   );
 };

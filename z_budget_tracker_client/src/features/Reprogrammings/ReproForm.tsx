@@ -220,41 +220,42 @@ const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
 
     setLines(newLines);
 
-    //flagIfIsDirty();
-
-    const t = true;
-    if (t) {
-      const balances = queryClient.getQueryData<
-        { accountId: number; name: string; currentAmount: number }[]
-      >([
-        'repro_account_balances',
-        key.initiativeId,
-        key.grantId,
-        key.categoryId,
-      ]);
-      if (
-        !savedBalances ||
-        !savedBalances.some(
-          (b) =>
-            b.key.initiativeId == key.initiativeId &&
-            b.key.grantId == key.grantId &&
-            b.key.categoryId == key.categoryId,
-        )
-      ) {
-        setSavedBalances((prev) => {
-          const newArray = [
-            ...prev,
-            {
-              key: {
-                ...key,
-              },
-              balances: balances!,
+    const balances = queryClient.getQueryData<
+      { accountId: number; name: string; currentAmount: number }[]
+    >([
+      'repro_account_balances',
+      key.initiativeId,
+      key.grantId,
+      key.categoryId,
+    ]);
+    if (
+      !savedBalances ||
+      !savedBalances.some(
+        (b) =>
+          b.key.initiativeId == key.initiativeId &&
+          b.key.grantId == key.grantId &&
+          b.key.categoryId == key.categoryId,
+      )
+    ) {
+      setSavedBalances((prev) => {
+        const newArray = [
+          ...prev,
+          {
+            key: {
+              ...key,
             },
-          ];
+            balances: balances!,
+          },
+        ];
 
-          return newArray;
-        });
-      }
+        return newArray;
+      });
+    }
+
+    if (!isDirtyState.formValuesIsDirty) {
+      const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
+      setIsDirtyState(newIsDirtyState);
+      onIsDirtyStateChanged(newIsDirtyState);
     }
   }
 
@@ -312,44 +313,45 @@ const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
 
     setLines(newLines);
 
-    const t = true;
-    if (t) {
-      const balances = queryClient.getQueryData<
-        { accountId: number; name: string; currentAmount: number }[]
-      >([
-        'repro_account_balances',
-        key.initiativeId,
-        key.grantId,
-        key.categoryId,
-      ]);
+    const balances = queryClient.getQueryData<
+      { accountId: number; name: string; currentAmount: number }[]
+    >([
+      'repro_account_balances',
+      key.initiativeId,
+      key.grantId,
+      key.categoryId,
+    ]);
 
-      if (
-        !savedBalances.some(
-          (b) =>
-            b.key.initiativeId == key.initiativeId &&
-            b.key.grantId == key.grantId &&
-            b.key.categoryId == key.categoryId,
-        )
-      ) {
-        setSavedBalances((prev) => {
-          const newArray = [
-            ...prev,
-            {
-              key: {
-                ...key,
-              },
-              balances: balances!,
+    if (
+      !savedBalances.some(
+        (b) =>
+          b.key.initiativeId == key.initiativeId &&
+          b.key.grantId == key.grantId &&
+          b.key.categoryId == key.categoryId,
+      )
+    ) {
+      setSavedBalances((prev) => {
+        const newArray = [
+          ...prev,
+          {
+            key: {
+              ...key,
             },
-          ];
-          return newArray;
-        });
-      }
+            balances: balances!,
+          },
+        ];
+        return newArray;
+      });
+    }
+
+    if (!isDirtyState.formValuesIsDirty) {
+      const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
+      setIsDirtyState(newIsDirtyState);
+      onIsDirtyStateChanged(newIsDirtyState);
     }
   }
 
   function handleAccountChange(accountId: number, rowUuid: string) {
-    //flagIfIsDirty();
-
     setLines((prev) => {
       const lines = prev.map((l: ReproLineItem, index) => {
         const inc = getValues(`rows.${index}.increase`);
@@ -386,13 +388,15 @@ const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
       return [...lines];
     });
 
-    // setErrorMessages(lines);
+    if (!isDirtyState.formValuesIsDirty) {
+      const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
+      setIsDirtyState(newIsDirtyState);
+      onIsDirtyStateChanged(newIsDirtyState);
+    }
   }
 
   function handleDuplicateRow(uuid: string) {
     const newLine = lines.filter((x) => x.uuid === uuid)[0];
-
-    //flagIfIsDirty();
 
     setLines((prev) => {
       const newLines = [
@@ -401,6 +405,12 @@ const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
       ];
       return newLines;
     });
+
+    if (!isDirtyState.formValuesIsDirty) {
+      const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
+      setIsDirtyState(newIsDirtyState);
+      onIsDirtyStateChanged(newIsDirtyState);
+    }
   }
 
   function handleDeletRow(uuid: string) {
@@ -412,6 +422,12 @@ const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
         .map((l: ReproLineItem, i: number) => ({ ...l, rowId: i }));
       return newLines;
     });
+
+    if (!isDirtyState.formValuesIsDirty) {
+      const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
+      setIsDirtyState(newIsDirtyState);
+      onIsDirtyStateChanged(newIsDirtyState);
+    }
   }
 
   function recalculateNewAmounts(isDirty: boolean) {
@@ -431,14 +447,11 @@ const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
     });
     setLines(newLines);
 
-    if (isDirty && !isDirtyState.numbersAresDirty) {
-      const newIsDirtyState = { ...isDirtyState, numbersAresDirty: true };
-      setIsDirtyState(newIsDirtyState);
-      onIsDirtyStateChanged(newIsDirtyState);
-    }
-
-    if (isDirtyState.numbersAresDirty && !isDirty) {
-      const newIsDirtyState = { ...isDirtyState, numbersAresDirty: false };
+    if (
+      (isDirty && !isDirtyState.numbersAresDirty) ||
+      (isDirtyState.numbersAresDirty && !isDirty)
+    ) {
+      const newIsDirtyState = { ...isDirtyState, numbersAresDirty: isDirty };
       setIsDirtyState(newIsDirtyState);
       onIsDirtyStateChanged(newIsDirtyState);
     }
