@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.DTOs;
 using Application.DTOs.Repro;
 using Application.Interfaces;
 using Domain;
@@ -420,6 +422,81 @@ namespace Application.Services
             return Result<Unit>.Success(Unit.Value);
         }
 
+        public async Task<List<ReproSearchResponseDto>> Search(ReproSearchParams searchParams)
+        {
 
+            var reproLineItems = _dbContext.ReproLineItems
+                                    .Where(x => x.Year == searchParams.Year)
+                                    .AsQueryable();
+
+            if (searchParams.InitiativeIds?.Count > 0)
+            {
+                reproLineItems = reproLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
+            }
+
+            if (searchParams.GrantIds?.Count > 0)
+            {
+                reproLineItems = reproLineItems.Where(x => searchParams.GrantIds.Contains(x.GrantId));
+            }
+
+            if (searchParams.AccountIds?.Count > 0)
+            {
+                reproLineItems = reproLineItems.Where(x => searchParams.AccountIds.Contains(x.AccountId));
+            }
+
+            var reproLineItemIds = await reproLineItems.Select(x => x.ReproId).ToListAsync();
+
+            var reproLineItemResponses = await _dbContext.ReproLineItems
+                                    .Include(x => x.Initiative)
+                                    .Include(x => x.Grant)
+                                    .Include(x => x.Account)
+                                    .Include(x => x.Category)
+                                    .Where(x => reproLineItemIds.Contains(x.ReproId))
+                                    .Select(y => new ReproSearchResponseLineItemDto
+                                    {
+                                        ReproId = y.ReproId,
+                                        RowId = y.RowId,
+                                        InitiativeName = y.Initiative!.Name,
+                                        GrantName = y.Grant!.Name,
+                                        CategoryName = y.Category!.Name,
+                                        AccountName = y.Account!.Name,
+                                        Increase = y.Increase ?? 0M,
+                                        Decrease = y.Decrease ?? 0M,
+                                        Year = y.Year
+                                    }).ToListAsync();
+
+            var reprosQuery = _dbContext.Repros
+                            .Include(x => x.CreatedBy)
+                            .Include(x => x.PostedBy)
+                            .Where(x => reproLineItemIds.Contains(x.Id))
+                            .Select(x => new ReproSearchResponseDto
+                            {
+                                Id = x.Id,
+                                CreateDate = x.CreatedDate,
+                                CreatedBy = x.CreatedBy!.WindowsLogin,
+                                PostedDate = x.PostedDate,
+                                Posted = x.Posted,
+                                PostedBy = x.PostedBy != null ? x.PostedBy!.WindowsLogin : string.Empty
+                            })
+                            .AsQueryable();
+
+            if (searchParams.Posted != null)
+            {
+                reprosQuery = reprosQuery.Where(x => x.Posted == searchParams.Posted);
+            }
+
+
+
+
+            var reprosResults = await reprosQuery.ToListAsync();
+
+            reprosResults.ForEach(r =>
+            {
+                r.LineItems = reproLineItemResponses.Where(x => x.ReproId == r.Id).ToList();
+            });
+
+
+            return reprosResults;
+        }
     }
 }

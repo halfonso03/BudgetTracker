@@ -337,13 +337,24 @@ namespace Application.services
 
         public async Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)
         {
-            var lineItems = await _dbContext.BudgetLineItems
-                .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId && x.AccountId == accountId)
-                .OrderBy(x => x.CreateDate)
+            var budgetLineItems = await _dbContext.BudgetLineItems
+                .Where(x => x.InitiativeId == initiativeId
+                        && x.GrantId == grantId
+                        && x.AccountId == accountId
+                        && x.ItemType == "B")
                 .Select(x => TransactionResponseDto.Create(x.Id, x.ItemType, x.CreateDate, x.Amount))
                 .ToListAsync();
-                
-            return lineItems;
+
+
+            var reproItems = await (from b in _dbContext.BudgetLineItems
+                                    join r in _dbContext.ReproLineItems on b.Id equals r.BudgetLineItemId
+                                    where b.InitiativeId == initiativeId && b.GrantId == grantId && b.AccountId == accountId
+                                    select TransactionResponseDto.Create(r.ReproId, b.ItemType, b.CreateDate, b.Amount))
+                            .ToListAsync();
+
+            List<TransactionResponseDto> mergedLists = [.. budgetLineItems, .. reproItems];
+
+            return [.. mergedLists.OrderBy(x => x.PostedDate)];
         }
     }
 }

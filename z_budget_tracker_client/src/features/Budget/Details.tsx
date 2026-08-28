@@ -17,7 +17,7 @@ import { ChevronDownSquare } from 'lucide-react';
 import useBudgetDetails from '../../api/hooks/budgets/useBudgetDetails';
 import BudgetHeader from './BudgetHeader';
 import toast from 'react-hot-toast';
-import { useBudgetActions } from '../../api/hooks/budgets/useBudgetActions';
+import { useBudgetMutations } from '../../api/hooks/budgets/useBudgetMutations';
 import Button from '../../components/Button';
 import TransactionsModal from './TransactionsModal';
 
@@ -39,7 +39,7 @@ const Details = () => {
     category: '',
   });
 
-  const { updateBudget } = useBudgetActions();
+  const { updateBudget } = useBudgetMutations();
 
   const bRef = useRef<HTMLDivElement | null>(null);
   const cRef = useRef<HTMLDivElement | null>(null);

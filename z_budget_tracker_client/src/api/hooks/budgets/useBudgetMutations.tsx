@@ -1,10 +1,11 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import agent from '../../agent';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
-export const useBudgetActions = () => {
+export const useBudgetMutations = () => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const {
     mutate: createBudget,
@@ -44,11 +45,11 @@ export const useBudgetActions = () => {
     isSuccess: updateBudgetSuccess,
   } = useMutation({
     mutationFn: async (updateRequest: UpdateBudgetRequest) => {
-      const response = await agent.put(`budget`, updateRequest);
-      return response.data;
+      await agent.put(`budget`, updateRequest);
+      return updateRequest;
     },
 
-    onSuccess: () => {
+    onSuccess: (updateRequest: UpdateBudgetRequest) => {
       window.scrollTo({
         top: 0,
         behavior: 'smooth',
@@ -56,9 +57,15 @@ export const useBudgetActions = () => {
       toast.success('Budget Updated.', {
         duration: 2000,
       });
+
+      for (const item of updateRequest.lineItems) {
+        queryClient.invalidateQueries({
+          queryKey: ['transactions', updateRequest.initiativeId, updateRequest.grantId, item.accountId],
+        });
+      }
     },
     onError: () => {
-      alert('errror');
+      alert('error');
     },
   });
 

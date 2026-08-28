@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.DTOs;
 using Application.DTOs.Budgets;
 using Application.DTOs.Repro;
 using Application.Interfaces;
@@ -38,6 +39,14 @@ namespace API.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             return HandleResult(await _reproService.DeleteRepro(id));
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(ReproSearchParams searchParams)
+        {
+            List<ReproSearchResponseDto> results = await _reproService.Search(searchParams);
+
+            return Ok(results); 
         }
     }
 }

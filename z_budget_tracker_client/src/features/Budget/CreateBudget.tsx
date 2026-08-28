@@ -17,7 +17,7 @@ import {
 } from './utils';
 import BudgetHeaderCreate from './BudgetHeaderCreate';
 import { ChevronDownSquare } from 'lucide-react';
-import { useBudgetActions } from '../../api/hooks/budgets/useBudgetActions';
+import { useBudgetMutations } from '../../api/hooks/budgets/useBudgetMutations';
 import Button from '../../components/Button';
 import toast from 'react-hot-toast';
 import useCategories from '../../api/hooks/common/useCategories';
@@ -37,7 +37,7 @@ const CreateBudget = () => {
   const { data: initiatives } = useInitiatives();
   const { data: categories, isLoading: loadingCategories } = useCategories();
   const [canSubmitForm, setCanSubmitForm] = useState(false);
-  const { createBudget } = useBudgetActions();
+  const { createBudget } = useBudgetMutations();
 
   const initiative = initiatives?.filter((x) => x.id === +initiativeId!)[0];
   const grant = grants?.filter((x) => x.id == +grantId!)[0];
