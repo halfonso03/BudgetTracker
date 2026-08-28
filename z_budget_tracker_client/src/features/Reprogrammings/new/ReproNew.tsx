@@ -140,7 +140,7 @@ const ReproNew = () => {
         onConfirm={() => {
           navigate('/reprogramming/search');
         }}
-        message="Are you sure you wish to leave this page? Any changes made to this reprogramming will be lost. Click OK to continue."
+        message="There are unsaved changes in this reprogramming. Any changes made to this reprogramming will be lost. Click OK to continue."
       ></ConfirmModal>
     </>
   );
