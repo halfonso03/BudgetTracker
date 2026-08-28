@@ -693,8 +693,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirtyStateChanged }: Props) => {
 
   return (
     <MenuIdProvider>
-      <div>{reproHeader.status}</div>
-      <div className="">
+      <div >
         {!userId && (
           <div className="text-lg p-2 border border-red-600">Must log in !</div>
         )}

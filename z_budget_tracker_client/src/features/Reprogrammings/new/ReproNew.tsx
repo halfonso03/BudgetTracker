@@ -1,8 +1,10 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../../contexts/useAuth';
 // import { useState } from 'react';
-import ReproForm from '../ReproForm';
+import ReproForm, { type DirtyState } from '../ReproForm';
 import NewReproButton from './NewReproButton';
+import { useState } from 'react';
+import ConfirmModal from '../../../components/ConfirmModal';
 
 const ReproNew = () => {
   const navigate = useNavigate();
@@ -11,6 +13,11 @@ const ReproNew = () => {
   const preloadState = location.state;
   const rowBalances: RowBalance[] = [];
   const lineItems: ReproLineItem[] = [];
+  const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
+  const [isDirty, setIsDirty] = useState<DirtyState>({
+    numbersAresDirty: false,
+    formValuesIsDirty: false,
+  });
 
   let initialYear = 0;
   let justification = '';
@@ -84,7 +91,18 @@ const ReproNew = () => {
     );
   }
 
-  function handleSaved() {}
+  function handleSearchClick() {
+    if (isDirty.formValuesIsDirty || isDirty.numbersAresDirty) {
+      setConfirmModalIsOpen(true);
+    } else {
+      navigate('/reprogramming/search');
+    }
+  }
+
+  function handleIsDirty(newState: DirtyState) {
+    setIsDirty(newState);
+  }
+
 
   console.log('repro new render');
 
@@ -95,7 +113,7 @@ const ReproNew = () => {
           key={repro.uuid}
           repro={repro}
           onInitialSave={handleInitialSaved}
-          onIsDirtyStateChanged={handleSaved}
+          onIsDirtyStateChanged={handleIsDirty}
         ></ReproForm>
       );
     }
@@ -106,10 +124,24 @@ const ReproNew = () => {
     <>
       <NewReproButton
         onYearSelected={handleYearSelected}
-        onSearchClick={() => {}}
-        raiseConfirmOnSearch={false}
+        onSearchClick={handleSearchClick}
+        newMustBeConfirmed={
+          isDirty.formValuesIsDirty || isDirty.numbersAresDirty
+        }
       ></NewReproButton>
       {body()}
+      <ConfirmModal
+        isOpen={confirmModalIsOpen}
+        onCancel={() => {
+          setTimeout(() => {
+            setConfirmModalIsOpen(false);
+          }, 500);
+        }}
+        onConfirm={() => {
+          navigate('/reprogramming/search');
+        }}
+        message="Are you sure you wish to leave this page? Any changes made to this reprogramming will be lost. Click OK to continue."
+      ></ConfirmModal>
     </>
   );
 };

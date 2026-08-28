@@ -14,7 +14,6 @@ const ReproDetails = () => {
   });
 
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-
   const reproId = id !== undefined ? +id : undefined;
 
   const {
@@ -43,13 +42,13 @@ const ReproDetails = () => {
   }
 
   function handleSearchClick() {
-    console.log('isDorty', isDirty);
     if (isDirty.formValuesIsDirty || isDirty.numbersAresDirty) {
       setConfirmModalIsOpen(true);
     } else {
       navigate('/reprogramming/search');
     }
   }
+
 
   const body = () => {
     if (reproFromDb && reproFromDb.year !== 0) {
@@ -73,10 +72,12 @@ const ReproDetails = () => {
       <NewReproButton
         onYearSelected={handleYearSelected}
         onSearchClick={handleSearchClick}
+        newMustBeConfirmed={
+          isDirty.formValuesIsDirty || isDirty.numbersAresDirty
+        }
       ></NewReproButton>
-      {JSON.stringify(isDirty)}
+      {/* {JSON.stringify(isDirty)} */}
       {body()}
-
       <ConfirmModal
         isOpen={confirmModalIsOpen}
         onCancel={() => {
@@ -84,7 +85,9 @@ const ReproDetails = () => {
             setConfirmModalIsOpen(false);
           }, 500);
         }}
-        onConfirm={() => navigate('/reprogramming/search')}
+        onConfirm={() => {
+          navigate('/reprogramming/search');
+        }}
         message="Are you sure you wish to leave this page? Any changes made to this reprogramming will be lost. Click OK to continue."
       ></ConfirmModal>
     </>
