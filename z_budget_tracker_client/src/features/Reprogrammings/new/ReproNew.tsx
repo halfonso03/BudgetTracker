@@ -126,6 +126,7 @@ const ReproNew = () => {
           repro={repro}
           onInitialSave={handleInitialSaved}
           onIsDirtyStateChanged={handleIsDirty}
+          onSaved={() => {}}
         ></ReproForm>
       );
     }
