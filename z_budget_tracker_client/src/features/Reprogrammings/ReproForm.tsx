@@ -60,7 +60,12 @@ type Selections = {
   accountId?: number;
 };
 
-const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirtyStateChanged }: Props) => {
+const ReproForm = ({
+  repro,
+  onInitialSave,
+  onSaved,
+  onIsDirtyStateChanged,
+}: Props) => {
   const DUP_LINES =
     'There are duplicate lines (Look for the duplicate selections for an Initiative, Grant, Category and Account)';
   const NO_INC_AND_NO_DEC_LINES =
@@ -253,6 +258,10 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirtyStateChanged }: Pro
       });
     }
 
+    flagReproIsDirty();
+  }
+
+  function flagReproIsDirty() {
     if (!isDirtyState.formValuesIsDirty) {
       const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
       setIsDirtyState(newIsDirtyState);
@@ -345,11 +354,7 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirtyStateChanged }: Pro
       });
     }
 
-    if (!isDirtyState.formValuesIsDirty) {
-      const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
-      setIsDirtyState(newIsDirtyState);
-      onIsDirtyStateChanged(newIsDirtyState);
-    }
+    flagReproIsDirty();
   }
 
   function handleAccountChange(accountId: number, rowUuid: string) {
@@ -389,11 +394,7 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirtyStateChanged }: Pro
       return [...lines];
     });
 
-    if (!isDirtyState.formValuesIsDirty) {
-      const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
-      setIsDirtyState(newIsDirtyState);
-      onIsDirtyStateChanged(newIsDirtyState);
-    }
+    flagReproIsDirty();
   }
 
   function handleDuplicateRow(uuid: string) {
@@ -407,16 +408,10 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirtyStateChanged }: Pro
       return newLines;
     });
 
-    if (!isDirtyState.formValuesIsDirty) {
-      const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
-      setIsDirtyState(newIsDirtyState);
-      onIsDirtyStateChanged(newIsDirtyState);
-    }
+    flagReproIsDirty();
   }
 
   function handleDeletRow(uuid: string) {
-    //flagIfIsDirty();
-
     setLines((prev) => {
       const newLines = prev
         .filter((x) => x.uuid !== uuid)
@@ -424,11 +419,7 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirtyStateChanged }: Pro
       return newLines;
     });
 
-    if (!isDirtyState.formValuesIsDirty) {
-      const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
-      setIsDirtyState(newIsDirtyState);
-      onIsDirtyStateChanged(newIsDirtyState);
-    }
+    flagReproIsDirty();
   }
 
   function recalculateNewAmounts(isDirty: boolean) {
@@ -456,30 +447,10 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirtyStateChanged }: Pro
       setIsDirtyState(newIsDirtyState);
       onIsDirtyStateChanged(newIsDirtyState);
     }
-
-    // if (!isDirtyState.numbersAresDirty) {
-    //   if (isDirty) {
-    //     const newIsDirtyState = { ...isDirtyState, numbersAresDirty: true };
-    //     setIsDirtyState(newIsDirtyState);
-    //     onIsDirtyStateChanged(newIsDirtyState);
-    //   }
-    // }
-
-    // const newIsDirtyState = { ...isDirtyState, numbersAresDirty: isDirty };
-    // setIsDirtyState(newIsDirtyState);
-
-    // if (isDirty) {
-    //   if (reproHeader.status !== EDITED) {
-    //     setReproHeader((prev) => ({ ...prev, status: EDITED }));
-    //     onIsDirtyStateChanged(newIsDirtyState);
-    //   }
-    //   // flagIfIsDirty();
-    // }
   }
 
   function handleSaveComment(uuid: string, comment: string | null | undefined) {
-    //flagIfIsDirty();
-
+    flagReproIsDirty();
     setLines((prev) => {
       const l = prev.map((line) => ({
         ...line,
@@ -559,13 +530,12 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirtyStateChanged }: Pro
   }
 
   function handleSaveJust(text: string) {
-    // setJustification(text);
     setReproHeader((prev) => ({
       ...prev,
       justification: text,
       status: EDITED,
     }));
-
+    flagReproIsDirty();
     setTimeout(() => setJustModalIsOpen(false), 500);
   }
 
@@ -684,13 +654,6 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirtyStateChanged }: Pro
       },
     });
   }
-
-  // function flagIfIsDirty() {
-  //   if (reproHeader.status !== EDITED) {
-  //     setReproHeader((prev) => ({ ...prev, status: EDITED }));
-  //     onIsDirty();
-  //   }
-  // }
 
   return (
     <MenuIdProvider>
