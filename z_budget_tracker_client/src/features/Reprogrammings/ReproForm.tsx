@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQueryClient } from '@tanstack/react-query';
 import {
   AlertCircle,
@@ -36,11 +37,13 @@ export type DirtyState = {
   formValuesIsDirty: boolean;
   numbersAresDirty: boolean;
 };
-
-type IdHeader = {
+type ReproHeader = {
   id: number;
   justification: string;
   status: ReproStatus;
+  createdBy?: string;
+  createdById?: number;
+  createDate?: Date;
   postedDate?: Date | null;
   postedBy?: string | null;
 };
@@ -48,7 +51,9 @@ type IdHeader = {
 interface Props {
   repro: Repro;
   onInitialSave?: (newId: number) => void;
-  onIsDirtyStateChanged: (isiDirtyState: DirtyState) => void;
+  // onIsDirtyStateChanged: (isiDirtyState: DirtyState) => void;
+  onIsDirtyStateChanged: (dirty: boolean) => void;
+
   onSaved: () => void;
 }
 
@@ -92,7 +97,7 @@ const ReproForm = ({
   // console.log('repro.year from form', repro.year)
   if (repro.year === 0) throw new Error('no year');
 
-  const [reproHeader, setReproHeader] = useState<IdHeader>({
+  const [reproHeader, setReproHeader] = useState<ReproHeader>({
     id: repro.id,
     justification: repro.justification,
     status: repro.posted ? POSTED : SAVED,
@@ -257,16 +262,7 @@ const ReproForm = ({
         return newArray;
       });
     }
-
-    flagReproIsDirty();
-  }
-
-  function flagReproIsDirty() {
-    if (!isDirtyState.formValuesIsDirty) {
-      const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
-      setIsDirtyState(newIsDirtyState);
-      onIsDirtyStateChanged(newIsDirtyState);
-    }
+    // onIsDirtyStateChanged(true);
   }
 
   function handleLineUpdated(
@@ -353,8 +349,7 @@ const ReproForm = ({
         return newArray;
       });
     }
-
-    flagReproIsDirty();
+    onIsDirtyStateChanged(true);
   }
 
   function handleAccountChange(accountId: number, rowUuid: string) {
@@ -393,8 +388,7 @@ const ReproForm = ({
 
       return [...lines];
     });
-
-    flagReproIsDirty();
+    onIsDirtyStateChanged(true);
   }
 
   function handleDuplicateRow(uuid: string) {
@@ -407,8 +401,7 @@ const ReproForm = ({
       ];
       return newLines;
     });
-
-    flagReproIsDirty();
+    onIsDirtyStateChanged(true);
   }
 
   function handleDeletRow(uuid: string) {
@@ -419,10 +412,27 @@ const ReproForm = ({
       return newLines;
     });
 
-    flagReproIsDirty();
+    // if (!isDirtyState.formValuesIsDirty) {
+    //   const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
+    //   setIsDirtyState(newIsDirtyState);
+    //   onIsDirtyStateChanged(newIsDirtyState);
+    // }
+
+    onIsDirtyStateChanged(true);
   }
 
   function recalculateNewAmounts(isDirty: boolean) {
+    // if (isDirty) {
+    //   if (!hasUnsavedChanges) setHasUnsavedChanges(true);
+    // } else {
+    //   if (hasUnsavedChanges) setHasUnsavedChanges(false);
+    // }
+    // if (isDirty) onIsDirtyStateChanged();
+    // setHasUnsavedChanges(() => isDirty);
+
+    onIsDirtyStateChanged(isDirty);
+
+    // console.log('isDirty', isDirty);
     const newLines = lines.map((l, i) => {
       const inc = parseFormattedNumber(
         getValues(`rows.${i}.increase`) as string,
@@ -430,6 +440,8 @@ const ReproForm = ({
       const dec = parseFormattedNumber(
         getValues(`rows.${i}.decrease`) as string,
       );
+
+      // console.log('inc', inc, 'dec', dec);
       return {
         ...l,
         increase: inc,
@@ -439,18 +451,17 @@ const ReproForm = ({
     });
     setLines(newLines);
 
-    if (
-      (isDirty && !isDirtyState.numbersAresDirty) ||
-      (isDirtyState.numbersAresDirty && !isDirty)
-    ) {
-      const newIsDirtyState = { ...isDirtyState, numbersAresDirty: isDirty };
-      setIsDirtyState(newIsDirtyState);
-      onIsDirtyStateChanged(newIsDirtyState);
-    }
+    // if (
+    //   (isDirty && !isDirtyState.numbersAresDirty) ||
+    //   (isDirtyState.numbersAresDirty && !isDirty)
+    // ) {
+    //   const newIsDirtyState = { ...isDirtyState, numbersAresDirty: isDirty };
+    //   setIsDirtyState(newIsDirtyState);
+    //   onIsDirtyStateChanged(newIsDirtyState);
+    // }
   }
 
   function handleSaveComment(uuid: string, comment: string | null | undefined) {
-    flagReproIsDirty();
     setLines((prev) => {
       const l = prev.map((line) => ({
         ...line,
@@ -515,18 +526,19 @@ const ReproForm = ({
 
   function onServerSuccess(posted: boolean, id: number = 0) {
     const message = posted ? 'Reprogramming Posted.' : 'Reprogramming Saved.';
-
+    toast.success(message, {
+      duration: 1500,
+    });
     setReproHeader((prev) => ({
       ...prev,
       id: id !== 0 ? id : prev.id,
+      createdById: +userId!,
+      createdBy: loginId!,
+      createDate: new Date(),
       status: posted ? POSTED : SAVED,
       postedDate: posted ? new Date() : null,
       postedBy: posted ? loginId : '',
     }));
-
-    toast.success(message, {
-      duration: 1500,
-    });
   }
 
   function handleSaveJust(text: string) {
@@ -535,22 +547,18 @@ const ReproForm = ({
       justification: text,
       status: EDITED,
     }));
-    flagReproIsDirty();
+    // flagReproIsDirty();
     setTimeout(() => setJustModalIsOpen(false), 500);
   }
 
   async function saveReproButtonClick() {
     try {
       const lineItems = lines.map((l) => ({
-        rowId: l.rowId,
-        initiativeId: l.initiativeId,
-        grantId: l.grantId,
-        categoryId: l.categoryId,
-        accountId: l.accountId,
-        comment: l.comment,
+        ...l,
         increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
         decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
       }));
+
       if (reproHeader.id === 0) {
         sendCreateRepro(lineItems);
       } else {
@@ -592,6 +600,7 @@ const ReproForm = ({
     };
     await createRepro.mutateAsync(reproToSave, {
       onSuccess: (id) => {
+        queryClient.invalidateQueries({ queryKey: ['repro', id] });
         queryClient.setQueryData<Repro>(['repro', id], () => ({
           ...reproToSave,
           id: id,
@@ -605,7 +614,20 @@ const ReproForm = ({
           postedById: posted ? userId! : null,
           lineItems: lines.map((l) => {
             return {
-              ...l,
+              uuid: l.uuid,
+              rowId: l.rowId,
+              accountId: l.accountId,
+              initiativeId: l.initiativeId,
+              grantId: l.grantId,
+              categoryId: l.categoryId,
+              accountName: l.accountName,
+              initiativeName: l.initiativeName,
+              grantName: l.grantName,
+              categoryName: l.categoryName,
+              increase: l.increase,
+              decrease: l.decrease,
+              comment: l.comment,
+              currentAmount: l.currentAmount,
               newAmount:
                 l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
             };
@@ -613,6 +635,18 @@ const ReproForm = ({
           rowBalances: savedBalances,
         }));
 
+        const message = posted
+          ? 'Reprogramming Posted.'
+          : 'Reprogramming Saved.';
+        toast.success(message, {
+          duration: 1500,
+        });
+
+        //    id: id !== 0 ? id : prev.id,
+        // createdById: id !== 0 : +userId : +prev.createdById,
+        //
+        // ,
+        //
         onServerSuccess(posted, id);
         onInitialSave?.(id);
         onSaved();
@@ -633,22 +667,24 @@ const ReproForm = ({
     };
     await updateRepro.mutateAsync(reproToSave, {
       onSuccess: () => {
-        // queryClient.setQueryData<Repro>(['repro', reproHeader.id], () => ({
-        //   ...reproToSave,
-        //   createdBy: '',
-        //   createdById: 0,
-        //   createDate: new Date(),
-        //   id: reproHeader.id,
-        //   year: repro.year,
-        //   lineItems: lines.map((l) => {
+        // queryClient.setQueryData<Repro>(
+        //   ['repro', reproHeader.id],
+        //   (oldData: any) => {
+        //     console.log('oldData', oldData);
         //     return {
-        //       ...l,
-        //       newAmount:
-        //         l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+        //       ...oldData,
+        //       lineItems: lines.map((l) => {
+        //         return {
+        //           ...l,
+        //           newAmount:
+        //             l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+        //         };
+        //       }),
+        //       rowBalances: savedBalances,
         //     };
-        //   }),
-        //   rowBalances: savedBalances,
-        // }));
+        //   },
+        // );
+
         onServerSuccess(posted);
         onSaved();
       },
@@ -657,7 +693,7 @@ const ReproForm = ({
 
   return (
     <MenuIdProvider>
-      {repro.uuid}
+      <pre>{JSON.stringify(lines)}</pre>
       <div>
         {!userId && (
           <div className="text-xl p-1 text-red-500 font-semibold">
@@ -748,6 +784,7 @@ const ReproForm = ({
             </div>
           )}
         </div>
+
         {reproHeader.status === POSTED && (
           <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 ">
             <div>Total</div>
@@ -755,6 +792,7 @@ const ReproForm = ({
             <div></div>
           </div>
         )}
+
         {lines.length > 0 && reproHeader.status !== POSTED && (
           <div className=" grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500">
             <div className="self-end col-span-4 "></div>

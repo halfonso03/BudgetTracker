@@ -17,6 +17,10 @@ const Budgets = () => {
     toast.dismissAll();
   }, []);
 
+  // function inc() {
+  //   increment();
+  // }
+  // console.log('budgets render');
   return (
     <div className="">
       <div className="flex mb-4 justify-between items-center">

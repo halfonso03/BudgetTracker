@@ -7,6 +7,7 @@ import type {
 import { formatNumber } from '../app/util';
 import { useState } from 'react';
 
+
 interface Props<T extends string> {
   index: number;
   readOnly: boolean;
@@ -35,7 +36,6 @@ const NumericArrayInputGeneric = ({
       `rows.${index}.${fieldName}` as Path<ReprogInputRows>,
     )?.toString();
   });
-
 
   function handleOnKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (

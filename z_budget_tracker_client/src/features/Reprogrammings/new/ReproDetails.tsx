@@ -4,6 +4,7 @@ import ReproForm, { type DirtyState } from '../ReproForm';
 import NewReproButton from './NewReproButton';
 import { useState } from 'react';
 import ConfirmModal from '../../../components/ConfirmModal';
+import { useHasUnsavedChangesStore } from '../../../state/useHasUnsavedChangesStore';
 
 const ReproDetails = () => {
   const navigate = useNavigate();
@@ -12,6 +13,12 @@ const ReproDetails = () => {
     numbersAresDirty: false,
     formValuesIsDirty: false,
   });
+
+  const setHasUnsavedChanges = useHasUnsavedChangesStore(
+    (x) => x.setHasUnsavedChanges,
+  );
+
+  // const hasUnsavedChanges = useHasUnsavedChangesStore.getState().hasUnsavedChanges
 
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const reproId = id !== undefined ? +id : undefined;
@@ -37,8 +44,20 @@ const ReproDetails = () => {
     setTimeout(() => navigate(`/reprogramming/${id}`), 1600);
   }
 
-  function handleIsDirty(newState: DirtyState) {
-    setIsDirty(newState);
+  // function handleIsDirty(newState: DirtyState) {
+  //   setIsDirty(newState);
+  // }
+
+  function handleIsDirty(isDirty: boolean) {
+    setHasUnsavedChanges(isDirty);
+    // if (isDirty && !hasUnsavedChanges) setHasUnsavedChanges(isDirty);
+    // if (!isDirty && hasUnsavedChanges) setHasUnsavedChanges(isDirty);
+    // if (!hasUnsavedChanges)
+  }
+
+  function handleSaved() {
+    setHasUnsavedChanges(false);
+    // setIsDirty({ numbersAresDirty: false, formValuesIsDirty: false });
   }
 
   function handleSearchClick() {
@@ -47,10 +66,6 @@ const ReproDetails = () => {
     } else {
       navigate('/reprogramming/search');
     }
-  }
-
-  function handleSaved() {
-    setIsDirty({ numbersAresDirty: false, formValuesIsDirty: false });
   }
 
   const body = () => {
@@ -76,11 +91,8 @@ const ReproDetails = () => {
       <NewReproButton
         onYearSelected={handleYearSelected}
         onSearchClick={handleSearchClick}
-        newMustBeConfirmed={
-          isDirty.formValuesIsDirty || isDirty.numbersAresDirty
-        }
+        newMustBeConfirmed={false}
       ></NewReproButton>
-      {/* {JSON.stringify(isDirty)} */}
       {body()}
       <ConfirmModal
         isOpen={confirmModalIsOpen}
@@ -105,6 +117,7 @@ function createReproFromDb(repro2: Repro): Repro {
     ...repro2,
     justification: repro2.justification.trim(),
     uuid: crypto.randomUUID(),
+    rowBalances: repro2.rowBalances,
     lineItems: repro2.lineItems!.map((l) => {
       const curAmount =
         repro2.rowBalances
@@ -121,7 +134,6 @@ function createReproFromDb(repro2: Repro): Repro {
         uuid: window.crypto.randomUUID(),
         currentAmount: curAmount,
         newAmount: curAmount + Number(l.increase) - Number(l.decrease),
-        rowBalances: repro2.rowBalances,
       };
     }),
   };

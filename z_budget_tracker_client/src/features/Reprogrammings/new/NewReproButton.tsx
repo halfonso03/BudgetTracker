@@ -17,6 +17,9 @@ const NewReproButton = ({
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
+  // const hasUnsavedChanges = useHasUnsavedChangesStore(
+  //   (x) => x.hasUnsavedChanges,
+  // );
 
   const handleYearSelected = (e: { year: number; justification: string }) => {
     onYearSelected(e.year, e.justification);

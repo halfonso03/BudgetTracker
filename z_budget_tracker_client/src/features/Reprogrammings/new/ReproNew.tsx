@@ -114,9 +114,13 @@ const ReproNew = () => {
     }
   }
 
-  function handleIsDirty(newState: DirtyState) {
-    setIsDirty(newState);
-  }
+  // function handleIsDirty(newState: DirtyState) {
+  //   setIsDirty(newState);
+  // }
+
+  //   function handleIsDirty(isDirty: boolean) {
+  //   setIsDirty(newState);
+  // }
 
   const body = () => {
     if (repro && repro.year !== 0) {
@@ -125,7 +129,7 @@ const ReproNew = () => {
           key={repro.uuid}
           repro={repro}
           onInitialSave={handleInitialSaved}
-          onIsDirtyStateChanged={handleIsDirty}
+          onIsDirtyStateChanged={() => {}}
           onSaved={() => {}}
         ></ReproForm>
       );

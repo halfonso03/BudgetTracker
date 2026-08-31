@@ -1,6 +1,6 @@
 
 SELECT * FROM tblBudget
-select * from tblReproLineItem
+select * from tblReproLineItem where reproid = 181
 
 
 /*
