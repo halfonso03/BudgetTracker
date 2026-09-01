@@ -35,5 +35,6 @@ export function formatNumber(amount: number): string {
 export function parseFormattedNumber(formattedString: string) {
     // Removes everything except numbers, minus signs, and decimal points
     const cleanString = formattedString.toString().replace(/[^0-9.-]/g, '');
+    if (isNaN(parseFloat(cleanString))) return 0;
     return parseFloat(cleanString);
 }

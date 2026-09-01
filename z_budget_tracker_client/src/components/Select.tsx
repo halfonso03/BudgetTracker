@@ -3,12 +3,19 @@ import type { ReactNode } from 'react';
 interface SelectProps extends React.InputHTMLAttributes<HTMLSelectElement> {
   children: ReactNode;
   additionalclasses?: string;
+  widthClass?: string;
 }
 
-const Select = ({ children, additionalclasses, ...props }: SelectProps) => {
+const Select = ({
+  children,
+  additionalclasses,
+  widthClass,
+  ...props
+}: SelectProps) => {
   const classes =
-    'p-1 border border-neutral-300 w-full rounded-sm text-neutral-800 rounded-sm  focus:outline-none focus:ring-0 focus:ring-offset-0 disabled:opacity-90 disabled:bg-neutral-200 ' +
-    (additionalclasses ?? '');
+    'p-1 border border-neutral-300  rounded-sm text-neutral-800 rounded-sm  focus:outline-none focus:ring-0 focus:ring-offset-0 disabled:opacity-90 disabled:bg-neutral-200 ' +
+    (additionalclasses ?? '') +
+    (widthClass ?? ' w-full');
 
   return (
     <select className={classes} {...props}>

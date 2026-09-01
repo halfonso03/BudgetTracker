@@ -14,6 +14,10 @@ namespace Application.DTOs
         public List<int>? GrantIds { get; set; } = [];
         public List<int>? AccountIds { get; set; } = [];
         public ReproSearchStatus Status { get; set; }
+        public AmountComparer DebitComparer { get; set; }
+        public AmountComparer CreditComparer { get; set; }
+        public decimal DebitAmount { get; set; }
+        public decimal CreditAmount { get; set; }
     }
 
 
@@ -24,8 +28,12 @@ namespace Application.DTOs
         POSTED
     }
 
-    public class IdSearch
+    public enum AmountComparer
     {
-        public int Id { get; set; }
+        GreaterThan,
+        LessThan,
+        EqualTo
     }
+
+
 }
