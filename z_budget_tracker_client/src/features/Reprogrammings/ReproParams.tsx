@@ -1,8 +1,7 @@
-import { useRef, useState, type ChangeEvent, type FocusEvent } from 'react';
+import { type ChangeEvent, type FocusEvent } from 'react';
 import CheckBoxList from '../../components/CheckBoxList';
 import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
 import Select from '../../components/Select';
-import { parseFormattedNumber } from '../../app/util';
 
 const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
@@ -12,44 +11,33 @@ type Props = {
   initiatives: { id: number; name: string }[];
   grants: { id: number; name: string }[];
   categories: { id: number; name: string }[];
+  onListCheck: (id: number, key: string) => void;
+  onYearChange: (year: number) => void;
+  onStatusChange: (year: number) => void;
+  onAmountBlur: (amount: string, key: string) => void;
+  onAmountComparerChange: (value: number, key: string) => void;
 };
-const ReproParams = ({ initiatives, grants, categories }: Props) => {
-  const [year, setYear] = useState(2026);
-  const [status, setStatus] = useState<number>(0);
 
-  const debitRef = useRef<HTMLInputElement | null>(null);
-  const creditRef = useRef<HTMLInputElement | null>(null);
-  const [debitComparer, setDebitComparer] = useState(0);
-  const [creditComparer, setCreditComparer] = useState(0);
-  const [debit, setDebit] = useState<number>(0);
-  const [credit, setCredit] = useState<number>(0);
-
+const ReproParams = ({
+  initiatives,
+  grants,
+  categories,
+  onListCheck,
+  onYearChange,
+  onStatusChange,
+  onAmountBlur,
+  onAmountComparerChange,
+}: Props) => {
   function handleCheck(id: number, type: string) {
-    setSelectedItems(
-      selectedItems.some((x) => x.id === id && x.type === type)
-        ? [
-            ...selectedItems.filter(
-              (x) => (x.type === type && x.id !== id) || x.type !== type,
-            ),
-          ]
-        : [...selectedItems, { id: id, type: type }],
-    );
+    onListCheck(id, type);
   }
 
   function handleAmountBlur(e: FocusEvent<HTMLInputElement>, key: string) {
-    const value = e.target.value;
-    const number = parseFormattedNumber(value);
-    if (key == 'debit') {
-      if (debit !== number) {
-        setDebit(number);
-      }
-    }
-    console.log('credit', credit);
-    if (key == 'credit') {
-      if (credit !== number) {
-        setCredit(number);
-      }
-    }
+    onAmountBlur(e.target.value, key);
+  }
+
+  function handleComparerChange(value: number, key: string) {
+    onAmountComparerChange(value, key);
   }
 
   return (
@@ -59,9 +47,8 @@ const ReproParams = ({ initiatives, grants, categories }: Props) => {
           Year:
         </div>
         <Select
-          value={year}
           onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-            setYear(+e.target.value)
+            onYearChange(+e.target.value)
           }
         >
           <option value="2026">2026</option>
@@ -106,7 +93,7 @@ const ReproParams = ({ initiatives, grants, categories }: Props) => {
         <Select
           value={status}
           onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-            setStatus(+e.target.value)
+            onStatusChange(+e.target.value)
           }
         >
           <option value="0">All</option>
@@ -119,10 +106,9 @@ const ReproParams = ({ initiatives, grants, categories }: Props) => {
         <div className="flex gap-2">
           <Select
             widthClass={'w-35'}
-            value={debitComparer}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              setDebitComparer(+e.target.value)
-            }
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              handleComparerChange(+e.target.value, 'debit');
+            }}
           >
             <option value="0">Less than</option>
             <option value="1">Greater Than</option>
@@ -131,8 +117,7 @@ const ReproParams = ({ initiatives, grants, categories }: Props) => {
           <NumericInputUncontrolled
             className="border border-neutral-300 p-1 rounded-md text-end "
             placeholder="Amount..."
-            ref={debitRef}
-            onBlur={(e) => {
+            onBlur={(e: FocusEvent<HTMLInputElement>) => {
               handleAmountBlur(e, 'debit');
             }}
           ></NumericInputUncontrolled>
@@ -145,10 +130,9 @@ const ReproParams = ({ initiatives, grants, categories }: Props) => {
         <div className="flex gap-2">
           <Select
             widthClass={'w-35'}
-            value={creditComparer}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              setCreditComparer(+e.target.value)
-            }
+            onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+              handleComparerChange(+e.target.value, 'credit');
+            }}
           >
             <option value="0">Less than</option>
             <option value="1">Greater Than</option>
@@ -157,7 +141,6 @@ const ReproParams = ({ initiatives, grants, categories }: Props) => {
           <NumericInputUncontrolled
             className="border border-neutral-300 p-1 rounded-md text-end "
             placeholder="Amount..."
-            ref={creditRef}
             onBlur={(e) => {
               handleAmountBlur(e, 'credit');
             }}
