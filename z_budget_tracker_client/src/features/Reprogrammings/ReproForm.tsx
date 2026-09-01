@@ -262,7 +262,8 @@ const ReproForm = ({
         return newArray;
       });
     }
-    // onIsDirtyStateChanged(true);
+
+    onIsDirtyStateChanged(true);
   }
 
   function handleLineUpdated(
@@ -349,6 +350,7 @@ const ReproForm = ({
         return newArray;
       });
     }
+
     onIsDirtyStateChanged(true);
   }
 
@@ -388,6 +390,7 @@ const ReproForm = ({
 
       return [...lines];
     });
+
     onIsDirtyStateChanged(true);
   }
 
@@ -401,6 +404,7 @@ const ReproForm = ({
       ];
       return newLines;
     });
+
     onIsDirtyStateChanged(true);
   }
 
@@ -411,14 +415,12 @@ const ReproForm = ({
         .map((l: ReproLineItem, i: number) => ({ ...l, rowId: i }));
       return newLines;
     });
-
+    onIsDirtyStateChanged(true);
     // if (!isDirtyState.formValuesIsDirty) {
     //   const newIsDirtyState = { ...isDirtyState, formValuesIsDirty: true };
     //   setIsDirtyState(newIsDirtyState);
     //   onIsDirtyStateChanged(newIsDirtyState);
     // }
-
-    onIsDirtyStateChanged(true);
   }
 
   function recalculateNewAmounts(isDirty: boolean) {
@@ -430,7 +432,7 @@ const ReproForm = ({
     // if (isDirty) onIsDirtyStateChanged();
     // setHasUnsavedChanges(() => isDirty);
 
-    onIsDirtyStateChanged(isDirty);
+    // onIsDirtyStateChanged(isDirty);
 
     // console.log('isDirty', isDirty);
     const newLines = lines.map((l, i) => {
@@ -693,7 +695,7 @@ const ReproForm = ({
 
   return (
     <MenuIdProvider>
-      <pre>{JSON.stringify(lines)}</pre>
+      {/* <pre>{JSON.stringify(lines)}</pre> */}
       <div>
         {!userId && (
           <div className="text-xl p-1 text-red-500 font-semibold">
@@ -867,7 +869,7 @@ const ReproForm = ({
             return (
               <div
                 key={index}
-                className="grid grid-cols-[1.2fr_.5fr_.5fr_1.2fr_2fr_.3fr] gap-2 px-3 py-2 border border-neutral-200  items-center mb-3 "
+                className="grid grid-cols-[1.2fr_.5fr_.5fr_1.2fr_2fr_.3fr] gap-2 px-3 py-2 border border-neutral-300  items-center mb-3 "
               >
                 <TransactionRow
                   key={item.uuid}

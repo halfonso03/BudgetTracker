@@ -9,13 +9,18 @@ const fetchGrants = async (year: number): Promise<Grant[]> => {
 };
 
 const useGrants = (year: number, getData: boolean = true) => {
-  const { data, isLoading } = useQuery<Grant[]>({
+  const { data, isLoading, isFetched, isSuccess } = useQuery<Grant[]>({
     queryKey: ['grants', year],
     queryFn: () => fetchGrants(year),
     enabled: year > 0 && getData,
   });
 
-  return { data, isLoading };
+  return {
+    grants: data,
+    loadingGrants: isLoading,
+    grantsFetched: isFetched,
+    grantsSuccess: isSuccess,
+  };
 };
 
 export default useGrants;

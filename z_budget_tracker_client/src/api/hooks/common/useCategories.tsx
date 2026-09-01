@@ -6,16 +6,43 @@ const fetchCategories = async (): Promise<Category[]> => {
   return response.data;
 };
 
-const useCategories = (getData: boolean) => {
-  const { data, isLoading } = useQuery<Category[]>({
+const useCategories = (getData: boolean = true, flattened: boolean = false) => {
+  const { data, isLoading, isFetched } = useQuery<Category[]>({
     queryKey: ['categories'],
     queryFn: fetchCategories,
     placeholderData: [],
     staleTime: 1 * 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
     enabled: getData,
+    select: (categories: Category[]) => {
+      if (flattened) {
+        const accountsFlattened = categories
+          .map((x) => x.accounts)
+          .flat()
+          .map((a) => {
+            return {
+              ...a,
+              categoryName: categories!.filter(
+                (c) => c.id === a!.category_id,
+              )[0].name,
+            };
+          })
+          .map((y) => ({
+            id: y.id!,
+            name: y.categoryName + ' - ' + y.name,
+          }));
+
+        return accountsFlattened;
+      }
+      return categories;
+    },
   });
 
-  return { data, loadingCat: isLoading };
+  return {
+    categories: data,
+    loadingCat: isLoading,
+    categoriesFetched: isFetched,
+  };
 };
 
 export default useCategories;

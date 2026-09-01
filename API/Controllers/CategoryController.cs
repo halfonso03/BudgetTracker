@@ -12,6 +12,7 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class CategoryController(ICategoryService _categoryService) : ControllerBase
     {
+        [HttpGet()]
         public async Task<IActionResult> GetCategoriesAndAccounts()
         {
             return Ok(await _categoryService.GetCategoriesAndAccounts());

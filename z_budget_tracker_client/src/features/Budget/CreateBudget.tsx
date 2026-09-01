@@ -35,7 +35,7 @@ const CreateBudget = () => {
   const { year, initiativeId, grantId } = useParams();
   const { data: grants } = useGrants(+year!);
   const { data: initiatives } = useInitiatives();
-  const { data: categories, isLoading: loadingCategories } = useCategories();
+  const { data: categories, loadingCat } = useCategories();
   const [canSubmitForm, setCanSubmitForm] = useState(false);
   const { createBudget } = useBudgetMutations();
 
@@ -207,7 +207,7 @@ const CreateBudget = () => {
     }
   }
 
-  if (loadingCategories) return <div>Loading...</div>;
+  if (loadingCat) return <div>Loading...</div>;
   if (!categories) return <span>Error</span>;
 
   let indexRunningTotal = -1;

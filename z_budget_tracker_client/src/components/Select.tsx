@@ -7,7 +7,7 @@ interface SelectProps extends React.InputHTMLAttributes<HTMLSelectElement> {
 
 const Select = ({ children, additionalclasses, ...props }: SelectProps) => {
   const classes =
-    'text-neutral-900 rounded-sm p-2 border border-neutral-300 w-full focus:outline-none focus:ring-0 focus:ring-offset-0 disabled:opacity-90 disabled:bg-neutral-200 ' +
+    'p-1 border border-neutral-200 rounded-sm text-neutral-800 rounded-sm  focus:outline-none focus:ring-0 focus:ring-offset-0 disabled:opacity-90 disabled:bg-neutral-200 ' +
     (additionalclasses ?? '');
 
   return (
