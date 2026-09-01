@@ -480,9 +480,10 @@ namespace Application.Services
                             })
                             .AsQueryable();
 
-            if (searchParams.Posted != null)
+
+            if (searchParams.Status != ReproSearchStatus.ALL)
             {
-                reprosQuery = reprosQuery.Where(x => x.Posted == searchParams.Posted);
+                reprosQuery = reprosQuery.Where(x => x.Posted == (searchParams.Status != ReproSearchStatus.SAVED));
             }
 
 

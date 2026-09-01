@@ -41,8 +41,8 @@ namespace API.Controllers
             return HandleResult(await _reproService.DeleteRepro(id));
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> Search(ReproSearchParams searchParams)
+        [HttpPost("search")]
+        public async Task<IActionResult> Search([FromBody] ReproSearchParams searchParams)
         {
             List<ReproSearchResponseDto> results = await _reproService.Search(searchParams);
 

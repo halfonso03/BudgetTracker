@@ -9,14 +9,19 @@ const fetchInitiatives = async (): Promise<Initiative[]> => {
 };
 
 const useInitiatives = (getData: boolean = true) => {
-  const { data, isLoading, isFetched } = useQuery<Initiative[]>({
+  const { data, isLoading, isFetched, isSuccess } = useQuery<Initiative[]>({
     queryKey: ['initiatives'],
     queryFn: fetchInitiatives,
     staleTime: 1 * 60 * 60 * 1000,
     enabled: getData,
   });
 
-  return { initiatives: data, loadingInit: isLoading, initsFetched: isFetched };
+  return {
+    initiatives: data,
+    loadingInit: isLoading,
+    initsFetched: isFetched,
+    iSuccess: isSuccess,
+  };
 };
 
 export default useInitiatives;

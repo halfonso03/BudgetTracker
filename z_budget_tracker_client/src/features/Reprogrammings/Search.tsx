@@ -1,9 +1,11 @@
-import { useState, type ChangeEvent } from 'react';
+/* eslint-disable react-hooks/set-state-in-effect */
+import { useEffect, useMemo, useState, type ChangeEvent } from 'react';
 import useInitiatives from '../../api/hooks/common/useInitiatives';
 import Select from '../../components/Select';
 import useGrants from '../../api/hooks/common/useGrants';
 import CheckBoxList from '../../components/CheckBoxList';
 import useCategories from '../../api/hooks/common/useCategories';
+import { useReproSearch } from '../../api/hooks/repro/useReproSearch';
 
 type SelectedItem = {
   id: number;
@@ -18,25 +20,59 @@ const Search = () => {
   const [year, setYear] = useState(2026);
   const [status, setStatus] = useState<number>(0);
 
-  const { initiatives, loadingInit } = useInitiatives();
-  const { grants, loadingGrants } = useGrants(+year);
-  const { categories, loadingCat } = useCategories(true, true);
+  const { initiatives, loadingInit, iSuccess } = useInitiatives();
+  const { grants, loadingGrants, grantsSuccess } = useGrants(+year);
+  const { categories, loadingCat, catSuccess } = useCategories(true, true);
+  const [l, setL] = useState(false);
 
-  const itemsList =
-    grants?.length && categories?.length && initiatives?.length
+  const itemsList: SelectedItem[] = useMemo(() => {
+    const i = initiatives?.length
       ? [
-          ...initiatives.map((i) => ({
+          ...initiatives!.map((i) => ({
             id: i.id,
             type: INITIATIVES_LIST_TYPE,
           })),
-          ...grants.map((g) => ({ id: g.id, type: GRANTS_LIST_TYPE })),
-          ...categories.map((c) => ({ id: c.id, type: ACCOUNTS_LIST_TYPE })),
         ]
       : [];
 
-  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>(itemsList);
+    const g = grants?.length
+      ? [
+          ...grants!.map((i) => ({
+            id: i.id,
+            type: GRANTS_LIST_TYPE,
+          })),
+        ]
+      : [];
 
-  if (loadingInit || loadingCat || loadingGrants) return <div>Loading...</div>;
+    const a = categories?.length
+      ? [
+          ...categories!.map((i) => ({
+            id: i.id,
+            type: ACCOUNTS_LIST_TYPE,
+          })),
+        ]
+      : [];
+    const items = [...i, ...g, ...a];
+
+    return items;
+  }, [categories, grants, initiatives]);
+
+  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>(itemsList);
+  const { searchResults, loadingSearchResults } = useReproSearch(
+    selectedItems,
+    status,
+    year,
+  );
+
+  useEffect(() => {
+    if (iSuccess && grantsSuccess && catSuccess && !l) {
+      setL(true);
+      setSelectedItems(itemsList);
+    }
+    console.log('selectedItems', selectedItems);
+  }, [catSuccess, grantsSuccess, iSuccess, itemsList, l, selectedItems]);
+
+  if (loadingInit || loadingGrants || loadingCat) return <div>Loading...</div>;
 
   function handleCheck(id: number, type: string) {
     setSelectedItems(
@@ -75,10 +111,14 @@ const Search = () => {
               label="Initiative:"
               id={INITIATIVES_LIST_TYPE}
               onCheck={handleCheck}
-              items={initiatives!.map((i) => ({ ...i, checked: true }))}
+              items={
+                initiatives?.length
+                  ? initiatives.map((i) => ({ ...i, checked: true }))
+                  : []
+              }
             ></CheckBoxList>
           </div>
-          <div className="border border-b-0 border-neutral-200 ">
+          <div className="border border-b-0 border-neutral-200">
             <CheckBoxList
               label="Award:"
               id={GRANTS_LIST_TYPE}
@@ -86,7 +126,7 @@ const Search = () => {
               items={grants!.map((i) => ({ ...i, checked: true }))!}
             ></CheckBoxList>
           </div>
-          <div className="border border-b-0 border-neutral-200  ">
+          <div className="border border-b-0 border-neutral-200">
             <CheckBoxList
               label="Account:"
               id={ACCOUNTS_LIST_TYPE}
@@ -116,7 +156,11 @@ const Search = () => {
             <div className="font-semibold text-neutral-600 ml-1">Amount:</div>
           </div>
         </div>
-        <div className="flex-4 p-2 ">results</div>
+        <div className="flex-4 p-2 ">
+          {!loadingSearchResults && searchResults?.length && (
+            <div>{searchResults.length}</div>
+          )}
+        </div>
         {/* <Button
         onClick={() => {
           saveSearchParams({ year: 2026, initiativeIds: [1, 2, 3] });

@@ -29,10 +29,9 @@ type Props = {
 const AddLineModal = ({ ...props }: Props) => {
   const [selections, setSelections] = useState<Selections | null>(null);
   const [animateOut, setAnimateOut] = useState(false);
-  const { data: grants } = useGrants(props.year, props.isOpen);
-  const { data: initiatives } = useInitiatives(props.isOpen);
-  const { data: categories } = useCategories(props.isOpen);
-
+  const { grants } = useGrants(props.year, props.isOpen);
+  const { initiatives } = useInitiatives(props.isOpen);
+  const { categories } = useCategories(props.isOpen);
 
   const { data: balances } = useCurrentAccountBalances(
     selections?.initiativeId,
@@ -81,7 +80,7 @@ const AddLineModal = ({ ...props }: Props) => {
       <div className="grid grid-cols-[1fr_1fr] mb-4 gap-4">
         <div className="flex flex-col gap-9">
           <div>
-            <span className="entity-label">Select an Initiative</span>
+            <div className="entity-label">Select an Initiative</div>
             <Select
               value={selections?.initiativeId}
               additionalclasses={`${selections?.initiativeId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
@@ -105,7 +104,7 @@ const AddLineModal = ({ ...props }: Props) => {
             </Select>
           </div>
           <div>
-            <span className="entity-label">Select a Grant</span>
+            <div className="entity-label">Select a Grant</div>
             <Select
               additionalclasses={`${selections?.grantId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
               value={selections?.grantId}
@@ -130,7 +129,7 @@ const AddLineModal = ({ ...props }: Props) => {
             </Select>
           </div>
           <div>
-            <span className="entity-label">Select a Category</span>
+            <div className="entity-label">Select a Category</div>
             <Select
               additionalclasses={`${selections?.categoryId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
               value={selections?.categoryId}
