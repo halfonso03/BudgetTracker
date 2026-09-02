@@ -21,7 +21,6 @@ const CheckBoxList = ({ label, items, id, maxHeight, onCheck }: Props) => {
   t += ' ';
 
 
-  console.log('items', items)
   function handleCheck(id: number, key: string) {
     setOptions((prev) => {
       return prev.map((i) => ({
@@ -35,7 +34,7 @@ const CheckBoxList = ({ label, items, id, maxHeight, onCheck }: Props) => {
 
   return (
     <div>
-      <div className="font-semibold text-neutral-600 p-2 border-b border-b-neutral-200  ">
+      <div className="font-semibold text-neutral-600 pl-3 pt-2 pb-0  ">
         {label}
       </div>
       <div

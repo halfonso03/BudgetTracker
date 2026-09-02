@@ -49,7 +49,7 @@ const ReproParams = memo(
       <div className="flex flex-col">
         <div className="flex gap-3 border border-b-0 border-neutral-200 p-2 rounded-t-md">
           <div className="font-semibold text-neutral-600 ml-1 self-center">
-            Year:
+            Year
           </div>
           <Select id="year-select" onChange={handleYearChange}>
             <option value="2026">2026</option>
@@ -59,7 +59,7 @@ const ReproParams = memo(
         <div className="border border-b-0 border-neutral-200 ">
           {initiatives !== undefined && initiatives.length > 0 && (
             <CheckBoxList
-              label="Initiative:"
+              label="Initiative"
               id={INITIATIVES_LIST_TYPE}
               onCheck={handleCheck}
               items={initiatives.map((i) => ({ ...i, checked: true }))}
@@ -71,7 +71,7 @@ const ReproParams = memo(
           {grants !== undefined && grants.length > 0 && (
             <CheckBoxList
               key={grants[0].name}
-              label="Award:"
+              label="Award"
               id={GRANTS_LIST_TYPE}
               onCheck={handleCheck}
               items={grants.map((i) => ({ ...i, checked: true }))}
@@ -82,7 +82,7 @@ const ReproParams = memo(
         <div className="border border-b-0 border-neutral-200 ">
           {categories !== undefined && categories.length > 0 && (
             <CheckBoxList
-              label="Account:"
+              label="Account"
               maxHeight={160}
               id={ACCOUNTS_LIST_TYPE}
               onCheck={handleCheck}
@@ -92,7 +92,7 @@ const ReproParams = memo(
         </div>
         <div className="border border-b-0 border-neutral-200 pl-2 py-2 flex gap-3 pr-2">
           <div className="font-semibold text-neutral-600 ml-1 self-center">
-            Status:
+            Status
           </div>
           <Select
             onChange={(e: ChangeEvent<HTMLSelectElement>) =>
@@ -106,7 +106,7 @@ const ReproParams = memo(
         </div>
         <div className="border border-b-0 border-neutral-200 p-2 py-3">
           <div className="font-semibold text-neutral-600 ml-1">
-            Debit Amount:
+            Debit Amount
           </div>
           <div className="flex gap-2">
             <Select
@@ -130,7 +130,7 @@ const ReproParams = memo(
         </div>
         <div className="border border-neutral-200 p-2 py-3">
           <div className="font-semibold text-neutral-600 ml-1">
-            Credit Amount:
+            Credit Amount
           </div>
           <div className="flex gap-2">
             <Select

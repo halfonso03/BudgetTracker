@@ -139,5 +139,5 @@ type ReproSearchResult = {
     postedDate: Date | null
     posted: boolean,
     justification: string | null,
-    lineItems: ReprLineItemSearchResult
+    lineItems: ReprLineItemSearchResult[]
 }

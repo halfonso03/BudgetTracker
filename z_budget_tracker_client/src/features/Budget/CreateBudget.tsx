@@ -33,9 +33,9 @@ const CreateBudget = () => {
   const bRef = useRef<HTMLDivElement | null>(null);
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
   const { year, initiativeId, grantId } = useParams();
-  const { data: grants } = useGrants(+year!);
-  const { data: initiatives } = useInitiatives();
-  const { data: categories, loadingCat } = useCategories();
+  const { grants } = useGrants(+year!);
+  const { initiatives } = useInitiatives();
+  const { categories, loadingCat } = useCategories();
   const [canSubmitForm, setCanSubmitForm] = useState(false);
   const { createBudget } = useBudgetMutations();
 

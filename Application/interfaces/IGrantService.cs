@@ -9,6 +9,7 @@ namespace Application.Interfaces
 {
     public interface IGrantService
     {
+        Task<List<GrantDto>> GetAllGrants();
         Task<List<GrantDto>> GetGrants(int year);
     }
 }

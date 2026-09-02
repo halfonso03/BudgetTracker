@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useInitiatives from '../../api/hooks/common/useInitiatives';
-import useGrants from '../../api/hooks/common/useGrants';
 import useCategories from '../../api/hooks/common/useCategories';
 import { useReproSearch } from '../../api/hooks/repro/useReproSearch';
 
@@ -9,6 +8,7 @@ import { parseFormattedNumber } from '../../app/util';
 import ReproParams from './ReproParams';
 import ReproSearchReults from './ReproSearchReults';
 import React from 'react';
+import useGrantsAllYears from '../../api/hooks/common/useGrantsAllYears';
 
 type SelectedItem = {
   id: number;
@@ -30,14 +30,13 @@ const Search = () => {
   const [l, setL] = useState(false);
 
   const { initiatives, iSuccess } = useInitiatives();
-  const { grants, grantsSuccess } = useGrants(year);
+  const { grants, grantsSuccess } = useGrantsAllYears();
   const { categories, catSuccess } = useCategories(true, true);
 
   const initiativesList = useMemo(() => {
     return initiatives;
   }, [initiatives]);
 
-  const grantsList = grants;
   const categoriesList = useMemo(() => {
     return categories;
   }, [categories]);
@@ -53,16 +52,19 @@ const Search = () => {
       : [];
   }, [initiatives, initiativesList]);
 
+  const preG = grants?.filter((x) => x.year === year);
+
   const g = useMemo(() => {
-    return grantsList !== undefined && grantsList !== null
+    return preG !== undefined && preG !== null
       ? [
-          ...grants!.map((i) => ({
+          ...preG!.map((i) => ({
             id: i.id,
             type: GRANTS_LIST_TYPE,
+            year: i.year,
           })),
         ]
       : [];
-  }, [grants, grantsList]);
+  }, [preG]);
 
   const a = useMemo(() => {
     return categoriesList !== undefined && categoriesList !== null
@@ -76,10 +78,13 @@ const Search = () => {
   }, [categories, categoriesList]);
 
   const itemsList: SelectedItem[] = useMemo(() => {
-    return [...i, ...g, ...a];
-  }, [a, g, i]);
+    return [...i, ...g.filter((x) => x.year == year), ...a];
+  }, [a, g, i, year]);
 
-  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>(itemsList);
+  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>(
+    iSuccess && grantsSuccess && catSuccess ? itemsList : [],
+  );
+
   const { searchResults, successLoadingResults } = useReproSearch(
     selectedItems,
     status,
@@ -91,15 +96,15 @@ const Search = () => {
   );
 
   // console.log('grantsList', grantsList);
-  useEffect(() => {
-    if (iSuccess && grantsSuccess && catSuccess && !l) {
-      setL(true);
-      setSelectedItems(itemsList);
-    }
-  }, [catSuccess, grantsSuccess, iSuccess, itemsList, l, selectedItems]);
+  // useEffect(() => {
+  //   if (iSuccess && grantsSuccess && catSuccess && !l) {
+  //     setL(true);
+  //     setSelectedItems(itemsList);
+  //     console.log('123', 123);
+  //   }
+  // }, [catSuccess, grantsSuccess, iSuccess, itemsList, l, selectedItems, year]);
 
   const handleListCheck = (id: number, type: string) => {
-    console.log('123', 123);
     setSelectedItems(
       selectedItems.some((x) => x.id === id && x.type === type)
         ? [
@@ -115,10 +120,20 @@ const Search = () => {
     setStatus(status);
   }, []);
 
-  const handleYearChange = useCallback((year: number) => {
-    console.log('year', year);
-    setYear(year);
-  }, []);
+  const handleYearChange = useCallback(
+    (year: number) => {
+      setSelectedItems((prev) => {
+        const i = prev.filter((x) => x.type == INITIATIVES_LIST_TYPE);
+        const a = prev.filter((x) => x.type == ACCOUNTS_LIST_TYPE);
+        const g = grants!
+          .filter((x) => x.year === year)
+          .map((x) => ({ id: x.id, type: GRANTS_LIST_TYPE }));
+        return [...i, ...a, ...g];
+      });
+      setYear(year);
+    },
+    [grants],
+  );
 
   const handleAmountBlur = useCallback(
     (amount: string, key: string) => {
@@ -156,16 +171,18 @@ const Search = () => {
   // if (loadingInit || loadingGrants || loadingCat) return <div>Loading...</div>;
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 mt-10">
       <div className="flex flex-1">
-        {/* <pre>{JSON.stringify(selectedItems)}</pre> */}
+        <pre>{JSON.stringify(selectedItems)}</pre>
         <div>
           <MChild
             initiatives={initiativesList?.map((x) => ({
               id: x.id,
               name: x.name,
             }))}
-            grants={grantsList?.map((x) => ({ id: x.id, name: x.name }))}
+            grants={grants
+              ?.filter((x) => x.year === year)
+              .map((x) => ({ id: x.id, name: x.name }))}
             categories={categoriesList?.map((x) => ({
               id: x.id,
               name: x.name,
@@ -179,8 +196,11 @@ const Search = () => {
         </div>
       </div>
       <div className="p-2 flex-4">
-        {successLoadingResults && searchResults?.length && (
+        {successLoadingResults && searchResults && (
           <ReproSearchReults results={searchResults}></ReproSearchReults>
+        )}
+        {searchResults && searchResults.length == 0 && (
+          <div className="text-center">No reprogrammings found.</div>
         )}
       </div>
     </div>

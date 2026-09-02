@@ -15,13 +15,13 @@ interface Props {
 const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { data: inits = [], isLoading: loadingInitiatives } = useInitiatives();
+  const { initiatives: inits = [], loadingInit } = useInitiatives();
   const [initiativeId, setInitiativeId] = useState<number>(0);
   let sortedInitiatives: Initiative[] = [];
 
-  const { data: loadedGrants = [], isLoading: loadingGrants } = useGrants(year);
+  const { grants = [],  loadingGrants } = useGrants(year);
   const [grantId, setGrantId] = useState<number>(0);
-  let grants: Grant[] = [];
+  let grantsList: Grant[] = [];
 
   const [error, setError] = useState<string>('');
 
@@ -29,8 +29,8 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
     sortedInitiatives = [{ id: 0, name: 'Choose an initiative ...' }, ...inits];
   }
 
-  if (loadedGrants) {
-    grants = [{ id: 0, name: 'Choose a grant ...' }, ...loadedGrants];
+  if (grants) {
+    grantsList = [{ id: 0, name: 'Choose a grant ...' }, ...grants];
   }
 
   function handleContinue() {
@@ -65,7 +65,7 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
           <div>
             <div className="self-center entity-label">Initiative</div>
             <div>
-              {loadingInitiatives ? (
+              {loadingInit ? (
                 <div>Loading inits</div>
               ) : (
                 <Select
@@ -102,7 +102,7 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
                     setError('');
                   }}
                 >
-                  {grants.map((i) => (
+                  {grantsList.map((i) => (
                     <option value={i.id} key={i.id}>
                       {i.id == 0 ? `${i.name}` : `${i.name} - ${i.fiduciary}`}
                     </option>

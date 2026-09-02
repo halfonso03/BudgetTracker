@@ -50,13 +50,12 @@ const Details = () => {
     +initiativeId!,
     +grantId!,
   );
-  const { data: initiatives } = useInitiatives();
+  const { initiatives } = useInitiatives();
   const initiative = initiatives?.filter((x) => x.id === +initiativeId!)[0];
 
-  const { data: grants } = useGrants(+year!);
+  const { grants } = useGrants(+year!);
   const grant = grants?.filter((x) => x.id == +grantId!)[0];
 
-  // console.log('budget', budget);
   let budgetRows: BudgetInputRow[] = [];
   const categories: Category[] = [];
 

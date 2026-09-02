@@ -64,7 +64,7 @@ type BudgetInputRow = {
     current_amount?: string;
     spent_amount?: string;
     remaining_amount?: string;
-    hasRepro: bolean
+    hasRepro?: bolean
 };
 
 

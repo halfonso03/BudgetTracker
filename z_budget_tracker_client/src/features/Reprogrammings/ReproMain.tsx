@@ -78,7 +78,6 @@ const ReproMain = () => {
   const [reproState, setReproState] = useState<Repro | null>(null);
 
   if (selectedYear !== 0) {
-    console.log('123');
   } else if (isSuccess && reproId) {
     if (selectedYear !== 0) setSelectedYear(0);
 
