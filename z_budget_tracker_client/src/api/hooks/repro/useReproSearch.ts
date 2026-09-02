@@ -22,14 +22,16 @@ const fetchRepros = async (selectedItems: { id: number, type: string }[], status
 
 export const useReproSearch = (selectedItems: { id: number, type: string }[], status: number, year: number, debitComparer: number, debit: number, creditComparer: number, credit: number) => {
 
-    const { data, isLoading } = useQuery<ReproSearchResult[]>({
-        queryKey: ['repro_search', JSON.stringify({ selectedItems, status, year, debitComparer, debit, creditComparer, credit })],
+    const { data, isLoading, isSuccess } = useQuery<ReproSearchResult[]>({
+        queryKey: ['repro_search', selectedItems.map(x => (x.id + x.type)), status, year, debitComparer, debit, creditComparer, credit],
         queryFn: () => fetchRepros(selectedItems, status, year, debitComparer, debit, creditComparer, credit),
-        staleTime: 0,
+        staleTime: 60 * 1000 * 60,
+        gcTime: 60 * 1000 * 60,
+
     })
 
 
-    return { searchResults: data, loadingSearchResults: isLoading }
+    return { searchResults: data, loadingSearchResults: isLoading, successLoadingResults: isSuccess }
 
 
 }

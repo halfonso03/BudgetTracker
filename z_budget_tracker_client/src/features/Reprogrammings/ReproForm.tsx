@@ -531,6 +531,7 @@ const ReproForm = ({
     toast.success(message, {
       duration: 1500,
     });
+
     setReproHeader((prev) => ({
       ...prev,
       id: id !== 0 ? id : prev.id,
@@ -637,12 +638,12 @@ const ReproForm = ({
           rowBalances: savedBalances,
         }));
 
-        const message = posted
-          ? 'Reprogramming Posted.'
-          : 'Reprogramming Saved.';
-        toast.success(message, {
-          duration: 1500,
-        });
+        // const message = posted
+        //   ? 'Reprogramming Posted.'
+        //   : 'Reprogramming Saved.';
+        // toast.success(message, {
+        //   duration: 1500,
+        // });
 
         //    id: id !== 0 ? id : prev.id,
         // createdById: id !== 0 : +userId : +prev.createdById,

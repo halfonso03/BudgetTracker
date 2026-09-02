@@ -13,11 +13,15 @@ const CheckBoxList = ({ label, items, id, maxHeight, onCheck }: Props) => {
     { id: number; name: string; checked: boolean }[]
   >(items.map((i) => ({ id: i.id, name: i.name, checked: i.checked })));
 
+
+  // console.log('options', options)
   let t =
     maxHeight !== null && maxHeight !== undefined ? ` overflow-y-auto` : '';
 
   t += ' ';
 
+
+  console.log('items', items)
   function handleCheck(id: number, key: string) {
     setOptions((prev) => {
       return prev.map((i) => ({
@@ -27,6 +31,7 @@ const CheckBoxList = ({ label, items, id, maxHeight, onCheck }: Props) => {
     });
     onCheck(id, key);
   }
+
 
   return (
     <div>
