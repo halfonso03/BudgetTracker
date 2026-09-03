@@ -10,11 +10,13 @@ import React from 'react';
 import useGrantsAllYears from '../../api/hooks/common/useGrantsAllYears';
 import { Pagination } from '../../components/Pagination';
 import MenuIdProvider from '../../contexts/MenuIdContext';
-import {  RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../../components/ConfirmModal';
+import { SortingContext } from '../../contexts/SortingContext';
+import SortingProvider from '../../contexts/SortingContextProvider';
 
 type SelectedItem = {
   id: number;
@@ -35,6 +37,7 @@ const Search = () => {
   const [creditComparer, setCreditComparer] = useState<number>(0);
   const [debit, setDebit] = useState<number>(0);
   const [credit, setCredit] = useState<number>(0);
+
   // const [l, setL] = useState(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const { initiatives, iSuccess } = useInitiatives();
@@ -94,9 +97,11 @@ const Search = () => {
     return [...i, ...g.filter((x) => x.year == year), ...a];
   }, [a, g, i, year]);
 
-  const [selectedIds, setSelectedIds] = useState<SelectedItem[]>(
-    iSuccess && grantsSuccess && catSuccess ? itemsList : [],
-  );
+  const [selectedIds, setSelectedIds] = useState<SelectedItem[]>(itemsList);
+
+  if (selectedIds.length == 0 && itemsList.length !== 0) {
+    setSelectedIds(itemsList);
+  }
 
   const { searchResults, successLoadingResults } = useReproSearch(
     {
@@ -108,23 +113,15 @@ const Search = () => {
       status,
       year,
       debitComparer,
-      debit,
+      debitAmount: debit,
       creditComparer,
-      credit,
+      creditAmount: credit,
     },
   );
 
   const { deleteRepro } = useReproMutations();
 
   const paginationData = searchResults?.pagination;
-  // console.log('grantsList', grantsList);
-  // useEffect(() => {
-  //   if (iSuccess && grantsSuccess && catSuccess && !l) {
-  //     setL(true);
-  //     setSelectedItems(itemsList);
-  //     console.log('123', 123);
-  //   }
-  // }, [catSuccess, grantsSuccess, iSuccess, itemsList, l, selectedItems, year]);
 
   const handleListCheck = (id: number, type: string) => {
     setSelectedIds(
@@ -210,7 +207,7 @@ const Search = () => {
           toast.success(
             <div>
               <div className="pb-1">{`Reprogramming ID ${idToDelete} has been deleted.`}</div>
-              <div>Refreshing results..</div>
+              <div>Refreshing results...</div>
             </div>,
             {
               duration: 1500,
@@ -227,12 +224,10 @@ const Search = () => {
     }
   }
 
-  // if (loadingInit || loadingGrants || loadingCat) return <div>Loading...</div>;
-
   return (
     <div className="flex gap-2 mt-10">
       <div className="flex flex-1">
-        {/* <pre>{JSON.stringify(selectedItems)}</pre> */}
+        {/* <pre>{JSON.stringify(selectedIds)}</pre> */}
         <div>
           <MChild
             initiatives={initiativesList?.map((x) => ({
@@ -255,23 +250,28 @@ const Search = () => {
         </div>
       </div>
       <div className="p-2 flex-4">
-        {searchResults && searchResults.data.items.length == 0 && (
+        {/* {searchResults && searchResults.data.items.length == 0 && (
           <div className="text-center justify-start">
             No reprogrammings found.
           </div>
-        )}
+        )} */}
         {successLoadingResults && searchResults && (
           <MenuIdProvider>
             <div className="flex flex-col">
-              {searchResults.data.items.length > 0 && (
-                <button
-                  className="self-end text-neutral-700 hover:text-neutral-900 cursor-pointer"
-                  onClick={handleRefreshClick}
-                >
-                  <RefreshCw size={20}></RefreshCw>
-                </button>
-              )}
-
+              <div className="flex justify-between pl-1 ">
+                <div className="pl-1 text-md font-semibold text-neutral-500 mb-3">
+                  {searchResults.data.itemCount} Reprogramming
+                  {searchResults.data.itemCount > 1 ? 's' : ''} found.
+                </div>
+                {searchResults.data.items.length > 0 && (
+                  <button
+                    className=" text-neutral-500 hover:text-blue-800 cursor-pointer hover:scale-115 transition-all duration-200"
+                    onClick={handleRefreshClick}
+                  >
+                    <RefreshCw size={20}></RefreshCw>
+                  </button>
+                )}
+              </div>
               <div className="flex flex-col gap-3 items-center justify-between min-h-[75dvh]">
                 <ReproSearchReults
                   results={searchResults.data.items}
@@ -297,7 +297,7 @@ const Search = () => {
         onConfirm={() => {
           setTimeout(() => {
             setDeleteConfirmModalIsOpen(false);
-            setTimeout(deleteConfirmed, 100)
+            setTimeout(deleteConfirmed, 100);
           }, 500);
         }}
       ></ConfirmModal>
@@ -305,3 +305,14 @@ const Search = () => {
   );
 };
 export default Search;
+
+// if (loadingInit || loadingGrants || loadingCat) return <div>Loading...</div>;
+
+// console.log('grantsList', grantsList);
+// useEffect(() => {
+//   if (iSuccess && grantsSuccess && catSuccess && !l) {
+//     setL(true);
+//     setSelectedItems(itemsList);
+//     console.log('123', 123);
+//   }
+// }, [catSuccess, grantsSuccess, iSuccess, itemsList, l, selectedItems, year]);

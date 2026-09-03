@@ -24,5 +24,7 @@ namespace Application.DTOs.Repro
         public string? Justification { get; set; }
         public List<ReproSearchResponseLineItemDto>? LineItems { get; set; } = [];
         public int? Year { get; set; }
+        public int StatusSort { get; set; }
+        public required decimal Amount { get; set; }
     }
 }

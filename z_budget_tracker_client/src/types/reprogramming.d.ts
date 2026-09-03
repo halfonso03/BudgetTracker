@@ -117,8 +117,8 @@ type ReproSearchParams = {
     grantIds?: number[] | null
     accountIds?: number[] | null
     status: number
-    debit?: number | undefined
-    credit?: number | undefined
+    debitAmount?: number | undefined
+    creditAmount?: number | undefined
     debitComparer: number
     creditComparer: number
     selectedIds?: { id: number, type: string }[]

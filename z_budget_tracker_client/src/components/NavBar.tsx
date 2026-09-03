@@ -114,7 +114,7 @@ const NavBar = () => {
         >
           Reprogrammings
         </NavLink>
-        <div className="flex text-sm gap-3">
+        {/* <div className="flex text-sm gap-3">
           <input
             type="text"
             ref={reproInputRef}
@@ -131,7 +131,7 @@ const NavBar = () => {
           <Button buttonSize="xsmall" onClick={gotoNext}>
             <ChevronRight></ChevronRight>
           </Button>
-        </div>
+        </div> */}
       </div>
       <div className="flex justify-center items-center w-full flex-0 mr-2">
         {/* <AccountToggler loginId={user} logOut={logout}></AccountToggler> */}

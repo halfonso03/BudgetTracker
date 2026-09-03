@@ -46,9 +46,9 @@ namespace API.Controllers
         }
 
         [HttpPost("search")]
-        public async Task<IActionResult> Search([FromBody] ReproSearchParams searchParams, [FromQuery]PaginationParams paginationParams)
+        public async Task<IActionResult> Search([FromBody] ReproSearchParams searchParams, [FromQuery]PaginationParams paginationParams, [FromQuery] string sortBy)
         {
-            var result = await _reproService.Search(searchParams, paginationParams);
+            var result = await _reproService.Search(searchParams, paginationParams, sortBy);
 
             Response.AddPaginationHeader(result.Value!.MetaData);
 

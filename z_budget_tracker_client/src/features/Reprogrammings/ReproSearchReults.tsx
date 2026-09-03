@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import Menus from '../../components/menus/Menus';
 import { Link } from 'react-router-dom';
+import SortBySelector from '../../components/SortBySelector';
+import { useSortingContext } from '../../contexts/useSortingContext';
 
 type Props = {
   results: ReproSearchResult[];
@@ -18,16 +20,48 @@ type Props = {
 
 const ReproSearchReults = ({ onDelete, results }: Props) => {
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
+  const { sortByValue } = useSortingContext();
 
   if (results.length == 0) return null;
+
   return (
     <div className="w-full">
       <div className="grid grid-cols-[.5fr_.3fr_1fr_1fr.3fr_.4fr] p-2 px-3 ">
-        <div className="entity-label">ID</div>
-        <div className="entity-label">Status</div>
-        <div className="entity-label text-center">Posted By</div>
-        <div className="entity-label text-center">Posted Date</div>
-        <div className="entity-label text-end">Amount</div>
+        <div className="entity-label">
+          <SortBySelector
+            label="ID"
+            value="ID"
+            currentSortValue={sortByValue}
+          ></SortBySelector>
+        </div>
+        <div className="entity-label">
+          <SortBySelector
+            label="Status"
+            value="STATUS"
+            currentSortValue={sortByValue}
+          ></SortBySelector>
+        </div>
+        <div className="entity-label flex justify-center">
+          <SortBySelector
+            label="Posted By"
+            value="POSTEDBY"
+            currentSortValue={sortByValue}
+          ></SortBySelector>
+        </div>
+        <div className="entity-label flex justify-center">
+          <SortBySelector
+            label="Posted Date"
+            value="POSTEDDATE"
+            currentSortValue={sortByValue}
+          ></SortBySelector>
+        </div>
+        <div className="entity-label flex justify-center">
+          <SortBySelector
+            label="Amount"
+            value="AMOUNT"
+            currentSortValue={sortByValue}
+          ></SortBySelector>
+        </div>
         <div className="text-center"></div>
       </div>
       {results.map((r, index) => (
@@ -42,7 +76,7 @@ const ReproSearchReults = ({ onDelete, results }: Props) => {
             <div className="text-center">
               {r.postedDate && formatDate(r.postedDate)}
             </div>
-            <div className="text-end">
+            <div className="text-center">
               {formatNumber(
                 r.lineItems.reduce((acc, cur) => acc + cur.increase, 0),
               )}

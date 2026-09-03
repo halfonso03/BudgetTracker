@@ -115,9 +115,10 @@ const ReproParams = memo(
                 handleComparerChange(+e.target.value, 'debit');
               }}
             >
-              <option value="0">Less than</option>
+              <option value="0">None</option>
               <option value="1">Greater Than</option>
-              <option value="2">Equal To</option>
+              <option value="2">Less than</option>
+              <option value="3">Equal To</option>
             </Select>
             <NumericInputUncontrolled
               className="border border-neutral-300 p-1 rounded-md text-end "
@@ -139,9 +140,10 @@ const ReproParams = memo(
                 handleComparerChange(+e.target.value, 'credit');
               }}
             >
-              <option value="0">Less than</option>
+              <option value="0">None</option>
               <option value="1">Greater Than</option>
-              <option value="2">Equal To</option>
+              <option value="2">Less than</option>
+              <option value="3">Equal To</option>
             </Select>
             <NumericInputUncontrolled
               className="border border-neutral-300 p-1 rounded-md text-end "

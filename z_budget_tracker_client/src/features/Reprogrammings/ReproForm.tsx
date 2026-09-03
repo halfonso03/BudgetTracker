@@ -183,7 +183,11 @@ const ReproForm = ({
   useEffect(() => {
     const errors = getErrors();
 
-    if (errors.length > 0 && lines.length > 0) {
+    if (
+      errors.length > 0 &&
+      lines.length > 0 &&
+      reproHeader.status !== POSTED
+    ) {
       toast.custom(
         <div className="animate-right-to-in  rounded-sm p-4 shadow-md w-70 font-semibold  bg-red-500 text-neutral-50 flex gap-2">
           <AlertCircle></AlertCircle>
@@ -205,7 +209,7 @@ const ReproForm = ({
     }
 
     return () => toast.remove();
-  }, [getErrors, getTotalAmounts, lines]);
+  }, [getErrors, getTotalAmounts, lines, reproHeader.status]);
 
   function handleLineAdded(
     newLine: ReproLineItem,
@@ -604,6 +608,7 @@ const ReproForm = ({
     await createRepro.mutateAsync(reproToSave, {
       onSuccess: (id) => {
         queryClient.invalidateQueries({ queryKey: ['repro', id] });
+        queryClient.invalidateQueries({ queryKey: ['repro_search'] });
         queryClient.setQueryData<Repro>(['repro', id], () => ({
           ...reproToSave,
           id: id,

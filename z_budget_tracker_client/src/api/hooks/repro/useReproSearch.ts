@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query"
 import agent from "../../agent"
+import { useSortingContext } from "../../../contexts/useSortingContext"
 
 const fetchRepros = async (
     pagination: PaginationRequestData,
-    reproSearchParams: ReproSearchParams
+    reproSearchParams: ReproSearchParams,
+    sortByValue: string
 ) => {
 
     const payload = {
@@ -13,7 +15,7 @@ const fetchRepros = async (
         ...reproSearchParams
     }
 
-    const response = await agent.post(`/repro/search?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}`, payload)
+    const response = await agent.post(`/repro/search?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}&sortBy=${sortByValue}`, payload)
     const paginationHeader = response.headers["pagination"];
     const paginationResponse: PaginationData = paginationHeader
         ? JSON.parse(paginationHeader)
@@ -26,10 +28,11 @@ export const useReproSearch = (
     pagination: PaginationRequestData,
     reproSearchParams: ReproSearchParams
 ) => {
+    const { sortByValue } = useSortingContext();
 
     const { data, isLoading, isSuccess } = useQuery<{ data: ReproSearchResponse, pagination: PaginationData }>({
-        queryKey: ['repro_search', reproSearchParams.selectedIds!.map(x => (x.id + x.type)), { ...reproSearchParams }, pagination.pageNumber, pagination.pageSize],
-        queryFn: () => fetchRepros(pagination, reproSearchParams),
+        queryKey: ['repro_search', reproSearchParams.selectedIds!.map(x => (x.id + x.type)), { ...reproSearchParams }, pagination.pageNumber, pagination.pageSize, sortByValue],
+        queryFn: () => fetchRepros(pagination, reproSearchParams, sortByValue),
         staleTime: 60 * 1000,
         gcTime: 60 * 1000,
     })

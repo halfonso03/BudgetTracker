@@ -29,6 +29,7 @@ namespace Application.DTOs
 
     public enum AmountComparer
     {
+        None,
         GreaterThan,
         LessThan,
         EqualTo

@@ -423,7 +423,7 @@ namespace Application.Services
             return Result<Unit>.Success(Unit.Value);
         }
 
-        public async Task<Result<ReproSearchResponseDto>> Search(ReproSearchParams searchParams, PaginationParams paginationParams)
+        public async Task<Result<ReproSearchResponseDto>> Search(ReproSearchParams searchParams, PaginationParams paginationParams, string sortBy)
         {
 
             var reproLineItems = _dbContext.ReproLineItems
@@ -444,6 +444,40 @@ namespace Application.Services
             {
                 reproLineItems = reproLineItems.Where(x => searchParams.AccountIds.Contains(x.AccountId));
             }
+
+            var debit = searchParams.DebitAmount;
+            var credit = searchParams.CreditAmount;
+            var debitComparison = searchParams.DebitComparer;
+            var creditComparison = searchParams.CreditComparer;
+
+            if (debitComparison != AmountComparer.None)
+            {
+                reproLineItems = debitComparison switch
+                {
+                    AmountComparer.GreaterThan => reproLineItems.Where(x => x.Increase >= debit),
+                    AmountComparer.LessThan => reproLineItems.Where(x => x.Increase <= debit),
+                    AmountComparer.EqualTo => reproLineItems.Where(x => x.Increase == debit),
+                    _ => reproLineItems.Where(x => x.Increase > 0 || x.Increase != null),
+                };
+            }
+
+            if (creditComparison != AmountComparer.None)
+            {
+                reproLineItems = creditComparison switch
+                {
+                    AmountComparer.GreaterThan => reproLineItems.Where(x => x.Decrease >= credit),
+                    AmountComparer.LessThan => reproLineItems.Where(x => x.Decrease <= credit),
+                    AmountComparer.EqualTo => reproLineItems.Where(x => x.Decrease == credit),
+                    _ => reproLineItems.Where(x => x.Decrease > 0 || x.Decrease != null),
+                };
+            }
+
+            // Console.WriteLine("INITIATIVE IDS", searchParams.InitiativeIds);
+            // Console.WriteLine(searchParams.DebitAmount);
+            // Console.WriteLine(searchParams.DebitComparer);
+            // Console.WriteLine(searchParams.CreditAmount);
+            // Console.WriteLine(searchParams.CreditComparer);
+
 
             var reproLineItemIds = await reproLineItems.Select(x => x.ReproId).ToListAsync();
 
@@ -477,7 +511,9 @@ namespace Application.Services
                                 CreatedBy = x.CreatedBy!.WindowsLogin,
                                 PostedDate = x.PostedDate,
                                 Posted = x.Posted,
-                                PostedBy = x.PostedBy != null ? x.PostedBy!.WindowsLogin : string.Empty
+                                PostedBy = x.PostedBy != null ? x.PostedBy!.WindowsLogin : string.Empty,
+                                StatusSort = x.Posted ? 1 : 2,
+                                Amount = x.Amount
                             })
                             .AsQueryable();
 
@@ -487,12 +523,28 @@ namespace Application.Services
                 reprosQuery = reprosQuery.Where(x => x.Posted == (searchParams.Status != ReproSearchStatus.SAVED));
             }
 
+            var sorted = sortBy switch
+            {
+                "ID" => reprosQuery.OrderBy(x => x.Id),
+                "IDdesc" => reprosQuery.OrderByDescending(x => x.Id),
+                "STATUS" => reprosQuery.OrderBy(x => x.StatusSort),
+                "STATUSdesc" => reprosQuery.OrderByDescending(x => x.StatusSort),
+                "POSTEDBY" => reprosQuery.OrderBy(x => x.PostedBy),
+                "POSTEDBYdesc" => reprosQuery.OrderByDescending(x => x.PostedBy),
+                "POSTEDDATE" => reprosQuery.OrderBy(x => x.PostedDate),
+                "POSTEDDATEdesc" => reprosQuery.OrderByDescending(x => x.PostedDate),
+                "AMOUNT" => reprosQuery.OrderBy(x => x.Amount),
+                "AMOUNTdesc" => reprosQuery.OrderByDescending(x => x.Amount),
+                _ => reprosQuery.OrderBy(x => x.Id)
+            };
+
+
             var pagedItemsList =
-                            await PagedList<ReproSearchReproResponseDto>.ToPagedList(reprosQuery, paginationParams.PageNumber, paginationParams.PageSize);
+                            await PagedList<ReproSearchReproResponseDto>.ToPagedList(sorted, paginationParams.PageNumber, paginationParams.PageSize);
 
             pagedItemsList.ForEach(r =>
             {
-                r.LineItems = reproLineItemResponses.Where(x => x.ReproId == r.Id).ToList();
+                r.LineItems = [.. reproLineItemResponses.Where(x => x.ReproId == r.Id)];
             });
 
             var result = new ReproSearchResponseDto
@@ -501,6 +553,9 @@ namespace Application.Services
                 ItemCount = pagedItemsList.Metadata.TotalCount,
                 MetaData = pagedItemsList.Metadata
             };
+
+
+
 
             return Result<ReproSearchResponseDto>.Success(result);
         }
