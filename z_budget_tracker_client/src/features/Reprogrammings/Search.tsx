@@ -15,8 +15,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../../components/ConfirmModal';
-import { SortingContext } from '../../contexts/SortingContext';
-import SortingProvider from '../../contexts/SortingContextProvider';
 
 type SelectedItem = {
   id: number;
@@ -40,9 +38,9 @@ const Search = () => {
 
   // const [l, setL] = useState(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
-  const { initiatives, iSuccess } = useInitiatives();
-  const { grants, grantsSuccess } = useGrantsAllYears();
-  const { categories, catSuccess } = useCategories(true, true);
+  const { initiatives } = useInitiatives();
+  const { grants } = useGrantsAllYears();
+  const { categories } = useCategories(true, true);
 
   const [deleteConfirmModalIsOpen, setDeleteConfirmModalIsOpen] =
     useState(false);

@@ -1,10 +1,10 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../../contexts/useAuth';
-// import { useState } from 'react';
-import ReproForm, { type DirtyState } from '../ReproForm';
+import ReproForm from '../ReproForm';
 import NewReproButton from './NewReproButton';
 import { useEffect, useState } from 'react';
 import ConfirmModal from '../../../components/ConfirmModal';
+import { useHasUnsavedChangesStore } from '../../../state/useHasUnsavedChangesStore';
 
 const ReproNew = () => {
   const navigate = useNavigate();
@@ -14,10 +14,13 @@ const ReproNew = () => {
   const rowBalances: RowBalance[] = [];
   const lineItems: ReproLineItem[] = [];
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-  const [isDirty, setIsDirty] = useState<DirtyState>({
-    numbersAresDirty: false,
-    formValuesIsDirty: false,
-  });
+
+  const { hasUnsavedChanges, setHasUnsavedChanges } =
+    useHasUnsavedChangesStore();
+  // const [isDirty, setIsDirty] = useState<DirtyState>({
+  //   numbersAresDirty: false,
+  //   formValuesIsDirty: false,
+  // });
 
   //  preloadState
   //     ? preloadState?.year !== undefined || preloadState?.ids !== undefined
@@ -94,6 +97,7 @@ const ReproNew = () => {
   };
 
   function handleInitialSaved(id: number) {
+    setHasUnsavedChanges(false)
     setTimeout(
       () =>
         navigate(`/reprogramming/${id}`, {
@@ -107,20 +111,19 @@ const ReproNew = () => {
   }
 
   function handleSearchClick() {
-    if (isDirty.formValuesIsDirty || isDirty.numbersAresDirty) {
+    if (hasUnsavedChanges) {
       setConfirmModalIsOpen(true);
     } else {
       navigate('/reprogramming/search');
     }
   }
 
-  // function handleIsDirty(newState: DirtyState) {
-  //   setIsDirty(newState);
-  // }
+   function handleIsDirty(isDirty: boolean) {
+    setHasUnsavedChanges(isDirty);
+  }
 
-  //   function handleIsDirty(isDirty: boolean) {
-  //   setIsDirty(newState);
-  // }
+
+
 
   const body = () => {
     if (repro && repro.year !== 0) {
@@ -129,7 +132,7 @@ const ReproNew = () => {
           key={repro.uuid}
           repro={repro}
           onInitialSave={handleInitialSaved}
-          onIsDirtyStateChanged={() => {}}
+          onIsDirtyStateChanged={handleIsDirty}
           onSaved={() => {}}
         ></ReproForm>
       );
@@ -142,12 +145,7 @@ const ReproNew = () => {
       <NewReproButton
         onYearSelected={handleYearSelected}
         onSearchClick={handleSearchClick}
-        newMustBeConfirmed={
-          isDirty.formValuesIsDirty || isDirty.numbersAresDirty
-        }
       ></NewReproButton>
-      {JSON.stringify(isDirty)}
-      <br />
       {body()}
       <ConfirmModal
         isOpen={confirmModalIsOpen}

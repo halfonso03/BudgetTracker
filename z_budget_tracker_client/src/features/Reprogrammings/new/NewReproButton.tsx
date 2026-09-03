@@ -3,23 +3,24 @@ import Button from '../../../components/Button';
 import ChooseYearModal from '../ChooseYearModal';
 import { Search } from 'lucide-react';
 import ConfirmModal from '../../../components/ConfirmModal';
+import { useHasUnsavedChangesStore } from '../../../state/useHasUnsavedChangesStore';
 
 type Props = {
-  newMustBeConfirmed: boolean;
   onYearSelected: (year: number, justification: string) => void;
   onSearchClick: () => void;
 };
-const NewReproButton = ({
-  onYearSelected,
-  onSearchClick,
-  newMustBeConfirmed,
-}: Props) => {
+const NewReproButton = ({ onYearSelected, onSearchClick }: Props) => {
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-  // const hasUnsavedChanges = useHasUnsavedChangesStore(
-  //   (x) => x.hasUnsavedChanges,
-  // );
+
+  const hasUnsavedChanges = useHasUnsavedChangesStore(
+    (x) => x.hasUnsavedChanges,
+  );
+
+  const setHasUnsavedChanges = useHasUnsavedChangesStore(
+    (x) => x.setHasUnsavedChanges,
+  );
 
   const handleYearSelected = (e: { year: number; justification: string }) => {
     onYearSelected(e.year, e.justification);
@@ -40,7 +41,7 @@ const NewReproButton = ({
           buttonSize="small"
           variation="primary"
           onClick={() => {
-            if (newMustBeConfirmed) {
+            if (hasUnsavedChanges) {
               setConfirmModalIsOpen(true);
             } else {
               setChoosingYear(true);

@@ -29,9 +29,9 @@ type Props = {
 };
 
 const EditLineModal = ({ ...props }: Props) => {
-  const { data: initiatives } = useInitiatives(props.isOpen);
-  const { data: categories } = useCategories(props.isOpen);
-  const { data: grants } = useGrants(props.year, props.isOpen);
+  const { initiatives } = useInitiatives(props.isOpen);
+  const { categories } = useCategories(props.isOpen);
+  const { grants } = useGrants(props.year, props.isOpen);
 
   const [selections, setSelections] = useState<Selections>({
     initiativeId: props.selections!.initiativeId!,

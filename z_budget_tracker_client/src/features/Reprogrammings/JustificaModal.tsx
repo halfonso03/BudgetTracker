@@ -35,7 +35,6 @@ const JustificaModal = ({ itemComment, ...props }: Props) => {
   }
   return (
     <Modal2 size="lg" title="Justification" animateOut={animateOut} {...props}>
-      {/* <pre>{JSON.stringify(selections)}</pre> */}
 
       <div className="mb-1">
         <div className="text-neutral-700 font-semibold mb-1">

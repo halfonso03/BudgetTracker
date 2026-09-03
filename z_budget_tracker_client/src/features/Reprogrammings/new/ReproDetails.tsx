@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import useGetRepro from '../../../api/hooks/repro/useGetRepro';
-import ReproForm, { type DirtyState } from '../ReproForm';
+import ReproForm from '../ReproForm';
 import NewReproButton from './NewReproButton';
 import { useState } from 'react';
 import ConfirmModal from '../../../components/ConfirmModal';
@@ -9,17 +9,13 @@ import { useHasUnsavedChangesStore } from '../../../state/useHasUnsavedChangesSt
 const ReproDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [isDirty, setIsDirty] = useState<DirtyState>({
-    numbersAresDirty: false,
-    formValuesIsDirty: false,
-  });
+  // const [isDirty, setIsDirty] = useState<DirtyState>({
+  //   numbersAresDirty: false,
+  //   formValuesIsDirty: false,
+  // });
 
-  const setHasUnsavedChanges = useHasUnsavedChangesStore(
-    (x) => x.setHasUnsavedChanges,
-  );
-
-  // const hasUnsavedChanges = useHasUnsavedChangesStore.getState().hasUnsavedChanges
-
+  const { hasUnsavedChanges, setHasUnsavedChanges } =
+    useHasUnsavedChangesStore();
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const reproId = id !== undefined ? +id : undefined;
 
@@ -32,6 +28,8 @@ const ReproDetails = () => {
   if (isLoading || isFetching) return <div></div>;
 
   const handleYearSelected = (year: number, justification: string) => {
+    setHasUnsavedChanges(false);
+
     navigate('/reprogramming/new', {
       state: {
         year: year,
@@ -44,24 +42,17 @@ const ReproDetails = () => {
     setTimeout(() => navigate(`/reprogramming/${id}`), 1600);
   }
 
-  // function handleIsDirty(newState: DirtyState) {
-  //   setIsDirty(newState);
-  // }
-
   function handleIsDirty(isDirty: boolean) {
+    // isDirty will always be true
     setHasUnsavedChanges(isDirty);
-    // if (isDirty && !hasUnsavedChanges) setHasUnsavedChanges(isDirty);
-    // if (!isDirty && hasUnsavedChanges) setHasUnsavedChanges(isDirty);
-    // if (!hasUnsavedChanges)
   }
 
   function handleSaved() {
     setHasUnsavedChanges(false);
-    // setIsDirty({ numbersAresDirty: false, formValuesIsDirty: false });
   }
 
   function handleSearchClick() {
-    if (isDirty.formValuesIsDirty || isDirty.numbersAresDirty) {
+    if (hasUnsavedChanges) {
       setConfirmModalIsOpen(true);
     } else {
       navigate('/reprogramming/search');
@@ -85,13 +76,11 @@ const ReproDetails = () => {
     }
     return null;
   };
-
   return (
     <>
       <NewReproButton
         onYearSelected={handleYearSelected}
         onSearchClick={handleSearchClick}
-        newMustBeConfirmed={false}
       ></NewReproButton>
       {body()}
       <ConfirmModal
@@ -102,6 +91,7 @@ const ReproDetails = () => {
           }, 500);
         }}
         onConfirm={() => {
+          setHasUnsavedChanges(false);
           navigate('/reprogramming/search');
         }}
         message="Are you sure you wish to leave this page? Any changes made to this reprogramming will be lost. Click OK to continue."

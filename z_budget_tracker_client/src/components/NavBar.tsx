@@ -10,7 +10,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const [urltoGoTo, setUrlToGoTo] = useState<string>('');
   const location = useLocation();
-  const [currentLocation, setCurLoc] = useState(location.pathname);
+  // const [currentLocation, setCurLoc] = useState(location.pathname);
 
   const hasUnsavedChanges = useHasUnsavedChangesStore(
     (x) => x.hasUnsavedChanges,
@@ -46,25 +46,36 @@ const NavBar = () => {
     });
   }
   // const { logout, user } = useAuth();
-
   // if (!user) return null;
 
   function handleNavigation(e: React.MouseEvent<HTMLElement>, url: string) {
     e.preventDefault();
-    console.log('location.pathname', location.pathname, currentLocation);
-    setCurLoc(location.pathname);
 
-    // if (location.pathname === url) {
-    //   navigate(currentLocation);
-    //   return;
-    // }
+    const path = location.pathname;
 
-    if (hasUnsavedChanges) {
-      setConfirmModalIsOpen(true);
-      setUrlToGoTo(url);
-    } else {
-      navigate(url);
+    const basePath =
+      path.indexOf('/', 1) > -1
+        ? path.substring(0, path.indexOf('/', 1))
+        : path;
+
+    console.log('basePath', basePath);
+    console.log('url', url);
+
+    // setCurLoc(location.pathname);
+
+    if (basePath !== url) {
+      if (hasUnsavedChanges) {
+        setConfirmModalIsOpen(true);
+        setUrlToGoTo(url);
+      } else {
+        navigate(url)
+        // setUrlToGoTo(url);
+      }
     }
+    // else if (hasUnsavedChanges) {
+    //   setConfirmModalIsOpen(true);
+    //   setUrlToGoTo(url);
+    // }
   }
 
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
@@ -114,11 +125,11 @@ const NavBar = () => {
         >
           Reprogrammings
         </NavLink>
-        {/* <div className="flex text-sm gap-3">
+        <div className="flex text-sm gap-3">
           <input
             type="text"
             ref={reproInputRef}
-            defaultValue={179}
+            defaultValue={208}
             className="border w-20"
           />
           <Button buttonSize="xsmall" onClick={gotoRepro}>
@@ -131,7 +142,7 @@ const NavBar = () => {
           <Button buttonSize="xsmall" onClick={gotoNext}>
             <ChevronRight></ChevronRight>
           </Button>
-        </div> */}
+        </div>
       </div>
       <div className="flex justify-center items-center w-full flex-0 mr-2">
         {/* <AccountToggler loginId={user} logOut={logout}></AccountToggler> */}
@@ -143,7 +154,7 @@ const NavBar = () => {
           setTimeout(() => {
             setConfirmModalIsOpen(false);
           }, 500);
-          navigate(currentLocation)
+          // navigate(currentLocation);
         }}
         onConfirm={() => {
           setTimeout(() => {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQueryClient } from '@tanstack/react-query';
 import {
   AlertCircle,
@@ -90,10 +89,10 @@ const ReproForm = ({
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [confirmPostModalIsOpen, setConfirmPostModal] = useState(false);
-  const [isDirtyState, setIsDirtyState] = useState<DirtyState>({
-    formValuesIsDirty: false,
-    numbersAresDirty: false,
-  });
+  // const [isDirtyState, setIsDirtyState] = useState<DirtyState>({
+  //   formValuesIsDirty: false,
+  //   numbersAresDirty: false,
+  // });
   // console.log('repro.year from form', repro.year)
   if (repro.year === 0) throw new Error('no year');
 
@@ -427,7 +426,7 @@ const ReproForm = ({
     // }
   }
 
-  function recalculateNewAmounts(isDirty: boolean) {
+  function recalculateNewAmounts() {
     // if (isDirty) {
     //   if (!hasUnsavedChanges) setHasUnsavedChanges(true);
     // } else {
@@ -456,7 +455,7 @@ const ReproForm = ({
       };
     });
     setLines(newLines);
-
+    onIsDirtyStateChanged(true);
     // if (
     //   (isDirty && !isDirtyState.numbersAresDirty) ||
     //   (isDirtyState.numbersAresDirty && !isDirty)
@@ -476,6 +475,7 @@ const ReproForm = ({
 
       return l;
     });
+    onIsDirtyStateChanged(true);
   }
 
   function handleEditRow(uuid: string) {
@@ -556,6 +556,7 @@ const ReproForm = ({
     }));
     // flagReproIsDirty();
     setTimeout(() => setJustModalIsOpen(false), 500);
+    onIsDirtyStateChanged(true);
   }
 
   async function saveReproButtonClick() {

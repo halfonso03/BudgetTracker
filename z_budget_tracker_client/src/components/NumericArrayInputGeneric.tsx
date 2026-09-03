@@ -7,7 +7,6 @@ import type {
 import { formatNumber } from '../app/util';
 import { useState } from 'react';
 
-
 interface Props<T extends string> {
   index: number;
   readOnly: boolean;
@@ -17,7 +16,7 @@ interface Props<T extends string> {
   getValues: UseFormGetValues<ReprogInputRows>;
   fieldName: string;
   classes?: string;
-  onBlur: (isDirty: boolean) => void;
+  onBlur: () => void;
 }
 
 const NumericArrayInputGeneric = ({
@@ -92,8 +91,6 @@ const NumericArrayInputGeneric = ({
     );
   }
 
-
-
   return (
     <input
       type="text"
@@ -106,7 +103,8 @@ const NumericArrayInputGeneric = ({
       onKeyDown={handleOnKeyDown}
       onBlur={(e) => {
         formatArrayFieldAmount(setValue, index, e.target.value);
-        onBlur(e.target.value.trim() !== oldValue);
+        // onBlur(e.target.value.trim() !== oldValue);
+        onBlur();
       }}
       onClick={(e: React.MouseEvent<HTMLInputElement>) => {
         const input = e.target as HTMLInputElement;

@@ -75,7 +75,6 @@ const AddLineModal = ({ ...props }: Props) => {
 
   return (
     <Modal2 size="lg" title="Add a New Line" animateOut={animateOut} {...props}>
-      {/* <pre>{JSON.stringify(selections)}</pre> */}
 
       <div className="grid grid-cols-[1fr_1fr] mb-4 gap-4">
         <div className="flex flex-col gap-9">
