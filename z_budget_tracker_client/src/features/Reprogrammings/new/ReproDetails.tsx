@@ -9,11 +9,6 @@ import { useHasUnsavedChangesStore } from '../../../state/useHasUnsavedChangesSt
 const ReproDetails = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  // const [isDirty, setIsDirty] = useState<DirtyState>({
-  //   numbersAresDirty: false,
-  //   formValuesIsDirty: false,
-  // });
-
   const { hasUnsavedChanges, setHasUnsavedChanges } =
     useHasUnsavedChangesStore();
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
@@ -69,7 +64,7 @@ const ReproDetails = () => {
             repro={repro2}
             onInitialSave={handleInitialSaved}
             onSaved={handleSaved}
-            onIsDirtyStateChanged={handleIsDirty}
+            onIsDirty={handleIsDirty}
           ></ReproForm>
         </>
       );

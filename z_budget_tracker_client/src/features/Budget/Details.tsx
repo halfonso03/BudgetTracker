@@ -20,14 +20,17 @@ import toast from 'react-hot-toast';
 import { useBudgetMutations } from '../../api/hooks/budgets/useBudgetMutations';
 import Button from '../../components/Button';
 import TransactionsModal from './TransactionsModal';
+import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
+
 type TrxIds = {
   initiativeId: number;
   grantId: number;
   accountId: number;
   category: string;
 };
+
 const Details = () => {
   const userId = 1;
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
@@ -46,6 +49,10 @@ const Details = () => {
   const rRef = useRef<HTMLDivElement | null>(null);
 
   const { year, initiativeId, grantId } = useParams();
+
+  const { hasUnsavedChanges, setHasUnsavedChanges } =
+    useHasUnsavedChangesStore();
+
   const { data: budget, isLoading } = useBudgetDetails(
     +initiativeId!,
     +grantId!,
@@ -248,6 +255,7 @@ const Details = () => {
     };
     try {
       updateBudget(updateRequest);
+      setHasUnsavedChanges(false);
     } catch (error) {
       toast.error(error as string);
       console.log(error);
@@ -403,7 +411,8 @@ const Details = () => {
                             e.target.value,
                           );
                         }}
-                        onBlur={({ e }) => {
+                        onBlur={({ e, rowIndex, isDirty }) => {
+                          console.log('rowIndex', rowIndex);
                           amountRegister.onBlur(e);
                           formatArrayFieldAmount(
                             setValue,
@@ -416,6 +425,9 @@ const Details = () => {
                             categoryAccountIndexes[field.categoryId].startIndex,
                             categoryAccountIndexes[field.categoryId].totalIndex,
                           );
+
+                          if (isDirty && !hasUnsavedChanges)
+                            setHasUnsavedChanges(true);
                         }}
                         onShowAccountHistory={handleShowAccountHistory}
                       ></BudgetInputFields>
@@ -474,6 +486,7 @@ const Details = () => {
     </div>
   );
 };
+
 export default Details;
 
 // {

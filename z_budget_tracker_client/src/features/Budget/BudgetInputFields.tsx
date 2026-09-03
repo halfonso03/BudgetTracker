@@ -30,6 +30,7 @@ interface Props {
   onBlur?: (data: {
     e: React.FocusEvent<HTMLInputElement>;
     rowIndex: number;
+    isDirty: boolean;
   }) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
@@ -123,7 +124,7 @@ const BudgetInputFields = ({
             if (onBlur) {
               const budgeted =
                 e.target.value.trim() === ''
-                  ? 0.00
+                  ? 0.0
                   : parseFormattedNumber(e.target.value);
 
               if (budgeted + reprogrammed !== 0) {
@@ -148,8 +149,9 @@ const BudgetInputFields = ({
               } else {
                 setError(false);
               }
+              const isDirty = budgeted !== parseFormattedNumber(budgetedAmount);
 
-              onBlur({ e, rowIndex });
+              onBlur({ e, rowIndex, isDirty });
             }
           }}
           onFocus={(e) => (onFocus ? onFocus(e) : null)}

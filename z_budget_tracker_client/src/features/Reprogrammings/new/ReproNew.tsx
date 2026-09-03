@@ -97,7 +97,7 @@ const ReproNew = () => {
   };
 
   function handleInitialSaved(id: number) {
-    setHasUnsavedChanges(false)
+    setHasUnsavedChanges(false);
     setTimeout(
       () =>
         navigate(`/reprogramming/${id}`, {
@@ -118,12 +118,9 @@ const ReproNew = () => {
     }
   }
 
-   function handleIsDirty(isDirty: boolean) {
+  function handleIsDirty(isDirty: boolean) {
     setHasUnsavedChanges(isDirty);
   }
-
-
-
 
   const body = () => {
     if (repro && repro.year !== 0) {
@@ -132,7 +129,7 @@ const ReproNew = () => {
           key={repro.uuid}
           repro={repro}
           onInitialSave={handleInitialSaved}
-          onIsDirtyStateChanged={handleIsDirty}
+          onIsDirty={handleIsDirty}
           onSaved={() => {}}
         ></ReproForm>
       );

@@ -10,7 +10,6 @@ const NavBar = () => {
   const navigate = useNavigate();
   const [urltoGoTo, setUrlToGoTo] = useState<string>('');
   const location = useLocation();
-  // const [currentLocation, setCurLoc] = useState(location.pathname);
 
   const hasUnsavedChanges = useHasUnsavedChangesStore(
     (x) => x.hasUnsavedChanges,
@@ -61,21 +60,56 @@ const NavBar = () => {
     console.log('basePath', basePath);
     console.log('url', url);
 
-    // setCurLoc(location.pathname);
-
     if (basePath !== url) {
       if (hasUnsavedChanges) {
         setConfirmModalIsOpen(true);
         setUrlToGoTo(url);
       } else {
-        navigate(url)
-        // setUrlToGoTo(url);
+        navigate(url);
       }
+    } else {
+      navigate(url);
     }
-    // else if (hasUnsavedChanges) {
-    //   setConfirmModalIsOpen(true);
-    //   setUrlToGoTo(url);
-    // }
+  }
+
+  function handleBudgetNavigation(
+    e: React.MouseEvent<HTMLElement>,
+    url: string,
+  ) {
+    e.preventDefault();
+    if (hasUnsavedChanges) {
+      setConfirmModalIsOpen(true);
+      setUrlToGoTo(url);
+    } else {
+      navigate(url);
+    }
+  }
+
+  function handleReproNavigation(
+    e: React.MouseEvent<HTMLElement>,
+    url: string,
+  ) {
+    e.preventDefault();
+
+    const path = location.pathname;
+
+    const basePath =
+      path.indexOf('/', 1) > -1
+        ? path.substring(0, path.indexOf('/', 1))
+        : path;
+
+    if (location.pathname !== '/reprogramming/search') {
+      if (basePath !== url) {
+        if (hasUnsavedChanges) {
+          setConfirmModalIsOpen(true);
+          setUrlToGoTo(url);
+        } else {
+          navigate(url);
+        }
+      }
+    } else {
+      navigate(url);
+    }
   }
 
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
@@ -108,7 +142,7 @@ const NavBar = () => {
           to="/budget"
           className="nav-link"
           onClick={(e: React.MouseEvent<HTMLElement>) => {
-            handleNavigation(e, '/budget');
+            handleBudgetNavigation(e, '/budget');
           }}
         >
           Budgets
@@ -120,7 +154,7 @@ const NavBar = () => {
           to="/reprogramming"
           className="nav-link"
           onClick={(e: React.MouseEvent<HTMLElement>) => {
-            handleNavigation(e, '/reprogramming');
+            handleReproNavigation(e, '/reprogramming');
           }}
         >
           Reprogrammings
@@ -129,7 +163,7 @@ const NavBar = () => {
           <input
             type="text"
             ref={reproInputRef}
-            defaultValue={208}
+            defaultValue={210}
             className="border w-20"
           />
           <Button buttonSize="xsmall" onClick={gotoRepro}>
