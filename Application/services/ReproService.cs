@@ -10,6 +10,7 @@ using Application.Core;
 using Application.DTOs;
 using Application.DTOs.Repro;
 using Application.Interfaces;
+using Application.PaginationHelpers;
 using Domain;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -422,7 +423,7 @@ namespace Application.Services
             return Result<Unit>.Success(Unit.Value);
         }
 
-        public async Task<List<ReproSearchResponseDto>> Search(ReproSearchParams searchParams)
+        public async Task<Result<ReproSearchResponseDto>> Search(ReproSearchParams searchParams, PaginationParams paginationParams)
         {
 
             var reproLineItems = _dbContext.ReproLineItems
@@ -469,7 +470,7 @@ namespace Application.Services
                             .Include(x => x.CreatedBy)
                             .Include(x => x.PostedBy)
                             .Where(x => reproLineItemIds.Contains(x.Id))
-                            .Select(x => new ReproSearchResponseDto
+                            .Select(x => new ReproSearchReproResponseDto
                             {
                                 Id = x.Id,
                                 CreateDate = x.CreatedDate,
@@ -486,18 +487,22 @@ namespace Application.Services
                 reprosQuery = reprosQuery.Where(x => x.Posted == (searchParams.Status != ReproSearchStatus.SAVED));
             }
 
+            var pagedItemsList =
+                            await PagedList<ReproSearchReproResponseDto>.ToPagedList(reprosQuery, paginationParams.PageNumber, paginationParams.PageSize);
 
-
-
-            var reprosResults = await reprosQuery.ToListAsync();
-
-            reprosResults.ForEach(r =>
+            pagedItemsList.ForEach(r =>
             {
                 r.LineItems = reproLineItemResponses.Where(x => x.ReproId == r.Id).ToList();
             });
 
+            var result = new ReproSearchResponseDto
+            {
+                Items = pagedItemsList,
+                ItemCount = pagedItemsList.Metadata.TotalCount,
+                MetaData = pagedItemsList.Metadata
+            };
 
-            return reprosResults;
+            return Result<ReproSearchResponseDto>.Success(result);
         }
     }
 }

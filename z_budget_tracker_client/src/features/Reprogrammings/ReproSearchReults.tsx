@@ -1,18 +1,30 @@
 import { useState } from 'react';
 import { formatDate, formatNumber } from '../../app/util';
-import { ChevronDownSquare } from 'lucide-react';
+import {
+  ChevronDownSquare,
+  Download,
+  EllipsisVertical,
+  Glasses,
+  Pen,
+  Trash,
+} from 'lucide-react';
+import Menus from '../../components/menus/Menus';
+import { Link } from 'react-router-dom';
 
 type Props = {
   results: ReproSearchResult[];
+  onDelete: (id: number) => void;
 };
 
-const ReproSearchReults = ({ results }: Props) => {
+const ReproSearchReults = ({ onDelete, results }: Props) => {
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
+
   if (results.length == 0) return null;
   return (
     <div className="w-full">
-      <div className="grid grid-cols-[.3fr_1fr_1fr_.3fr_.3fr] p-2 px-3 ">
+      <div className="grid grid-cols-[.5fr_.3fr_1fr_1fr.3fr_.4fr] p-2 px-3 ">
         <div className="entity-label">ID</div>
+        <div className="entity-label">Status</div>
         <div className="entity-label text-center">Posted By</div>
         <div className="entity-label text-center">Posted Date</div>
         <div className="entity-label text-end">Amount</div>
@@ -21,10 +33,11 @@ const ReproSearchReults = ({ results }: Props) => {
       {results.map((r, index) => (
         <div
           key={r.id}
-          className="last:border-b border-b-neutral-200 animate-repro-fade-in"
+          className="last:border-b border-b-neutral-200 hover:bg-neutral-50 "
         >
-          <div className="grid grid-cols-[.3fr_1fr_1fr.3fr_.3fr] border border-neutral-200 p-2 px-3 border-b-0 ">
+          <div className="grid grid-cols-[.5fr_.3fr_1fr_1fr.3fr_.4fr] border border-neutral-200 p-2 px-3 border-b-0 ">
             <div>{r.id}</div>
+            <div>{!r.posted ? 'Saved' : 'Posted'}</div>
             <div className="text-center">{r.posted && r.postedBy}</div>
             <div className="text-center">
               {r.postedDate && formatDate(r.postedDate)}
@@ -34,7 +47,7 @@ const ReproSearchReults = ({ results }: Props) => {
                 r.lineItems.reduce((acc, cur) => acc + cur.increase, 0),
               )}
             </div>
-            <div className="flex justify-center">
+            <div className="flex justify-around pl-10 px-7">
               <ChevronDownSquare
                 className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
                 onClick={() => {
@@ -47,6 +60,41 @@ const ReproSearchReults = ({ results }: Props) => {
                   }
                 }}
               ></ChevronDownSquare>
+              <Menus>
+                <Menus.Toggler id={r.id.toString()}>
+                  <EllipsisVertical
+                    size={20}
+                    className="text-neutral-500"
+                  ></EllipsisVertical>
+                </Menus.Toggler>
+                <Menus.List id={r.id.toString()}>
+                  <Menus.MenuItem>
+                    <Link className="flex" to={`/reprogramming/${r.id}`}>
+                      {r.posted ? (
+                        <Glasses size={18}></Glasses>
+                      ) : (
+                        <Pen size={18}></Pen>
+                      )}
+                      &nbsp;&nbsp;
+                      {r.posted ? 'View' : 'Edit'}
+                    </Link>
+                  </Menus.MenuItem>
+                  <Menus.MenuItem
+                    onClick={() => {
+                      alert('download');
+                    }}
+                  >
+                    <Download size={18}></Download>
+                    &nbsp;&nbsp;Download
+                  </Menus.MenuItem>
+                  {r.posted !== null && !r.posted && (
+                    <Menus.MenuItem onClick={() => onDelete(r.id)}>
+                      <Trash className="text-red-500" size={18}></Trash>
+                      &nbsp;&nbsp;Delete
+                    </Menus.MenuItem>
+                  )}
+                </Menus.List>
+              </Menus>
             </div>
           </div>
           <div

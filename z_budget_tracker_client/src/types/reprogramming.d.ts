@@ -111,12 +111,35 @@ type ReproPreloadLine = {
 }
 
 
-type ReporSearchParams = {
+type ReproSearchParams = {
     year: number
     initiativeIds?: number[] | null
     grantIds?: number[] | null
     accountIds?: number[] | null
-    posted?: boolean | null | undefined
+    status: number
+    debit?: number | undefined
+    credit?: number | undefined
+    debitComparer: number
+    creditComparer: number
+    selectedIds?: { id: number, type: string }[]
+}
+
+// public required int Year { get; set; }        
+//         public List<int>? InitiativeIds { get; set; } = [];
+//         public List<int>? GrantIds { get; set; } = [];
+//         public List<int>? AccountIds { get; set; } = [];
+//         public ReproSearchStatus Status { get; set; }
+//         public AmountComparer DebitComparer { get; set; }
+//         public AmountComparer CreditComparer { get; set; }
+//         public decimal DebitAmount { get; set; }
+//         public decimal CreditAmount { get; set; }
+
+
+
+type ReproSearchResponse = {
+    items: ReproSearchResult[]
+    itemCount: number
+    pagination: PaginationData
 }
 
 type ReprLineItemSearchResult = {

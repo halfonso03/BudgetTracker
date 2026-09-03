@@ -1,6 +1,6 @@
 using System;
 
-namespace API.RequestHelpers;
+namespace Application.PaginationHelpers;
 
 public class PaginationMetadata
 {

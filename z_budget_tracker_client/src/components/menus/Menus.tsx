@@ -52,7 +52,7 @@ function List({ id, children }: ListProps) {
 
   return (
     <div
-      className="absolute z-1000 -translate-x-4 translate-y-5  bg-neutral-50 bg-dark-content border border-gray-300 dark:border-neutral-700 p-2 rounded-sm cursor-pointer "
+      className="absolute animate-repro-fade-in z-1000  translate-x-30 translate-y-5 bg-neutral-50  bg-dark-content border border-gray-300 dark:border-neutral-700 p-2 rounded-sm cursor-pointer "
       ref={ref}
     >
       <ul className="w-50 ">{children}</ul>
@@ -101,7 +101,7 @@ function Toggler({ id, children = null }: TogglerProps) {
 interface MenuItemProps {
   children: ReactNode;
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 function MenuItem({ children, onClick }: MenuItemProps) {
@@ -109,10 +109,10 @@ function MenuItem({ children, onClick }: MenuItemProps) {
 
   return (
     <li
-      className={`flex justify-start items-center p-2 text-neutral-700 transition-colors duration-200 hover:bg-gray-200 dark:hover:bg-neutral-700 rounded-md`}
+      className={`flex justify-start items-center p-1 text-neutral-700 transition-colors duration-150 hover:bg-gray-200 dark:hover:bg-neutral-700 rounded-md`}
       onClick={() => {
         close();
-        onClick();
+        onClick?.();
       }}
     >
       {children}

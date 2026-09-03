@@ -2,10 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.PaginationHelpers;
 
 namespace Application.DTOs.Repro
 {
     public class ReproSearchResponseDto
+    {
+        public required List<ReproSearchReproResponseDto> Items { get; set; } = [];
+        public required int ItemCount { get; set; }
+        public required PaginationMetadata MetaData { get;  set; }
+    }
+
+    public class ReproSearchReproResponseDto
     {
         public required int Id { get; set; } = 0;
         public required DateTime CreateDate { get; set; }
@@ -16,6 +24,5 @@ namespace Application.DTOs.Repro
         public string? Justification { get; set; }
         public List<ReproSearchResponseLineItemDto>? LineItems { get; set; } = [];
         public int? Year { get; set; }
-
     }
 }

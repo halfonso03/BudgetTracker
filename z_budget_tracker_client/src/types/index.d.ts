@@ -102,3 +102,15 @@ type UpdateBudgetRequest = {
 type UpdateBudgetLineItemsRequest = CreateBudgetLineItemsRequest
 
 
+
+type PaginationRequestData = {
+    pageNumber: number;
+    pageSize: number;
+}
+
+type PaginationData = {
+    currentPage: number;
+    totalPages: number;
+    pageSize: number;
+    totalCount: number
+}

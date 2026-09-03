@@ -1,7 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 
-namespace API.RequestHelpers;
+namespace Application.PaginationHelpers;
 
 public class PagedList<T> : List<T>
 {

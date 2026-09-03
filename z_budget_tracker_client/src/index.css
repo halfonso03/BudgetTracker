@@ -65,14 +65,14 @@ input:-webkit-autofill:focus {
 }
 
 @theme {
-  --animate-repro-fade-in: reproIn .25s ease-in-out forwards;
+  --animate-repro-fade-in: reproIn 0.25s ease-in-out forwards;
 
   @keyframes reproIn {
     0% {
       opacity: 0;
     }
     100% {
-      opacity: 1;
+      opacity: .99;
     }
   }
 
@@ -255,4 +255,15 @@ pre {
   transform: scale(1);
   opacity: 1;
   visibility: visible;
+}
+
+.page-link-active {
+  color: var(--color-neutral-600);
+  background-color: var(--color-neutral-200);
+  border-radius: 5px;
+  border: 1px solid var(--color-neutral-300);
+}
+
+.page-link {
+  border: 1px solid transparent;
 }
