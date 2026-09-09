@@ -9,8 +9,8 @@ import ReproLanding from '../../features/Reprogrammings/ReproLanding';
 import Search from '../../features/Reprogrammings/Search';
 import Login from '../../features/Auth/Login';
 import ReproPreload from '../../features/Reprogrammings/ReproPreload';
-import ReproNew from '../../features/Reprogrammings/new/ReproNew';
-import ReproDetails from '../../features/Reprogrammings/new/ReproDetails';
+import ReproDetails from '../../features/Reprogrammings/ReproDetails';
+import ReproNew from '../../features/Reprogrammings/ReproNew';
 
 export const routes: RouteObject[] = [
   {

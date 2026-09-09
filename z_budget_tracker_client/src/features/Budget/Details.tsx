@@ -19,7 +19,7 @@ import BudgetHeader from './BudgetHeader';
 import toast from 'react-hot-toast';
 import { useBudgetMutations } from '../../api/hooks/budgets/useBudgetMutations';
 import Button from '../../components/Button';
-import TransactionsModal from './TransactionsModal';
+import TransactionsModal from './modals/TransactionsModal';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';

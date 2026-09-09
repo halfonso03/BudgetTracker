@@ -1,9 +1,9 @@
-import useTransactions from '../../api/hooks/budgets/useTransactions';
-import { formatDate, formatNumber } from '../../app/util';
-import Modal2 from '../../components/Modal2';
+import useTransactions from '../../../api/hooks/budgets/useTransactions';
+import { formatDate, formatNumber } from '../../../app/util';
+import Modal2 from '../../../components/Modal2';
 import { Fragment, useState } from 'react';
-import Button from '../../components/Button';
-import ReproMiniDetailsModal from '../Reprogrammings/ReproMiniDetailModal';
+import Button from '../../../components/Button';
+import ReproMiniDetailsModal from '../../Reprogrammings/modals/ReproMiniDetailModal';
 
 type Props = {
   initiativeId: number;

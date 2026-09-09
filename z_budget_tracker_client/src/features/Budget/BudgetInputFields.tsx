@@ -6,9 +6,9 @@ import {
   formatNumber,
   parseFormattedNumber,
 } from '../../app/util';
-import CommentsModal from './CommentsModal';
 import { AlertTriangle, ArrowLeftRight, DollarSign } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import CommentsModal from './modals/CommentsModal';
 
 interface Props {
   rowIndex: number;

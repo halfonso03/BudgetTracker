@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import Button from '../../../components/Button';
-import ChooseYearModal from '../ChooseYearModal';
+import Button from '../../components/Button';
 import { Search } from 'lucide-react';
-import ConfirmModal from '../../../components/ConfirmModal';
-import { useHasUnsavedChangesStore } from '../../../state/useHasUnsavedChangesStore';
+import ConfirmModal from '../../components/ConfirmModal';
+import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
+import ChooseYearModal from './modals/ChooseYearModal';
 
 type Props = {
   onYearSelected: (year: number, justification: string) => void;
@@ -16,10 +16,6 @@ const NewReproButton = ({ onYearSelected, onSearchClick }: Props) => {
 
   const hasUnsavedChanges = useHasUnsavedChangesStore(
     (x) => x.hasUnsavedChanges,
-  );
-
-  const setHasUnsavedChanges = useHasUnsavedChangesStore(
-    (x) => x.setHasUnsavedChanges,
   );
 
   const handleYearSelected = (e: { year: number; justification: string }) => {

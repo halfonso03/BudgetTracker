@@ -1,10 +1,10 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import useAuth from '../../../contexts/useAuth';
-import ReproForm from '../ReproForm';
-import NewReproButton from './NewReproButton';
 import { useEffect, useState } from 'react';
-import ConfirmModal from '../../../components/ConfirmModal';
-import { useHasUnsavedChangesStore } from '../../../state/useHasUnsavedChangesStore';
+import ConfirmModal from '../../components/ConfirmModal';
+import useAuth from '../../contexts/useAuth';
+import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
+import NewReproButton from './NewReproButton';
+import ReproForm from './ReproForm';
 
 const ReproNew = () => {
   const navigate = useNavigate();

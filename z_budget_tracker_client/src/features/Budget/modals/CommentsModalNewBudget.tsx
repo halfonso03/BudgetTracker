@@ -1,6 +1,7 @@
-import Button from '../../components/Button';
-import Modal, { type ModalSize } from '../../components/Modal';
 import { useState, type ChangeEvent, type SubmitEvent } from 'react';
+import Modal from '../../../../misc/Modal';
+import Button from '../../../components/Button';
+import type { ModalSize } from '../../../components/Modal2';
 
 interface Props {
   accountId: number;

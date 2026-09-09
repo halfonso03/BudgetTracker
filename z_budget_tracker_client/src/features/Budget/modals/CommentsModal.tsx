@@ -1,10 +1,11 @@
-import Button from '../../components/Button';
-import Modal, { type ModalSize } from '../../components/Modal';
-import { useCommentActions } from '../../api/hooks/budgets/useCommentsActions';
 import { useForm } from 'react-hook-form';
 import { CheckCircle } from 'lucide-react';
 import { useState, type ChangeEvent } from 'react';
-import { formatDate } from '../../app/util';
+import Modal from '../../../../misc/Modal';
+import { useCommentActions } from '../../../api/hooks/budgets/useCommentsActions';
+import Button from '../../../components/Button';
+import type { ModalSize } from '../../../components/Modal2';
+import { formatDate } from '../../../app/util';
 
 interface Props {
   initiativeId: number;

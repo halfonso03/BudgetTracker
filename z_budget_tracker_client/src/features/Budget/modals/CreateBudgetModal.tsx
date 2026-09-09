@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import Button from '../../components/Button';
-import Modal from '../../components/Modal';
-import Select from '../../components/Select';
-import useInitiatives from '../../api/hooks/common/useInitiatives';
-import useGrants from '../../api/hooks/common/useGrants';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import Modal from '../../../../misc/Modal';
+import useGrants from '../../../api/hooks/common/useGrants';
+import useInitiatives from '../../../api/hooks/common/useInitiatives';
+import Button from '../../../components/Button';
+import Select from '../../../components/Select';
 
 interface Props {
   year: number;

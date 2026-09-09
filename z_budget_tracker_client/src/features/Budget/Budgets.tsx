@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import Summary from './Summary';
 import Button from '../../components/Button';
-import CreateBudgetModal from './CreateBudgetModal';
 import toast from 'react-hot-toast';
+import CreateBudgetModal from './modals/CreateBudgetModal';
 
 const Budgets = () => {
   const [year, setYear] = useState<number>(2026);

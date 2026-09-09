@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type SubmitEvent } from 'react';
-import Button from '../../components/Button';
-import Modal2, { type ModalSize } from '../../components/Modal2';
+import Button from '../../../components/Button';
+import Modal2, { type ModalSize } from '../../../components/Modal2';
 
 type Props = {
   size?: ModalSize;

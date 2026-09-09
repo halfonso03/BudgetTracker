@@ -1,12 +1,14 @@
-import Button from '../../components/Button';
-import Select from '../../components/Select';
-import { useState, type ChangeEvent } from 'react';
-import useCurrentAccountBalances from '../../api/hooks/repro/useCurrentAccountBalances';
-import { formatCurrency } from '../../app/util';
-import Modal2 from '../../components/Modal2';
-import useInitiatives from '../../api/hooks/common/useInitiatives';
-import useCategories from '../../api/hooks/common/useCategories';
-import useGrants from '../../api/hooks/common/useGrants';
+import { Check } from "lucide-react";
+import { useState, type ChangeEvent } from "react";
+import useCategories from "../../../api/hooks/common/useCategories";
+import useGrants from "../../../api/hooks/common/useGrants";
+import useInitiatives from "../../../api/hooks/common/useInitiatives";
+import useCurrentAccountBalances from "../../../api/hooks/repro/useCurrentAccountBalances";
+import { formatCurrency } from "../../../app/util";
+import Button from "../../../components/Button";
+import Modal2 from "../../../components/Modal2";
+import Select from "../../../components/Select";
+
 
 type Selections = {
   initiativeId?: number;
@@ -18,20 +20,35 @@ type Selections = {
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
-  selections?: Selections;
+  uuid: string;
   year: number;
-  onLineAdded: (
+  selections?: Selections | null;
+  onLineUpdated: (
     balance: ReproLineItem,
     key: { initiativeId: number; grantId: number; categoryId: number },
   ) => void;
 };
 
-const AddLineModal = ({ ...props }: Props) => {
-  const [selections, setSelections] = useState<Selections | null>(null);
-  const [animateOut, setAnimateOut] = useState(false);
-  const { grants } = useGrants(props.year, props.isOpen);
+const EditLineModal = ({ ...props }: Props) => {
   const { initiatives } = useInitiatives(props.isOpen);
   const { categories } = useCategories(props.isOpen);
+  const { grants } = useGrants(props.year, props.isOpen);
+
+  const [selections, setSelections] = useState<Selections>({
+    initiativeId: props.selections!.initiativeId!,
+    grantId: props.selections!.grantId!,
+    categoryId: props.selections!.categoryId!,
+    accountId: props.selections!.accountId!,
+  });
+
+  const [originalSlections] = useState<Selections>({
+    initiativeId: props.selections!.initiativeId!,
+    grantId: props.selections!.grantId!,
+    categoryId: props.selections!.categoryId!,
+    accountId: props.selections!.accountId!,
+  });
+
+  const [animateOut, setAnimateOut] = useState(false);
 
   const { data: balances } = useCurrentAccountBalances(
     selections?.initiativeId,
@@ -39,15 +56,13 @@ const AddLineModal = ({ ...props }: Props) => {
     selections?.categoryId,
   );
 
-  function onLineAdded(account: ReproAccountBalance) {
-    setSelections(null);
+  function onLineUpdated(account: ReproAccountBalance) {
     setAnimateOut(true);
-    setTimeout(() => {
-      setAnimateOut(false);
-    }, 500);
     if (initiatives && grants && categories) {
+      console.log('selections!.initiativeId!', selections!.initiativeId!);
       const newLine: ReproLineItem = {
         rowId: -1,
+        uuid: props.uuid,
         accountId: account.accountId,
         accountName: account.name,
         categoryId: selections!.categoryId!,
@@ -61,25 +76,23 @@ const AddLineModal = ({ ...props }: Props) => {
         grantId: selections!.grantId!,
         grantName: grants.filter((x) => x.id == selections?.grantId)[0].name,
         currentAmount: account.currentAmount,
-        uuid: window.crypto.randomUUID(),
         newAmount: account.currentAmount,
       };
 
-      props.onLineAdded(newLine, {
+      props.onLineUpdated(newLine, {
         initiativeId: newLine.initiativeId,
         grantId: newLine.grantId,
-        categoryId: selections!.categoryId!,
+        categoryId: newLine.categoryId,
       });
     }
   }
 
   return (
-    <Modal2 size="lg" title="Add a New Line" animateOut={animateOut} {...props}>
-
+    <Modal2 size="lg" title="Edit Line" animateOut={animateOut} {...props}>
       <div className="grid grid-cols-[1fr_1fr] mb-4 gap-4">
         <div className="flex flex-col gap-9">
           <div>
-            <div className="entity-label">Select an Initiative</div>
+            <span className="entity-label">Select an Initiative</span>
             <Select
               value={selections?.initiativeId}
               additionalclasses={`${selections?.initiativeId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
@@ -92,9 +105,6 @@ const AddLineModal = ({ ...props }: Props) => {
                 }
               }}
             >
-              <option value={0} className="text-neutral-600">
-                Select...
-              </option>
               {initiatives?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
@@ -103,7 +113,7 @@ const AddLineModal = ({ ...props }: Props) => {
             </Select>
           </div>
           <div>
-            <div className="entity-label">Select a Grant</div>
+            <span className="entity-label">Select a Grant</span>
             <Select
               additionalclasses={`${selections?.grantId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
               value={selections?.grantId}
@@ -117,9 +127,6 @@ const AddLineModal = ({ ...props }: Props) => {
                 }
               }}
             >
-              <option value={0} className="text-neutral-600">
-                Select...
-              </option>
               {grants?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
@@ -128,7 +135,7 @@ const AddLineModal = ({ ...props }: Props) => {
             </Select>
           </div>
           <div>
-            <div className="entity-label">Select a Category</div>
+            <span className="entity-label">Select a Category</span>
             <Select
               additionalclasses={`${selections?.categoryId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
               value={selections?.categoryId}
@@ -142,9 +149,6 @@ const AddLineModal = ({ ...props }: Props) => {
                 }
               }}
             >
-              <option value={0} className="text-neutral-600">
-                Select...
-              </option>
               {categories?.map((i) => (
                 <option value={i.id} key={i.id} className="text-neutral-900">
                   {i.name}
@@ -154,50 +158,55 @@ const AddLineModal = ({ ...props }: Props) => {
           </div>
         </div>
 
-        <div>
-          {balances && (
-            <div className="flex justify-between py-2 px-2 pt-0 ">
-              <div className="entity-label">Current Amounts</div>
+        <div className=" ">
+          <div className="py-2 px-2 pt-0 ">
+            <div className="entity-label mb-3 border-b border-b-neutral-200">
+              Select an Account
             </div>
-          )}
+            <div className="entity-label">Current Amounts</div>
+            {/* <div className="entity-label">Current Balance</div> */}
+          </div>
 
-          {balances &&
-            balances?.map((b) => (
-              <div
-                className="rounded-sm py-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300"
-                key={b.accountId}
-                onClick={() => {
-                  onLineAdded(b);
-                  props.onCancel();
-                  // setTimeout(, 2000)
-                }}
-              >
-                <div className="text-neutral-700">{b.name}</div>
-                <div className="text-neutral-900  ">
-                  {formatCurrency(b.currentAmount)}
-                </div>
-              </div>
-            ))}
-
-          {balances && (
-            <div className="flex justify-between py-2 px-2">
-              <div className="entity-label">
-                {selections &&
-                  categories?.some((c) => c.id == selections?.categoryId) &&
-                  categories?.filter((c) => c.id == selections?.categoryId)[0]
-                    .name}
-                &nbsp;Total
-              </div>
-              <div className="font-semibold text-neutral-800">
-                {balances &&
-                  formatCurrency(
-                    balances
-                      .map((b) => b.currentAmount)
-                      ?.reduce((acc, cur) => acc + cur, 0),
+          {balances?.map((b) => (
+            <div
+              className="rounded-sm py-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300"
+              key={b.accountId}
+              onClick={() => {
+                onLineUpdated(b);
+                props.onCancel();
+                // setTimeout(, 2000)
+              }}
+            >
+              <div className="flex text-neutral-700 items-center gap-1">
+                {b.accountId == originalSlections.accountId &&
+                  b.initiativeId == originalSlections.initiativeId &&
+                  b.grantId == originalSlections.grantId && (
+                    <Check size={16} className="text-blue-500"></Check>
                   )}
+                {b.name}
+              </div>
+              <div className="text-neutral-900  ">
+                {formatCurrency(b.currentAmount)}
               </div>
             </div>
-          )}
+          ))}
+          <div className="flex justify-between py-2 px-2">
+            <div className="entity-label">
+              {selections &&
+                categories?.some((c) => c.id == selections?.categoryId) &&
+                categories?.filter((c) => c.id == selections?.categoryId)[0]
+                  .name}
+              &nbsp;Total
+            </div>
+            <div className="font-semibold text-neutral-800">
+              {balances &&
+                formatCurrency(
+                  balances
+                    .map((b) => b.currentAmount)
+                    ?.reduce((acc, cur) => acc + cur, 0),
+                )}
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex justify-end gap-3 pb-3">
@@ -208,7 +217,7 @@ const AddLineModal = ({ ...props }: Props) => {
             props.onCancel();
             setAnimateOut(true);
             setTimeout(() => {
-              setSelections(null);
+              // setSelections(null);
               setAnimateOut(false);
             }, 500);
           }}
@@ -219,4 +228,4 @@ const AddLineModal = ({ ...props }: Props) => {
     </Modal2>
   );
 };
-export default AddLineModal;
+export default EditLineModal;

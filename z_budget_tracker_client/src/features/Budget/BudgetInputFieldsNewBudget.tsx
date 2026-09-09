@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import NumericArrayInput from '../../components/NumericArrayInput';
 import type { UseFormRegisterReturn } from 'react-hook-form';
-import CommentsModalNewBudget from './CommentsModalNewBudget';
+import CommentsModalNewBudget from './modals/CommentsModalNewBudget';
 
 interface Props {
   isLastRow: boolean;
