@@ -52,7 +52,7 @@ interface Props {
   repro: Repro;
   onInitialSave?: (newId: number) => void;
   onIsDirty: (dirty: boolean) => void;
-  onSaved: () => void;
+  onSaved?: () => void;
 }
 
 type Selections = {
@@ -63,7 +63,7 @@ type Selections = {
   accountId?: number;
 };
 
-const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirty }: Props) => {
+const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   const DUP_LINES =
     'There are duplicate lines (Look for the duplicate selections for an Initiative, Grant, Category and Account)';
   const NO_INC_AND_NO_DEC_LINES =
@@ -78,6 +78,7 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirty }: Props) => {
   const queryClient = useQueryClient();
   const location = useLocation();
   const created = location.state?.created ? location.state.created : false;
+
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
@@ -197,11 +198,19 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirty }: Props) => {
           id: 'errors',
         },
       );
-    } else {
-      toast.remove();
     }
+    // else {
+    //   toast.remove();
+    // }
 
-    return () => toast.remove();
+    return () => {
+      if (
+        errors.length > 0 &&
+        lines.length > 0 &&
+        reproHeader.status !== POSTED
+      )
+        toast.remove();
+    };
   }, [getErrors, getTotalAmounts, lines, reproHeader.status]);
 
   function handleLineAdded(
@@ -499,22 +508,55 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirty }: Props) => {
     return result;
   }
 
-  function onServerSuccess(posted: boolean, id: number = 0) {
+  function onServerCreateSuccess(
+    posted: boolean,
+    newId: number,
+    createDate: Date,
+    postedDate: Date | null,
+  ) {
     const message = posted ? 'Reprogramming Posted.' : 'Reprogramming Saved.';
     toast.success(message, {
       duration: 1500,
     });
 
-    setReproHeader((prev) => ({
-      ...prev,
-      id: id !== 0 ? id : prev.id,
-      createdById: +userId!,
-      createdBy: loginId!,
-      createDate: new Date(),
-      status: posted ? POSTED : SAVED,
-      postedDate: posted ? new Date() : null,
-      postedBy: posted ? loginId : '',
-    }));
+    setReproHeader((prev) => {
+      console.log('id', newId);
+      console.log('userId', userId);
+      console.log('loginid', loginId);
+
+      return {
+        ...prev,
+        id: newId,
+        createdById: +userId!,
+        createdBy: loginId!,
+        createDate: createDate,
+        status: posted ? POSTED : SAVED,
+        postedDate: postedDate,
+        postedBy: posted ? loginId : '',
+      };
+    });
+
+    console.log('123', 123);
+  }
+
+  function onServerUpdateSuccess(
+    posted: boolean,
+    postedDate: Date | null = null,
+  ) {
+    setReproHeader((prev) => {
+      return {
+        ...prev,
+        status: posted ? POSTED : SAVED,
+        postedDate: postedDate,
+        postedBy: posted ? loginId : '',
+      };
+    });
+    const message = posted ? 'Reprogramming Posted.' : 'Reprogramming Saved.';
+
+    console.log('message', message);
+    toast.success(message, {
+      duration: 1500,
+    });
   }
 
   function handleSaveJust(text: string) {
@@ -577,16 +619,20 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirty }: Props) => {
     await createRepro.mutateAsync(reproToSave, {
       onSuccess: (id) => {
         queryClient.invalidateQueries({ queryKey: ['repro', id] });
-        queryClient.invalidateQueries({ queryKey: ['repro_search'] });
+        // queryClient.invalidateQueries({ queryKey: ['repro_search'] });
+
+        const postedDate = new Date();
+        const createDate = new Date();
+
         queryClient.setQueryData<Repro>(['repro', id], () => ({
           ...reproToSave,
           id: id,
           year: repro.year,
           justification: reproHeader.justification,
           createdBy: loginId!,
-          createDate: new Date(),
+          createDate: createDate,
           posted: posted,
-          postedDate: posted ? new Date() : null,
+          postedDate: posted ? postedDate : null,
           postedBy: posted ? loginId! : null,
           postedById: posted ? userId! : null,
           lineItems: lines.map((l) => {
@@ -624,9 +670,14 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirty }: Props) => {
         //
         // ,
         //
-        onServerSuccess(posted, id);
+        onServerCreateSuccess(
+          posted,
+          id,
+          createDate,
+          posted ? postedDate : null,
+        );
         onInitialSave?.(id);
-        onSaved();
+        onSaved?.();
       },
     });
   }
@@ -662,8 +713,10 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirty }: Props) => {
         //   },
         // );
 
-        onServerSuccess(posted);
-        onSaved();
+        const postedDate = new Date();
+
+        onServerUpdateSuccess(posted, posted ? postedDate : null);
+        onSaved?.();
       },
     });
   }
@@ -817,16 +870,17 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirty }: Props) => {
 
         {lines.length > 0 && (
           <div>
-            <div className="grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-semibold text-neutral-500">
+            <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-semibold text-neutral-500">
               <div className="self-end">Initiative</div>
               <div className="self-end">Grant</div>
               <div className="self-end">Category</div>
               <div className="self-end">Account</div>
               <div className="flex justify-between ">
-                <div className="text-center w-[25%]">Current Amount</div>
-                <div className="self-end  text-end w-[25%] pr-2">Increase</div>
-                <div className="self-end text-end w-[25%] pr-2">Decrease</div>
-                <div className="text-center w-[25%] pr-2">New Amount</div>
+                <div className="text-center flex-2">Current Amount</div>
+                <div className="self-end  text-end flex-[1.5] pr-2">Increase</div>
+                <div className="self-end text-end flex-[1.5] pr-2">Decrease</div>
+                <div className="text-center flex-2 pr-2 self-end">New Amount</div>
+                <div className="text-center flex-2 pr-2">Remaining Balance</div>
               </div>
               <div></div>
             </div>
@@ -844,7 +898,7 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirty }: Props) => {
             return (
               <div
                 key={index}
-                className="grid grid-cols-[1.2fr_.5fr_.5fr_1.2fr_2fr_.3fr] gap-2 px-3 py-2 border border-neutral-300  items-center mb-3 "
+                className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-2 border border-neutral-300  items-center mb-3 "
               >
                 <TransactionRow
                   key={item.uuid}
@@ -894,6 +948,9 @@ const ReproForm = ({ repro, onInitialSave, onSaved, onIsDirty }: Props) => {
                         {reproHeader.status !== POSTED &&
                           formatNumber(item.newAmount)}
                       </div>
+                      <div
+                        className={`text-center flex-2 self-center text-neutral-600`}
+                      ></div>
                     </div>
                   )}
                   canEdit={reproHeader.status !== POSTED}

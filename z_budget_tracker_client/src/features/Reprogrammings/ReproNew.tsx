@@ -129,8 +129,7 @@ const ReproNew = () => {
           key={repro.uuid}
           repro={repro}
           onInitialSave={handleInitialSaved}
-          onIsDirty={handleIsDirty}
-          onSaved={() => {}}
+          onIsDirty={handleIsDirty}          
         ></ReproForm>
       );
     }

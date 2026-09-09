@@ -165,6 +165,7 @@ const Search = () => {
           setCredit(number);
         }
       }
+      setPageNumber(1);
     },
     [credit, debit],
   );
@@ -191,6 +192,7 @@ const Search = () => {
 
   const handleRefreshClick = () => {
     queryClient.invalidateQueries({ queryKey: ['repro_search'] });
+    setPageNumber(1);
   };
 
   async function handleDelete(id: number) {
