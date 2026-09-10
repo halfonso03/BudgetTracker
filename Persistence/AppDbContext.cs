@@ -159,120 +159,131 @@ namespace Persistence
                     WindowsLogin = "rescobar"
                 }
             );
-
             builder.Entity<BudgetLineItem>().HasData(
-                new BudgetLineItem()
-                {
-                    AccountId = 1,
-                    Amount = 100,
-                    CreatedBy = 1,
-                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                    GrantId = 1,
-                    InitiativeId = 1,
-                    ItemType = Globals.ITEM_TYPE_BUDGET,
-                    Id = 1
-                },
-                new BudgetLineItem()
-                {
-                    AccountId = 3,
-                    Amount = 100,
-                    CreatedBy = 1,
-                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                    GrantId = 1,
-                    InitiativeId = 1,
-                    ItemType = Globals.ITEM_TYPE_BUDGET,
-                    Id = 2
-                },
-                new BudgetLineItem()
-                {
-                    AccountId = 4,
-                    Amount = 105,
-                    CreatedBy = 1,
-                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                    GrantId = 1,
-                    InitiativeId = 1,
-                    ItemType = Globals.ITEM_TYPE_BUDGET,
-                    Id = 3
-                },
-                new BudgetLineItem()
-                {
-                    AccountId = 7,
-                    Amount = 1200,
-                    CreatedBy = 1,
-                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                    GrantId = 1,
-                    InitiativeId = 1,
-                    ItemType = Globals.ITEM_TYPE_BUDGET,
-                    Id = 5
-                },
-                new BudgetLineItem()
-                {
-                    AccountId = 8,
-                    Amount = 400,
-                    CreatedBy = 1,
-                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                    GrantId = 1,
-                    InitiativeId = 1,
-                    ItemType = Globals.ITEM_TYPE_BUDGET,
-                    Id = 6
-                },
-                new BudgetLineItem()
-                {
-                    AccountId = 5,
-                    Amount = 596.0M,
-                    CreatedBy = 1,
-                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                    GrantId = 1,
-                    InitiativeId = 1,
-                    ItemType = Globals.ITEM_TYPE_BUDGET,
-                    Id = 7
-                },
-                new BudgetLineItem()
-                {
-                    AccountId = 8,
-                    Amount = 400,
-                    CreatedBy = 1,
-                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                    GrantId = 1,
-                    InitiativeId = 2,
-                    ItemType = Globals.ITEM_TYPE_BUDGET,
-                    Id = 9
-                },
-                new BudgetLineItem()
-                {
-                    AccountId = 5,
-                    Amount = 750,
-                    CreatedBy = 1,
-                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                    GrantId = 3,
-                    InitiativeId = 1,
-                    ItemType = Globals.ITEM_TYPE_BUDGET,
-                    Id = 10
-                },
-                new BudgetLineItem()
-                {
-                    AccountId = 8,
-                    Amount = 250,
-                    CreatedBy = 1,
-                    CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                    GrantId = 3,
-                    InitiativeId = 2,
-                    ItemType = Globals.ITEM_TYPE_BUDGET,
-                    Id = 11
-                },
-                 new BudgetLineItem()
-                 {
-                     AccountId = 8,
-                     Amount = 250,
-                     CreatedBy = 1,
-                     CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                     GrantId = 3,
-                     InitiativeId = 2,
-                     ItemType = Globals.ITEM_TYPE_BUDGET,
-                     Id = 11
-                 }
+              new BudgetLineItem()
+              {
+                  AccountId = 1,
+                  Amount = 100,
+                  CreatedBy = 1,
+                  CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                  GrantId = 1,
+                  InitiativeId = 1,
+                  ItemType = Globals.ITEM_TYPE_BUDGET,
+                  Id = 1
+              },
+              new BudgetLineItem()
+              {
+                  AccountId = 3,
+                  Amount = 100,
+                  CreatedBy = 1,
+                  CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                  GrantId = 1,
+                  InitiativeId = 1,
+                  ItemType = Globals.ITEM_TYPE_BUDGET,
+                  Id = 2
+              },
+              new BudgetLineItem()
+              {
+                  AccountId = 4,
+                  Amount = 105,
+                  CreatedBy = 1,
+                  CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                  GrantId = 1,
+                  InitiativeId = 1,
+                  ItemType = Globals.ITEM_TYPE_BUDGET,
+                  Id = 3
+              },
+              new BudgetLineItem()
+              {
+                  AccountId = 7,
+                  Amount = 1200,
+                  CreatedBy = 1,
+                  CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                  GrantId = 1,
+                  InitiativeId = 1,
+                  ItemType = Globals.ITEM_TYPE_BUDGET,
+                  Id = 5
+              },
+              new BudgetLineItem()
+              {
+                  AccountId = 8,
+                  Amount = 400,
+                  CreatedBy = 1,
+                  CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                  GrantId = 1,
+                  InitiativeId = 1,
+                  ItemType = Globals.ITEM_TYPE_BUDGET,
+                  Id = 6
+              },
+              new BudgetLineItem()
+              {
+                  AccountId = 5,
+                  Amount = 596.0M,
+                  CreatedBy = 1,
+                  CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                  GrantId = 1,
+                  InitiativeId = 1,
+                  ItemType = Globals.ITEM_TYPE_BUDGET,
+                  Id = 7
+              },
+              new BudgetLineItem()
+              {
+                  AccountId = 8,
+                  Amount = 400,
+                  CreatedBy = 1,
+                  CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                  GrantId = 1,
+                  InitiativeId = 2,
+                  ItemType = Globals.ITEM_TYPE_BUDGET,
+                  Id = 9
+              },
+              new BudgetLineItem()
+              {
+                  AccountId = 5,
+                  Amount = 750,
+                  CreatedBy = 1,
+                  CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                  GrantId = 3,
+                  InitiativeId = 1,
+                  ItemType = Globals.ITEM_TYPE_BUDGET,
+                  Id = 10
+              },
+              new BudgetLineItem()
+              {
+                  AccountId = 8,
+                  Amount = 250,
+                  CreatedBy = 1,
+                  CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                  GrantId = 3,
+                  InitiativeId = 2,
+                  ItemType = Globals.ITEM_TYPE_BUDGET,
+                  Id = 11
+              },
+               new BudgetLineItem()
+               {
+                   AccountId = 8,
+                   Amount = 250,
+                   CreatedBy = 1,
+                   CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                   GrantId = 3,
+                   InitiativeId = 2,
+                   ItemType = Globals.ITEM_TYPE_BUDGET,
+                   Id = 12
+               },
+            new BudgetLineItem()
+            {
+                AccountId = 1,
+                Amount = 50,
+                CreatedBy = 1,
+                CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
+                GrantId = 1,
+                InitiativeId = 1,
+                ItemType = Globals.ITEM_TYPE_DISB,
+                Id = 14
+            }
+          );
 
-            );
+
 
             builder.Entity<Category>()
                 .HasMany(x => x.Accounts)
@@ -280,32 +291,32 @@ namespace Persistence
                 .HasForeignKey(x => x.CategoryId);
 
             builder.Entity<AuthorizedUser>().Property(x => x.Id).HasColumnName("id");
-            builder.Entity<AuthorizedUser>().Property(x => x.WindowsLogin).HasColumnName("windows_login").HasColumnType("varchar(50)");
+            builder.Entity<AuthorizedUser>().Property(x => x.WindowsLogin).HasColumnName("windows_login").HasColumnType("VARCHAR(50)");
             builder.Entity<AuthorizedUser>().Property(x => x.LastLoginDate).HasColumnName("last_login_date").HasColumnType("datetime");
 
             builder.Entity<Account>().Property(x => x.Id).HasColumnName("id");
-            builder.Entity<Account>().Property(x => x.Number).HasColumnName("number").HasColumnType("varchar(50)");
-            builder.Entity<Account>().Property(x => x.Name).HasColumnName("name").HasColumnType("varchar(500)"); ;
+            builder.Entity<Account>().Property(x => x.Number).HasColumnName("number").HasColumnType("VARCHAR(50)");
+            builder.Entity<Account>().Property(x => x.Name).HasColumnName("name").HasColumnType("VARCHAR(500)"); ;
             builder.Entity<Account>().Property(x => x.CategoryId).HasColumnName("category_id");
 
             builder.Entity<Category>().Property(x => x.Id).HasColumnName("id");
-            builder.Entity<Category>().Property(x => x.Name).HasColumnName("name").HasColumnType("varchar(50)"); ;
+            builder.Entity<Category>().Property(x => x.Name).HasColumnName("name").HasColumnType("VARCHAR(50)"); ;
 
             builder.Entity<Initiative>().Property(x => x.Id).HasColumnName("id");
-            builder.Entity<Initiative>().Property(x => x.Name).HasColumnName("name").HasColumnType("varchar(200)"); ;
+            builder.Entity<Initiative>().Property(x => x.Name).HasColumnName("name").HasColumnType("VARCHAR(200)"); ;
 
             builder.Entity<Grant>().Property(x => x.Id).HasColumnName("id");
             builder.Entity<Grant>().Property(x => x.StartDate).HasColumnName("start_date");
             builder.Entity<Grant>().Property(x => x.EndDate).HasColumnName("end_date");
             builder.Entity<Grant>().Property(x => x.Fiduciary).HasColumnName("fiduciary");
 
-            builder.Entity<Grant>().Property(x => x.Name).HasColumnName("name").HasColumnType("varchar(50)"); ;
+            builder.Entity<Grant>().Property(x => x.Name).HasColumnName("name").HasColumnType("VARCHAR(50)"); ;
 
             builder.Entity<BudgetLineItem>().Property(x => x.Amount).HasColumnName("amount");
             builder.Entity<BudgetLineItem>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
             builder.Entity<BudgetLineItem>().Property(x => x.GrantId).HasColumnName("grant_id");
             builder.Entity<BudgetLineItem>().Property(x => x.AccountId).HasColumnName("account_id");
-            builder.Entity<BudgetLineItem>().Property(x => x.ItemType).HasColumnName("item_type");
+            builder.Entity<BudgetLineItem>().Property(x => x.ItemType).HasColumnName("item_type").HasColumnType("CHAR(1)");
             builder.Entity<BudgetLineItem>().Property(x => x.CreateDate).HasColumnName("create_date").HasColumnType("DATETIME");
             builder.Entity<BudgetLineItem>().Property(x => x.CreatedBy).HasColumnName("created_by");
             builder.Entity<BudgetLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME");

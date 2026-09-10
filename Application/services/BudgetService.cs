@@ -170,7 +170,7 @@ namespace Application.services
             if (_dbContext.BudgetLineItems.Any(x =>
                 x.InitiativeId == initiativeId &&
                 x.GrantId == grantId &&
-                x.ItemType == "B"))
+                x.ItemType == Globals.ITEM_TYPE_BUDGET))
             {
                 return Result<Unit>.Failure("A budget for the initiative and grant already exists", 400);
             }
@@ -230,7 +230,7 @@ namespace Application.services
 
                 var lineItemsFromDb = await _dbContext.BudgetLineItems.Where(x => x.InitiativeId == initiativeId &&
                     x.GrantId == grantId &&
-                    x.ItemType == "B")
+                    x.ItemType == Globals.ITEM_TYPE_BUDGET)
                     .ToListAsync();
 
                 // zero out records from db that are not present in the LineItems list
@@ -302,7 +302,7 @@ namespace Application.services
                 .Where(x => x.InitiativeId == initiativeId
                         && x.GrantId == grantId
                         && x.AccountId == accountId
-                        && x.ItemType == "B")
+                        && x.ItemType == Globals.ITEM_TYPE_BUDGET)
                 .Select(x => TransactionResponseDto.Create(x.Id, x.ItemType, x.CreateDate, x.Amount))
                 .ToListAsync();
 
@@ -326,9 +326,9 @@ namespace Application.services
         {
             var acounts = _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId).Select(x => x).ToList();
 
-            var initiative = await _dbContext.Initiatives.FirstAsync(x => x.Id == initiativeId);
-            var grant = await _dbContext.Grants.FirstAsync(x => x.Id == grantId);
-            var category = await _dbContext.Categories.FirstAsync(x => x.Id == categoryId);
+            // var initiative = await _dbContext.Initiatives.FirstAsync(x => x.Id == initiativeId);
+            // var grant = await _dbContext.Grants.FirstAsync(x => x.Id == grantId);
+            // var category = await _dbContext.Categories.FirstAsync(x => x.Id == categoryId);
 
             var lineItems = await (from b in _dbContext.BudgetLineItems
                                    join a in _dbContext.Accounts on b.AccountId equals a.Id
@@ -351,7 +351,7 @@ namespace Application.services
                    .ToListAsync();
 
             var currentAmounts = from l in lineItems
-                                 where l.itemtype == "B" || l.itemtype == "R"
+                                 where l.itemtype == Globals.ITEM_TYPE_BUDGET || l.itemtype == Globals.ITEM_TYPE_REPRO
                                  group l by new { l.id, l.name } into catBal
                                  orderby catBal.Key.name
                                  select
@@ -386,7 +386,7 @@ namespace Application.services
                                       b.GrantId == grantId &&
                                       b.AccountId == a.Id &&
                                       a.CategoryId == categoryId &&
-                                      (b.ItemType == "B" || b.ItemType == "R")
+                                      (b.ItemType == Globals.ITEM_TYPE_BUDGET || b.ItemType == Globals.ITEM_TYPE_REPRO)
                                   group b by new { id = a.Id, name = a.Name } into catBal
                                   orderby catBal.Key.name
                                   select

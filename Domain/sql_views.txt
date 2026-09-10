@@ -1,7 +1,13 @@
+USE [BudgetTracker]
+GO
+
+/****** Object:  View [dbo].[vwBudgets]    Script Date: 9/10/2026 4:14:14 PM ******/
 SET ANSI_NULLS ON
 GO
+
 SET QUOTED_IDENTIFIER ON
 GO
+
 
 
 
@@ -13,3 +19,4 @@ join tblAccount a on a.id = b.account_id
 join tblGrant g on g.id = b.grant_id
 
 GO
+

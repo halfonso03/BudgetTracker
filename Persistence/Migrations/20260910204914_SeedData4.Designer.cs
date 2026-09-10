@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260805150850_AccACt")]
-    partial class AccACt
+    [Migration("20260910204914_SeedData4")]
+    partial class SeedData4
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,12 +40,12 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("VARCHAR(500)")
                         .HasColumnName("name");
 
                     b.Property<string>("Number")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("number");
 
                     b.HasKey("Id");
@@ -135,7 +135,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("WindowsLogin")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("windows_login");
 
                     b.HasKey("Id");
@@ -146,8 +146,78 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            WindowsLogin = "halfonso"
+                            WindowsLogin = "hialfonso"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            WindowsLogin = "rxleopold"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            WindowsLogin = "rescobar"
                         });
+                });
+
+            modelBuilder.Entity("Domain.BudgetComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int")
+                        .HasColumnName("account_id");
+
+                    b.Property<DateTime>("EntryDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("entry_date")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int>("EntryPersonId")
+                        .HasColumnType("int")
+                        .HasColumnName("entry_user_id");
+
+                    b.Property<int>("GrantId")
+                        .HasColumnType("int")
+                        .HasColumnName("grant_id");
+
+                    b.Property<int>("InitiativeId")
+                        .HasColumnType("int")
+                        .HasColumnName("initiative_id");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(MAX)")
+                        .HasColumnName("comment_text");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("update_date")
+                        .HasDefaultValueSql("GETDATE()");
+
+                    b.Property<int?>("UpdatePersonId")
+                        .HasColumnType("int")
+                        .HasColumnName("update_user_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("EntryPersonId");
+
+                    b.HasIndex("GrantId");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.HasIndex("UpdatePersonId");
+
+                    b.ToTable("tblBudgetComment");
                 });
 
             modelBuilder.Entity("Domain.BudgetLineItem", b =>
@@ -164,13 +234,13 @@ namespace Persistence.Migrations
                         .HasColumnName("account_id")
                         .HasColumnOrder(3);
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("float")
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)")
                         .HasColumnName("amount")
                         .HasColumnOrder(4);
 
                     b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("DATETIME")
                         .HasColumnName("create_date")
                         .HasColumnOrder(7);
 
@@ -191,12 +261,12 @@ namespace Persistence.Migrations
 
                     b.Property<string>("ItemType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("CHAR(1)")
                         .HasColumnName("item_type")
                         .HasColumnOrder(5);
 
                     b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("DATETIME")
                         .HasColumnName("update_date")
                         .HasColumnOrder(9);
 
@@ -224,7 +294,7 @@ namespace Persistence.Migrations
                         {
                             Id = 1,
                             AccountId = 1,
-                            Amount = 100.0,
+                            Amount = 100m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 1,
@@ -235,7 +305,7 @@ namespace Persistence.Migrations
                         {
                             Id = 2,
                             AccountId = 3,
-                            Amount = 100.0,
+                            Amount = 100m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 1,
@@ -246,7 +316,7 @@ namespace Persistence.Migrations
                         {
                             Id = 3,
                             AccountId = 4,
-                            Amount = 105.0,
+                            Amount = 105m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 1,
@@ -257,7 +327,7 @@ namespace Persistence.Migrations
                         {
                             Id = 5,
                             AccountId = 7,
-                            Amount = 1200.0,
+                            Amount = 1200m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 1,
@@ -268,7 +338,7 @@ namespace Persistence.Migrations
                         {
                             Id = 6,
                             AccountId = 8,
-                            Amount = 400.0,
+                            Amount = 400m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 1,
@@ -279,7 +349,7 @@ namespace Persistence.Migrations
                         {
                             Id = 7,
                             AccountId = 5,
-                            Amount = 596.00999999999999,
+                            Amount = 596.0m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 1,
@@ -290,7 +360,7 @@ namespace Persistence.Migrations
                         {
                             Id = 9,
                             AccountId = 8,
-                            Amount = 400.0,
+                            Amount = 400m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 1,
@@ -301,7 +371,7 @@ namespace Persistence.Migrations
                         {
                             Id = 10,
                             AccountId = 5,
-                            Amount = 750.0,
+                            Amount = 750m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 3,
@@ -312,12 +382,34 @@ namespace Persistence.Migrations
                         {
                             Id = 11,
                             AccountId = 8,
-                            Amount = 250.0,
+                            Amount = 250m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 3,
                             InitiativeId = 2,
                             ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AccountId = 8,
+                            Amount = 250m,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 3,
+                            InitiativeId = 2,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            AccountId = 1,
+                            Amount = 50m,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 1,
+                            InitiativeId = 1,
+                            ItemType = "D"
                         });
                 });
 
@@ -332,7 +424,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
@@ -387,7 +479,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("name");
 
                     b.Property<DateTime>("StartDate")
@@ -419,7 +511,7 @@ namespace Persistence.Migrations
                         {
                             Id = 3,
                             EndDate = new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Fiduciary = "MCSPo",
+                            Fiduciary = "MCSO",
                             Name = "G26001",
                             StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
@@ -444,7 +536,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("VARCHAR(200)")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
@@ -465,7 +557,7 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 3,
-                            Name = "Overdose Response Strategy"
+                            Name = "ORS"
                         },
                         new
                         {
@@ -475,8 +567,150 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 5,
-                            Name = "Domestic Highway Enforcement"
+                            Name = "DHE"
                         });
+                });
+
+            modelBuilder.Entity("Domain.Repro", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("NUMERIC(15,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("int")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("create_date");
+
+                    b.Property<string>("Justification")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(MAX)")
+                        .HasColumnName("justification");
+
+                    b.Property<bool>("Posted")
+                        .HasColumnType("bit")
+                        .HasColumnName("posted");
+
+                    b.Property<int?>("PostedById")
+                        .HasColumnType("int")
+                        .HasColumnName("posted_by");
+
+                    b.Property<DateTime?>("PostedDate")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("posted_date");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("updated_date");
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("PostedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("tblRepro");
+                });
+
+            modelBuilder.Entity("Domain.ReproLineItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int")
+                        .HasColumnName("account_id");
+
+                    b.Property<int?>("BudgetLineItemId")
+                        .HasColumnType("int")
+                        .HasColumnName("budget_line_id");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int")
+                        .HasColumnName("category_id");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("VARCHAR(MAX)")
+                        .HasColumnName("comment");
+
+                    b.Property<decimal?>("Decrease")
+                        .HasColumnType("NUMERIC(15,2)")
+                        .HasColumnName("decrease");
+
+                    b.Property<DateTime>("EntryDate")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("entry_date");
+
+                    b.Property<int>("GrantId")
+                        .HasColumnType("int")
+                        .HasColumnName("grant_id");
+
+                    b.Property<decimal?>("Increase")
+                        .HasColumnType("NUMERIC(15,2)")
+                        .HasColumnName("increase");
+
+                    b.Property<int>("InitiativeId")
+                        .HasColumnType("int")
+                        .HasColumnName("initiative_id");
+
+                    b.Property<int>("ReproId")
+                        .HasColumnType("int")
+                        .HasColumnName("repro_id");
+
+                    b.Property<int>("RowId")
+                        .HasColumnType("int")
+                        .HasColumnName("row_id");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("update_date");
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int")
+                        .HasColumnName("updated_by");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int")
+                        .HasColumnName("year");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("BudgetLineItemId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("GrantId");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("ReproId", "InitiativeId", "GrantId", "CategoryId", "AccountId")
+                        .IsUnique();
+
+                    b.ToTable("tblReproLineItem");
                 });
 
             modelBuilder.Entity("Domain.Account", b =>
@@ -488,6 +722,47 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Domain.BudgetComment", b =>
+                {
+                    b.HasOne("Domain.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.AuthorizedUser", "EntryPerson")
+                        .WithMany()
+                        .HasForeignKey("EntryPersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Grant", "Grant")
+                        .WithMany()
+                        .HasForeignKey("GrantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Initiative", "Initiative")
+                        .WithMany()
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.AuthorizedUser", "UpdatePerson")
+                        .WithMany()
+                        .HasForeignKey("UpdatePersonId");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("EntryPerson");
+
+                    b.Navigation("Grant");
+
+                    b.Navigation("Initiative");
+
+                    b.Navigation("UpdatePerson");
                 });
 
             modelBuilder.Entity("Domain.BudgetLineItem", b =>
@@ -531,9 +806,92 @@ namespace Persistence.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
+            modelBuilder.Entity("Domain.Repro", b =>
+                {
+                    b.HasOne("Domain.AuthorizedUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.AuthorizedUser", "PostedBy")
+                        .WithMany()
+                        .HasForeignKey("PostedById");
+
+                    b.HasOne("Domain.AuthorizedUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("PostedBy");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Domain.ReproLineItem", b =>
+                {
+                    b.HasOne("Domain.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.BudgetLineItem", "BudgetLineItem")
+                        .WithMany()
+                        .HasForeignKey("BudgetLineItemId");
+
+                    b.HasOne("Domain.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Grant", "Grant")
+                        .WithMany()
+                        .HasForeignKey("GrantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Initiative", "Initiative")
+                        .WithMany()
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Repro", "Repro")
+                        .WithMany("Items")
+                        .HasForeignKey("ReproId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.AuthorizedUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("BudgetLineItem");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Grant");
+
+                    b.Navigation("Initiative");
+
+                    b.Navigation("Repro");
+
+                    b.Navigation("UpdatedBy");
+                });
+
             modelBuilder.Entity("Domain.Category", b =>
                 {
                     b.Navigation("Accounts");
+                });
+
+            modelBuilder.Entity("Domain.Repro", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

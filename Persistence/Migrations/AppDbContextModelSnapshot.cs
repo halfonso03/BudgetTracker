@@ -37,12 +37,12 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("VARCHAR(500)")
                         .HasColumnName("name");
 
                     b.Property<string>("Number")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("number");
 
                     b.HasKey("Id");
@@ -132,7 +132,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("WindowsLogin")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("windows_login");
 
                     b.HasKey("Id");
@@ -258,7 +258,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("ItemType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("CHAR(1)")
                         .HasColumnName("item_type")
                         .HasColumnOrder(5);
 
@@ -385,6 +385,28 @@ namespace Persistence.Migrations
                             GrantId = 3,
                             InitiativeId = 2,
                             ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AccountId = 8,
+                            Amount = 250m,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 3,
+                            InitiativeId = 2,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            AccountId = 1,
+                            Amount = 50m,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 1,
+                            InitiativeId = 1,
+                            ItemType = "D"
                         });
                 });
 
@@ -399,7 +421,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
@@ -454,7 +476,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("name");
 
                     b.Property<DateTime>("StartDate")
@@ -511,7 +533,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("VARCHAR(200)")
                         .HasColumnName("name");
 
                     b.HasKey("Id");

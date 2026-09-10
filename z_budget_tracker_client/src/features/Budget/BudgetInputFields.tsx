@@ -11,7 +11,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import CommentsModal from './modals/CommentsModal';
 
 interface Props {
-  rowIndex: number;
   isLastRow: boolean;
   year: number;
   initiativeId: number;
@@ -29,7 +28,6 @@ interface Props {
   currentAmountRegister?: UseFormRegisterReturn<`rows.${number}.current_amount`>;
   onBlur?: (data: {
     e: React.FocusEvent<HTMLInputElement>;
-    rowIndex: number;
     isDirty: boolean;
   }) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -42,7 +40,6 @@ interface Props {
   ) => void;
 }
 const BudgetInputFields = ({
-  rowIndex,
   fieldName,
   accountId,
   hasRepro,
@@ -72,7 +69,7 @@ const BudgetInputFields = ({
   const [error, setError] = useState<boolean>(false);
   const [remaining, setRemaining] = useState<string>(() =>
     formatNumber(
-      parseFormattedNumber(currentAmount) -
+      parseFormattedNumber(currentAmount) +
         -1 * parseFormattedNumber(spentAmount),
     ),
   );
@@ -122,36 +119,22 @@ const BudgetInputFields = ({
           onClick={(e) => (onClick ? onClick(e) : null)}
           onBlur={(e) => {
             if (onBlur) {
-              const budgeted =
-                e.target.value.trim() === ''
-                  ? 0.0
-                  : parseFormattedNumber(e.target.value);
+              const budgeted = parseFormattedNumber(e.target.value);
+              const spentParsed = parseFormattedNumber(spentAmount);
 
               if (budgeted + reprogrammed !== 0) {
                 setCurrent(formatNumber(budgeted + reprogrammed));
               } else setCurrent('-');
 
-              const spentParsed = parseFormattedNumber(spentAmount);
               const newRemaining = formatNumber(
-                budgeted +
-                  (isNaN(reprogrammed) ? 0 : reprogrammed) +
-                  spentParsed,
+                budgeted + reprogrammed - spentParsed,
               );
               setRemaining(newRemaining);
-
-              if (
-                budgeted +
-                  (isNaN(reprogrammed) ? 0 : reprogrammed) +
-                  spentParsed <
-                0
-              ) {
-                setError(true);
-              } else {
-                setError(false);
-              }
-              const isDirty = budgeted !== parseFormattedNumber(budgetedAmount);
-
-              onBlur({ e, rowIndex, isDirty });
+              setError(budgeted + reprogrammed - spentParsed < 0);
+              onBlur({
+                e,
+                isDirty: budgeted !== parseFormattedNumber(budgetedAmount),
+              });
             }
           }}
           onFocus={(e) => (onFocus ? onFocus(e) : null)}
@@ -164,8 +147,7 @@ const BudgetInputFields = ({
           <>
             <span>
               {!hasRepro ? (
-                parseFormattedNumber(current) == 0 ||
-                isNaN(parseFormattedNumber(current)) ? (
+                parseFormattedNumber(current) == 0 ? (
                   '- '
                 ) : (
                   current
@@ -217,7 +199,6 @@ const BudgetInputFields = ({
           </div>
         )}
         {!isLastRow ? (
-          isNaN(parseFormattedNumber(remaining)) ||
           parseFormattedNumber(remaining) == 0 ? (
             <span className="text-neutral-400">-</span>
           ) : (
@@ -256,7 +237,7 @@ const BudgetInputFields = ({
         {!isLastRow ? (
           <>
             <Link
-              to={`/reprogramming/${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`}
+              to={`/reprogramming/${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`} tabIndex={-1}
             >
               <ArrowLeftRight></ArrowLeftRight>
             </Link>

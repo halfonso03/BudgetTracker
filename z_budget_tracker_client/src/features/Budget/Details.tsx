@@ -99,10 +99,10 @@ const Details = () => {
           return {
             accountId: item.account_id,
             categoryId: item.category_id!,
-            spent_amount: formatNumber(item.spent_amount),
-            remaining_amount: formatNumber(item.amount - item.spent_amount),
-            current_amount: formatNumber(item.current_amount),
             amount: formatNumber(item.amount),
+            current_amount: formatNumber(item.current_amount),
+            spent_amount: formatNumber(item.spent_amount),
+            // remaining_amount: formatNumber(item.current_amount - item.spent_amount),
             name: item.account_name,
             comment: item.comment,
             hasRepro: item.hasRepro,
@@ -377,7 +377,6 @@ const Details = () => {
                   return (
                     <Fragment key={field.id}>
                       <BudgetInputFields
-                        rowIndex={indexRunningTotal}
                         hasRepro={hasRero}
                         isLastRow={false}
                         year={+year!}
@@ -411,8 +410,7 @@ const Details = () => {
                             e.target.value,
                           );
                         }}
-                        onBlur={({ e, rowIndex, isDirty }) => {
-                          console.log('rowIndex', rowIndex);
+                        onBlur={({ e, isDirty }) => {
                           amountRegister.onBlur(e);
                           formatArrayFieldAmount(
                             setValue,
@@ -444,7 +442,6 @@ const Details = () => {
                     key={field.id}
                   >
                     <BudgetInputFields
-                      rowIndex={indexRunningTotal}
                       hasRepro={field.hasRepro}
                       isLastRow={true}
                       accountId={field.accountId}

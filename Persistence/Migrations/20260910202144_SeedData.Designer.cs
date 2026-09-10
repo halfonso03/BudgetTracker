@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260827145837_Repro_Budget_line_id")]
-    partial class Repro_Budget_line_id
+    [Migration("20260910202144_SeedData")]
+    partial class SeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -40,12 +40,12 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(500)")
+                        .HasColumnType("VARCHAR(500)")
                         .HasColumnName("name");
 
                     b.Property<string>("Number")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("number");
 
                     b.HasKey("Id");
@@ -135,7 +135,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("WindowsLogin")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("windows_login");
 
                     b.HasKey("Id");
@@ -261,7 +261,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("ItemType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)")
+                        .HasColumnType("CHAR(1)")
                         .HasColumnName("item_type")
                         .HasColumnOrder(5);
 
@@ -388,6 +388,28 @@ namespace Persistence.Migrations
                             GrantId = 3,
                             InitiativeId = 2,
                             ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AccountId = 8,
+                            Amount = 250m,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 3,
+                            InitiativeId = 2,
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            AccountId = 5,
+                            Amount = 100m,
+                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
+                            CreatedBy = 1,
+                            GrantId = 3,
+                            InitiativeId = 2,
+                            ItemType = "D"
                         });
                 });
 
@@ -402,7 +424,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
@@ -457,7 +479,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("VARCHAR(50)")
                         .HasColumnName("name");
 
                     b.Property<DateTime>("StartDate")
@@ -514,7 +536,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("VARCHAR(200)")
                         .HasColumnName("name");
 
                     b.HasKey("Id");
@@ -619,7 +641,7 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("account_id");
 
-                    b.Property<int?>("BudgetLineId")
+                    b.Property<int?>("BudgetLineItemId")
                         .HasColumnType("int")
                         .HasColumnName("budget_line_id");
 
@@ -674,6 +696,8 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("BudgetLineItemId");
 
                     b.HasIndex("CategoryId");
 
@@ -813,6 +837,10 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.BudgetLineItem", "BudgetLineItem")
+                        .WithMany()
+                        .HasForeignKey("BudgetLineItemId");
+
                     b.HasOne("Domain.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
@@ -842,6 +870,8 @@ namespace Persistence.Migrations
                         .HasForeignKey("UpdatedById");
 
                     b.Navigation("Account");
+
+                    b.Navigation("BudgetLineItem");
 
                     b.Navigation("Category");
 
