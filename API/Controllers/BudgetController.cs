@@ -31,7 +31,7 @@ namespace API.Controllers
         [HttpGet("balances")]
         public async Task<IActionResult> GetAccountBalancesForCategory(int initiativeId, int grantId, int categoryId)
         {
-            return Ok(await _budgetService.GetAccountBalancesForCategory(initiativeId, grantId, categoryId));
+            return Ok(await _budgetService.GetBalancesForCategory(initiativeId, grantId, categoryId));
         }
 
         [HttpPost]

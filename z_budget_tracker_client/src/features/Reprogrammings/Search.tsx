@@ -97,8 +97,18 @@ const Search = () => {
 
   const [selectedIds, setSelectedIds] = useState<SelectedItem[]>(itemsList);
 
+  const itemsXList: SelectedItem[] = useMemo(() => {
+    return [];
+  }, [g, year]);
+
+  const [xSelectedIds, setXSelectedIds] = useState<SelectedItem[]>(itemsXList);
+
   if (selectedIds.length == 0 && itemsList.length !== 0) {
     setSelectedIds(itemsList);
+  }
+
+  if (xSelectedIds.length == 0 && itemsXList.length !== 0) {
+    setXSelectedIds(itemsList);
   }
 
   const { searchResults, successLoadingResults } = useReproSearch(
@@ -108,6 +118,7 @@ const Search = () => {
     },
     {
       selectedIds,
+      xSelectedIds,
       status,
       year,
       debitComparer,
@@ -130,6 +141,18 @@ const Search = () => {
             ),
           ]
         : [...selectedIds, { id: id, type: type }],
+    );
+  };
+
+  const handleListXCheck = (id: number, type: string) => {
+    setXSelectedIds(
+      xSelectedIds.some((x) => x.id === id && x.type === type)
+        ? [
+            ...xSelectedIds.filter(
+              (x) => (x.type === type && x.id !== id) || x.type !== type,
+            ),
+          ]
+        : [...xSelectedIds, { id: id, type: type }],
     );
   };
 
@@ -227,7 +250,9 @@ const Search = () => {
   return (
     <div className="flex gap-2 mt-10">
       <div className="flex flex-1">
-        {/* <pre>{JSON.stringify(selectedIds)}</pre> */}
+        {/* <pre>{JSON.stringify(selectedIds)}</pre>
+        <pre>{JSON.stringify(xSelectedIds)}</pre> */}
+
         <div>
           <MChild
             initiatives={initiativesList?.map((x) => ({
@@ -242,6 +267,7 @@ const Search = () => {
               name: x.name,
             }))}
             onListCheck={handleListCheck}
+            onListXCheck={handleListXCheck}
             onStatusChange={handleStatusChange}
             onYearChange={handleYearChange}
             onAmountBlur={handleAmountBlur}

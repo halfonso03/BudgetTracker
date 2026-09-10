@@ -294,7 +294,7 @@ namespace Application.services
             return Result<Unit>.Success(Unit.Value);
         }
 
-        public async Task<List<AccountCurrentAmountDto>> GetAccountBalancesForCategory(int initiativeId, int grantId, int categoryId)
+        public async Task<List<AccountCurrentAmountDto>> GetBalancesForCategory(int initiativeId, int grantId, int categoryId)
         {
             var acounts = _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId).Select(x => x).ToList();
 
@@ -333,8 +333,9 @@ namespace Application.services
                         ];
 
             return balances;
-        }
 
+        }
+        
         public async Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)
         {
             var budgetLineItems = await _dbContext.BudgetLineItems
@@ -355,6 +356,11 @@ namespace Application.services
             List<TransactionResponseDto> mergedLists = [.. budgetLineItems, .. reproItems];
 
             return [.. mergedLists.OrderBy(x => x.PostedDate)];
+        }
+
+        public Task<List<RemainingAmountDto>> GetRemainingBalancesForCategory(int initiativeId, int grantId, int categoryId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

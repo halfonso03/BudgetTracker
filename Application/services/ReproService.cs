@@ -13,6 +13,7 @@ using Application.Interfaces;
 using Application.PaginationHelpers;
 using Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using Persistence;
 
 namespace Application.Services
@@ -49,7 +50,7 @@ namespace Application.Services
 
                 foreach (var key in keys)
                 {
-                    var balances = await _budgetService.GetAccountBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
+                    var balances = await _budgetService.GetBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
                     rowBalances.Add(new BalancesResponseDto()
                     {
                         Key = new()
@@ -425,7 +426,6 @@ namespace Application.Services
 
         public async Task<Result<ReproSearchResponseDto>> Search(ReproSearchParams searchParams, PaginationParams paginationParams, string sortBy)
         {
-
             var reproLineItems = _dbContext.ReproLineItems
                                     .Where(x => x.Year == searchParams.Year)
                                     .AsQueryable();
@@ -437,7 +437,41 @@ namespace Application.Services
 
             if (searchParams.GrantIds?.Count > 0)
             {
-                reproLineItems = reproLineItems.Where(x => searchParams.GrantIds.Contains(x.GrantId));
+                var grantsForYear = await _dbContext.Grants.Where(x => x.StartDate.Year == searchParams.Year).ToListAsync();
+
+                  Console.WriteLine("-------------------------------------------2");
+                    Console.WriteLine("-------------------------------------------2");          
+
+                if (searchParams.XGrantIds != null && searchParams.XGrantIds.Count > 0 && grantsForYear.Count != searchParams.XGrantIds.Count)
+                {
+                    Console.WriteLine("-------------------------------------------");
+                    Console.WriteLine("-------------------------------------------");          
+                    var reproIds = reproLineItems.Select(x => x.ReproId);
+
+                    var removeIds = new List<int>();
+
+                    foreach (var reproId in reproIds)
+                    {
+                        var lines = reproLineItems.Where(x => x.ReproId == reproId);
+                        
+                        foreach (var xGid in searchParams.XGrantIds)
+                        {
+                            if (!searchParams.GrantIds.Contains(xGid)) break;
+                            if (removeIds.Contains(reproId)) break;
+
+                            if (!lines.All(x => x.GrantId == xGid))
+                            {
+                                removeIds.Add(reproId);
+                            }
+                        }
+                    }
+
+                    reproLineItems = reproLineItems.Where(x => !removeIds.Contains(x.ReproId));
+                }
+                else
+                {
+                    reproLineItems = reproLineItems.Where(x => searchParams.GrantIds.Contains(x.GrantId));
+                }
             }
 
             if (searchParams.AccountIds?.Count > 0)

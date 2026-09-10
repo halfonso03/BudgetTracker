@@ -81,9 +81,16 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
-  const [justModalIsOpen, setJustModalIsOpen] = useState(false);
+  const [justModalIsOpen, setJustModalIsOpen] = useState(
+    location.state &&
+      location.state.ids !== undefined &&
+      location.state.ids !== null
+      ? true
+      : false,
+  );
   const [errorModalOpen, setErrorModalOpen] = useState(false);
-  const [confirmPostModalIsOpen, setConfirmPostModal] = useState(false);
+  const [confirmPostModalIsOpen, setConfirmPostModal] =
+    useState<boolean>(false);
   // const [isDirtyState, setIsDirtyState] = useState<DirtyState>({
   //   formValuesIsDirty: false,
   //   numbersAresDirty: false,
@@ -651,8 +658,14 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
               decrease: l.decrease,
               comment: l.comment,
               currentAmount: l.currentAmount,
+              oRemaining: l.oRemaining,
               newAmount:
                 l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+              nRemaining:
+                l.currentAmount +
+                +(l.increase ?? 0) -
+                +(l.decrease ?? 0) +
+                l.oRemaining,
             };
           }),
           rowBalances: savedBalances,
@@ -877,10 +890,14 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
               <div className="self-end">Account</div>
               <div className="flex justify-between ">
                 <div className="text-center flex-2">Current Amount</div>
-                <div className="self-end  text-end flex-[1.5] pr-2">Increase</div>
-                <div className="self-end text-end flex-[1.5] pr-2">Decrease</div>
-                <div className="text-center flex-2 pr-2 self-end">New Amount</div>
-                <div className="text-center flex-2 pr-2">Remaining Balance</div>
+                <div className="self-end  text-end flex-[1.5] pr-2">
+                  Increase
+                </div>
+                <div className="self-end text-end flex-[1.5] pr-2">
+                  Decrease
+                </div>
+                <div className="text-center flex-2 self-end">New Amount</div>
+                <div className="text-center flex-2 ">Remaining Balance</div>
               </div>
               <div></div>
             </div>
@@ -924,7 +941,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                         readOnly={reproHeader.status === POSTED}
                         disabled={reproHeader.status === POSTED}
                         onBlur={recalculateNewAmounts}
-                        classes={`flex-[1.5] w-full mr-1 pl-1 py-2 text-end border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
+                        classes={`flex-[1.5] w-full pl-1 mr-1 pr-1 py-1 text-end border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
                        ${reproHeader.status === POSTED ? 'border-b-0' : 'border-b-2 '}
                        ${reproHeader.status === POSTED && +item.increase! === 0 ? '  opacity-0  ' : '  '}`}
                       />
@@ -938,7 +955,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                         readOnly={reproHeader.status === POSTED}
                         disabled={reproHeader.status === POSTED}
                         onBlur={recalculateNewAmounts}
-                        classes={`flex-[1.5] w-full pl-1 py-2 text-end  border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
+                        classes={`flex-[1.5] w-full pl-1 mr-1 pr-1 py-1 text-end  border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
                        ${reproHeader.status === POSTED ? 'border-b-0' : 'border-b-2 '}
                        ${reproHeader.status === POSTED && +item.decrease! === 0 ? '  opacity-0  ' : '  '}`}
                       />
@@ -949,8 +966,11 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                           formatNumber(item.newAmount)}
                       </div>
                       <div
-                        className={`text-center flex-2 self-center text-neutral-600`}
-                      ></div>
+                        className={`text-center flex-2 self-center text-neutral-600 text-sm`}
+                      >
+                        <div>{item.oRemaining}</div>
+                        <div>{item.nRemaining}</div>
+                      </div>
                     </div>
                   )}
                   canEdit={reproHeader.status !== POSTED}

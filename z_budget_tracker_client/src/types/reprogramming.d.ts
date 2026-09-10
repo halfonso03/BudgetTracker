@@ -37,6 +37,8 @@ type ReproLineItem = LineItem & {
     comment?: string | null | undefined
     currentAmount: number
     newAmount: number
+    oRemaining: number
+    nRemaining: number
     comment: string
 }
 
@@ -122,6 +124,7 @@ type ReproSearchParams = {
     debitComparer: number
     creditComparer: number
     selectedIds?: { id: number, type: string }[]
+    xSelectedIds?: { id: number, type: string }[]
 }
 
 // public required int Year { get; set; }        

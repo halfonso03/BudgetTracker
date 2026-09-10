@@ -1,5 +1,9 @@
 
-add delete budget when no reprogrammings and no expenses
+
+
+show comment modal when creating reprogramming from sumamry page
+
+ ? -- add delete budget when no reprogrammings and no expenses
 
 
 DONE fix comments moda, not reverting comment to roginal when Cancel is clicked

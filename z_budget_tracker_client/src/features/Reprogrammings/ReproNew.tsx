@@ -129,7 +129,7 @@ const ReproNew = () => {
           key={repro.uuid}
           repro={repro}
           onInitialSave={handleInitialSaved}
-          onIsDirty={handleIsDirty}          
+          onIsDirty={handleIsDirty}
         ></ReproForm>
       );
     }
@@ -153,7 +153,7 @@ const ReproNew = () => {
         onConfirm={() => {
           navigate('/reprogramming/search');
         }}
-        message="There are unsaved changes in this reprogramming. Any changes made to this reprogramming will be lost. Click OK to continue."
+        message="There are unsaved changes in this reprogramming. Any changes made to this entry will be lost. Click OK to continue."
       ></ConfirmModal>
     </>
   );

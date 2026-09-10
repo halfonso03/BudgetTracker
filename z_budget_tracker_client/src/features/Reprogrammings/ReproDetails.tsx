@@ -89,7 +89,7 @@ const ReproDetails = () => {
           setHasUnsavedChanges(false);
           navigate('/reprogramming/search');
         }}
-        message="Are you sure you wish to leave this page? Any changes made to this reprogramming will be lost. Click OK to continue."
+        message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
       ></ConfirmModal>
     </>
   );

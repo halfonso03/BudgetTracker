@@ -2,6 +2,7 @@ import { memo, type ChangeEvent, type FocusEvent } from 'react';
 import CheckBoxList from '../../components/CheckBoxList';
 import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
 import Select from '../../components/Select';
+import CheckBoxListReproSearchParam from '../../components/CheckBoxListReproSearchParam';
 
 const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
@@ -12,6 +13,7 @@ type Props = {
   grants?: { id: number; name: string }[] | undefined;
   categories?: { id: number; name: string }[] | undefined;
   onListCheck?: (id: number, key: string) => void;
+  onListXCheck?: (id: number, key: string) => void;
   onYearChange: (year: number) => void;
   onStatusChange?: (year: number) => void;
   onAmountBlur: (amount: string, key: string) => void;
@@ -24,6 +26,7 @@ const ReproParams = memo(
     grants,
     categories,
     onListCheck,
+    onListXCheck,
     onYearChange,
     onStatusChange,
     onAmountBlur,
@@ -35,6 +38,10 @@ const ReproParams = memo(
 
     function handleCheck(id: number, type: string) {
       onListCheck?.(id, type);
+    }
+
+    function handleXCheck(id: number, type: string) {
+      onListXCheck?.(id, type);
     }
 
     function handleAmountBlur(e: FocusEvent<HTMLInputElement>, key: string) {
@@ -69,13 +76,18 @@ const ReproParams = memo(
 
         <div className="border border-b-0 border-neutral-200 ">
           {grants !== undefined && grants.length > 0 && (
-            <CheckBoxList
+            <CheckBoxListReproSearchParam
               key={grants[0].name}
               label="Award"
               id={GRANTS_LIST_TYPE}
               onCheck={handleCheck}
-              items={grants.map((i) => ({ ...i, checked: true }))}
-            ></CheckBoxList>
+              onXCheck={handleXCheck}
+              items={grants.map((i) => ({
+                ...i,
+                checked: true,
+                xChecked: false,
+              }))}
+            ></CheckBoxListReproSearchParam>
           )}
         </div>
 
