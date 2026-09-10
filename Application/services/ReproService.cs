@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Application.Core;
 using Application.DTOs;
 using Application.DTOs.Repro;
+using Application.Extensions;
 using Application.Interfaces;
 using Application.PaginationHelpers;
 using Domain;
@@ -439,30 +440,17 @@ namespace Application.Services
             {
                 var grantsForYear = await _dbContext.Grants.Where(x => x.StartDate.Year == searchParams.Year).ToListAsync();
 
-                  Console.WriteLine("-------------------------------------------2");
-                    Console.WriteLine("-------------------------------------------2");          
-
-                if (searchParams.XGrantIds != null && searchParams.XGrantIds.Count > 0 && grantsForYear.Count != searchParams.XGrantIds.Count)
+                if (searchParams.XGrantIds?.Count > 0 && grantsForYear.Count != searchParams.XGrantIds.Count)
                 {
-                    Console.WriteLine("-------------------------------------------");
-                    Console.WriteLine("-------------------------------------------");          
-                    var reproIds = reproLineItems.Select(x => x.ReproId);
-
                     var removeIds = new List<int>();
 
-                    foreach (var reproId in reproIds)
+                    foreach (var reproId in reproLineItems.Select(x => x.ReproId))
                     {
-                        var lines = reproLineItems.Where(x => x.ReproId == reproId);
-                        
                         foreach (var xGid in searchParams.XGrantIds)
                         {
-                            if (!searchParams.GrantIds.Contains(xGid)) break;
-                            if (removeIds.Contains(reproId)) break;
+                            if (!searchParams.GrantIds.Contains(xGid) || removeIds.Contains(reproId)) break;
 
-                            if (!lines.All(x => x.GrantId == xGid))
-                            {
-                                removeIds.Add(reproId);
-                            }
+                            removeIds.AddIfTrue(!reproLineItems.Where(x => x.ReproId == reproId).All(x => x.GrantId == xGid), reproId);
                         }
                     }
 

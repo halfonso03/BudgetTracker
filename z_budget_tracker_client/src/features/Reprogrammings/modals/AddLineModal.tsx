@@ -1,13 +1,12 @@
-import { useState, type ChangeEvent } from "react";
-import useCategories from "../../../api/hooks/common/useCategories";
-import useGrants from "../../../api/hooks/common/useGrants";
-import useInitiatives from "../../../api/hooks/common/useInitiatives";
-import useCurrentAccountBalances from "../../../api/hooks/repro/useCurrentAccountBalances";
-import { formatCurrency } from "../../../app/util";
-import Button from "../../../components/Button";
-import Modal2 from "../../../components/Modal2";
-import Select from "../../../components/Select";
-
+import { useState, type ChangeEvent } from 'react';
+import useCategories from '../../../api/hooks/common/useCategories';
+import useGrants from '../../../api/hooks/common/useGrants';
+import useInitiatives from '../../../api/hooks/common/useInitiatives';
+import useCurrentAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
+import { formatCurrency } from '../../../app/util';
+import Button from '../../../components/Button';
+import Modal2 from '../../../components/Modal2';
+import Select from '../../../components/Select';
 
 type Selections = {
   initiativeId?: number;
@@ -64,6 +63,8 @@ const AddLineModal = ({ ...props }: Props) => {
         currentAmount: account.currentAmount,
         uuid: window.crypto.randomUUID(),
         newAmount: account.currentAmount,
+        oRemaining: 0,
+        nRemaining: 0,
       };
 
       props.onLineAdded(newLine, {
@@ -76,7 +77,6 @@ const AddLineModal = ({ ...props }: Props) => {
 
   return (
     <Modal2 size="lg" title="Add a New Line" animateOut={animateOut} {...props}>
-
       <div className="grid grid-cols-[1fr_1fr] mb-4 gap-4">
         <div className="flex flex-col gap-9">
           <div>

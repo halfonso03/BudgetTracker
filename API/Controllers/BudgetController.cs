@@ -40,7 +40,6 @@ namespace API.Controllers
             return HandleResult(await _budgetService.CreateBudget(createBudgetDto));
         }
 
-
         [HttpPut]
         public async Task<IActionResult> UpdateBudget(UpdateBudgetRequestDto updateBudgetDto)
         {

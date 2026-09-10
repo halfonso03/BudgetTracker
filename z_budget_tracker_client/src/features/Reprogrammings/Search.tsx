@@ -249,7 +249,7 @@ const Search = () => {
 
   return (
     <div className="flex gap-2 mt-10">
-      <div className="flex flex-1">
+      <div className="flex flex-2">
         {/* <pre>{JSON.stringify(selectedIds)}</pre>
         <pre>{JSON.stringify(xSelectedIds)}</pre> */}
 
@@ -275,7 +275,7 @@ const Search = () => {
           ></MChild>
         </div>
       </div>
-      <div className="p-2 flex-4">
+      <div className="p-2 flex-7">
         {/* {searchResults && searchResults.data.items.length == 0 && (
           <div className="text-center justify-start">
             No reprogrammings found.

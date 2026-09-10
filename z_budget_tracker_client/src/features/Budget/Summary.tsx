@@ -64,19 +64,29 @@ const Summary = ({ year }: Props) => {
               {budget.initiative_name}
             </div>
             <div className="entity-name self-center">{budget.grant_name}</div>
-            <div className="text-end underline underline-offset-3 font-semibold self-center">
-              <Link
-                to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
-                className="text-blue-500 self-center"
-              >
-                {formatCurrency(budget.approved_amount)}
-              </Link>
+            <div className="text-end self-center">
+              {budget.approved_amount || budget.current_amount > 0 ? (
+                <Link
+                  to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
+                  className="text-blue-500 self-center"
+                >
+                  <span className=" underline-offset-3 font-semibold underline">
+                    {formatCurrency(budget.approved_amount)}
+                  </span>
+                </Link>
+              ) : (
+                <span className="text-neutral-400">-</span>
+              )}
             </div>
             <div className="text-end self-center">
               {formatCurrency(budget.current_amount)}
             </div>
             <div className="text-end self-center">
-              {formatCurrency(budget.spent_amount)}
+              {budget.spent_amount > 0 ? (
+                formatCurrency(budget.spent_amount)
+              ) : (
+                <span className="text-neutral-400">-</span>
+              )}
             </div>
             <div className="text-end self-center">
               {formatCurrency(budget.remaining_amount)}
@@ -104,8 +114,11 @@ const Summary = ({ year }: Props) => {
               initiativeId={budget.initiative_id}
               grantId={budget.grant_id}
               items={
-                data.filter((x) => x.initiative_id == budget.initiative_id)[0]
-                  .account_balances
+                data.filter(
+                  (x) =>
+                    x.initiative_id == budget.initiative_id &&
+                    x.grant_id === budget.grant_id,
+                )[0].account_balances
               }
             ></CategorySummary>
           </div>
@@ -189,10 +202,34 @@ function CategorySummary({
               {c.category}
             </div>
             <div></div>
-            <div className="text-end">{formatCurrency(c.amount)}</div>
-            <div className="text-end">{formatCurrency(c.current_amount)}</div>
-            <div className="text-end">{formatCurrency(c.spent_amount)}</div>
-            <div></div>
+            <div className="text-end">
+              {c.amount > 0 ? (
+                formatCurrency(c.amount)
+              ) : (
+                <span className="text-neutral-400">-</span>
+              )}
+            </div>
+            <div className="text-end">
+              {c.current_amount > 0 ? (
+                formatCurrency(c.current_amount)
+              ) : (
+                <span className="text-neutral-400">-</span>
+              )}
+            </div>
+            <div className="text-end">
+              {c.spent_amount > 0 ? (
+                formatCurrency(c.spent_amount)
+              ) : (
+                <span className="text-neutral-400">-</span>
+              )}
+            </div>
+            <div className="text-end">
+              {c.current_amount - c.spent_amount > 0 ? (
+                formatCurrency(c.current_amount - c.spent_amount)
+              ) : (
+                <span className="text-neutral-400">-</span>
+              )}
+            </div>
             <div className="flex justify-center items-center">
               <ChevronDownSquare
                 className={`text-neutral-500 cursor-pointer 
@@ -225,15 +262,35 @@ function CategorySummary({
                     <div className="italic pl-8">{i.account_name}</div>
                     <div></div>
                     <div className="text-end italic text-neutral-700">
-                      {formatCurrency(i.amount)}
+                      {i.amount > 0 ? (
+                        formatCurrency(i.amount)
+                      ) : (
+                        <span className="text-neutral-400">-</span>
+                      )}
                     </div>
                     <div className="text-end italic text-neutral-700">
-                      {formatCurrency(i.current_amount)}
+                      {i.current_amount > 0 ? (
+                        formatCurrency(i.current_amount)
+                      ) : (
+                        <span className="text-neutral-400">-</span>
+                      )}
                     </div>
                     <div className="text-end italic text-neutral-700">
-                      {i.spent_amount !== 0 && formatCurrency(i.spent_amount)}
+                      {i.spent_amount > 0 ? (
+                        formatCurrency(i.spent_amount)
+                      ) : (
+                        <span className="text-neutral-400">-</span>
+                      )}
                     </div>
-                    <div></div>
+                    <div>
+                      <div className="text-end">
+                        {i.current_amount - i.spent_amount > 0 ? (
+                          formatCurrency(i.current_amount - i.spent_amount)
+                        ) : (
+                          <span className="text-neutral-400">-</span>
+                        )}
+                      </div>
+                    </div>
                     <div className="flex justify-around text-blue-500 text-[.9rem] cursor-pointer">
                       <Link
                         to={`/reprogramming/${year}/${initiativeId}/${grantId}/${i.category_id}/${i.account_id}`}

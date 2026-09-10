@@ -11,6 +11,7 @@ using Application.DTOs.Common;
 using Application.Interfaces;
 using Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using Persistence;
 
 namespace Application.services
@@ -133,10 +134,10 @@ namespace Application.services
                                  Name = a.Name,
                                  AccountNumber = a.Number,
                                  CategoryId = a.CategoryId,
-                                 Amount = items.Where(x => x.ItemType == "B" && x.AccountId == a.Id).Sum(x => x.Amount),
-                                 SpentAmount = items.Where(x => x.ItemType == "D" && x.AccountId == a.Id).Sum(x => x.Amount),
-                                 CurrentAmount = items.Where(x => (x.ItemType == "R" || x.ItemType == "B") && x.AccountId == a.Id).Sum(x => x.Amount),
-                                 HasRepro = items.Any(x => x.ItemType == "R" && x.AccountId == a.Id),
+                                 Amount = items.Where(x => x.ItemType == Globals.ITEM_TYPE_BUDGET && x.AccountId == a.Id).Sum(x => x.Amount),
+                                 SpentAmount = items.Where(x => x.ItemType == Globals.ITEM_TYPE_DISB && x.AccountId == a.Id).Sum(x => x.Amount),
+                                 CurrentAmount = items.Where(x => (x.ItemType == Globals.ITEM_TYPE_REPRO || x.ItemType == Globals.ITEM_TYPE_BUDGET) && x.AccountId == a.Id).Sum(x => x.Amount),
+                                 HasRepro = items.Any(x => x.ItemType == Globals.ITEM_TYPE_REPRO && x.AccountId == a.Id),
                                  Category = CategoryDto.CreateFromDomain(_accounts.First(x => x.CategoryId == a.CategoryId).Category),
                                  Comment = CreateCommentDto(a.Id, comments)
                              }).ToList();
@@ -294,7 +295,83 @@ namespace Application.services
             return Result<Unit>.Success(Unit.Value);
         }
 
+
+        public async Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)
+        {
+            var budgetLineItems = await _dbContext.BudgetLineItems
+                .Where(x => x.InitiativeId == initiativeId
+                        && x.GrantId == grantId
+                        && x.AccountId == accountId
+                        && x.ItemType == "B")
+                .Select(x => TransactionResponseDto.Create(x.Id, x.ItemType, x.CreateDate, x.Amount))
+                .ToListAsync();
+
+
+            var reproItems = await (from b in _dbContext.BudgetLineItems
+                                    join r in _dbContext.ReproLineItems on b.Id equals r.BudgetLineItemId
+                                    where b.InitiativeId == initiativeId && b.GrantId == grantId && b.AccountId == accountId
+                                    select TransactionResponseDto.Create(r.ReproId, b.ItemType, b.CreateDate, b.Amount))
+                            .ToListAsync();
+
+            List<TransactionResponseDto> mergedLists = [.. budgetLineItems, .. reproItems];
+
+            return [.. mergedLists.OrderBy(x => x.PostedDate)];
+        }
+
+        public Task<List<RemainingAmountDto>> GetRemainingBalancesForCategory(int initiativeId, int grantId, int categoryId)
+        {
+            throw new NotImplementedException();
+        }
         public async Task<List<AccountCurrentAmountDto>> GetBalancesForCategory(int initiativeId, int grantId, int categoryId)
+        {
+            var acounts = _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId).Select(x => x).ToList();
+
+            var initiative = await _dbContext.Initiatives.FirstAsync(x => x.Id == initiativeId);
+            var grant = await _dbContext.Grants.FirstAsync(x => x.Id == grantId);
+            var category = await _dbContext.Categories.FirstAsync(x => x.Id == categoryId);
+
+            var lineItems = await (from b in _dbContext.BudgetLineItems
+                                   join a in _dbContext.Accounts on b.AccountId equals a.Id
+                                   where b.InitiativeId == initiativeId &&
+                                       b.GrantId == grantId &&
+                                       b.AccountId == a.Id &&
+                                       a.CategoryId == categoryId
+                                   group b by new { id = a.Id, name = a.Name, itemtype = b.ItemType } into catBal
+                                   orderby catBal.Key.name
+                                   select new
+                                   {
+                                       initiativeId,
+                                       grantId,
+                                       catBal.Key.id,
+                                       catBal.Key.name,
+                                       catBal.Key.itemtype,
+                                       amount = catBal.Sum(x => x.Amount)
+                                   }
+                    )
+                   .ToListAsync();
+
+            var currentAmounts = from l in lineItems
+                                 where l.itemtype == "B" || l.itemtype == "R"
+                                 group l by new { l.id, l.name } into catBal
+                                 orderby catBal.Key.name
+                                 select
+                                     AccountCurrentAmountDto.Create(initiativeId, grantId,
+                                          catBal.Key.id, catBal.Key.name, catBal.Sum(x => x.amount));
+
+
+            var remaminingAmounts = from l in lineItems
+                                    group l by new { l.id, l.name } into catBal
+                                    orderby catBal.Key.name
+                                    select
+                                        AccountCurrentAmountDto.Create(initiativeId, grantId,
+                                             catBal.Key.id, catBal.Key.name, catBal.Sum(x => x.amount));
+
+
+            return new List<AccountCurrentAmountDto>();
+
+        }
+
+        public async Task<List<AccountCurrentAmountDto>> GetBalancesForCategory_OLD(int initiativeId, int grantId, int categoryId)
         {
             var acounts = _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId).Select(x => x).ToList();
 
@@ -335,32 +412,6 @@ namespace Application.services
             return balances;
 
         }
-        
-        public async Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)
-        {
-            var budgetLineItems = await _dbContext.BudgetLineItems
-                .Where(x => x.InitiativeId == initiativeId
-                        && x.GrantId == grantId
-                        && x.AccountId == accountId
-                        && x.ItemType == "B")
-                .Select(x => TransactionResponseDto.Create(x.Id, x.ItemType, x.CreateDate, x.Amount))
-                .ToListAsync();
 
-
-            var reproItems = await (from b in _dbContext.BudgetLineItems
-                                    join r in _dbContext.ReproLineItems on b.Id equals r.BudgetLineItemId
-                                    where b.InitiativeId == initiativeId && b.GrantId == grantId && b.AccountId == accountId
-                                    select TransactionResponseDto.Create(r.ReproId, b.ItemType, b.CreateDate, b.Amount))
-                            .ToListAsync();
-
-            List<TransactionResponseDto> mergedLists = [.. budgetLineItems, .. reproItems];
-
-            return [.. mergedLists.OrderBy(x => x.PostedDate)];
-        }
-
-        public Task<List<RemainingAmountDto>> GetRemainingBalancesForCategory(int initiativeId, int grantId, int categoryId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

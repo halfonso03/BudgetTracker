@@ -1,5 +1,4 @@
 import { memo, type ChangeEvent, type FocusEvent } from 'react';
-import CheckBoxList from '../../components/CheckBoxList';
 import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
 import Select from '../../components/Select';
 import CheckBoxListReproSearchParam from '../../components/CheckBoxListReproSearchParam';
@@ -65,12 +64,17 @@ const ReproParams = memo(
         </div>
         <div className="border border-b-0 border-neutral-200 ">
           {initiatives !== undefined && initiatives.length > 0 && (
-            <CheckBoxList
+            <CheckBoxListReproSearchParam
               label="Initiative"
               id={INITIATIVES_LIST_TYPE}
               onCheck={handleCheck}
-              items={initiatives.map((i) => ({ ...i, checked: true }))}
-            ></CheckBoxList>
+              onXCheck={handleXCheck}
+              items={initiatives.map((i) => ({
+                ...i,
+                checked: true,
+                xChecked: false,
+              }))}
+            ></CheckBoxListReproSearchParam>
           )}
         </div>
 
@@ -93,13 +97,16 @@ const ReproParams = memo(
 
         <div className="border border-b-0 border-neutral-200 ">
           {categories !== undefined && categories.length > 0 && (
-            <CheckBoxList
+            <CheckBoxListReproSearchParam
               label="Account"
-              maxHeight={160}
               id={ACCOUNTS_LIST_TYPE}
               onCheck={handleCheck}
-              items={categories.map((i) => ({ ...i, checked: true }))}
-            ></CheckBoxList>
+              items={categories.map((i) => ({
+                ...i,
+                checked: true,
+                xChecked: false,
+              }))}
+            ></CheckBoxListReproSearchParam>
           )}
         </div>
         <div className="border border-b-0 border-neutral-200 pl-2 py-2 flex gap-3 pr-2">

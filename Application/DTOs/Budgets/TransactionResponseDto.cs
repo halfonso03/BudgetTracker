@@ -1,3 +1,5 @@
+using Persistence;
+
 namespace Application.DTOs.Budgets
 {
     public class TransactionResponseDto
@@ -8,9 +10,9 @@ namespace Application.DTOs.Budgets
         {
             get
             {
-                if (ItemType == "B") return "Budget";
-                if (ItemType == "R") return "Reprogramming";
-                if (ItemType == "D") return "Disbursement";
+                if (ItemType == Globals.ITEM_TYPE_BUDGET) return "Budget";
+                if (ItemType == Globals.ITEM_TYPE_BUDGET) return "Reprogramming";
+                if (ItemType == Globals.ITEM_TYPE_BUDGET) return "Disbursement";
                 return "";
             }
         }
