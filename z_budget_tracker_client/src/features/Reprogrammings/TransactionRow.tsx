@@ -7,7 +7,12 @@ import CommentToggler from './CommentToggler';
 
 type Props = {
   lineItem: ReproLineItem;
-  balances: { accountId: number; name: string; currentAmount: number }[];
+  balances: {
+    accountId: number;
+    name: string;
+    currentAmount: number;
+    remainingAmount: number;
+  }[];
   canEdit: boolean;
   accountChange: (option: number, rowUuid: string) => void;
   duplicateRow: (uuid: string) => void;
@@ -44,14 +49,7 @@ const TransactionRow = ({
       </div>
     ),
   }));
-  // console.log('trx row', {
-  //   initiativeName,
-  //   grantName,
-  //   categoryName,
-  //   accountId,
-  //   uuid,
-  //   comment,
-  // });
+
   function handleSaveComment(uuid: string, comment: string | null | undefined) {
     saveComment(uuid, comment);
   }

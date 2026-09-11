@@ -47,12 +47,14 @@ namespace Application.Services
 
                 var keys = lineItems.Select(x => new { x.InitiativeId, x.GrantId, x.CategoryId }).Distinct();
 
-                var rowBalances = new List<BalancesResponseDto>();
+                var rowBalances = new List<ReproBalanceResponseDto>();
 
                 foreach (var key in keys)
                 {
                     var balances = await _budgetService.GetBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
-                    rowBalances.Add(new BalancesResponseDto()
+
+
+                    rowBalances.Add(new ReproBalanceResponseDto()
                     {
                         Key = new()
                         {
@@ -60,7 +62,7 @@ namespace Application.Services
                             GrantId = key.GrantId,
                             CategoryId = key.CategoryId
                         },
-                        Balances = [.. balances.Select(x => new BalancesResponseDto.Balance1 { AccountId = x.AccountId, CurrentAmount = x.CurrentAmount, Name = x.Name })]
+                        Balances = [.. balances.Select(x => Balance.Create(x.AccountId, x.CurrentAmount, x.RemainingAmount, x.AccountName))]
                     });
                 }
 

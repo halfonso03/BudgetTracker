@@ -11,7 +11,7 @@ const ReproNew = () => {
   const location = useLocation();
   const { userId } = useAuth();
   const preloadState = location.state;
-  const rowBalances: RowBalance[] = [];
+  const rowBalances: ReproRowBalance[] = [];
   const lineItems: ReproLineItem[] = [];
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
 
@@ -53,7 +53,7 @@ const ReproNew = () => {
         rowId: 0,
         uuid: crypto.randomUUID(),
         accountName: '',
-        currentAmount: preloadState.balances.filter(
+        amount: preloadState.balances.filter(
           (x: ReproLineItem) => x.accountId === preloadState.ids.accountId,
         )[0].currentAmount,
         newAmount: 0,

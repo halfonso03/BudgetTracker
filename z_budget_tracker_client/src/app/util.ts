@@ -18,7 +18,7 @@ export function formatCurrency(amount: number) {
     const formatted = customFormat.format(amount)
     const newFormatted = formatted === "NaN" ? customFormat.format(0) : formatted;
 
-    return newFormatted
+    return newFormatted.replace("$", "")
 }
 
 export function formatNumber(amount: number): string {

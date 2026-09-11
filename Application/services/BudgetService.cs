@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -317,18 +318,14 @@ namespace Application.services
 
             return [.. mergedLists.OrderBy(x => x.PostedDate)];
         }
-
-        public Task<List<RemainingAmountDto>> GetRemainingBalancesForCategory(int initiativeId, int grantId, int categoryId)
+       
+        public async Task<List<ReproCategoryBalanceDto>> GetBalancesForCategory(int initiativeId, int grantId, int categoryId)
         {
-            throw new NotImplementedException();
-        }
-        public async Task<List<AccountCurrentAmountDto>> GetBalancesForCategory(int initiativeId, int grantId, int categoryId)
-        {
-            var acounts = _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId).Select(x => x).ToList();
+            var accounts = _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId).Select(x => x).ToList();
 
-            // var initiative = await _dbContext.Initiatives.FirstAsync(x => x.Id == initiativeId);
-            // var grant = await _dbContext.Grants.FirstAsync(x => x.Id == grantId);
-            // var category = await _dbContext.Categories.FirstAsync(x => x.Id == categoryId);
+            var initiative = await _dbContext.Initiatives.FirstAsync(x => x.Id == initiativeId);
+            var grant = await _dbContext.Grants.FirstAsync(x => x.Id == grantId);
+            var category = await _dbContext.Categories.FirstAsync(x => x.Id == categoryId);
 
             var lineItems = await (from b in _dbContext.BudgetLineItems
                                    join a in _dbContext.Accounts on b.AccountId equals a.Id
@@ -337,13 +334,10 @@ namespace Application.services
                                        b.AccountId == a.Id &&
                                        a.CategoryId == categoryId
                                    group b by new { id = a.Id, name = a.Name, itemtype = b.ItemType } into catBal
-                                   orderby catBal.Key.name
                                    select new
                                    {
-                                       initiativeId,
-                                       grantId,
-                                       catBal.Key.id,
-                                       catBal.Key.name,
+                                       accountId = catBal.Key.id,
+                                       accountName = catBal.Key.name,
                                        catBal.Key.itemtype,
                                        amount = catBal.Sum(x => x.Amount)
                                    }
@@ -352,28 +346,53 @@ namespace Application.services
 
             var currentAmounts = from l in lineItems
                                  where l.itemtype == Globals.ITEM_TYPE_BUDGET || l.itemtype == Globals.ITEM_TYPE_REPRO
-                                 group l by new { l.id, l.name } into catBal
-                                 orderby catBal.Key.name
-                                 select
-                                     AccountCurrentAmountDto.Create(initiativeId, grantId,
-                                          catBal.Key.id, catBal.Key.name, catBal.Sum(x => x.amount));
+                                 group l by new { l.accountId, l.accountName } into catBal
+                                 select new
+                                 {
+                                     catBal.Key,
+                                     amount = catBal.Sum(x => x.amount)
+                                 };
 
+            var currentAmount_WithAccounts = from a in accounts
+                                        join b in currentAmounts on a.Id equals b.Key.accountId into itemsGroup
+                                        from subItems in itemsGroup.DefaultIfEmpty()
+                                        orderby a.Name
+                                        select new
+                                        {
+                                            accountId = a.Id,
+                                            accountName = a.Name,
+                                            currentAmount = subItems != null ? subItems.amount : 0,
+                                        };
 
-            var remaminingAmounts = from l in lineItems
-                                    group l by new { l.id, l.name } into catBal
-                                    orderby catBal.Key.name
-                                    select
-                                        AccountCurrentAmountDto.Create(initiativeId, grantId,
-                                             catBal.Key.id, catBal.Key.name, catBal.Sum(x => x.amount));
+            var remainingAmounts = from l in lineItems
+                                   group l by new { l.accountId, l.accountName } into catBal
+                                   select new
+                                   {
+                                       key = catBal.Key,
+                                       amount = catBal.Sum(x => x.amount)
+                                   };
 
+            var query = from c in currentAmount_WithAccounts
+                        join r in remainingAmounts on c.accountId equals r.key.accountId into itemsGroup
+                        from subItems in itemsGroup.DefaultIfEmpty()
+                        select new
+                        {
+                            c,
+                            remainingAmount = subItems != null ? subItems.amount : 0,
+                        };
 
-            return new List<AccountCurrentAmountDto>();
+            var result = (from q in query
+                          select ReproCategoryBalanceDto.Create(
+                            initiativeId, grantId, q.c.accountId, q.c.accountName, q.c.currentAmount,
+                            q.remainingAmount, initiative.Name, grant.Name, category.Name)
+                        ).ToList();
 
+            return result;
         }
 
         public async Task<List<AccountCurrentAmountDto>> GetBalancesForCategory_OLD(int initiativeId, int grantId, int categoryId)
         {
-            var acounts = _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId).Select(x => x).ToList();
+            var accounts = _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId).Select(x => x).ToList();
 
             var initiative = await _dbContext.Initiatives.FirstAsync(x => x.Id == initiativeId);
             var grant = await _dbContext.Grants.FirstAsync(x => x.Id == grantId);
@@ -395,7 +414,7 @@ namespace Application.services
                             )
                            .ToListAsync();
 
-            balances = [.. from a in acounts join
+            balances = [.. from a in accounts join
                         b in balances on a.Id equals b.AccountId into itemsGroup
                         from subItems in itemsGroup.DefaultIfEmpty()
                         orderby a.Name
@@ -412,6 +431,8 @@ namespace Application.services
             return balances;
 
         }
+
+
 
     }
 }

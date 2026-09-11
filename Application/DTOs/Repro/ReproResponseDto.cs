@@ -20,7 +20,7 @@ namespace Application.DTOs.Repro
         public int? PostedById { get; set; }
         public string? Justification { get; set; }
         public List<ReproLineItemResponseDto> LineItems { get; set; } = [];
-        public required List<BalancesResponseDto> RowBalances { get; set; }
+        public required List<ReproBalanceResponseDto> RowBalances { get; set; }
         public int Year { get; internal set; }
 
         // type RowBalance = {

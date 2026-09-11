@@ -16,7 +16,7 @@ const fetchBalances = async (
   return response.data;
 };
 
-const useCurrentAccountBalances = (
+const useAccountBalances = (
   initiativeId?: number,
   grantId?: number,
   categoryId?: number,
@@ -38,4 +38,4 @@ const useCurrentAccountBalances = (
   return { data, isLoading, status, isFetching };
 };
 
-export default useCurrentAccountBalances;
+export default useAccountBalances;

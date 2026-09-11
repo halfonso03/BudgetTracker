@@ -10,7 +10,12 @@ import {
 import { useState, useCallback, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { formatDate, formatNumber, parseFormattedNumber } from '../../app/util';
+import {
+  formatCurrency,
+  formatDate,
+  formatNumber,
+  parseFormattedNumber,
+} from '../../app/util';
 import Button from '../../components/Button';
 import NumericArrayInputGeneric from '../../components/NumericArrayInputGeneric';
 import MenuIdProvider from '../../contexts/MenuIdContext';
@@ -94,7 +99,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   // const [isDirtyState, setIsDirtyState] = useState<DirtyState>({
   //   formValuesIsDirty: false,
   //   numbersAresDirty: false,
-  // });
   // console.log('repro.year from form', repro.year)
   if (repro.year === 0) throw new Error('no year');
 
@@ -114,7 +118,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       };
     }),
   );
-  const [savedBalances, setSavedBalances] = useState<RowBalance[]>(
+  const [savedBalances, setSavedBalances] = useState<ReproRowBalance[]>(
     repro && repro.rowBalances ? repro.rowBalances! : [],
   );
 
@@ -245,13 +249,19 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     setLines(newLines);
 
     const balances = queryClient.getQueryData<
-      { accountId: number; name: string; currentAmount: number }[]
+      {
+        accountId: number;
+        name: string;
+        currentAmount: number;
+        remainingAmount: number;
+      }[]
     >([
       'repro_account_balances',
       key.initiativeId,
       key.grantId,
       key.categoryId,
     ]);
+
     if (
       !savedBalances ||
       !savedBalances.some(
@@ -328,13 +338,22 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             : l.currentAmount) +
           +inc -
           +dec,
+        nRemaining:
+          l.uuid === updatedLine.uuid
+            ? (l?.oRemaining ?? 0) + +inc - +dec
+            : l.nRemaining,
       };
     });
 
     setLines(newLines);
 
     const balances = queryClient.getQueryData<
-      { accountId: number; name: string; currentAmount: number }[]
+      {
+        accountId: number;
+        name: string;
+        currentAmount: number;
+        remainingAmount: number;
+      }[]
     >([
       'repro_account_balances',
       key.initiativeId,
@@ -372,16 +391,18 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       const lines = prev.map((l: ReproLineItem, index) => {
         const inc = getValues(`rows.${index}.increase`);
         const dec = getValues(`rows.${index}.decrease`);
-
         if (rowUuid === l.uuid) {
-          const currentAmount = savedBalances
+          const { currentAmount, remainingAmount } = savedBalances
             .filter(
               (b) =>
                 b.key.initiativeId == l.initiativeId &&
                 b.key.grantId == l.grantId &&
                 b.key.categoryId == l.categoryId,
             )[0]
-            .balances.filter((x) => x.accountId == accountId)[0].currentAmount;
+            .balances.filter((x) => x.accountId == accountId)[0];
+
+          console.log('currentAmount', currentAmount);
+          console.log('remainingAmount', remainingAmount);
 
           return {
             ...l,
@@ -390,6 +411,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             newAmount: currentAmount + +inc - +dec,
             accountId: accountId,
             currentAmount: currentAmount,
+            oRemaining: remainingAmount,
+            nRemaining: remainingAmount + +inc - +dec,
           };
         } else {
           return {
@@ -445,6 +468,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         increase: inc,
         decrease: dec,
         newAmount: +l.currentAmount + +inc - +dec,
+        nRemaining: +(l.oRemaining ?? 0) + +inc - +dec,
       };
     });
     setLines(newLines);
@@ -662,10 +686,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
               newAmount:
                 l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
               nRemaining:
-                l.currentAmount +
-                +(l.increase ?? 0) -
-                +(l.decrease ?? 0) +
-                l.oRemaining,
+                l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
             };
           }),
           rowBalances: savedBalances,
@@ -736,7 +757,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
   return (
     <MenuIdProvider>
-      {/* <pre>{JSON.stringify(lines)}</pre> */}
+      <pre>{JSON.stringify(savedBalances)}</pre>
       <div>
         {!userId && (
           <div className="text-xl p-1 text-red-500 font-semibold">
@@ -837,7 +858,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         )}
 
         {lines.length > 0 && reproHeader.status !== POSTED && (
-          <div className=" grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500">
+          <div className=" grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8  text-neutral-600 font-semibold">
             <div className="self-end col-span-4 "></div>
             <div className="flex ">
               <div className="flex-2 text-center w-[25%]"></div>
@@ -883,7 +904,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
         {lines.length > 0 && (
           <div>
-            <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-semibold text-neutral-500">
+            <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-semibold text-neutral-600">
               <div className="self-end">Initiative</div>
               <div className="self-end">Grant</div>
               <div className="self-end">Category</div>
@@ -915,7 +936,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             return (
               <div
                 key={index}
-                className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-2 border border-neutral-300  items-center mb-3 "
+                className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-2 border border-neutral-300 items-center mb-3 "
               >
                 <TransactionRow
                   key={item.uuid}
@@ -945,7 +966,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                        ${reproHeader.status === POSTED ? 'border-b-0' : 'border-b-2 '}
                        ${reproHeader.status === POSTED && +item.increase! === 0 ? '  opacity-0  ' : '  '}`}
                       />
-
                       <NumericArrayInputGeneric
                         index={index}
                         register={register(`rows.${index}.decrease`)}
@@ -960,16 +980,19 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                        ${reproHeader.status === POSTED && +item.decrease! === 0 ? '  opacity-0  ' : '  '}`}
                       />
                       <div
-                        className={`text-center flex-2  self-center text-neutral-600  ${item.newAmount < 0 ? 'text-red-500' : ''}`}
+                        className={`text-center flex-2 self-center text-neutral-600  ${item.newAmount < 0 ? 'text-red-500' : ''}`}
                       >
                         {reproHeader.status !== POSTED &&
                           formatNumber(item.newAmount)}
                       </div>
                       <div
-                        className={`text-center flex-2 self-center text-neutral-600 text-sm`}
+                        className={`flex justify-center flex-2 self-center  `}
                       >
-                        <div>{item.oRemaining}</div>
-                        <div>{item.nRemaining}</div>
+                        <div
+                          className={`  ${(item.nRemaining ?? 0) < 0 ? 'text-red-500' : 'text-green-500'}`}
+                        >
+                          {formatCurrency(item.nRemaining ?? 0)}
+                        </div>
                       </div>
                     </div>
                   )}

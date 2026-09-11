@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import CreateBudgetModal from './modals/CreateBudgetModal';
 
 const Budgets = () => {
-  const [year, setYear] = useState<number>(2026);
+  const [year, setYear] = useState<number>(2025);
   const [isCreateBudgetModalOpen, setIsCreateBudgetOpenModal] =
     useState<boolean>(false);
 

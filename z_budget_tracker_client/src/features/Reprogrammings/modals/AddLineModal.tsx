@@ -2,7 +2,7 @@ import { useState, type ChangeEvent } from 'react';
 import useCategories from '../../../api/hooks/common/useCategories';
 import useGrants from '../../../api/hooks/common/useGrants';
 import useInitiatives from '../../../api/hooks/common/useInitiatives';
-import useCurrentAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
+import useAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
 import { formatCurrency } from '../../../app/util';
 import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
@@ -33,7 +33,7 @@ const AddLineModal = ({ ...props }: Props) => {
   const { initiatives } = useInitiatives(props.isOpen);
   const { categories } = useCategories(props.isOpen);
 
-  const { data: balances } = useCurrentAccountBalances(
+  const { data: balances } = useAccountBalances(
     selections?.initiativeId,
     selections?.grantId,
     selections?.categoryId,
@@ -45,11 +45,19 @@ const AddLineModal = ({ ...props }: Props) => {
     setTimeout(() => {
       setAnimateOut(false);
     }, 500);
+
     if (initiatives && grants && categories) {
+      const oRem = balances?.filter(
+        (x) =>
+          x.initiativeId === account.initiativeId &&
+          x.grantId === account.grantId &&
+          x.accountId === account.accountId,
+      )[0].currentAmount;
+
       const newLine: ReproLineItem = {
         rowId: -1,
         accountId: account.accountId,
-        accountName: account.name,
+        accountName: account.accountName,
         categoryId: selections!.categoryId!,
         categoryName: categories.filter(
           (x) => x.id == selections?.categoryId,
@@ -63,8 +71,8 @@ const AddLineModal = ({ ...props }: Props) => {
         currentAmount: account.currentAmount,
         uuid: window.crypto.randomUUID(),
         newAmount: account.currentAmount,
-        oRemaining: 0,
-        nRemaining: 0,
+        oRemaining: oRem,
+        nRemaining: oRem,
       };
 
       props.onLineAdded(newLine, {
@@ -163,7 +171,7 @@ const AddLineModal = ({ ...props }: Props) => {
           )}
 
           {balances &&
-            balances?.map((b) => (
+            balances.map((b) => (
               <div
                 className="rounded-sm py-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300"
                 key={b.accountId}
@@ -173,7 +181,7 @@ const AddLineModal = ({ ...props }: Props) => {
                   // setTimeout(, 2000)
                 }}
               >
-                <div className="text-neutral-700">{b.name}</div>
+                <div className="text-neutral-700">{b.accountName}</div>
                 <div className="text-neutral-900  ">
                   {formatCurrency(b.currentAmount)}
                 </div>
@@ -181,7 +189,7 @@ const AddLineModal = ({ ...props }: Props) => {
             ))}
 
           {balances && (
-            <div className="flex justify-between py-2 px-2">
+            <div className="flex justify-between py-2 px-2 mt-2">
               <div className="entity-label">
                 {selections &&
                   categories?.some((c) => c.id == selections?.categoryId) &&

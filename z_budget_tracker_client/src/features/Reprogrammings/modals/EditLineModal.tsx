@@ -1,14 +1,13 @@
-import { Check } from "lucide-react";
-import { useState, type ChangeEvent } from "react";
-import useCategories from "../../../api/hooks/common/useCategories";
-import useGrants from "../../../api/hooks/common/useGrants";
-import useInitiatives from "../../../api/hooks/common/useInitiatives";
-import useCurrentAccountBalances from "../../../api/hooks/repro/useCurrentAccountBalances";
-import { formatCurrency } from "../../../app/util";
-import Button from "../../../components/Button";
-import Modal2 from "../../../components/Modal2";
-import Select from "../../../components/Select";
-
+import { Check } from 'lucide-react';
+import { useState, type ChangeEvent } from 'react';
+import useCategories from '../../../api/hooks/common/useCategories';
+import useGrants from '../../../api/hooks/common/useGrants';
+import useInitiatives from '../../../api/hooks/common/useInitiatives';
+import useAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
+import { formatCurrency } from '../../../app/util';
+import Button from '../../../components/Button';
+import Modal2 from '../../../components/Modal2';
+import Select from '../../../components/Select';
 
 type Selections = {
   initiativeId?: number;
@@ -50,7 +49,7 @@ const EditLineModal = ({ ...props }: Props) => {
 
   const [animateOut, setAnimateOut] = useState(false);
 
-  const { data: balances } = useCurrentAccountBalances(
+  const { data: balances } = useAccountBalances(
     selections?.initiativeId,
     selections?.grantId,
     selections?.categoryId,
@@ -64,7 +63,7 @@ const EditLineModal = ({ ...props }: Props) => {
         rowId: -1,
         uuid: props.uuid,
         accountId: account.accountId,
-        accountName: account.name,
+        accountName: account.accountName,
         categoryId: selections!.categoryId!,
         categoryName: categories.filter(
           (x) => x.id == selections?.categoryId,
@@ -183,7 +182,7 @@ const EditLineModal = ({ ...props }: Props) => {
                   b.grantId == originalSlections.grantId && (
                     <Check size={16} className="text-blue-500"></Check>
                   )}
-                {b.name}
+                {b.accountName}
               </div>
               <div className="text-neutral-900  ">
                 {formatCurrency(b.currentAmount)}

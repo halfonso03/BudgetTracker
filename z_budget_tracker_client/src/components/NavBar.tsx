@@ -163,7 +163,7 @@ const NavBar = () => {
           <input
             type="text"
             ref={reproInputRef}
-            defaultValue={210}
+            defaultValue={1}
             className="border w-20"
           />
           <Button buttonSize="xsmall" onClick={gotoRepro}>

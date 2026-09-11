@@ -6,8 +6,8 @@ export type NewReproState = {
 };
 
 interface ReproContextType {
-  saveSearchParams: (params: ReporSearchParams) => void;
-  getSearchParams: () => ReporSearchParams | null;
+  saveSearchParams: (params: ReproSearchParams) => void;
+  getSearchParams: () => ReproSearchParams | null;
   setNewReproState: (year: number, justification: string) => void;
   getNewReproState: () => void;
 }
@@ -21,12 +21,12 @@ const ReproContext = createContext<ReproContextType | null>(null);
 export const ReproProvider = ({ children }: ReproProps) => {
   // const [isSearching, setIsSearching] = useState(false);
   // const [resultCount, setResultCount] = useState(0);
-  const [searchParams, setSearchParams] = useState<ReporSearchParams | null>(
+  const [searchParams, setSearchParams] = useState<ReproSearchParams | null>(
     null,
   );
   const [newState, setNewState] = useState<NewReproState | null>(null);
 
-  const saveSearchParams = (params: ReporSearchParams) => {
+  const saveSearchParams = (params: ReproSearchParams) => {
     setSearchParams(params);
   };
 

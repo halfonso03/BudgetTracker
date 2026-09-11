@@ -1,17 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import useCurrentAccountBalances from '../../api/hooks/repro/useCurrentAccountBalances';
+import useAccountBalances from '../../api/hooks/repro/useCurrentAccountBalances';
 
 const ReproPreload = () => {
   const { year, initiativeId, grantId, categoryId, accountId } = useParams();
   const navigate = useNavigate();
 
-  const { data } = useCurrentAccountBalances(
-    +initiativeId!,
-    +grantId!,
-    +categoryId!,
-  );
-
+  const { data } = useAccountBalances(+initiativeId!, +grantId!, +categoryId!);
 
   useEffect(() => {
     if (data) {
@@ -32,7 +27,6 @@ const ReproPreload = () => {
       });
     }
   });
-
 
   return <div>ReproPreload</div>;
 };

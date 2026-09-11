@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Repro
 {
-    public class BalancesResponseDto
+    public class ReproBalanceResponseDto
     {
         public required Key1 Key { get; set; }
-        public required List<Balance1> Balances { get; set; }
+        public required List<Balance> Balances { get; set; }
 
         public class Key1
         {
@@ -18,11 +18,24 @@ namespace Application.DTOs.Repro
 
         }
 
-        public class Balance1
+
+    }
+
+    public class Balance
+    {
+        public required int AccountId { get; set; }
+        public required decimal CurrentAmount { get; set; }
+        public required decimal RemainingAmount { get; set; }
+        public required string Name { get; set; }
+        public static Balance Create(int accountId, decimal cAmount, decimal rAmount, string name)
         {
-            public required int AccountId { get; set; }
-            public required decimal CurrentAmount { get; set; }
-            public required string Name { get; set; }
+            return new Balance
+            {
+                AccountId = accountId,
+                CurrentAmount = cAmount,
+                RemainingAmount = rAmount,
+                Name = name
+            };
         }
     }
 }

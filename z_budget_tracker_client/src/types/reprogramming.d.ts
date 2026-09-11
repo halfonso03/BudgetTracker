@@ -12,7 +12,7 @@ type Repro = {
     postedById?: number | null
     postedDate?: Date | null
     lineItems: ReproLineItem[]
-    rowBalances?: RowBalance[],
+    rowBalances?: ReproRowBalance[],
     started?: boolean
     uuid?: string
 }
@@ -37,15 +37,16 @@ type ReproLineItem = LineItem & {
     comment?: string | null | undefined
     currentAmount: number
     newAmount: number
-    oRemaining: number
-    nRemaining: number
+    oRemaining?: number
+    nRemaining?: number
     comment: string
 }
 
 type ReproAccountBalance = {
     accountId: number
-    name: string
+    accountName: string
     currentAmount: number
+    remainingAmount: number
     accountId: number
     initiativeId: number,
     grantId: number,
@@ -68,9 +69,9 @@ type ReprogInputRow = {
 };
 
 
-type RowBalance = {
+type ReproRowBalance = {
     key: { initiativeId: number; grantId: number; categoryId: number };
-    balances: { accountId: number; name: string; currentAmount: number }[];
+    balances: { accountId: number; name: string; currentAmount: number, remainingAmount: number }[];
 };
 
 
