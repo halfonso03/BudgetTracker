@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260910204914_SeedData4")]
-    partial class SeedData4
+    [Migration("20260911200909_Initial2")]
+    partial class Initial2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -235,7 +235,7 @@ namespace Persistence.Migrations
                         .HasColumnOrder(3);
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("NUMERIC(15,2)")
                         .HasColumnName("amount")
                         .HasColumnOrder(4);
 
@@ -402,9 +402,9 @@ namespace Persistence.Migrations
                         },
                         new
                         {
-                            Id = 14,
+                            Id = 13,
                             AccountId = 1,
-                            Amount = 50m,
+                            Amount = -50m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 1,

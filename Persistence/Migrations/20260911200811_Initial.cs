@@ -353,6 +353,24 @@ namespace Persistence.Migrations
                     { 9, 3, "Erasers", "11-102-0312-54708" }
                 });
 
+            migrationBuilder.InsertData(
+                table: "tblBudget",
+                columns: new[] { "Id", "account_id", "amount", "create_date", "created_by", "grant_id", "initiative_id", "item_type", "update_date", "updated_by" },
+                values: new object[,]
+                {
+                    { 1, 1, 100m, "7/31/2026", 1, 1, 1, "B", null, null },
+                    { 2, 3, 100m, "7/31/2026", 1, 1, 1, "B", null, null },
+                    { 3, 4, 105m, "7/31/2026", 1, 1, 1, "B", null, null },
+                    { 5, 7, 1200m, "7/31/2026", 1, 1, 1, "B", null, null },
+                    { 6, 8, 400m, "7/31/2026", 1, 1, 1, "B", null, null },
+                    { 7, 5, 596.0m, "7/31/2026", 1, 1, 1, "B", null, null },
+                    { 9, 8, 400m, "7/31/2026", 1, 1, 2, "B", null, null },
+                    { 10, 5, 750m, "7/31/2026", 1, 3, 1, "B", null, null },
+                    { 11, 8, 250m, "7/31/2026", 1, 3, 2, "B", null, null },
+                    { 12, 8, 250m, "7/31/2026", 1, 3, 2, "B", null, null },
+                    { 13, 1, -50m, "7/31/2026", 1, 1, 1, "D", null, null }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_tblAccount_category_id",
                 table: "tblAccount",

@@ -279,7 +279,7 @@ namespace Persistence
                 GrantId = 1,
                 InitiativeId = 1,
                 ItemType = Globals.ITEM_TYPE_DISB,
-                Id = 14
+                Id = 13
             }
           );
 
@@ -312,7 +312,7 @@ namespace Persistence
 
             builder.Entity<Grant>().Property(x => x.Name).HasColumnName("name").HasColumnType("VARCHAR(50)"); ;
 
-            builder.Entity<BudgetLineItem>().Property(x => x.Amount).HasColumnName("amount");
+            builder.Entity<BudgetLineItem>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
             builder.Entity<BudgetLineItem>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
             builder.Entity<BudgetLineItem>().Property(x => x.GrantId).HasColumnName("grant_id");
             builder.Entity<BudgetLineItem>().Property(x => x.AccountId).HasColumnName("account_id");

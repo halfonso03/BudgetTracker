@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260910202906_SeedData2")]
-    partial class SeedData2
+    [Migration("20260911200811_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -402,14 +402,14 @@ namespace Persistence.Migrations
                         },
                         new
                         {
-                            Id = 14,
+                            Id = 13,
                             AccountId = 1,
-                            Amount = 100m,
+                            Amount = -50m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
                             CreatedBy = 1,
                             GrantId = 1,
                             InitiativeId = 1,
-                            ItemType = "B"
+                            ItemType = "D"
                         });
                 });
 

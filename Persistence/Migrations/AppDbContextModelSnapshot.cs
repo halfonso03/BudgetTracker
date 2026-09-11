@@ -232,7 +232,7 @@ namespace Persistence.Migrations
                         .HasColumnOrder(3);
 
                     b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)")
+                        .HasColumnType("NUMERIC(15,2)")
                         .HasColumnName("amount")
                         .HasColumnOrder(4);
 
@@ -399,7 +399,7 @@ namespace Persistence.Migrations
                         },
                         new
                         {
-                            Id = 14,
+                            Id = 13,
                             AccountId = 1,
                             Amount = -50m,
                             CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
