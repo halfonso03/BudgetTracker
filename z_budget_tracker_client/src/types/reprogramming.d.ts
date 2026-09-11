@@ -32,14 +32,13 @@ type LineItem = {
 
 type ReproLineItem = LineItem & {
     rowId: number
+    currentAmount: number
     increase?: string | number
     decrease?: string | number
-    comment?: string | null | undefined
-    currentAmount: number
     newAmount: number
-    oRemaining?: number
-    nRemaining?: number
-    comment: string
+    remainingAmount: number
+    newRemainingAmount: number
+    comment?: string
 }
 
 type ReproAccountBalance = {
@@ -71,7 +70,7 @@ type ReprogInputRow = {
 
 type ReproRowBalance = {
     key: { initiativeId: number; grantId: number; categoryId: number };
-    balances: { accountId: number; name: string; currentAmount: number, remainingAmount: number }[];
+    balances: { accountId: number; accountName: string; currentAmount: number, remainingAmount: number }[];
 };
 
 

@@ -26,7 +26,7 @@ namespace Application.DTOs.Repro
         public required int AccountId { get; set; }
         public required decimal CurrentAmount { get; set; }
         public required decimal RemainingAmount { get; set; }
-        public required string Name { get; set; }
+        public required string AccountName { get; set; }
         public static Balance Create(int accountId, decimal cAmount, decimal rAmount, string name)
         {
             return new Balance
@@ -34,7 +34,7 @@ namespace Application.DTOs.Repro
                 AccountId = accountId,
                 CurrentAmount = cAmount,
                 RemainingAmount = rAmount,
-                Name = name
+                AccountName = name
             };
         }
     }

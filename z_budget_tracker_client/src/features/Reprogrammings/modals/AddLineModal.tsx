@@ -46,16 +46,17 @@ const AddLineModal = ({ ...props }: Props) => {
       setAnimateOut(false);
     }, 500);
 
-    if (initiatives && grants && categories) {
-      const oRem = balances?.filter(
+    if (initiatives && grants && categories && balances) {
+      const { currentAmount, remainingAmount } = balances.filter(
         (x) =>
           x.initiativeId === account.initiativeId &&
           x.grantId === account.grantId &&
           x.accountId === account.accountId,
-      )[0].currentAmount;
+      )[0];
 
       const newLine: ReproLineItem = {
         rowId: -1,
+        uuid: window.crypto.randomUUID(),
         accountId: account.accountId,
         accountName: account.accountName,
         categoryId: selections!.categoryId!,
@@ -69,10 +70,10 @@ const AddLineModal = ({ ...props }: Props) => {
         grantId: selections!.grantId!,
         grantName: grants.filter((x) => x.id == selections?.grantId)[0].name,
         currentAmount: account.currentAmount,
-        uuid: window.crypto.randomUUID(),
-        newAmount: account.currentAmount,
-        oRemaining: oRem,
-        nRemaining: oRem,
+        newAmount: currentAmount,
+        remainingAmount: remainingAmount,
+        newRemainingAmount: remainingAmount,
+        comment: '',
       };
 
       props.onLineAdded(newLine, {
@@ -85,7 +86,7 @@ const AddLineModal = ({ ...props }: Props) => {
 
   return (
     <Modal2 size="lg" title="Add a New Line" animateOut={animateOut} {...props}>
-      <div className="grid grid-cols-[1fr_1fr] mb-4 gap-4">
+      <div className="grid grid-cols-[.7fr_1fr] mb-4 gap-4">
         <div className="flex flex-col gap-9">
           <div>
             <div className="entity-label">Select an Initiative</div>
@@ -166,7 +167,13 @@ const AddLineModal = ({ ...props }: Props) => {
         <div>
           {balances && (
             <div className="flex justify-between py-2 px-2 pt-0 ">
-              <div className="entity-label">Current Amounts</div>
+              <div className="flex-10 entity-label">Accounts</div>
+              <div className="flex-9 grid grid-cols-[1fr_1fr] ">
+                <div className=" entity-label text-end">Current</div>
+                <div className=" font-semibold text-end text-neutral-500">
+                  Remaining
+                </div>
+              </div>
             </div>
           )}
 
@@ -181,29 +188,44 @@ const AddLineModal = ({ ...props }: Props) => {
                   // setTimeout(, 2000)
                 }}
               >
-                <div className="text-neutral-700">{b.accountName}</div>
-                <div className="text-neutral-900  ">
-                  {formatCurrency(b.currentAmount)}
+                <div className="flex-10 text-neutral-700">{b.accountName}</div>
+                <div className="flex-9 grid grid-cols-[1fr_1fr] ">
+                  <div className="text-neutral-900  text-end ">
+                    {formatCurrency(b.currentAmount)}
+                  </div>
+                  <div className="text-end text-neutral-500">
+                    {formatCurrency(b.remainingAmount)}
+                  </div>
                 </div>
               </div>
             ))}
 
           {balances && (
             <div className="flex justify-between py-2 px-2 mt-2">
-              <div className="entity-label">
+              <div className="flex-10 entity-label">
                 {selections &&
                   categories?.some((c) => c.id == selections?.categoryId) &&
                   categories?.filter((c) => c.id == selections?.categoryId)[0]
                     .name}
                 &nbsp;Total
               </div>
-              <div className="font-semibold text-neutral-800">
-                {balances &&
-                  formatCurrency(
-                    balances
-                      .map((b) => b.currentAmount)
-                      ?.reduce((acc, cur) => acc + cur, 0),
-                  )}
+              <div className="flex-9 grid grid-cols-[1fr_1fr]">
+                <div className="font-semibold text-neutral-800 text-end">
+                  {balances &&
+                    formatCurrency(
+                      balances
+                        .map((b) => b.currentAmount)
+                        ?.reduce((acc, cur) => acc + cur, 0),
+                    )}
+                </div>
+                <div className="font-semibold text-end text-neutral-500">
+                  {balances &&
+                    formatCurrency(
+                      balances
+                        .map((b) => b.remainingAmount)
+                        ?.reduce((acc, cur) => acc + cur, 0),
+                    )}
+                </div>
               </div>
             </div>
           )}

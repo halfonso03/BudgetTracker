@@ -78,7 +78,10 @@ const ReproSearchReults = ({ onDelete, results }: Props) => {
             </div>
             <div className="text-center">
               {formatNumber(
-                r.lineItems.reduce((acc, cur) => acc + cur.increase, 0),
+                Math.max(
+                  r.lineItems.reduce((acc, cur) => acc + cur.increase, 0),
+                  r.lineItems.reduce((acc, cur) => acc + cur.decrease, 0),
+                ),
               )}
             </div>
             <div className="flex justify-around pl-10 px-7">

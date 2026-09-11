@@ -7,12 +7,7 @@ import CommentToggler from './CommentToggler';
 
 type Props = {
   lineItem: ReproLineItem;
-  balances: {
-    accountId: number;
-    name: string;
-    currentAmount: number;
-    remainingAmount: number;
-  }[];
+  balances: { accountId: number; accountName: string; currentAmount: number }[];
   canEdit: boolean;
   accountChange: (option: number, rowUuid: string) => void;
   duplicateRow: (uuid: string) => void;
@@ -40,11 +35,13 @@ const TransactionRow = ({
     comment,
   },
 }: Props) => {
+
+  // console.log('balances', balances)
   const accounts = balances.map((b) => ({
     value: b.accountId,
     label: (
       <div className="flex justify-between gap-2">
-        <div>{b.name}</div>
+        <div>{b.accountName}</div>
         <div>{formatCurrency(b.currentAmount)}</div>
       </div>
     ),
@@ -53,13 +50,13 @@ const TransactionRow = ({
   function handleSaveComment(uuid: string, comment: string | null | undefined) {
     saveComment(uuid, comment);
   }
-
   return (
     <Fragment>
       <div className="self-center">{initiativeName}</div>
       <div className="self-center">{grantName}</div>
       <div className="self-center">{categoryName}</div>
       <div className="self-center ">
+        
         {canEdit ? (
           <Dropdown
             tabIndex={-1}
@@ -73,7 +70,7 @@ const TransactionRow = ({
           />
         ) : (
           <span>
-            {balances.filter((x) => x.accountId === accountId)[0].name}
+            {balances.filter((x) => x.accountId === accountId)[0].accountName}
           </span>
         )}
       </div>
