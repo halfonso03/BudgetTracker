@@ -58,8 +58,8 @@ const ReproParams = memo(
             Year
           </div>
           <Select id="year-select" onChange={handleYearChange}>
-            <option value="2026">2026</option>
             <option value="2025">2025</option>
+            <option value="2026">2026</option>
           </Select>
         </div>
         <div className="border border-b-0 border-neutral-200 ">

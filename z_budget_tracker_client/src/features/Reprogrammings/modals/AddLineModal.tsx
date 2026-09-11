@@ -201,7 +201,7 @@ const AddLineModal = ({ ...props }: Props) => {
             ))}
 
           {balances && (
-            <div className="flex justify-between py-2 px-2 mt-2">
+            <div className="flex justify-between py-2 px-2">
               <div className="flex-10 entity-label">
                 {selections &&
                   categories?.some((c) => c.id == selections?.categoryId) &&

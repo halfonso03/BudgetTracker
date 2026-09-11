@@ -29,7 +29,7 @@ const MChild = React.memo(ReproParams);
 const Search = () => {
   const queryClient = useQueryClient();
 
-  const [year, setYear] = useState<number>(2026);
+  const [year, setYear] = useState<number>(2025);
   const [status, setStatus] = useState<number>(0);
   const [debitComparer, setDebitComparer] = useState<number>(0);
   const [creditComparer, setCreditComparer] = useState<number>(0);

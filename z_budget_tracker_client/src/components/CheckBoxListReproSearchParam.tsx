@@ -110,7 +110,7 @@ const CheckBoxListReproSearchParam = ({
                       </svg>
                     </div>
                   </div>
-                  <div className="text-[0.9rem]">{i.name}</div>
+                  <div className={`text-[0.9rem] italic ${i.checked ? 'text-neutral-700' : 'text-neutral-500'}`}>{i.name}</div>
                 </div>
                 <div className="flex gap-2 ml-10">
                   <div className="relative flex">
@@ -120,7 +120,7 @@ const CheckBoxListReproSearchParam = ({
                         handleXCheck(i.id, id);
                       }}
                       checked={i.xChecked}
-                      className={`peer/excl appearance-none w-4.5 h-4.5 border-2 border-gray-400 rounded bg-transparent checked:bg-neutral-500 checked:border-neutral-500 dark:checked:bg-green-700 dark:checked:border-green-700 
+                      className={`peer/excl appearance-none w-4.5 h-4.5 border-2 border-gray-300 rounded bg-transparent checked:bg-neutral-500 checked:border-neutral-500 dark:checked:bg-green-700 dark:checked:border-green-700 
                     transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-green-500 focus:ring-offset-2`}
                     />
                     <svg

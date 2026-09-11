@@ -11,8 +11,8 @@ namespace Application.DTOs.Budgets
             get
             {
                 if (ItemType == Globals.ITEM_TYPE_BUDGET) return "Budget";
-                if (ItemType == Globals.ITEM_TYPE_BUDGET) return "Reprogramming";
-                if (ItemType == Globals.ITEM_TYPE_BUDGET) return "Disbursement";
+                if (ItemType == Globals.ITEM_TYPE_REPRO) return "Reprogramming";
+                if (ItemType == Globals.ITEM_TYPE_DISB) return "Disbursement";
                 return "";
             }
         }

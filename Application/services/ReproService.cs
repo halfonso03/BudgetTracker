@@ -153,7 +153,7 @@ namespace Application.Services
 
                 if (newRepro.Posted)
                 {
-                    await PostRepro(newRepro.Items, reproRequestDto.CreatedById);
+                    await PostRepro(newRepro.Items, newRepro.Id, reproRequestDto.CreatedById);
                 }
 
                 newId = newRepro.Id;
@@ -163,18 +163,18 @@ namespace Application.Services
             catch (DbException ex)
             {
                 await transaction.RollbackAsync();
-                return Result<int>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+                return Result<int>.Failure($"DB Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                return Result<int>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+                return Result<int>.Failure($"Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
 
             return Result<int>.Success(newId);
         }
 
-        private async Task<bool> PostRepro(IList<ReproLineItem> items, int createdById)
+        private async Task<bool> PostRepro(IList<ReproLineItem> items, int reproId, int createdById)
         {
 
             var postedBudgetLineItems = new List<BudgetLineItem>();
@@ -228,7 +228,8 @@ namespace Application.Services
 
             foreach (var item in postedBudgetLineItems)
             {
-                var reproLine = items.Single(x => x.InitiativeId == item.InitiativeId
+                var reproLine = _dbContext.ReproLineItems.Single(x => x.ReproId == reproId 
+                                        && x.InitiativeId == item.InitiativeId
                                         && x.GrantId == item.GrantId
                                         && x.AccountId == item.AccountId);
 
@@ -236,6 +237,18 @@ namespace Application.Services
             }
 
             await _dbContext.SaveChangesAsync();
+
+            var checkReproLines = _dbContext.ReproLineItems.Where(x => x.ReproId == reproId);
+
+            foreach (var line in checkReproLines)
+            {
+                if (line.BudgetLineItemId is null)
+                {
+                    throw new Exception("One or more posted repro lines was not updated with the new budget line item id.");
+                }
+            }
+
+
 
             return true;
         }

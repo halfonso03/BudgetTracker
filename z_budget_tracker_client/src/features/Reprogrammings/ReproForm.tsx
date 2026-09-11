@@ -836,7 +836,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           </Button>
         </div>
 
-        <div className="flex justify-between mb-12 border-b border-b-neutral-200 pb-2 ">
+        <div className="flex justify-between mb-1 border-b border-b-neutral-200 pb-2 ">
           <IdHeader
             id={reproHeader.id}
             status={reproHeader.status}
@@ -862,7 +862,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         </div>
 
         {reproHeader.status === POSTED && (
-          <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 ">
+          <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 mt-6">
             <div>Total</div>
             <div className="text-neutral-900">{inc}</div>
             <div></div>
@@ -870,7 +870,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         )}
 
         {lines.length > 0 && reproHeader.status !== POSTED && (
-          <div className=" grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8  text-neutral-600 font-semibold">
+          <div className=" grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 text-neutral-600 font-semibold">
             <div className="self-end col-span-4 "></div>
             <div className="flex ">
               <div className="flex-2 text-center w-[25%]"></div>

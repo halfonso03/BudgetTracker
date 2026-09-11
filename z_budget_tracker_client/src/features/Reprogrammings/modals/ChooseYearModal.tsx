@@ -46,7 +46,7 @@ const ChooseYearModal = ({ ...props }: Props) => {
           </select>
         </div>
         <div className="entity-label">
-          Reason
+          Justification
           <textarea
             className="font-normal text-neutral-950 w-full border border-neutral-300 rounded-sm p-2 outline-none focus:outline-none focus:ring-1 focus:ring-neutral-300 transition-all duration-300 ease-in-out"
             value={justification}

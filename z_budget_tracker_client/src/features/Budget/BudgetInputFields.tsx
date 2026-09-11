@@ -70,7 +70,7 @@ const BudgetInputFields = ({
   const [remaining, setRemaining] = useState<string>(() =>
     formatNumber(
       parseFormattedNumber(currentAmount) +
-        -1 * parseFormattedNumber(spentAmount),
+        parseFormattedNumber(spentAmount),
     ),
   );
 
@@ -127,7 +127,7 @@ const BudgetInputFields = ({
               } else setCurrent('-');
 
               const newRemaining = formatNumber(
-                budgeted + reprogrammed - spentParsed,
+                budgeted + reprogrammed + spentParsed,
               );
               setRemaining(newRemaining);
               setError(budgeted + reprogrammed - spentParsed < 0);
@@ -184,11 +184,11 @@ const BudgetInputFields = ({
         )}
       </div>
       <div
-        className={`text-end self-center py-1  ${getCellColor(isLastRow, spentAmount)} ${isLastRow} ? " py-2 ":""`}
+        className={`text-end self-center py-1  ${getCellColor(isLastRow, spentAmount)} ${isLastRow} ? " py-2 ": ""`}
       >
         {parseFormattedNumber(spentAmount) !== 0
           ? formatCurrency(parseFormattedNumber(spentAmount))
-          : '-'}
+          : <div className='pr-1'>-</div>}
       </div>
       <div
         className={`flex justify-end self-center py-1 ${isLastRow ? ' py-2 bg-neutral-100 font-bold text-neutral-600' : ''} `}
@@ -200,7 +200,7 @@ const BudgetInputFields = ({
         )}
         {!isLastRow ? (
           parseFormattedNumber(remaining) == 0 ? (
-            <span className="text-neutral-400">-</span>
+            <span className="text-neutral-400 pr-1">-</span>
           ) : (
             remaining
           )
