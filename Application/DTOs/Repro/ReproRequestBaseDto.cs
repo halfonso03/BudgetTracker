@@ -15,10 +15,8 @@ namespace Application.DTOs.Repro
 
         [Required]
         public required bool Posted { get; set; }
-
-        [Required]
-        [MinLength(1, ErrorMessage = "The list must contain at least one item.")]
-        public virtual List<ReproRequestLineItemDto> LineItems { get; set; } = [];
+       
+        public List<ReproRequestLineItemDto> LineItems { get; set; } = [];
 
         [ValueMustBeTrueValidator(ErrorMessage = "Row Ids are not sequential")]
         public bool? SequentialRowIds

@@ -136,7 +136,7 @@ namespace Persistence.Migrations
                     initiative_id = table.Column<int>(type: "int", nullable: false),
                     grant_id = table.Column<int>(type: "int", nullable: false),
                     account_id = table.Column<int>(type: "int", nullable: false),
-                    amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
                     item_type = table.Column<string>(type: "CHAR(1)", nullable: false),
                     created_by = table.Column<int>(type: "int", nullable: false),
                     create_date = table.Column<DateTime>(type: "DATETIME", nullable: false),

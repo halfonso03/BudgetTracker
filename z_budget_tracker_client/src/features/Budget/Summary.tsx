@@ -37,7 +37,7 @@ const Summary = ({ year }: Props) => {
         .reduce((acc, cur) => (acc ?? 0) + (cur ?? 0), 0),
     };
   });
-
+console.log('budgetSummaries', budgetSummaries)
   if (!budgetSummaries.length)
     return <div className="my-5">There are no budgets for {year}</div>;
 
@@ -82,7 +82,7 @@ const Summary = ({ year }: Props) => {
               {formatCurrency(budget.current_amount)}
             </div>
             <div className="text-end self-center">
-              {budget.spent_amount > 0 ? (
+              {budget.spent_amount !== 0 ? (
                 formatCurrency(budget.spent_amount)
               ) : (
                 <span className="text-neutral-400">-</span>
@@ -210,14 +210,14 @@ function CategorySummary({
               )}
             </div>
             <div className="text-end">
-              {c.current_amount > 0 ? (
+              {c.current_amount !== 0 ? (
                 formatCurrency(c.current_amount)
               ) : (
                 <span className="text-neutral-400">-</span>
               )}
             </div>
             <div className="text-end">
-              {c.spent_amount > 0 ? (
+              {c.spent_amount !== 0 ? (
                 formatCurrency(c.spent_amount)
               ) : (
                 <span className="text-neutral-400">-</span>
@@ -225,7 +225,7 @@ function CategorySummary({
             </div>
             <div className="text-end">
               {c.current_amount - c.spent_amount > 0 ? (
-                formatCurrency(c.current_amount - c.spent_amount)
+                formatCurrency(c.current_amount + c.spent_amount)
               ) : (
                 <span className="text-neutral-400">-</span>
               )}
@@ -269,14 +269,14 @@ function CategorySummary({
                       )}
                     </div>
                     <div className="text-end italic text-neutral-700">
-                      {i.current_amount > 0 ? (
+                      {i.current_amount !== 0 ? (
                         formatCurrency(i.current_amount)
                       ) : (
                         <span className="text-neutral-400">-</span>
                       )}
                     </div>
                     <div className="text-end italic text-neutral-700">
-                      {i.spent_amount > 0 ? (
+                      {i.spent_amount !== 0 ? (
                         formatCurrency(i.spent_amount)
                       ) : (
                         <span className="text-neutral-400">-</span>
@@ -285,7 +285,7 @@ function CategorySummary({
                     <div>
                       <div className="text-end">
                         {i.current_amount - i.spent_amount > 0 ? (
-                          formatCurrency(i.current_amount - i.spent_amount)
+                          formatCurrency(i.current_amount + i.spent_amount)
                         ) : (
                           <span className="text-neutral-400">-</span>
                         )}

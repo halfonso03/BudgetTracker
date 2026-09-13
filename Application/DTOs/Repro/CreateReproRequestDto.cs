@@ -16,9 +16,5 @@ namespace Application.DTOs.Repro
         [DeniedValues(0)]
         public required int CreatedById { get; set; }
 
-        [Required]
-        [MinLength(1, ErrorMessage = "The list must contain at least one item.")]
-        public new List<CreateReproLineItemRequestDto> LineItems { get; set; } = [];
-
     }
 }

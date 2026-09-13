@@ -945,8 +945,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                 b.key.categoryId == item.categoryId,
             )[0].balances;
 
-            // console.log('balances2', balances);
-
             return (
               <div
                 key={index}
@@ -1005,7 +1003,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                         <div
                           className={`  ${(item.newRemainingAmount ?? 0) < 0 ? 'text-red-500' : 'text-green-500'}`}
                         >
-                          {formatCurrency(item.newRemainingAmount ?? 0)}
+                          {reproHeader.status !== POSTED &&
+                            formatCurrency(item.newRemainingAmount ?? 0)}
                         </div>
                       </div>
                     </div>

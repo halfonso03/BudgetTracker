@@ -69,8 +69,7 @@ const BudgetInputFields = ({
   const [error, setError] = useState<boolean>(false);
   const [remaining, setRemaining] = useState<string>(() =>
     formatNumber(
-      parseFormattedNumber(currentAmount) +
-        parseFormattedNumber(spentAmount),
+      parseFormattedNumber(currentAmount) + parseFormattedNumber(spentAmount),
     ),
   );
 
@@ -186,9 +185,11 @@ const BudgetInputFields = ({
       <div
         className={`text-end self-center py-1  ${getCellColor(isLastRow, spentAmount)} ${isLastRow} ? " py-2 ": ""`}
       >
-        {parseFormattedNumber(spentAmount) !== 0
-          ? formatCurrency(parseFormattedNumber(spentAmount))
-          : <div className='pr-1'>-</div>}
+        {parseFormattedNumber(spentAmount) !== 0 ? (
+          formatCurrency(parseFormattedNumber(spentAmount))
+        ) : (
+          <div className="pr-1">-</div>
+        )}
       </div>
       <div
         className={`flex justify-end self-center py-1 ${isLastRow ? ' py-2 bg-neutral-100 font-bold text-neutral-600' : ''} `}
@@ -202,7 +203,7 @@ const BudgetInputFields = ({
           parseFormattedNumber(remaining) == 0 ? (
             <span className="text-neutral-400 pr-1">-</span>
           ) : (
-            remaining
+            <div className={`${parseFormattedNumber(remaining) < 0 ? "text-red-500": ""}`}>{formatCurrency(parseFormattedNumber(remaining))}</div>
           )
         ) : (
           <input
@@ -237,7 +238,8 @@ const BudgetInputFields = ({
         {!isLastRow ? (
           <>
             <Link
-              to={`/reprogramming/${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`} tabIndex={-1}
+              to={`/reprogramming/${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`}
+              tabIndex={-1}
             >
               <ArrowLeftRight></ArrowLeftRight>
             </Link>
