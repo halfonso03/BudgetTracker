@@ -17,6 +17,8 @@ type Props = {
   onStatusChange?: (year: number) => void;
   onAmountBlur: (amount: string, key: string) => void;
   onAmountComparerChange: (value: number, key: string) => void;
+  onDeselectAll: (type: string) => void;
+  onSelectAll: (type: string) => void;
 };
 
 const ReproParams = memo(
@@ -30,6 +32,8 @@ const ReproParams = memo(
     onStatusChange,
     onAmountBlur,
     onAmountComparerChange,
+    onDeselectAll,
+    onSelectAll,
   }: Props) => {
     function handleYearChange(e: ChangeEvent<HTMLSelectElement>) {
       onYearChange(+e.target.value);
@@ -51,9 +55,17 @@ const ReproParams = memo(
       onAmountComparerChange(value, key);
     }
 
+    function handleDeselectAll(type: string) {
+      onDeselectAll(type);
+    }
+
+    function handleSelectAll(type: string) {
+      onSelectAll(type);
+    }
+
     return (
       <div className="flex flex-col">
-        <div className="flex gap-3 border border-b-0 border-neutral-200 p-2 rounded-t-md">
+        <div className="flex gap-3 border border-b-0 border-neutral-200 p-2 py-3 rounded-t-md">
           <div className="font-semibold text-neutral-600 ml-1 self-center">
             Year
           </div>
@@ -74,6 +86,8 @@ const ReproParams = memo(
                 checked: true,
                 xChecked: false,
               }))}
+              onDeselectAll={handleDeselectAll}
+              onSelectAll={handleSelectAll}
             ></CheckBoxListReproSearchParam>
           )}
         </div>
@@ -91,6 +105,8 @@ const ReproParams = memo(
                 checked: true,
                 xChecked: false,
               }))}
+              onDeselectAll={handleDeselectAll}
+              onSelectAll={handleSelectAll}
             ></CheckBoxListReproSearchParam>
           )}
         </div>
@@ -106,10 +122,12 @@ const ReproParams = memo(
                 checked: true,
                 xChecked: false,
               }))}
+              onDeselectAll={handleDeselectAll}
+              onSelectAll={handleSelectAll}
             ></CheckBoxListReproSearchParam>
           )}
         </div>
-        <div className="border border-b-0 border-neutral-200 pl-2 py-2 flex gap-3 pr-2">
+        <div className="border border-b-0 border-neutral-200 pl-2 py-3 flex gap-3 pr-2">
           <div className="font-semibold text-neutral-600 ml-1 self-center">
             Status
           </div>
@@ -129,7 +147,6 @@ const ReproParams = memo(
           </div>
           <div className="flex gap-2">
             <Select
-              widthClass={'w-35'}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                 handleComparerChange(+e.target.value, 'debit');
               }}
@@ -154,7 +171,6 @@ const ReproParams = memo(
           </div>
           <div className="flex gap-2">
             <Select
-              widthClass={'w-35'}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                 handleComparerChange(+e.target.value, 'credit');
               }}

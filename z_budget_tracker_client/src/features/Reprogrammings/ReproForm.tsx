@@ -89,13 +89,14 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
-  const [justModalIsOpen, setJustModalIsOpen] = useState(false);
+  const [justModalIsOpen, setJustModalIsOpen] = useState(
+    location.state &&
+      location.state.ids !== undefined &&
+      location.state.ids !== null
+      ? true
+      : false,
+  );
   // fr above useState add back in later 9/13 11:45
-  // location.state &&
-  //   location.state.ids !== undefined &&
-  //   location.state.ids !== null
-  //   ? true
-  //   : false,
 
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [confirmPostModalIsOpen, setConfirmPostModal] =
@@ -126,13 +127,16 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           )[0]
           .balances.filter((x) => x.accountId == l.accountId)[0]
           .remainingAmount ?? 0;
-      return {
+
+      const line: ReproLineItem = {
         ...l,
         remainingAmount: remainingAmount,
-        newAmount: l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+        newCurrentAmount:
+          l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
         newRemainingAmount:
           remainingAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
       };
+      return line;
     }),
   );
   const [savedBalances, setSavedBalances] = useState<ReproRowBalance[]>(
@@ -247,6 +251,13 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     };
   }, [getErrors, getTotalAmounts, lines, reproHeader.status]);
 
+  function getRowIncreaseAndDecrease(index: number) {
+    return {
+      inc: getValues(`rows.${index}.increase`),
+      dec: getValues(`rows.${index}.decrease`),
+    };
+  }
+
   function handleLineAdded(
     newLine: ReproLineItem,
     key: { initiativeId: number; grantId: number; categoryId: number },
@@ -255,14 +266,14 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
     const newLines: ReproLineItem[] = lines.map(
       (l: ReproLineItem, i: number) => {
-        const inc = getValues(`rows.${i}.increase`);
-        const dec = getValues(`rows.${i}.decrease`);
-        return {
+        const { inc, dec } = getRowIncreaseAndDecrease(i);
+        const newLine: ReproLineItem = {
           ...l,
           increase: inc,
           decrease: dec,
-          newAmount: +l.currentAmount + +inc - +dec,
+          newCurrentAmount: +l.currentAmount + +inc - +dec,
         };
+        return newLine;
       },
     );
 
@@ -319,8 +330,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
     const newLines = lines.map((l: ReproLineItem, i: number) => {
       if (l.uuid !== updatedLine.uuid) return l;
-      const inc = getValues(`rows.${i}.increase`);
-      const dec = getValues(`rows.${i}.decrease`);
+      const { inc, dec } = getRowIncreaseAndDecrease(i);
       const newLine: ReproLineItem = {
         ...updatedLine,
         currentAmount: updatedLine.currentAmount,
@@ -375,10 +385,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     setLines((prev) => {
       const lines = prev.map((line: ReproLineItem, index) => {
         if (rowUuid !== line.uuid) return line;
-
-        const inc = +getValues(`rows.${index}.increase`);
-        const dec = +getValues(`rows.${index}.decrease`);
-
+        const { inc, dec } = getRowIncreaseAndDecrease(index);
         const { currentAmount, remainingAmount } = savedBalances
           .filter(
             (b) =>
@@ -411,11 +418,11 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       indexOfDup++;
       if (l.uuid == uuid) break;
     }
-
-    const duplicatedLine = {
+    const { inc, dec } = getRowIncreaseAndDecrease(indexOfDup);
+    const duplicatedLine: ReproLineItem = {
       ...lines.filter((x) => x.uuid === uuid)[0],
-      increase: getValues(`rows.${indexOfDup}.increase`) as string,
-      decrease: getValues(`rows.${indexOfDup}.decrease`) as string,
+      increase: inc,
+      decrease: dec,
       rowId: lines.length,
       uuid: crypto.randomUUID(),
     };
@@ -541,22 +548,24 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       duration: 1500,
     });
 
-    setReproHeader((prev) => {
-      console.log('id', newId);
-      console.log('userId', userId);
-      console.log('loginid', loginId);
+    setTimeout(() => {
+      setReproHeader((prev) => {
+        console.log('id', newId);
+        console.log('userId', userId);
+        console.log('loginid', loginId);
 
-      return {
-        ...prev,
-        id: newId,
-        createdById: +userId!,
-        createdBy: loginId!,
-        createDate: createDate,
-        status: posted ? POSTED : SAVED,
-        postedDate: postedDate,
-        postedBy: posted ? loginId : '',
-      };
-    });
+        return {
+          ...prev,
+          id: newId,
+          createdById: +userId!,
+          createdBy: loginId!,
+          createDate: createDate,
+          status: posted ? POSTED : SAVED,
+          postedDate: postedDate,
+          postedBy: posted ? loginId : '',
+        };
+      });
+    }, 1500);
   }
 
   function onServerUpdateSuccess(
@@ -733,7 +742,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
   return (
     <MenuIdProvider>
-      <pre>{JSON.stringify(lines)}</pre>
+      {/* <pre>{JSON.stringify(lines)}</pre> */}
       <div>
         {!userId && (
           <div className="text-xl p-1 text-red-500 font-semibold">
@@ -827,7 +836,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         </div>
 
         {reproHeader.status === POSTED && (
-          <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 mt-6">
+          <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 mt-12">
             <div>Total</div>
             <div className="text-neutral-900">{inc}</div>
             <div></div>
@@ -885,17 +894,29 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
               <div className="self-end">Initiative</div>
               <div className="self-end">Grant</div>
               <div className="self-end">Category</div>
-              <div className="self-end">Account</div>
+              <div className="self-end ">Account</div>
               <div className="flex justify-between ">
-                <div className="text-center flex-2">Current Balance</div>
+                <div
+                  className={`text-center flex-2 self-end ${reproHeader.status === POSTED ? 'opacity-0' : ''}`}
+                >
+                  Current Balance
+                </div>
                 <div className="self-end  text-end flex-[1.5] pr-2">
                   Increase
                 </div>
                 <div className="self-end text-end flex-[1.5] pr-2">
                   Decrease
                 </div>
-                <div className="text-center flex-2 self-end">New Balance</div>
-                <div className="text-center flex-2 ">Remaining Balance</div>
+                <div
+                  className={`text-center flex-2 self-end ${reproHeader.status === POSTED ? 'opacity-0' : ''}`}
+                >
+                  New Balance
+                </div>
+                <div
+                  className={`text-center flex-2  ${reproHeader.status === POSTED ? 'opacity-0' : ''}`}
+                >
+                  Remaining Balance
+                </div>
               </div>
               <div></div>
             </div>

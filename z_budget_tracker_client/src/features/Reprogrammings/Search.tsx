@@ -80,7 +80,7 @@ const Search = () => {
       : [];
   }, [preG]);
 
-  const a = useMemo(() => {
+  const c = useMemo(() => {
     return categoriesList !== undefined && categoriesList !== null
       ? [
           ...categories!.map((i) => ({
@@ -92,8 +92,8 @@ const Search = () => {
   }, [categories, categoriesList]);
 
   const itemsList: SelectedItem[] = useMemo(() => {
-    return [...i, ...g.filter((x) => x.year == year), ...a];
-  }, [a, g, i, year]);
+    return [...i, ...g.filter((x) => x.year == year), ...c];
+  }, [c, g, i, year]);
 
   const [selectedIds, setSelectedIds] = useState<SelectedItem[]>(itemsList);
 
@@ -143,6 +143,20 @@ const Search = () => {
         : [...selectedIds, { id: id, type: type }],
     );
   };
+
+  function handleSelectAll(type: string) {
+    const newSelectedIds: SelectedItem[] = [
+      ...selectedIds.filter((x) => x.type !== type),
+      ...itemsList.filter((x) => x.type == type),
+    ];
+
+    setSelectedIds(newSelectedIds);
+  }
+
+  function handleDeselectAll(type: string) {
+    setSelectedIds((prev) => [...prev.filter((x) => x.type !== type)]);
+    setXSelectedIds((prev) => prev.filter((x) => x.type !== type));
+  }
 
   const handleListXCheck = (id: number, type: string) => {
     setXSelectedIds(
@@ -250,7 +264,8 @@ const Search = () => {
   return (
     <div className="flex gap-2 mt-10">
       <div className="flex flex-2">
-        {/* <pre>{JSON.stringify(selectedIds)}</pre>
+        {/* <pre>{JSON.stringify(selectedIds)}</pre> */}
+        {/* 
         <pre>{JSON.stringify(xSelectedIds)}</pre> */}
 
         <div>
@@ -268,6 +283,8 @@ const Search = () => {
             }))}
             onListCheck={handleListCheck}
             onListXCheck={handleListXCheck}
+            onDeselectAll={handleDeselectAll}
+            onSelectAll={handleSelectAll}
             onStatusChange={handleStatusChange}
             onYearChange={handleYearChange}
             onAmountBlur={handleAmountBlur}

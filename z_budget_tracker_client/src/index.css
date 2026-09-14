@@ -168,7 +168,7 @@ input:-webkit-autofill:focus {
     }
   }
 
-  @keyframes custom-enter {
+  /* @keyframes custom-enter {
     0% {
       transform: translateX(100%);
       opacity: 0;
@@ -187,10 +187,11 @@ input:-webkit-autofill:focus {
     100% {
       transform: translateX(
         120%
-      ); /* Pushes the toast entirely off-screen to the right */
+      ); 
       opacity: 0;
     }
-  }
+           
+  }*/
 }
 
 .Dropdown-control {

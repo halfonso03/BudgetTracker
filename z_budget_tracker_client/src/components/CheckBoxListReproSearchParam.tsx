@@ -7,6 +7,9 @@ type Props = {
   items: { id: number; name: string; checked: boolean; xChecked: boolean }[];
   onCheck: (id: number, key: string) => void;
   onXCheck?: (id: number, key: string) => void;
+  onDeselectAll: (type: string) => void;
+  onSelectAll: (type: string) => void;
+
 };
 
 const CheckBoxListReproSearchParam = ({
@@ -16,7 +19,11 @@ const CheckBoxListReproSearchParam = ({
   maxHeight,
   onCheck,
   onXCheck,
+  onDeselectAll,
+  onSelectAll
 }: Props) => {
+  const [allSelected, setAllSelected] = useState(true);
+
   const [options, setOptions] = useState<
     { id: number; name: string; checked: boolean; xChecked: boolean }[]
   >(
@@ -53,11 +60,31 @@ const CheckBoxListReproSearchParam = ({
     onXCheck?.(id, key);
   }
 
+  function deselectAllClick() {
+    if (allSelected) {
+      setOptions((prev) => [...prev.map((i) => ({ ...i, checked: false, xChecked: false }))]);
+      setAllSelected(false);
+      onDeselectAll(id);
+    } else {
+      setAllSelected(true);
+      setOptions((prev) => [...prev.map((i) => ({ ...i, checked: true }))]);
+      onSelectAll(id);
+    }
+  }
+
   return (
     <div>
       {/* <pre>{JSON.stringify(options)}</pre> */}
-      <div className="font-semibold text-neutral-600 pl-3 pt-2 pb-0  ">
-        {label}
+      <div className=" flex justify-between font-semibold text-neutral-600 bg-neutral-100 p-2 ">
+        <div className="pl-2">{label}</div>
+        <div className="pr-2">
+          <button
+            className="text-blue-600 cursor-pointer"
+            onClick={deselectAllClick}
+          >
+            {allSelected ? 'Deselect All' : 'Select All'}
+          </button>
+        </div>
       </div>
       <div
         style={{
@@ -82,7 +109,7 @@ const CheckBoxListReproSearchParam = ({
             {options?.map((i, index) => (
               <li
                 key={index}
-                className="grid grid-cols-[1fr_1fr] p-1 text-neutral-700"
+                className="grid grid-cols-[2fr_1fr] p-1 text-neutral-700"
               >
                 <div className="flex gap-2">
                   <div>
@@ -110,9 +137,13 @@ const CheckBoxListReproSearchParam = ({
                       </svg>
                     </div>
                   </div>
-                  <div className={`text-[0.9rem] italic ${i.checked ? 'text-neutral-700' : 'text-neutral-500'}`}>{i.name}</div>
+                  <div
+                    className={`text-[0.9rem] italic ${i.checked ? 'text-neutral-700' : 'text-neutral-500'}`}
+                  >
+                    {i.name}
+                  </div>
                 </div>
-                <div className="flex gap-2 ml-10">
+                <div className="flex gap-2  justify-end">
                   <div className="relative flex">
                     <input
                       type="checkbox"
