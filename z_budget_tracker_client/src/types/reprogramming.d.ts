@@ -35,7 +35,7 @@ type ReproLineItem = LineItem & {
     currentAmount: number
     increase?: string | number
     decrease?: string | number
-    newAmount: number
+    newCurrentAmount: number
     remainingAmount: number
     newRemainingAmount: number
     comment?: string
@@ -64,7 +64,7 @@ type ReprogInputRow = {
     currentAmount?: number;
     increase: string | number;
     decrease: string | number
-    newAmount: number
+    newCurrentAmount: number
 };
 
 

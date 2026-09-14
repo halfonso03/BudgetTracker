@@ -70,7 +70,7 @@ const AddLineModal = ({ ...props }: Props) => {
         grantId: selections!.grantId!,
         grantName: grants.filter((x) => x.id == selections?.grantId)[0].name,
         currentAmount: account.currentAmount,
-        newAmount: currentAmount,
+        newCurrentAmount: currentAmount,
         remainingAmount: remainingAmount,
         newRemainingAmount: remainingAmount,
         comment: '',

@@ -82,7 +82,7 @@ const EditLineModal = ({ ...props }: Props) => {
         grantId: selections!.grantId!,
         grantName: grants.filter((x) => x.id == selections?.grantId)[0].name,
         currentAmount: account.currentAmount,
-        newAmount: account.currentAmount,
+        newCurrentAmount: account.currentAmount,
         remainingAmount: remainingAmount,
         newRemainingAmount: remainingAmount,
       };

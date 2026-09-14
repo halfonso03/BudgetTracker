@@ -28,6 +28,6 @@ const ReproPreload = () => {
     }
   });
 
-  return <div>ReproPreload</div>;
+  return null;
 };
 export default ReproPreload;

@@ -38,7 +38,7 @@ const CommentToggler = ({ uuid, itemComment, saveComment, canEdit }: Props) => {
           onClick={() =>
             setIsOpenerClass((prev) => (prev == ' open ' ? '' : ' open '))
           }
-          className={`cursor-pointer z-1  ${comment && comment.length ? 'text-yellow-500' : 'text-neutral-500'}`}
+          className={`cursor-pointer z-1  ${comment && comment.length ? 'text-blue-500' : 'text-neutral-500'}`}
         ></StickyNote>
       </div>
 

@@ -3,7 +3,10 @@
 html {
   interpolate-size: allow-keywords;
 }
-
+pre {
+  tab-size: 4; /* Sets the tab width to 4 spaces */
+  -moz-tab-size: 4; /* Code for older Firefox browsers */
+}
 :root {
   font-size: 0.95rem;
   font-family: 'Poppins';

@@ -11,7 +11,6 @@ namespace Application.DTOs.Repro
     {
         [Required]
         [Range(0, int.MaxValue)]
-        [JsonPropertyName("row_id")]
         public int RowId { get; set; }
 
         [Required]

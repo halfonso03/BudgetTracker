@@ -33,12 +33,16 @@ const ReproNew = () => {
     if (preloadState.year) {
       initialYear = preloadState.year;
       justification = preloadState.justification ?? '';
+      console.log('1234', 1234);
     } else if (preloadState.ids) {
+      // if redirected from the a budget page
       initialYear = preloadState.ids.year;
       justification = preloadState.ids.justification ?? '';
     }
 
     if (preloadState.balances) {
+      console.log('456', 456);
+
       rowBalances.push({
         key: {
           initiativeId: preloadState.ids.initiativeId,
@@ -48,15 +52,17 @@ const ReproNew = () => {
         balances: preloadState.balances,
       });
 
+      const currentAmount = preloadState.balances.filter(
+        (x: ReproLineItem) => x.accountId === preloadState.ids.accountId,
+      )[0].currentAmount;
+
       lineItems.push({
         ...preloadState.ids,
         rowId: 0,
         uuid: crypto.randomUUID(),
         accountName: '',
-        amount: preloadState.balances.filter(
-          (x: ReproLineItem) => x.accountId === preloadState.ids.accountId,
-        )[0].currentAmount,
-        newAmount: 0,
+        currentAmount: currentAmount,
+        newCurrentAmount: currentAmount,
       });
     }
   }

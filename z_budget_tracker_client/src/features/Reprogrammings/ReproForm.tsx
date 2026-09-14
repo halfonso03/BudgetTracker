@@ -89,13 +89,14 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
-  const [justModalIsOpen, setJustModalIsOpen] = useState(
-    location.state &&
-      location.state.ids !== undefined &&
-      location.state.ids !== null
-      ? true
-      : false,
-  );
+  const [justModalIsOpen, setJustModalIsOpen] = useState(false);
+  // fr above useState add back in later 9/13 11:45
+  // location.state &&
+  //   location.state.ids !== undefined &&
+  //   location.state.ids !== null
+  //   ? true
+  //   : false,
+
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [confirmPostModalIsOpen, setConfirmPostModal] =
     useState<boolean>(false);
@@ -125,7 +126,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           )[0]
           .balances.filter((x) => x.accountId == l.accountId)[0]
           .remainingAmount ?? 0;
-
       return {
         ...l,
         remainingAmount: remainingAmount,
@@ -138,18 +138,20 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   const [savedBalances, setSavedBalances] = useState<ReproRowBalance[]>(
     repro && repro.rowBalances ? repro.rowBalances! : [],
   );
-  const reprogRows: ReprogInputRow[] = lines.map((l) => {
-    return {
-      ...l,
-      increase: formatNumber(+(l.increase ?? 0.0)),
-      decrease: formatNumber(+(l.decrease ?? 0.0)),
-      newAmount: l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
-    };
-  });
 
   const { register, getValues, setValue } = useForm<ReprogInputRows>({
     values: {
-      rows: reprogRows,
+      rows: lines.map((l) => {
+        return {
+          ...l,
+          increase: formatNumber(+(l?.increase ?? 0.0)),
+          decrease: formatNumber(+(l?.decrease ?? 0.0)),
+          newCurrentAmount:
+            l.currentAmount + +(l?.increase ?? 0) - +(l?.decrease ?? 0),
+          newRemainingAmount:
+            l.remainingAmount + +(l?.increase ?? 0) - +(l?.decrease ?? 0),
+        };
+      }),
     },
   });
 
@@ -250,23 +252,21 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     key: { initiativeId: number; grantId: number; categoryId: number },
   ) {
     setTimeout(() => setAddLineModalIsOpen(false), 500);
+
     const newLines: ReproLineItem[] = lines.map(
       (l: ReproLineItem, i: number) => {
         const inc = getValues(`rows.${i}.increase`);
         const dec = getValues(`rows.${i}.decrease`);
         return {
           ...l,
-          rowId: i,
-          accountName: l.accountName,
           increase: inc,
           decrease: dec,
           newAmount: +l.currentAmount + +inc - +dec,
         };
       },
     );
-    newLines.push({ ...newLine, rowId: newLines.length });
 
-    setLines(newLines);
+    setLines([...newLines, { ...newLine, rowId: lines.length }]);
 
     const balances = queryClient.getQueryData<
       {
@@ -318,50 +318,16 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     }, 500);
 
     const newLines = lines.map((l: ReproLineItem, i: number) => {
+      if (l.uuid !== updatedLine.uuid) return l;
       const inc = getValues(`rows.${i}.increase`);
       const dec = getValues(`rows.${i}.decrease`);
-
-      return {
-        ...l,
-        rowId: i,
-        initiativeId:
-          l.uuid === updatedLine.uuid
-            ? updatedLine.initiativeId
-            : l.initiativeId,
-        initiativeName:
-          l.uuid === updatedLine.uuid
-            ? updatedLine.initiativeName
-            : l.initiativeName,
-        grantId: l.uuid === updatedLine.uuid ? updatedLine.grantId : l.grantId,
-        grantName:
-          l.uuid === updatedLine.uuid ? updatedLine.grantName : l.grantName,
-        categoryId:
-          l.uuid === updatedLine.uuid ? updatedLine.categoryId : l.categoryId,
-        categoryName:
-          l.uuid === updatedLine.uuid
-            ? updatedLine.categoryName
-            : l.categoryName,
-        accountId:
-          l.uuid === updatedLine.uuid ? updatedLine.accountId : l.accountId,
-        accountName:
-          l.uuid === updatedLine.uuid ? updatedLine.accountName : l.accountName,
-        increase: inc,
-        decrease: dec,
-        currentAmount:
-          l.uuid === updatedLine.uuid
-            ? updatedLine.currentAmount
-            : l.currentAmount,
-        newAmount:
-          (l.uuid === updatedLine.uuid
-            ? updatedLine.currentAmount
-            : l.currentAmount) +
-          +inc -
-          +dec,
-        newRemainingAmount:
-          l.uuid === updatedLine.uuid
-            ? updatedLine.remainingAmount + +inc - +dec
-            : l.newRemainingAmount,
+      const newLine: ReproLineItem = {
+        ...updatedLine,
+        currentAmount: updatedLine.currentAmount,
+        newCurrentAmount: updatedLine.currentAmount + +inc - +dec,
+        newRemainingAmount: updatedLine.remainingAmount + +inc - +dec,
       };
+      return newLine;
     });
 
     setLines(newLines);
@@ -407,37 +373,30 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
   function handleAccountChange(accountId: number, rowUuid: string) {
     setLines((prev) => {
-      const lines = prev.map((l: ReproLineItem, index) => {
-        const inc = getValues(`rows.${index}.increase`);
-        const dec = getValues(`rows.${index}.decrease`);
-        if (rowUuid === l.uuid) {
-          const { currentAmount, remainingAmount } = savedBalances
-            .filter(
-              (b) =>
-                b.key.initiativeId == l.initiativeId &&
-                b.key.grantId == l.grantId &&
-                b.key.categoryId == l.categoryId,
-            )[0]
-            .balances.filter((x) => x.accountId == accountId)[0];
+      const lines = prev.map((line: ReproLineItem, index) => {
+        if (rowUuid !== line.uuid) return line;
 
-          return {
-            ...l,
-            accountId: accountId,
-            increase: inc,
-            decrease: dec,
-            newAmount: currentAmount + +inc - +dec,
-            currentAmount: currentAmount,
-            newRemainingAmount: remainingAmount + +inc - +dec,
-          };
-        } else {
-          return {
-            ...l,
-            increase: inc,
-            decrease: dec,
-            newAmount: l.currentAmount + +inc - +dec,
-            newRemainingAmount: l.remainingAmount + +inc - +dec,
-          };
-        }
+        const inc = +getValues(`rows.${index}.increase`);
+        const dec = +getValues(`rows.${index}.decrease`);
+
+        const { currentAmount, remainingAmount } = savedBalances
+          .filter(
+            (b) =>
+              b.key.initiativeId == line.initiativeId &&
+              b.key.grantId == line.grantId &&
+              b.key.categoryId == line.categoryId,
+          )[0]
+          .balances.filter((x) => x.accountId == accountId)[0];
+        const newLine: ReproLineItem = {
+          ...line,
+          accountId: accountId,
+          increase: inc,
+          decrease: dec,
+          currentAmount: currentAmount,
+          newCurrentAmount: currentAmount + +inc - +dec,
+          newRemainingAmount: remainingAmount + +inc - +dec,
+        };
+        return newLine;
       });
 
       return [...lines];
@@ -447,68 +406,75 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   }
 
   function handleDuplicateRow(uuid: string) {
-    const newLine = lines.filter((x) => x.uuid === uuid)[0];
+    let indexOfDup = -1;
+    for (const l of lines) {
+      indexOfDup++;
+      if (l.uuid == uuid) break;
+    }
 
-    setLines((prev) => {
-      const newLines = [
-        ...prev,
-        { ...newLine, rowId: prev.length, uuid: crypto.randomUUID() },
-      ];
-      return newLines;
-    });
+    const duplicatedLine = {
+      ...lines.filter((x) => x.uuid === uuid)[0],
+      increase: getValues(`rows.${indexOfDup}.increase`) as string,
+      decrease: getValues(`rows.${indexOfDup}.decrease`) as string,
+      rowId: lines.length,
+      uuid: crypto.randomUUID(),
+    };
 
+    setLines([...lines, duplicatedLine]);
     onIsDirty(true);
   }
 
   function handleDeletRow(uuid: string) {
-    setLines((prev) => {
-      const newLines = prev
+    setLines((prev) =>
+      prev
         .filter((x) => x.uuid !== uuid)
-        .map((l: ReproLineItem, i: number) => ({ ...l, rowId: i }));
-      return newLines;
-    });
+        .map((l: ReproLineItem, i: number) => ({ ...l, rowId: i })),
+    );
     onIsDirty(true);
   }
 
-  function recalculateNewAmounts() {
-    const newLines = lines.map((l, i) => {
+  function debitCreditOnBlur(uuid: string) {
+    const newLines = lines.map((line: ReproLineItem, index: number) => {
+      if (uuid !== line.uuid) return line;
+
       const inc = parseFormattedNumber(
-        getValues(`rows.${i}.increase`) as string,
+        getValues(`rows.${index}.increase`) as string,
       );
       const dec = parseFormattedNumber(
-        getValues(`rows.${i}.decrease`) as string,
+        getValues(`rows.${index}.decrease`) as string,
       );
 
       const { currentAmount, remainingAmount } = savedBalances
         .filter(
           (b) =>
-            b.key.initiativeId == l.initiativeId &&
-            b.key.grantId == l.grantId &&
-            b.key.categoryId == l.categoryId,
+            b.key.initiativeId == line.initiativeId &&
+            b.key.grantId == line.grantId &&
+            b.key.categoryId == line.categoryId,
         )[0]
-        .balances.filter((x) => x.accountId == l.accountId)[0];
+        .balances.filter((x) => x.accountId == line.accountId)[0];
 
-      return {
-        ...l,
+      const updatedLine: ReproLineItem = {
+        ...line,
         increase: inc,
         decrease: dec,
-        newAmount: currentAmount + +inc - +dec,
+        newCurrentAmount: currentAmount + +inc - +dec,
         newRemainingAmount: remainingAmount + +inc - +dec,
       };
+      return updatedLine;
     });
+
     setLines(newLines);
     onIsDirty(true);
   }
 
   function handleSaveComment(uuid: string, comment: string | null | undefined) {
-    setLines((prev) => {
-      const l = prev.map((line) => ({
+    setLines((prev) =>
+      prev.map((line) => ({
         ...line,
         comment: line.uuid === uuid ? (comment ?? '') : line.comment,
-      }));
+      })),
+    );
 
-      return l;
-    });
     onIsDirty(true);
   }
 
@@ -591,8 +557,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         postedBy: posted ? loginId : '',
       };
     });
-
-    console.log('123', 123);
   }
 
   function onServerUpdateSuccess(
@@ -769,7 +733,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
   return (
     <MenuIdProvider>
-      {/* <pre>{JSON.stringify(lines)}</pre> */}
+      <pre>{JSON.stringify(lines)}</pre>
       <div>
         {!userId && (
           <div className="text-xl p-1 text-red-500 font-semibold">
@@ -794,7 +758,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             )}
             <Button
               buttonSize="small"
-              disabled={!canSave()}
+              disabled={!canSave() || !userId}
               onClick={saveReproButtonClick}
             >
               <Save className="mr-1"></Save>
@@ -805,7 +769,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
               disabled={
                 !canPost() ||
                 getErrors().length > 0 ||
-                reproHeader.status === Number(POSTED)
+                reproHeader.status === Number(POSTED) ||
+                !userId
               }
               onClick={() => setConfirmPostModal(true)}
             >
@@ -973,7 +938,9 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                         fieldName="increase"
                         readOnly={reproHeader.status === POSTED}
                         disabled={reproHeader.status === POSTED}
-                        onBlur={recalculateNewAmounts}
+                        onBlur={() => {
+                          debitCreditOnBlur(item.uuid);
+                        }}
                         classes={`flex-[1.5] w-full pl-1 mr-1 pr-1 py-1 text-end border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
                        ${reproHeader.status === POSTED ? 'border-b-0' : 'border-b-2 '}
                        ${reproHeader.status === POSTED && +item.increase! === 0 ? '  opacity-0  ' : '  '}`}
@@ -986,16 +953,18 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                         getValues={getValues}
                         readOnly={reproHeader.status === POSTED}
                         disabled={reproHeader.status === POSTED}
-                        onBlur={recalculateNewAmounts}
+                        onBlur={() => {
+                          debitCreditOnBlur(item.uuid);
+                        }}
                         classes={`flex-[1.5] w-full pl-1 mr-1 pr-1 py-1 text-end  border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
                        ${reproHeader.status === POSTED ? 'border-b-0' : 'border-b-2 '}
                        ${reproHeader.status === POSTED && +item.decrease! === 0 ? '  opacity-0  ' : '  '}`}
                       />
                       <div
-                        className={`text-center flex-2 self-center text-neutral-600  ${item.newAmount < 0 ? 'text-red-500' : ''}`}
+                        className={`text-center flex-2 self-center text-neutral-600  ${item.newCurrentAmount < 0 ? 'text-red-500' : ''}`}
                       >
                         {reproHeader.status !== POSTED &&
-                          formatCurrency(item.newAmount)}
+                          formatCurrency(item.newCurrentAmount)}
                       </div>
                       <div
                         className={`flex justify-center flex-2 self-center  `}

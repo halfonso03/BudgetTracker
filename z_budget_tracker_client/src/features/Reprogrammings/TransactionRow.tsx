@@ -52,7 +52,7 @@ const TransactionRow = ({
   }
   return (
     <Fragment>
-      <div className="self-center">{initiativeName}</div>
+      <div className="self-center">{initiativeName}<br />{uuid}</div>
       <div className="self-center">{grantName}</div>
       <div className="self-center">{categoryName}</div>
       <div className="self-center ">
