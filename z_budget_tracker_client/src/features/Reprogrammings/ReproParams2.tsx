@@ -12,9 +12,8 @@ type Props = {
   initiatives?: { id: number; name: string }[] | undefined;
   grants?: { id: number; name: string }[] | undefined;
   accounts?: { id: number; name: string }[] | undefined;
-
   onYearChange: (year: number) => void;
-
+  onStatusChange?: (year: number) => void;
   onListCheck?: (id: number, key: string) => void;
   onListXCheck?: (id: number, key: string) => void;
   onDeselectAll: (type: string) => void;
@@ -37,13 +36,17 @@ const ReproParams2 = memo(
     onListXCheck,
     onDeselectAll,
     onSelectAll,
+    onStatusChange,
   }: Props) => {
     const [visible, setVisisble] = useState<VisibleParams>({
       initiatives: false,
       grants: false,
       accounts: false,
     });
-
+    const [iLabel, setILabel] = useState('Initiative');
+    const [gLabel, setGLabel] = useState('Grant');
+    const [aLabel, setALabel] = useState('Account');
+    
     const gRef = useOutsideClick<HTMLDivElement>(() => {
       setVisisble((prev) => ({ ...prev, grants: false }));
     }, false);
@@ -85,29 +88,22 @@ const ReproParams2 = memo(
 
     function onListVisible(type: string) {
       if (type == INITIATIVES_LIST_TYPE) {
-        setVisisble({
-          grants: false,
-          accounts: false,
+        setVisisble((prev) => ({
+          ...prev,
           initiatives: visible.initiatives === true ? false : true,
-        });
+        }));
       } else if (type == GRANTS_LIST_TYPE) {
-        setVisisble({
-          initiatives: false,
-          accounts: false,
+        setVisisble((prev) => ({
+          ...prev,
           grants: visible.grants === true ? false : true,
-        });
+        }));
       } else if (type == ACCOUNTS_LIST_TYPE) {
-        setVisisble({
-          initiatives: false,
-          grants: false,
+        setVisisble((prev) => ({
+          ...prev,
           accounts: visible.accounts === true ? false : true,
-        });
+        }));
       }
     }
-
-    const [iLabel, setILabel] = useState('Initiative');
-    const [gLabel, setGLabel] = useState('Grant');
-    const [aLabel, setALabel] = useState('Account');
 
     function handleOptionsUpdated(
       options: {
@@ -119,9 +115,8 @@ const ReproParams2 = memo(
       type: string,
     ) {
       if (type == INITIATIVES_LIST_TYPE) {
-        if (options.filter((x) => x.checked).length === 0) {
-          setILabel('Initiative');
-        } else if (
+        if (
+          options.filter((x) => x.checked).length === 0 ||
           initiatives?.length === options.filter((x) => x.checked).length
         ) {
           setILabel('Initiative');
@@ -132,18 +127,18 @@ const ReproParams2 = memo(
         }
       }
       if (type == GRANTS_LIST_TYPE) {
-        if (options.filter((x) => x.checked).length === 0) {
-          setGLabel('Grant');
-        } else if (grants?.length === options.filter((x) => x.checked).length) {
+        if (
+          options.filter((x) => x.checked).length === 0 ||
+          grants?.length === options.filter((x) => x.checked).length
+        ) {
           setGLabel('Grant');
         } else {
           setGLabel('Grant (' + options.filter((x) => x.checked).length + ')');
         }
       }
       if (type == ACCOUNTS_LIST_TYPE) {
-        if (options.filter((x) => x.checked).length === 0) {
-          setALabel('Account');
-        } else if (
+        if (
+          options.filter((x) => x.checked).length === 0 ||
           accounts?.length === options.filter((x) => x.checked).length
         ) {
           setALabel('Account');
@@ -179,11 +174,12 @@ const ReproParams2 = memo(
               >
                 <div className="grow">{iLabel}</div>
                 <div>
-                  {visible.initiatives === true ? (
-                    <ChevronUp></ChevronUp>
-                  ) : (
-                    <ChevronDown></ChevronDown>
-                  )}
+                  <ChevronUp
+                    className={`${visible.initiatives === true ? 'hidden' : ''}`}
+                  ></ChevronUp>
+                  <ChevronDown
+                    className={`${visible.initiatives === false ? 'hidden' : ''}`}
+                  ></ChevronDown>
                 </div>
               </button>
             </div>
@@ -227,11 +223,12 @@ const ReproParams2 = memo(
               >
                 <div className="grow">{gLabel}</div>
                 <div>
-                  {visible.grants === true ? (
-                    <ChevronUp></ChevronUp>
-                  ) : (
-                    <ChevronDown></ChevronDown>
-                  )}
+                  <ChevronUp
+                    className={`${visible.grants === true ? 'hidden' : ''}`}
+                  ></ChevronUp>
+                  <ChevronDown
+                    className={`${visible.grants === false ? 'hidden' : ''}`}
+                  ></ChevronDown>
                 </div>
               </button>
             </div>
@@ -274,11 +271,12 @@ const ReproParams2 = memo(
               >
                 <div className="grow">{aLabel}</div>
                 <div>
-                  {visible.accounts === true ? (
-                    <ChevronUp></ChevronUp>
-                  ) : (
-                    <ChevronDown></ChevronDown>
-                  )}
+                  <ChevronUp
+                    className={`${visible.accounts === true ? 'hidden' : ''}`}
+                  ></ChevronUp>
+                  <ChevronDown
+                    className={`${visible.accounts === false ? 'hidden' : ''}`}
+                  ></ChevronDown>
                 </div>
               </button>
             </div>

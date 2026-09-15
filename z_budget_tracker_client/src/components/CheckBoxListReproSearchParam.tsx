@@ -95,7 +95,7 @@ const CheckBoxListReproSearchParam = ({
   return (
     <div>
       {/* <pre>{JSON.stringify(options)}</pre> */}
-      <div className=" flex justify-between font-semibold text-neutral-600 bg-neutral-100 p-2 ">
+      <div className=" flex justify-between font-semibold text-neutral-600 bg-neutral-50 p-2 ">
         <div className="pl-2">{label}</div>
         <div className="pr-2">
           <button

@@ -174,6 +174,7 @@ const ReproSearch = () => {
 
   const handleStatusChange = useCallback((status: number) => {
     setStatus(status);
+    setPageNumber(1);
   }, []);
 
   const handleYearChange = useCallback(
@@ -187,6 +188,7 @@ const ReproSearch = () => {
         return [...i, ...a, ...g];
       });
       setYear(year);
+      setPageNumber(1);
     },
     [grants],
   );
@@ -284,7 +286,28 @@ const ReproSearch = () => {
       <div className="flex gap-2 mt-10">
         {/* <div className="flex flex-2">
           <div></div>
-        </div> */}
+        </div> */}{' '}
+        {/* <MemoizedReproParams
+          initiatives={initiativesList?.map((x) => ({
+            id: x.id,
+            name: x.name,
+          }))}
+          grants={grants
+            ?.filter((x) => x.year === year)
+            .map((x) => ({ id: x.id, name: x.name }))}
+          accounts={accountsList?.map((x) => ({
+            id: x.id,
+            name: x.name,
+          }))}
+          onListCheck={handleListCheck}
+          onListXCheck={handleListXCheck}
+          onDeselectAll={handleDeselectAll}
+          onSelectAll={handleSelectAll}
+          onStatusChange={handleStatusChange}
+          onYearChange={handleYearChange}
+          onAmountBlur={handleAmountBlur}
+          onAmountComparerChange={handleComparerChange}
+        ></MemoizedReproParams> */}
         <div className="p-2 flex-7">
           <div className="mb-4">
             <MemoizedReproParams
