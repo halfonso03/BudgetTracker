@@ -36,7 +36,22 @@ namespace Persistence
                 new Initiative() { Id = 2, Name = "Training" },
                 new Initiative() { Id = 3, Name = "ORS" },
                 new Initiative() { Id = 4, Name = "Multimedia & Technology Unit" },
-                new Initiative() { Id = 5, Name = "DHE" }
+                new Initiative() { Id = 5, Name = "DHE" },
+                new Initiative() { Id = 6, Name = "Management & Coordination 2" },
+                new Initiative() { Id = 7, Name = "Training 2" },
+                new Initiative() { Id = 8, Name = "ORS 2" },
+                new Initiative() { Id = 9, Name = "Multimedia & Technology Unit 2" },
+                new Initiative() { Id = 10, Name = "DHE 3" },
+                new Initiative() { Id = 11, Name = "Management & Coordination 3" },
+                new Initiative() { Id = 12, Name = "Training 3" },
+                new Initiative() { Id = 13, Name = "ORS 3" },
+                new Initiative() { Id = 14, Name = "Multimedia & Technology Unit 3" },
+                new Initiative() { Id = 15, Name = "DHE 4" },
+                new Initiative() { Id = 16, Name = "Management & Coordination 4" },
+                new Initiative() { Id = 17, Name = "Training 4" },
+                new Initiative() { Id = 18, Name = "ORS 4" },
+                new Initiative() { Id = 19, Name = "Multimedia & Technology Unit 4" },
+                new Initiative() { Id = 20, Name = "DHE 4" }
             );
 
             builder.Entity<Grant>().HasData(

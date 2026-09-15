@@ -15,6 +15,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../../components/ConfirmModal';
+import ReproParams2 from './ReproParams2';
 
 type SelectedItem = {
   id: number;
@@ -24,7 +25,7 @@ type SelectedItem = {
 const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
 const ACCOUNTS_LIST_TYPE = 'A';
-const MemoizedReproParams = React.memo(ReproParams);
+const MemoizedReproParams = React.memo(ReproParams2);
 
 const ReproSearch = () => {
   const queryClient = useQueryClient();
@@ -281,9 +282,11 @@ const ReproSearch = () => {
       {/* {searchResults?.searchId} */}
 
       <div className="flex gap-2 mt-10">
-        <div className="flex flex-2">
-          {/* <pre>{JSON.stringify(xSelectedIds)}</pre> */}
-          <div>
+        {/* <div className="flex flex-2">
+          <div></div>
+        </div> */}
+        <div className="p-2 flex-7">
+          <div className="mb-4">
             <MemoizedReproParams
               initiatives={initiativesList?.map((x) => ({
                 id: x.id,
@@ -306,24 +309,18 @@ const ReproSearch = () => {
               onAmountComparerChange={handleComparerChange}
             ></MemoizedReproParams>
           </div>
-        </div>
-        <div className="p-2 flex-7">
-          {/* {searchResults && searchResults.data.items.length == 0 && (
-          <div className="text-center justify-start">
-            No reprogrammings found.
-          </div>
-        )} */}
+
           {successLoadingResults && searchResults && paginationData && (
             <MenuIdProvider>
               <div className="flex flex-col">
-                <div className="flex justify-between pl-1 ">
-                  <div className="pl-1 text-md font-semibold text-neutral-500 mb-3">
+                <div className="flex justify-between pl-1 items-center ">
+                  <div className="text-md font-semibold text-neutral-500 mb-1 ">
                     {paginationData.totalCount} Reprogramming
                     {paginationData.totalCount > 1 ? 's' : ''} found.
                   </div>
                   {searchResults.items.length > 0 && (
                     <button
-                      className=" text-neutral-500 hover:text-blue-800 cursor-pointer hover:scale-115 transition-all duration-200"
+                      className=" text-neutral-500 hover:text-blue-800 cursor-pointer hover:scale-115 transition-all duration-200 mt-4"
                       onClick={handleRefreshClick}
                     >
                       <RefreshCw size={20}></RefreshCw>

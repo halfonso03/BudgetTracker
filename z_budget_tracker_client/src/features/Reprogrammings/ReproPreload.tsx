@@ -3,19 +3,7 @@ import { useEffect } from 'react';
 import useCurrentAccountBalances from '../../api/hooks/repro/useCurrentAccountBalances';
 
 const ReproPreload = () => {
-  // const queryClient = useQueryClient();
   const { year, initiativeId, grantId, categoryId, accountId } = useParams();
-
-  // queryClient.invalidateQueries({
-  //   queryKey: [
-  //     'repro_account_balances',
-  //     +initiativeId!,
-  //     +grantId!,
-  //     +categoryId!,
-  //   ],
-  //   exact: true,
-  // });
-
   const navigate = useNavigate();
 
   const { data, isSuccess, isFetching, isLoading } = useCurrentAccountBalances(
@@ -26,7 +14,6 @@ const ReproPreload = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      console.log('data', data);
 
       navigate('/reprogramming/new', {
         state: {

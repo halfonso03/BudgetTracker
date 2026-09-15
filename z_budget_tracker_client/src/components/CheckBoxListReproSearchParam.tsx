@@ -2,13 +2,21 @@ import { useState } from 'react';
 
 type Props = {
   id: string;
-  label: string;
+  label?: string;
   maxHeight?: number | null | undefined;
   items: { id: number; name: string; checked: boolean; xChecked: boolean }[];
   onCheck: (id: number, key: string) => void;
   onXCheck?: (id: number, key: string) => void;
   onDeselectAll: (type: string) => void;
   onSelectAll: (type: string) => void;
+  onOptionsUpdated: (
+    options: {
+      id: number;
+      name: string;
+      checked: boolean;
+      xChecked: boolean;
+    }[],
+  ) => void;
 };
 
 const CheckBoxListReproSearchParam = ({
@@ -20,6 +28,7 @@ const CheckBoxListReproSearchParam = ({
   onXCheck,
   onDeselectAll,
   onSelectAll,
+  onOptionsUpdated
 }: Props) => {
   const [allSelected, setAllSelected] = useState(true);
 
@@ -41,13 +50,21 @@ const CheckBoxListReproSearchParam = ({
 
   function handleCheck(id: number, key: string) {
     const removed = options.some((x) => x.id == id && x.checked);
-    setOptions((prev) => {
-      return prev.map((i) => ({
-        ...i,
-        checked: i.id === id ? !i.checked : i.checked,
-        xChecked: i.id === id && removed ? false : i.xChecked,
-      }));
-    });
+
+    const newOptions = options.map((i) => ({
+      ...i,
+      checked: i.id === id ? !i.checked : i.checked,
+      xChecked: i.id === id && removed ? false : i.xChecked,
+    }));
+
+    if (options.length === newOptions.filter(x => x.checked).length) {
+      setAllSelected(true);
+    } else {
+      setAllSelected(false);
+    }
+
+    setOptions(newOptions);
+    onOptionsUpdated(newOptions);
     onCheck(id, key);
   }
 
@@ -153,7 +170,9 @@ const CheckBoxListReproSearchParam = ({
                       onChange={() => {
                         handleXCheck(i.id, id);
                       }}
-                      disabled={!options.some((x) => x.id === i.id && x.checked)}
+                      disabled={
+                        !options.some((x) => x.id === i.id && x.checked)
+                      }
                       checked={i.xChecked}
                       className={`peer/excl appearance-none w-4.5 h-4.5 border-3 border-gray-400 rounded bg-transparent checked:bg-neutral-500 checked:border-neutral-500 dark:checked:bg-green-700 dark:checked:border-green-700 
                     transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-green-500 focus:ring-offset-2`}
