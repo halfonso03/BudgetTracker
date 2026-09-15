@@ -3,7 +3,7 @@ import { useState, type ChangeEvent } from 'react';
 import useCategories from '../../../api/hooks/common/useCategories';
 import useGrants from '../../../api/hooks/common/useGrants';
 import useInitiatives from '../../../api/hooks/common/useInitiatives';
-import useAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
+import useCurrentAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
 import { formatCurrency } from '../../../app/util';
 import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
@@ -49,7 +49,7 @@ const EditLineModal = ({ ...props }: Props) => {
 
   const [animateOut, setAnimateOut] = useState(false);
 
-  const { data: balances } = useAccountBalances(
+  const { data: balances } = useCurrentAccountBalances(
     selections?.initiativeId,
     selections?.grantId,
     selections?.categoryId,

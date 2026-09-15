@@ -16,16 +16,16 @@ const fetchBalances = async (
   return response.data;
 };
 
-const useAccountBalances = (
+const useCurrentAccountBalances = (
   initiativeId?: number,
   grantId?: number,
   categoryId?: number,
 ) => {
-  const { data, isLoading, status, isFetching } = useQuery<
+  const { data, isLoading, status, isFetching, isSuccess } = useQuery<
     ReproAccountBalance[]
   >({
-    queryKey: ['repro_account_balances', initiativeId, grantId, categoryId],
     queryFn: () => fetchBalances(initiativeId, grantId, categoryId),
+    queryKey: ['repro_account_balances', initiativeId, grantId, categoryId],
     enabled:
       initiativeId != undefined &&
       initiativeId != 0 &&
@@ -35,7 +35,7 @@ const useAccountBalances = (
       categoryId != 0,
   });
 
-  return { data, isLoading, status, isFetching };
+  return { data, isLoading, status, isFetching, isSuccess };
 };
 
-export default useAccountBalances;
+export default useCurrentAccountBalances;

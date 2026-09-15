@@ -33,7 +33,6 @@ const ReproNew = () => {
     if (preloadState.year) {
       initialYear = preloadState.year;
       justification = preloadState.justification ?? '';
-      console.log('1234', 1234);
     } else if (preloadState.ids) {
       // if redirected from the a budget page
       initialYear = preloadState.ids.year;
@@ -41,8 +40,6 @@ const ReproNew = () => {
     }
 
     if (preloadState.balances) {
-      console.log('456', 456);
-
       rowBalances.push({
         key: {
           initiativeId: preloadState.ids.initiativeId,

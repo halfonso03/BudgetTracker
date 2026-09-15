@@ -1,15 +1,33 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import useAccountBalances from '../../api/hooks/repro/useCurrentAccountBalances';
+import useCurrentAccountBalances from '../../api/hooks/repro/useCurrentAccountBalances';
 
 const ReproPreload = () => {
+  // const queryClient = useQueryClient();
   const { year, initiativeId, grantId, categoryId, accountId } = useParams();
+
+  // queryClient.invalidateQueries({
+  //   queryKey: [
+  //     'repro_account_balances',
+  //     +initiativeId!,
+  //     +grantId!,
+  //     +categoryId!,
+  //   ],
+  //   exact: true,
+  // });
+
   const navigate = useNavigate();
 
-  const { data } = useAccountBalances(+initiativeId!, +grantId!, +categoryId!);
+  const { data, isSuccess, isFetching, isLoading } = useCurrentAccountBalances(
+    +initiativeId!,
+    +grantId!,
+    +categoryId!,
+  );
 
   useEffect(() => {
-    if (data) {
+    if (isSuccess) {
+      console.log('data', data);
+
       navigate('/reprogramming/new', {
         state: {
           balances: data,
@@ -19,15 +37,26 @@ const ReproPreload = () => {
             grantId: +grantId!,
             categoryId: +categoryId!,
             accountId: +accountId!,
-            initiativeName: data[0].initiativeName,
-            grantName: data[0].grantName,
-            categoryName: data[0].categoryName,
+            initiativeName: data![0].initiativeName,
+            grantName: data![0].grantName,
+            categoryName: data![0].categoryName,
           },
         },
+        replace: true,
       });
     }
-  });
-
-  return null;
+  }, [
+    accountId,
+    categoryId,
+    data,
+    grantId,
+    initiativeId,
+    isFetching,
+    isSuccess,
+    navigate,
+    year,
+  ]);
+  if (isLoading) return <div>Loading...</div>;
+  return <div>Redirecting...</div>;
 };
 export default ReproPreload;

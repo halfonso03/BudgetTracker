@@ -37,7 +37,6 @@ const Summary = ({ year }: Props) => {
         .reduce((acc, cur) => (acc ?? 0) + (cur ?? 0), 0),
     };
   });
-console.log('budgetSummaries', budgetSummaries)
   if (!budgetSummaries.length)
     return <div className="my-5">There are no budgets for {year}</div>;
 

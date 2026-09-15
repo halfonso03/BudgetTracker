@@ -139,6 +139,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       return line;
     }),
   );
+
   const [savedBalances, setSavedBalances] = useState<ReproRowBalance[]>(
     repro && repro.rowBalances ? repro.rowBalances! : [],
   );
@@ -603,7 +604,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           await invalidateBalances();
         }
 
-        queryClient.setQueryData<Repro>(['repro', id], () => ({
+        await queryClient.setQueryData<Repro>(['repro', id], () => ({
           ...reproToSave,
           id: id,
           year: repro.year,
@@ -655,9 +656,9 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         if (posted) {
           await invalidateBalances();
         }
-        await queryClient.invalidateQueries({
-          queryKey: ['repro_account_balances'],
-        });
+        // await queryClient.invalidateQueries({
+        //   queryKey: ['repro_account_balances'],
+        // });
         // queryClient.setQueryData<Repro>(
         //   ['repro', reproHeader.id],
         //   (oldData: any) => {
@@ -689,16 +690,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     createDate: Date,
     postedDate: Date | null,
   ) {
-    // if (posted) {
-    //   invalidateBalances();
-    // }
-
     setTimeout(() => {
       setReproHeader((prev) => {
-        console.log('id', newId);
-        console.log('userId', userId);
-        console.log('loginid', loginId);
-
         return {
           ...prev,
           id: newId,
@@ -748,8 +741,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       )
       .map((l) => ({ i: l.initiativeId, g: l.grantId, c: l.categoryId }));
     for (const l of uniqueLines) {
-      await queryClient.invalidateQueries({
-        queryKey: ['repro_account_balances', l.i, l.g, l.c],
+      await queryClient.refetchQueries({
+        queryKey: ['repro_account_balances', +l.i, +l.g, +l.c],
       });
     }
   }
@@ -943,7 +936,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                 b.key.grantId == item.grantId &&
                 b.key.categoryId == item.categoryId,
             )[0].balances;
-
             return (
               <div
                 key={index}
