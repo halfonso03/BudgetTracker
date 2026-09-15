@@ -143,6 +143,7 @@ type ReproSearchResponse = {
     items: ReproSearchResult[]
     itemCount: number
     pagination: PaginationData
+    searchId?: string
 }
 
 type ReprLineItemSearchResult = {

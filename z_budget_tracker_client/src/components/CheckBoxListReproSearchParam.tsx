@@ -9,7 +9,6 @@ type Props = {
   onXCheck?: (id: number, key: string) => void;
   onDeselectAll: (type: string) => void;
   onSelectAll: (type: string) => void;
-
 };
 
 const CheckBoxListReproSearchParam = ({
@@ -20,7 +19,7 @@ const CheckBoxListReproSearchParam = ({
   onCheck,
   onXCheck,
   onDeselectAll,
-  onSelectAll
+  onSelectAll,
 }: Props) => {
   const [allSelected, setAllSelected] = useState(true);
 
@@ -41,10 +40,12 @@ const CheckBoxListReproSearchParam = ({
       : '' + ' ';
 
   function handleCheck(id: number, key: string) {
+    const removed = options.some((x) => x.id == id && x.checked);
     setOptions((prev) => {
       return prev.map((i) => ({
         ...i,
         checked: i.id === id ? !i.checked : i.checked,
+        xChecked: i.id === id && removed ? false : i.xChecked,
       }));
     });
     onCheck(id, key);
@@ -62,7 +63,9 @@ const CheckBoxListReproSearchParam = ({
 
   function deselectAllClick() {
     if (allSelected) {
-      setOptions((prev) => [...prev.map((i) => ({ ...i, checked: false, xChecked: false }))]);
+      setOptions((prev) => [
+        ...prev.map((i) => ({ ...i, checked: false, xChecked: false })),
+      ]);
       setAllSelected(false);
       onDeselectAll(id);
     } else {
@@ -120,7 +123,7 @@ const CheckBoxListReproSearchParam = ({
                           handleCheck(i.id, id);
                         }}
                         checked={i.checked}
-                        className={`peer appearance-none w-5 h-5 border-2 border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-green-700 dark:checked:border-green-700 
+                        className={`peer appearance-none w-5 h-5 border-3 border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-green-700 dark:checked:border-green-700 
                     transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-green-500 focus:ring-offset-2`}
                       />
                       <svg
@@ -150,8 +153,9 @@ const CheckBoxListReproSearchParam = ({
                       onChange={() => {
                         handleXCheck(i.id, id);
                       }}
+                      disabled={!options.some((x) => x.id === i.id && x.checked)}
                       checked={i.xChecked}
-                      className={`peer/excl appearance-none w-4.5 h-4.5 border-2 border-gray-300 rounded bg-transparent checked:bg-neutral-500 checked:border-neutral-500 dark:checked:bg-green-700 dark:checked:border-green-700 
+                      className={`peer/excl appearance-none w-4.5 h-4.5 border-3 border-gray-400 rounded bg-transparent checked:bg-neutral-500 checked:border-neutral-500 dark:checked:bg-green-700 dark:checked:border-green-700 
                     transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-green-500 focus:ring-offset-2`}
                     />
                     <svg
@@ -169,7 +173,7 @@ const CheckBoxListReproSearchParam = ({
                   </div>
                   <div>
                     <div
-                      className={`text-[0.9rem] italic ${i.xChecked ? 'text-neutral-700' : 'text-neutral-400'}`}
+                      className={`text-[0.9rem] italic ${i.xChecked ? 'text-neutral-700' : 'text-neutral-500'}`}
                     >
                       Exclusive
                     </div>

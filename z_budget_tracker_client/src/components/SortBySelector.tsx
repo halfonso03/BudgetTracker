@@ -15,9 +15,6 @@ export default function SortBySelector({
 }: Props) {
   const { setSortByValue } = useSortingContext();
 
-  // console.log('setSortByValue', setSortByValue)
-  // console.log(value, currentSortValue, currentSortValue?.indexOf(value));
-
   return (
     <div className="flex align-baseline">
       <button

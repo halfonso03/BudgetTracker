@@ -327,7 +327,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     setTimeout(() => {
       setEditSelections(null);
     }, 500);
-    console.log('updatedLine', updatedLine);
     const newLines = lines.map((l: ReproLineItem, i: number) => {
       if (l.uuid !== updatedLine.uuid) return l;
       const { inc, dec } = getRowIncreaseAndDecrease(i);
@@ -597,14 +596,13 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     };
     await createRepro.mutateAsync(reproToSave, {
       onSuccess: async (id) => {
-        // queryClient.invalidateQueries({ queryKey: ['repro', id] });
-        // queryClient.invalidateQueries({ queryKey: ['repro_search'] });
-
         const postedDate = new Date();
         const createDate = new Date();
-        await queryClient.invalidateQueries({
-          queryKey: ['repro_account_balances'],
-        });
+
+        if (posted) {
+          await invalidateBalances();
+        }
+
         queryClient.setQueryData<Repro>(['repro', id], () => ({
           ...reproToSave,
           id: id,
@@ -629,18 +627,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           rowBalances: savedBalances,
         }));
 
-        // const message = posted
-        //   ? 'Reprogramming Posted.'
-        //   : 'Reprogramming Saved.';
-        // toast.success(message, {
-        //   duration: 1500,
-        // });
-
-        //    id: id !== 0 ? id : prev.id,
-        // createdById: id !== 0 : +userId : +prev.createdById,
-        //
-        // ,
-        //
         onServerCreateSuccess(
           posted,
           id,
@@ -666,6 +652,9 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     };
     await updateRepro.mutateAsync(reproToSave, {
       onSuccess: async () => {
+        if (posted) {
+          await invalidateBalances();
+        }
         await queryClient.invalidateQueries({
           queryKey: ['repro_account_balances'],
         });
@@ -700,9 +689,9 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     createDate: Date,
     postedDate: Date | null,
   ) {
-    if (posted) {
-      invalidateBalances();
-    }
+    // if (posted) {
+    //   invalidateBalances();
+    // }
 
     setTimeout(() => {
       setReproHeader((prev) => {
@@ -732,9 +721,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     posted: boolean,
     postedDate: Date | null = null,
   ) {
-    if (posted) {
-      invalidateBalances();
-    }
     setReproHeader((prev) => {
       return {
         ...prev,
@@ -749,24 +735,23 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     });
   }
 
-  function invalidateBalances() {
-    // const uniqueLines = lines
-    //   .filter(
-    //     (item, index, self) =>
-    //       self.findIndex(
-    //         (t) =>
-    //           t.initiativeId === item.initiativeId &&
-    //           t.grantId == item.grantId &&
-    //           t.categoryId == item.categoryId,
-    //       ) === index,
-    //   )
-    //   .map((l) => ({ i: l.initiativeId, g: l.grantId, c: l.categoryId }));
-    // for (const l of uniqueLines) {
-    //   console.log('ionvalid', l);
-    //   queryClient.invalidateQueries({
-    //     queryKey: ['repro_account_balances'],
-    //   });
-    // }
+  async function invalidateBalances() {
+    const uniqueLines = lines
+      .filter(
+        (item, index, self) =>
+          self.findIndex(
+            (t) =>
+              t.initiativeId === item.initiativeId &&
+              t.grantId == item.grantId &&
+              t.categoryId == item.categoryId,
+          ) === index,
+      )
+      .map((l) => ({ i: l.initiativeId, g: l.grantId, c: l.categoryId }));
+    for (const l of uniqueLines) {
+      await queryClient.invalidateQueries({
+        queryKey: ['repro_account_balances', l.i, l.g, l.c],
+      });
+    }
   }
 
   return (

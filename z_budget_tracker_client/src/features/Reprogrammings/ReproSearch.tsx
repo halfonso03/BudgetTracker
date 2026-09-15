@@ -24,9 +24,9 @@ type SelectedItem = {
 const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
 const ACCOUNTS_LIST_TYPE = 'A';
-const MChild = React.memo(ReproParams);
+const MemoizedReproParams = React.memo(ReproParams);
 
-const Search = () => {
+const ReproSearch = () => {
   const queryClient = useQueryClient();
 
   const [year, setYear] = useState<number>(2025);
@@ -35,8 +35,6 @@ const Search = () => {
   const [creditComparer, setCreditComparer] = useState<number>(0);
   const [debit, setDebit] = useState<number>(0);
   const [credit, setCredit] = useState<number>(0);
-
-  // const [l, setL] = useState(false);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const { initiatives } = useInitiatives();
   const { grants } = useGrantsAllYears();
@@ -51,7 +49,7 @@ const Search = () => {
     return initiatives;
   }, [initiatives]);
 
-  const categoriesList = useMemo(() => {
+  const accountsList = useMemo(() => {
     return categories;
   }, [categories]);
 
@@ -81,7 +79,7 @@ const Search = () => {
   }, [preG]);
 
   const c = useMemo(() => {
-    return categoriesList !== undefined && categoriesList !== null
+    return accountsList !== undefined && accountsList !== null
       ? [
           ...categories!.map((i) => ({
             id: i.id,
@@ -89,7 +87,7 @@ const Search = () => {
           })),
         ]
       : [];
-  }, [categories, categoriesList]);
+  }, [categories, accountsList]);
 
   const itemsList: SelectedItem[] = useMemo(() => {
     return [...i, ...g.filter((x) => x.year == year), ...c];
@@ -133,41 +131,44 @@ const Search = () => {
   const paginationData = searchResults?.pagination;
 
   const handleListCheck = (id: number, type: string) => {
-    setSelectedIds(
-      selectedIds.some((x) => x.id === id && x.type === type)
-        ? [
-            ...selectedIds.filter(
-              (x) => (x.type === type && x.id !== id) || x.type !== type,
-            ),
-          ]
-        : [...selectedIds, { id: id, type: type }],
-    );
-  };
+    const removed = selectedIds.some((x) => x.id === id && x.type === type);
 
-  function handleSelectAll(type: string) {
-    const newSelectedIds: SelectedItem[] = [
-      ...selectedIds.filter((x) => x.type !== type),
-      ...itemsList.filter((x) => x.type == type),
-    ];
+    const newSelectedIds = selectedIds.some(
+      (x) => x.id === id && x.type === type,
+    )
+      ? [
+          ...selectedIds.filter(
+            (x) => (x.type === type && x.id !== id) || x.type !== type,
+          ),
+        ]
+      : [...selectedIds, { id: id, type: type }];
 
     setSelectedIds(newSelectedIds);
-  }
 
-  function handleDeselectAll(type: string) {
-    setSelectedIds((prev) => [...prev.filter((x) => x.type !== type)]);
-    setXSelectedIds((prev) => prev.filter((x) => x.type !== type));
-  }
+    if (removed) {
+      // may not be needed
+      setXSelectedIds(
+        xSelectedIds.filter(
+          (x) => (x.type === type && x.id !== id) || x.type !== type,
+        ),
+      );
+    }
+    setPageNumber(1);
+  };
 
   const handleListXCheck = (id: number, type: string) => {
-    setXSelectedIds(
-      xSelectedIds.some((x) => x.id === id && x.type === type)
-        ? [
-            ...xSelectedIds.filter(
-              (x) => (x.type === type && x.id !== id) || x.type !== type,
-            ),
-          ]
-        : [...xSelectedIds, { id: id, type: type }],
-    );
+    const newXSelectedIds = xSelectedIds.some(
+      (x) => x.id === id && x.type === type,
+    )
+      ? [
+          ...xSelectedIds.filter(
+            (x) => (x.type === type && x.id !== id) || x.type !== type,
+          ),
+        ]
+      : [...xSelectedIds, { id: id, type: type }];
+
+    setXSelectedIds(newXSelectedIds);
+    setPageNumber(1);
   };
 
   const handleStatusChange = useCallback((status: number) => {
@@ -261,93 +262,109 @@ const Search = () => {
     }
   }
 
-  return (
-    <div className="flex gap-2 mt-10">
-      <div className="flex flex-2">
-        {/* <pre>{JSON.stringify(selectedIds)}</pre> */}
-        {/* 
-        <pre>{JSON.stringify(xSelectedIds)}</pre> */}
+  function handleSelectAll(type: string) {
+    const newSelectedIds: SelectedItem[] = [
+      ...selectedIds.filter((x) => x.type !== type),
+      ...itemsList.filter((x) => x.type == type),
+    ];
 
-        <div>
-          <MChild
-            initiatives={initiativesList?.map((x) => ({
-              id: x.id,
-              name: x.name,
-            }))}
-            grants={grants
-              ?.filter((x) => x.year === year)
-              .map((x) => ({ id: x.id, name: x.name }))}
-            categories={categoriesList?.map((x) => ({
-              id: x.id,
-              name: x.name,
-            }))}
-            onListCheck={handleListCheck}
-            onListXCheck={handleListXCheck}
-            onDeselectAll={handleDeselectAll}
-            onSelectAll={handleSelectAll}
-            onStatusChange={handleStatusChange}
-            onYearChange={handleYearChange}
-            onAmountBlur={handleAmountBlur}
-            onAmountComparerChange={handleComparerChange}
-          ></MChild>
+    setSelectedIds(newSelectedIds);
+  }
+
+  function handleDeselectAll(type: string) {
+    setSelectedIds((prev) => [...prev.filter((x) => x.type !== type)]);
+    setXSelectedIds((prev) => prev.filter((x) => x.type !== type));
+  }
+
+  return (
+    <div>
+      {/* {searchResults?.searchId} */}
+
+      <div className="flex gap-2 mt-10">
+        <div className="flex flex-2">
+          {/* <pre>{JSON.stringify(xSelectedIds)}</pre> */}
+          <div>
+            <MemoizedReproParams
+              initiatives={initiativesList?.map((x) => ({
+                id: x.id,
+                name: x.name,
+              }))}
+              grants={grants
+                ?.filter((x) => x.year === year)
+                .map((x) => ({ id: x.id, name: x.name }))}
+              accounts={accountsList?.map((x) => ({
+                id: x.id,
+                name: x.name,
+              }))}
+              onListCheck={handleListCheck}
+              onListXCheck={handleListXCheck}
+              onDeselectAll={handleDeselectAll}
+              onSelectAll={handleSelectAll}
+              onStatusChange={handleStatusChange}
+              onYearChange={handleYearChange}
+              onAmountBlur={handleAmountBlur}
+              onAmountComparerChange={handleComparerChange}
+            ></MemoizedReproParams>
+          </div>
         </div>
-      </div>
-      <div className="p-2 flex-7">
-        {/* {searchResults && searchResults.data.items.length == 0 && (
+        <div className="p-2 flex-7">
+          {/* {searchResults && searchResults.data.items.length == 0 && (
           <div className="text-center justify-start">
             No reprogrammings found.
           </div>
         )} */}
-        {successLoadingResults && searchResults && (
-          <MenuIdProvider>
-            <div className="flex flex-col">
-              <div className="flex justify-between pl-1 ">
-                <div className="pl-1 text-md font-semibold text-neutral-500 mb-3">
-                  {searchResults.data.itemCount} Reprogramming
-                  {searchResults.data.itemCount > 1 ? 's' : ''} found.
+          {successLoadingResults && searchResults && paginationData && (
+            <MenuIdProvider>
+              <div className="flex flex-col">
+                <div className="flex justify-between pl-1 ">
+                  <div className="pl-1 text-md font-semibold text-neutral-500 mb-3">
+                    {paginationData.totalCount} Reprogramming
+                    {paginationData.totalCount > 1 ? 's' : ''} found.
+                  </div>
+                  {searchResults.items.length > 0 && (
+                    <button
+                      className=" text-neutral-500 hover:text-blue-800 cursor-pointer hover:scale-115 transition-all duration-200"
+                      onClick={handleRefreshClick}
+                    >
+                      <RefreshCw size={20}></RefreshCw>
+                    </button>
+                  )}
                 </div>
-                {searchResults.data.items.length > 0 && (
-                  <button
-                    className=" text-neutral-500 hover:text-blue-800 cursor-pointer hover:scale-115 transition-all duration-200"
-                    onClick={handleRefreshClick}
-                  >
-                    <RefreshCw size={20}></RefreshCw>
-                  </button>
-                )}
+                <div className="flex flex-col gap-3 items-center justify-between min-h-[75dvh]">
+                  <ReproSearchReults
+                    key={searchResults.searchId}
+                    results={searchResults.items}
+                    onDelete={handleDelete}
+                  ></ReproSearchReults>
+                  <Pagination
+                    data={paginationData}
+                    onPageNumberChange={handlePageNumberChange}
+                  ></Pagination>
+                </div>
               </div>
-              <div className="flex flex-col gap-3 items-center justify-between min-h-[75dvh]">
-                <ReproSearchReults
-                  results={searchResults.data.items}
-                  onDelete={handleDelete}
-                ></ReproSearchReults>
-                <Pagination
-                  data={paginationData}
-                  onPageNumberChange={handlePageNumberChange}
-                ></Pagination>
-              </div>
-            </div>
-          </MenuIdProvider>
-        )}
+            </MenuIdProvider>
+          )}
+        </div>
+        <ConfirmModal
+          onCancel={() => {
+            setTimeout(() => {
+              setDeleteConfirmModalIsOpen(false);
+            }, 500);
+          }}
+          message={`Reprogramming ID ${idToDelete} will be deleted. Click OK to continue.`}
+          isOpen={deleteConfirmModalIsOpen}
+          onConfirm={() => {
+            setTimeout(() => {
+              setDeleteConfirmModalIsOpen(false);
+              setTimeout(deleteConfirmed, 100);
+            }, 500);
+          }}
+        ></ConfirmModal>
       </div>
-      <ConfirmModal
-        onCancel={() => {
-          setTimeout(() => {
-            setDeleteConfirmModalIsOpen(false);
-          }, 500);
-        }}
-        message={`Reprogramming ID ${idToDelete} will be deleted. Click OK to continue.`}
-        isOpen={deleteConfirmModalIsOpen}
-        onConfirm={() => {
-          setTimeout(() => {
-            setDeleteConfirmModalIsOpen(false);
-            setTimeout(deleteConfirmed, 100);
-          }, 500);
-        }}
-      ></ConfirmModal>
     </div>
   );
 };
-export default Search;
+export default ReproSearch;
 
 // if (loadingInit || loadingGrants || loadingCat) return <div>Loading...</div>;
 

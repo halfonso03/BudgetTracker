@@ -422,7 +422,7 @@ namespace Application.Services
 
             return true;
         }
-        
+
         public async Task<Result<Unit>> DeleteRepro(int id)
         {
 
@@ -464,6 +464,27 @@ namespace Application.Services
             if (searchParams.InitiativeIds?.Count > 0)
             {
                 reproLineItems = reproLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
+
+                if (searchParams.XInitiativeIds?.Count > 0)
+                {
+                    var removeIds = new List<int>();
+
+                    foreach (var reproId in reproLineItems.Select(x => x.ReproId))
+                    {
+                        foreach (var xIid in searchParams.XInitiativeIds)
+                        {
+                            if (!searchParams.InitiativeIds.Contains(xIid) || removeIds.Contains(reproId)) break;
+
+                            removeIds.AddIfTrue(!reproLineItems.Where(x => x.ReproId == reproId).All(x => x.InitiativeId == xIid), reproId);
+                        }
+                    }
+
+                    reproLineItems = reproLineItems.Where(x => !removeIds.Contains(x.ReproId));
+                }
+                else
+                {
+                    reproLineItems = reproLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
+                }
             }
 
             if (searchParams.GrantIds?.Count > 0)
@@ -494,7 +515,27 @@ namespace Application.Services
 
             if (searchParams.AccountIds?.Count > 0)
             {
-                reproLineItems = reproLineItems.Where(x => searchParams.AccountIds.Contains(x.AccountId));
+                if (searchParams.XAccountIds?.Count > 0)
+                {
+                    var removeIds = new List<int>();
+
+                    foreach (var reproId in reproLineItems.Select(x => x.ReproId))
+                    {
+                        foreach (var xAid in searchParams.XAccountIds)
+                        {
+                            if (!searchParams.XAccountIds.Contains(xAid) || removeIds.Contains(reproId)) break;
+
+                            removeIds.AddIfTrue(!reproLineItems.Where(x => x.ReproId == reproId).All(x => x.AccountId == xAid), reproId);
+                        }
+                    }
+
+                    reproLineItems = reproLineItems.Where(x => !removeIds.Contains(x.ReproId));
+                }
+                else
+                {
+                    reproLineItems = reproLineItems.Where(x => searchParams.AccountIds.Contains(x.AccountId));
+
+                }
             }
 
             var debit = searchParams.DebitAmount;

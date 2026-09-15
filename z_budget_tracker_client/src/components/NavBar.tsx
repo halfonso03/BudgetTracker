@@ -50,16 +50,14 @@ const NavBar = () => {
   function handleNavigation(e: React.MouseEvent<HTMLElement>, url: string) {
     e.preventDefault();
 
-    const path = location.pathname;
+    navigate(url);
+    return;
 
+    const path = location.pathname;
     const basePath =
       path.indexOf('/', 1) > -1
         ? path.substring(0, path.indexOf('/', 1))
         : path;
-
-    console.log('basePath', basePath);
-    console.log('url', url);
-
     if (basePath !== url) {
       if (hasUnsavedChanges) {
         setConfirmModalIsOpen(true);
@@ -77,6 +75,8 @@ const NavBar = () => {
     url: string,
   ) {
     e.preventDefault();
+    navigate(url);
+    return;
     if (hasUnsavedChanges) {
       setConfirmModalIsOpen(true);
       setUrlToGoTo(url);
@@ -90,6 +90,8 @@ const NavBar = () => {
     url: string,
   ) {
     e.preventDefault();
+    navigate(url);
+    return;
 
     const path = location.pathname;
 

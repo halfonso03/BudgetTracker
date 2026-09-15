@@ -8,11 +8,13 @@ namespace Application.DTOs
 {
     public class ReproSearchParams
     {
-        public required int Year { get; set; }        
+        public required int Year { get; set; }
         public List<int>? InitiativeIds { get; set; } = [];
+        public List<int>? XInitiativeIds { get; set; } = [];
         public List<int>? GrantIds { get; set; } = [];
         public List<int>? XGrantIds { get; set; } = [];
         public List<int>? AccountIds { get; set; } = [];
+        public List<int>? XAccountIds { get; set; } = [];
         public ReproSearchStatus Status { get; set; }
         public AmountComparer DebitComparer { get; set; }
         public AmountComparer CreditComparer { get; set; }

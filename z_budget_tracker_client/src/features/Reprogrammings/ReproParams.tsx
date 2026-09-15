@@ -10,7 +10,7 @@ const ACCOUNTS_LIST_TYPE = 'A';
 type Props = {
   initiatives?: { id: number; name: string }[] | undefined;
   grants?: { id: number; name: string }[] | undefined;
-  categories?: { id: number; name: string }[] | undefined;
+  accounts?: { id: number; name: string }[] | undefined;
   onListCheck?: (id: number, key: string) => void;
   onListXCheck?: (id: number, key: string) => void;
   onYearChange: (year: number) => void;
@@ -25,7 +25,7 @@ const ReproParams = memo(
   ({
     initiatives,
     grants,
-    categories,
+    accounts,
     onListCheck,
     onListXCheck,
     onYearChange,
@@ -112,12 +112,13 @@ const ReproParams = memo(
         </div>
 
         <div className="border border-b-0 border-neutral-200 ">
-          {categories !== undefined && categories.length > 0 && (
+          {accounts !== undefined && accounts.length > 0 && (
             <CheckBoxListReproSearchParam
               label="Account"
               id={ACCOUNTS_LIST_TYPE}
               onCheck={handleCheck}
-              items={categories.map((i) => ({
+              onXCheck={handleXCheck}
+              items={accounts.map((i) => ({
                 ...i,
                 checked: true,
                 xChecked: false,

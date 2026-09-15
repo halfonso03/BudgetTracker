@@ -6,7 +6,7 @@ import NotFound from '../../components/NotFound';
 import Details from '../../features/Budget/Details';
 import CreateBudget from '../../features/Budget/CreateBudget';
 import ReproLanding from '../../features/Reprogrammings/ReproLanding';
-import Search from '../../features/Reprogrammings/Search';
+import ReproSearch from '../../features/Reprogrammings/ReproSearch';
 import Login from '../../features/Auth/Login';
 import ReproPreload from '../../features/Reprogrammings/ReproPreload';
 import ReproDetails from '../../features/Reprogrammings/ReproDetails';
@@ -59,7 +59,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: 'search',
-            element: <Search />,
+            element: <ReproSearch />,
           },
         ],
       },

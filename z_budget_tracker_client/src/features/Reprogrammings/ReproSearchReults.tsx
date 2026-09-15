@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {  useState } from 'react';
 import { formatDate, formatNumber } from '../../app/util';
 import {
   ChevronDownSquare,
@@ -20,6 +20,7 @@ type Props = {
 
 const ReproSearchReults = ({ onDelete, results }: Props) => {
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
+
   const { sortByValue } = useSortingContext();
 
   if (results.length == 0) return null;
