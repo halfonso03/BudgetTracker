@@ -327,12 +327,13 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     setTimeout(() => {
       setEditSelections(null);
     }, 500);
-
+    console.log('updatedLine', updatedLine);
     const newLines = lines.map((l: ReproLineItem, i: number) => {
       if (l.uuid !== updatedLine.uuid) return l;
       const { inc, dec } = getRowIncreaseAndDecrease(i);
       const newLine: ReproLineItem = {
         ...updatedLine,
+        rowId: l.rowId,
         currentAmount: updatedLine.currentAmount,
         newCurrentAmount: updatedLine.currentAmount + +inc - +dec,
         newRemainingAmount: updatedLine.remainingAmount + +inc - +dec,
@@ -537,57 +538,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     return result;
   }
 
-  function onServerCreateSuccess(
-    posted: boolean,
-    newId: number,
-    createDate: Date,
-    postedDate: Date | null,
-  ) {
-    const message = posted ? 'Reprogramming Posted.' : 'Reprogramming Saved.';
-    toast.success(message, {
-      duration: 1500,
-    });
-
-    setTimeout(() => {
-      setReproHeader((prev) => {
-        console.log('id', newId);
-        console.log('userId', userId);
-        console.log('loginid', loginId);
-
-        return {
-          ...prev,
-          id: newId,
-          createdById: +userId!,
-          createdBy: loginId!,
-          createDate: createDate,
-          status: posted ? POSTED : SAVED,
-          postedDate: postedDate,
-          postedBy: posted ? loginId : '',
-        };
-      });
-    }, 1500);
-  }
-
-  function onServerUpdateSuccess(
-    posted: boolean,
-    postedDate: Date | null = null,
-  ) {
-    setReproHeader((prev) => {
-      return {
-        ...prev,
-        status: posted ? POSTED : SAVED,
-        postedDate: postedDate,
-        postedBy: posted ? loginId : '',
-      };
-    });
-    const message = posted ? 'Reprogramming Posted.' : 'Reprogramming Saved.';
-
-    console.log('message', message);
-    toast.success(message, {
-      duration: 1500,
-    });
-  }
-
   function handleSaveJust(text: string) {
     setReproHeader((prev) => ({
       ...prev,
@@ -646,13 +596,15 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       lineItems: lineItems,
     };
     await createRepro.mutateAsync(reproToSave, {
-      onSuccess: (id) => {
-        queryClient.invalidateQueries({ queryKey: ['repro', id] });
+      onSuccess: async (id) => {
+        // queryClient.invalidateQueries({ queryKey: ['repro', id] });
         // queryClient.invalidateQueries({ queryKey: ['repro_search'] });
 
         const postedDate = new Date();
         const createDate = new Date();
-
+        await queryClient.invalidateQueries({
+          queryKey: ['repro_account_balances'],
+        });
         queryClient.setQueryData<Repro>(['repro', id], () => ({
           ...reproToSave,
           id: id,
@@ -713,7 +665,10 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       lineItems: lineItems,
     };
     await updateRepro.mutateAsync(reproToSave, {
-      onSuccess: () => {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: ['repro_account_balances'],
+        });
         // queryClient.setQueryData<Repro>(
         //   ['repro', reproHeader.id],
         //   (oldData: any) => {
@@ -733,16 +688,89 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         // );
 
         const postedDate = new Date();
-
         onServerUpdateSuccess(posted, posted ? postedDate : null);
         onSaved?.();
       },
     });
   }
 
+  function onServerCreateSuccess(
+    posted: boolean,
+    newId: number,
+    createDate: Date,
+    postedDate: Date | null,
+  ) {
+    if (posted) {
+      invalidateBalances();
+    }
+
+    setTimeout(() => {
+      setReproHeader((prev) => {
+        console.log('id', newId);
+        console.log('userId', userId);
+        console.log('loginid', loginId);
+
+        return {
+          ...prev,
+          id: newId,
+          createdById: +userId!,
+          createdBy: loginId!,
+          createDate: createDate,
+          status: posted ? POSTED : SAVED,
+          postedDate: postedDate,
+          postedBy: posted ? loginId : '',
+        };
+      });
+    }, 1500);
+
+    toast.success(posted ? 'Reprogramming Posted.' : 'Reprogramming Saved.', {
+      duration: 1500,
+    });
+  }
+
+  function onServerUpdateSuccess(
+    posted: boolean,
+    postedDate: Date | null = null,
+  ) {
+    if (posted) {
+      invalidateBalances();
+    }
+    setReproHeader((prev) => {
+      return {
+        ...prev,
+        status: posted ? POSTED : SAVED,
+        postedDate: postedDate,
+        postedBy: posted ? loginId : '',
+      };
+    });
+
+    toast.success(posted ? 'Reprogramming Posted.' : 'Reprogramming Saved.', {
+      duration: 1500,
+    });
+  }
+
+  function invalidateBalances() {
+    // const uniqueLines = lines
+    //   .filter(
+    //     (item, index, self) =>
+    //       self.findIndex(
+    //         (t) =>
+    //           t.initiativeId === item.initiativeId &&
+    //           t.grantId == item.grantId &&
+    //           t.categoryId == item.categoryId,
+    //       ) === index,
+    //   )
+    //   .map((l) => ({ i: l.initiativeId, g: l.grantId, c: l.categoryId }));
+    // for (const l of uniqueLines) {
+    //   console.log('ionvalid', l);
+    //   queryClient.invalidateQueries({
+    //     queryKey: ['repro_account_balances'],
+    //   });
+    // }
+  }
+
   return (
     <MenuIdProvider>
-      {/* <pre>{JSON.stringify(lines)}</pre> */}
       <div>
         {!userId && (
           <div className="text-xl p-1 text-red-500 font-semibold">

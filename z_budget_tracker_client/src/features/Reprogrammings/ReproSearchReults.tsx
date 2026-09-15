@@ -161,10 +161,10 @@ const ReproSearchReults = ({ onDelete, results }: Props) => {
                       <div>{item.categoryName}</div>
                       <div>{item.accountName}</div>
                       <div className="text-center">
-                        {item.increase > 0 && formatNumber(item.increase)}
+                        {formatNumber(item.increase)}
                       </div>
                       <div className="text-center">
-                        {item.decrease > 0 && formatNumber(item.decrease)}
+                        {formatNumber(item.decrease)}
                       </div>
                     </div>
                   </div>
