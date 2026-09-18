@@ -287,8 +287,7 @@ const ReproSearch = () => {
 
   return (
     <div>
-      {/* {searchResults?.searchId} */}
-
+   
       <div className="flex gap-2 mt-10">
         {/* <div className="flex flex-2">
           <div></div>
@@ -395,7 +394,6 @@ export default ReproSearch;
 
 // if (loadingInit || loadingGrants || loadingCat) return <div>Loading...</div>;
 
-// console.log('grantsList', grantsList);
 // useEffect(() => {
 //   if (iSuccess && grantsSuccess && catSuccess && !l) {
 //     setL(true);

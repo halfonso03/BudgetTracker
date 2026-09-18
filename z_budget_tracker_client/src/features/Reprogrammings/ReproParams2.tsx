@@ -45,7 +45,6 @@ const ReproParams2 = memo(
     years,
   }: Props) => {
     // console.log('ReproParams2 render');
-
     const [visible, setVisisble] = useState<VisibleParams>({
       initiatives: false,
       grants: false,
@@ -71,7 +70,6 @@ const ReproParams2 = memo(
         checked: y.id === years[0].id,
       })),
     );
-    console.log('yearOptions', yearOptions);
     const [iLabel, setILabel] = useState('Initiative');
     const [gLabel, setGLabel] = useState('Grant');
     const [aLabel, setALabel] = useState('Account');
@@ -95,8 +93,6 @@ const ReproParams2 = memo(
       setVisisble((prev) => ({ ...prev, statuses: false }));
     }, false);
 
-    // function handleYearChange(e: ChangeEvent<HTMLSelectElement>) {}
-
     function handleStatusChange(id: number) {
       setSelectedStatus(id);
       onStatusChange(id);
@@ -105,8 +101,11 @@ const ReproParams2 = memo(
         statuses: false,
       }));
     }
+
+    const [selectedYear, setSelectedYear] = useState(years[0].id);
+
     function handleYearSelected(id: number) {
-      // setSelectedYear(id);
+      setSelectedYear(id);
       setYearOptions((prev) =>
         prev.map((y) => ({ ...y, checked: y.id === id })),
       );
@@ -294,7 +293,6 @@ const ReproParams2 = memo(
             </div>
           </div>
         )}
-
         {grants !== undefined && grants.length > 0 && (
           <div className="relative" ref={gRef}>
             <div className="flex">
@@ -317,6 +315,7 @@ const ReproParams2 = memo(
               className={`flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white ${visible.grants ? '' : 'hidden'}`}
             >
               <CheckBoxListReproSearchParam
+                key={selectedYear}
                 id={GRANTS_LIST_TYPE}
                 onCheck={handleCheck}
                 onXCheck={handleXCheck}

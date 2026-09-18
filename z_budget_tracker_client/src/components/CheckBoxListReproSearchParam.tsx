@@ -28,7 +28,7 @@ const CheckBoxListReproSearchParam = ({
   onXCheck,
   onDeselectAll,
   onSelectAll,
-  onOptionsUpdated
+  onOptionsUpdated,
 }: Props) => {
   const [allSelected, setAllSelected] = useState(true);
 
@@ -42,6 +42,10 @@ const CheckBoxListReproSearchParam = ({
       xChecked: i.xChecked,
     })),
   );
+
+  // if (id === 'G') {
+  //   console.log('options', options);
+  // }
 
   const overflowClass =
     maxHeight !== null && maxHeight !== undefined
@@ -57,7 +61,7 @@ const CheckBoxListReproSearchParam = ({
       xChecked: i.id === id && removed ? false : i.xChecked,
     }));
 
-    if (options.length === newOptions.filter(x => x.checked).length) {
+    if (options.length === newOptions.filter((x) => x.checked).length) {
       setAllSelected(true);
     } else {
       setAllSelected(false);
@@ -94,7 +98,6 @@ const CheckBoxListReproSearchParam = ({
 
   return (
     <div>
-      {/* <pre>{JSON.stringify(options)}</pre> */}
       <div className=" flex justify-between font-semibold text-neutral-600 bg-neutral-50 p-2 ">
         <div className="pl-2">{label}</div>
         <div className="pr-2">
@@ -126,25 +129,61 @@ const CheckBoxListReproSearchParam = ({
           }}
         >
           <ul>
-            {options?.map((i, index) => (
-              <li
-                key={index}
-                className="grid grid-cols-[2fr_1fr] p-1 text-neutral-700"
-              >
-                <div className="flex gap-2">
-                  <div>
-                    <div className="relative flex ">
+            {options?.map((i, index) => {
+
+              return (
+                <li
+                  key={index}
+                  className="grid grid-cols-[2fr_1fr] p-1 text-neutral-700"
+                >
+                  <div className="flex gap-2">
+                    <div>
+                      <div className="relative flex ">
+                        <input
+                          type="checkbox"
+                          onChange={() => {
+                            handleCheck(i.id, id);
+                          }}
+                          checked={i.checked}
+                          className={`peer appearance-none w-5 h-5 border-3 border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-green-700 dark:checked:border-green-700 
+                    transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-green-500 focus:ring-offset-2`}
+                        />
+                        <svg
+                          className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1/2  top-[.65rem] -translate-x-1/2 -translate-y-1/2"
+                          xmlns="http://w3.org"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
+                    </div>
+                    <div
+                      className={`text-[0.9rem]  ${i.checked ? 'text-neutral-700' : 'text-neutral-500'}`}
+                    >
+                      {i.name}
+                    </div>
+                  </div>
+                  <div className="flex gap-2  justify-end">
+                    <div className="relative flex">
                       <input
                         type="checkbox"
                         onChange={() => {
-                          handleCheck(i.id, id);
+                          handleXCheck(i.id, id);
                         }}
-                        checked={i.checked}
-                        className={`peer appearance-none w-5 h-5 border-3 border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-green-700 dark:checked:border-green-700 
+                        disabled={
+                          !options.some((x) => x.id === i.id && x.checked)
+                        }
+                        checked={i.xChecked}
+                        className={`peer/excl appearance-none w-4.5 h-4.5 border-3 border-gray-400 rounded bg-transparent checked:bg-neutral-500 checked:border-neutral-500 dark:checked:bg-green-700 dark:checked:border-green-700 
                     transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-green-500 focus:ring-offset-2`}
                       />
                       <svg
-                        className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1/2  top-[.65rem] -translate-x-1/2 -translate-y-1/2"
+                        className="absolute w-3 h-3 text-white pointer-events-none hidden peer-checked/excl:block left-1/2 top-[.6rem] -translate-x-1/2 -translate-y-1/2"
                         xmlns="http://w3.org"
                         viewBox="0 0 24 24"
                         fill="none"
@@ -156,50 +195,17 @@ const CheckBoxListReproSearchParam = ({
                         <polyline points="20 6 9 17 4 12"></polyline>
                       </svg>
                     </div>
-                  </div>
-                  <div
-                    className={`text-[0.9rem]  ${i.checked ? 'text-neutral-700' : 'text-neutral-500'}`}
-                  >
-                    {i.name}
-                  </div>
-                </div>
-                <div className="flex gap-2  justify-end">
-                  <div className="relative flex">
-                    <input
-                      type="checkbox"
-                      onChange={() => {
-                        handleXCheck(i.id, id);
-                      }}
-                      disabled={
-                        !options.some((x) => x.id === i.id && x.checked)
-                      }
-                      checked={i.xChecked}
-                      className={`peer/excl appearance-none w-4.5 h-4.5 border-3 border-gray-400 rounded bg-transparent checked:bg-neutral-500 checked:border-neutral-500 dark:checked:bg-green-700 dark:checked:border-green-700 
-                    transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-green-500 focus:ring-offset-2`}
-                    />
-                    <svg
-                      className="absolute w-3 h-3 text-white pointer-events-none hidden peer-checked/excl:block left-1/2 top-[.6rem] -translate-x-1/2 -translate-y-1/2"
-                      xmlns="http://w3.org"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                  </div>
-                  <div>
-                    <div
-                      className={`text-[0.9rem] italic ${i.xChecked ? 'text-neutral-700' : 'text-neutral-500'}`}
-                    >
-                      Exclusive
+                    <div>
+                      <div
+                        className={`text-[0.9rem] italic ${i.xChecked ? 'text-neutral-700' : 'text-neutral-500'}`}
+                      >
+                        Exclusive
+                      </div>
                     </div>
                   </div>
-                </div>
-              </li>
-            ))}
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

@@ -8,16 +8,18 @@ const fetchRepros = async (
     sortByValue: string
 ): Promise<ReproSearchResponse> => {
 
-    const payload = {
-        ...reproSearchParams,
-        initiativeIds: reproSearchParams.selectedIds!.filter(x => x.type === 'I').map(x => x.id),
-        xInitiativeIds: reproSearchParams.xSelectedIds!.filter(x => x.type === 'I').map(x => x.id),
-        grantIds: reproSearchParams.selectedIds!.filter(x => x.type === 'G').map(x => x.id),
-        xGrantIds: reproSearchParams.xSelectedIds!.filter(x => x.type === 'G').map(x => x.id),
-        accountIds: reproSearchParams.selectedIds!.filter(x => x.type === 'A').map(x => x.id),
-        XAccountIds: reproSearchParams.xSelectedIds!.filter(x => x.type === 'A').map(x => x.id),
+    const searchParams1 = { ...reproSearchParams };
+    const { selectedIds, xSelectedIds, ...searchParams2 } = searchParams1;
 
-    }
+    const payload: ReproSearchRequest = {
+        ...searchParams2,
+        initiativeIds: selectedIds!.filter(x => x.type === 'I').map(x => x.id),
+        xInitiativeIds: xSelectedIds!.filter(x => x.type === 'I').map(x => x.id),
+        grantIds: selectedIds!.filter(x => x.type === 'G').map(x => x.id),
+        xGrantIds: xSelectedIds!.filter(x => x.type === 'G').map(x => x.id),
+        accountIds: selectedIds!.filter(x => x.type === 'A').map(x => x.id),
+        xAccountIds: xSelectedIds!.filter(x => x.type === 'A').map(x => x.id),
+    };
 
     const response = await agent.post(`/repro/search?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}&sortBy=${sortByValue}`, payload)
     const paginationHeader = response.headers["pagination"];
@@ -34,10 +36,11 @@ export const useReproSearch = (
 ) => {
     const { sortByValue } = useSortingContext();
 
+    //   reproSearchParams.selectedIds!.map(x => (x.id + x.type)),
+    //         reproSearchParams.xSelectedIds!.map(x => (x.id + x.type)),
+
     const { data, isLoading, isSuccess } = useQuery<ReproSearchResponse>({
         queryKey: ['repro_search', { ...reproSearchParams },
-            reproSearchParams.selectedIds!.map(x => (x.id + x.type)),
-            reproSearchParams.xSelectedIds!.map(x => (x.id + x.type)),
             pagination.pageNumber,
             pagination.pageSize,
             sortByValue],

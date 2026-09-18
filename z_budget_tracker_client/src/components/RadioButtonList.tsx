@@ -6,7 +6,6 @@ type Props = {
 
 const RadioButtonList = ({ items, onSelected,id }: Props) => {
 
-    console.log('items', items)
   return (
     <div className="p-2 mt-4 pl-4">
       {items.map((item, index) => (
@@ -18,7 +17,7 @@ const RadioButtonList = ({ items, onSelected,id }: Props) => {
               id="password-options"
               name={`radiooptions-${id}`}
               value={item.id}
-              onClick={() => {
+              onChange={() => {
                 onSelected(item.id);
               }}
               checked={item.checked}

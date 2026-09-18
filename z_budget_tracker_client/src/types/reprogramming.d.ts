@@ -115,9 +115,6 @@ type ReproPreloadLine = {
 
 type ReproSearchParams = {
     year: number
-    initiativeIds?: number[] | null
-    grantIds?: number[] | null
-    accountIds?: number[] | null
     status: number
     debitAmount?: number | undefined
     creditAmount?: number | undefined
@@ -125,6 +122,21 @@ type ReproSearchParams = {
     creditComparer: number
     selectedIds?: { id: number, type: string }[]
     xSelectedIds?: { id: number, type: string }[]
+}
+
+type ReproSearchRequest = {
+    year: number
+    status: number
+    initiativeIds?: number[] | null
+    grantIds?: number[] | null
+    accountIds?: number[] | null
+    xInitiativeIds?: number[] | null
+    xGrantIds?: number[] | null
+    xAccountIds?: number[] | null
+    debitAmount?: number | undefined
+    creditAmount?: number | undefined
+    debitComparer: number
+    creditComparer: number
 }
 
 // public required int Year { get; set; }        
