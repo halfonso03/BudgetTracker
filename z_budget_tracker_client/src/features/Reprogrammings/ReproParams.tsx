@@ -35,6 +35,7 @@ const ReproParams = memo(
     onDeselectAll,
     onSelectAll,
   }: Props) => {
+  console.log('ReproParams render');
     
     function handleYearChange(e: ChangeEvent<HTMLSelectElement>) {
       onYearChange(+e.target.value);

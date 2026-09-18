@@ -12,6 +12,8 @@ type Props = {
 };
 
 const JustificaModal = ({ itemComment, ...props }: Props) => {
+  console.log('JustificaModal render');
+
   const [animateOut, setAnimateOut] = useState(false);
   // const [hasComment, setHasComment] = useState<boolean>(false);
   const [comment, setComment] = useState(itemComment);
@@ -35,7 +37,6 @@ const JustificaModal = ({ itemComment, ...props }: Props) => {
   }
   return (
     <Modal2 size="lg" title="Justification" animateOut={animateOut} {...props}>
-
       <div className="mb-1">
         <div className="text-neutral-700 font-semibold mb-1">
           Enter a Justification{' '}

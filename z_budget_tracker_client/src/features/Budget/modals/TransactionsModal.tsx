@@ -1,17 +1,17 @@
 import useTransactions from '../../../api/hooks/budgets/useTransactions';
-import { formatDate, formatNumber } from '../../../app/util';
+import { formatCurrency, formatDate, formatNumber } from '../../../app/util';
 import Modal2 from '../../../components/Modal2';
 import { Fragment, useState } from 'react';
 import Button from '../../../components/Button';
-import ReproMiniDetailsModal from '../../Reprogrammings/modals/ReproMiniDetailModal';
 
 type Props = {
   initiativeId: number;
   grantId: number;
   accountId: number;
-  category: string;
+  accountName: string;
   isOpen: boolean;
   onCancel: () => void;
+  onSelectedId: (id: number, accountName: string, initiativeId: number) => void;
 };
 
 const TransactionsModal = (props: Props) => {
@@ -20,10 +20,10 @@ const TransactionsModal = (props: Props) => {
     props.grantId,
     props.accountId,
   );
+  console.log('props', props);
+  console.log('data', data);
   const [animateOut, setAnimateOut] = useState(false);
 
-  const [miniDetailsIsOpen, setMiniDetailsIsOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState(0);
   if (isLoading) return <div>Loading...</div>;
   if (!data) return <div>Loading...</div>;
   if (!data.length) return null;
@@ -46,26 +46,26 @@ const TransactionsModal = (props: Props) => {
         {...props}
         onCancel={handleCancel}
       >
-        <div className="p-2 ">
-          <div className="font-semibold self-end mb-3">{props.category}</div>
-
-          <div className="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-2 my-3 border-b border-b-neutral-200">
+        <div className="">
+          <div className='font-semibold text-neutral-700'>Account</div>
+          <div className="font-semibold self-end mb-3">{props.accountName}</div>
+          <div className="grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 my-3 border-b border-b-neutral-200">
             <div></div>
             <div className="text-center font-semibold text-neutral-600">
-              Post Date
+              Posted Date
             </div>
-            <div className="text-end font-semibold text-neutral-600">
+            <div className="text-center font-semibold text-neutral-600">
               Amount
             </div>
             <div className="text-end font-semibold text-neutral-600">
-              Remaining Balance
+              Balance
             </div>
           </div>
           {data?.map((t, i) => {
             if (i > 0) remaining += data[i].amount;
             return (
               <div
-                className="grid grid-cols-[1.6fr_1fr_1fr_1fr] gap-2 my-3"
+                className="grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 my-3"
                 key={i}
               >
                 <div className="flex gap-2">
@@ -75,8 +75,7 @@ const TransactionsModal = (props: Props) => {
                       <button
                         className="cursor-pointer underline underline-offset-3 text-blue-600"
                         onClick={() => {
-                          setMiniDetailsIsOpen(true);
-                          setSelectedId(t.id);
+                          props.onSelectedId(t.id, props.accountName, props.initiativeId);
                         }}
                       >
                         {t.id}
@@ -85,7 +84,7 @@ const TransactionsModal = (props: Props) => {
                   </div>
                 </div>
                 <div className="text-center">{formatDate(t.postedDate)}</div>
-                <div className="text-end">{formatNumber(t.amount)}</div>
+                <div className="text-center">{formatCurrency(t.amount)}</div>
                 <div className={`text-end`}>{formatNumber(remaining)}</div>
               </div>
             );
@@ -97,13 +96,6 @@ const TransactionsModal = (props: Props) => {
           </div>
         </div>
       </Modal2>
-      <ReproMiniDetailsModal
-        reproId={selectedId}
-        isOpen={miniDetailsIsOpen}
-        onCancel={() => {
-          setMiniDetailsIsOpen(false);
-        }}
-      ></ReproMiniDetailsModal>
     </Fragment>
   );
 };

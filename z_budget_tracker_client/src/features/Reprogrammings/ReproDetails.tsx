@@ -7,6 +7,8 @@ import NewReproButton from './NewReproButton';
 import ReproForm from './ReproForm';
 
 const ReproDetails = () => {
+  console.log('ReproDetails render');
+  
   const navigate = useNavigate();
   const { id } = useParams();
   const { hasUnsavedChanges, setHasUnsavedChanges } =

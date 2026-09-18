@@ -171,14 +171,18 @@ const BudgetInputFields = ({
           </>
         ) : (
           <div>
-            <input
-              type="text"
-              {...currentAmountRegister}
-              readOnly={true}
-              tabIndex={-1}
-              disabled={true}
-              className="text-end w-full"
-            />
+            {parseFormattedNumber(currentAmount) > 0 ? (
+              <input
+                type="text"
+                {...currentAmountRegister}
+                readOnly={true}
+                tabIndex={-1}
+                disabled={true}
+                className="text-end w-full"
+              />
+            ) : (
+              '-'
+            )}
           </div>
         )}
       </div>
@@ -203,7 +207,11 @@ const BudgetInputFields = ({
           parseFormattedNumber(remaining) == 0 ? (
             <span className="text-neutral-400 pr-1">-</span>
           ) : (
-            <div className={`${parseFormattedNumber(remaining) < 0 ? "text-red-500": ""}`}>{formatCurrency(parseFormattedNumber(remaining))}</div>
+            <div
+              className={`${parseFormattedNumber(remaining) < 0 ? 'text-red-500' : ''}`}
+            >
+              {formatCurrency(parseFormattedNumber(remaining))}
+            </div>
           )
         ) : (
           <input

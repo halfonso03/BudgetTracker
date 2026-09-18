@@ -1,19 +1,22 @@
-import { memo, useState, type ChangeEvent } from 'react';
+import { memo, useState } from 'react';
 import CheckBoxListReproSearchParam from '../../components/CheckBoxListReproSearchParam';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useOutsideClick } from '../../hooks/useOutsideClick';
-import Select from '../../components/Select';
+import RadioButtonList from '../../components/RadioButtonList';
 
 const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
 const ACCOUNTS_LIST_TYPE = 'A';
+const YEARS_LIST_TYPE = 'Y';
+const STATUS_LIST_TYPE = 'S';
 
 type Props = {
   initiatives?: { id: number; name: string }[] | undefined;
   grants?: { id: number; name: string }[] | undefined;
   accounts?: { id: number; name: string }[] | undefined;
+  years: { id: number; name: string }[];
   onYearChange: (year: number) => void;
-  onStatusChange?: (year: number) => void;
+  onStatusChange: (id: number) => void;
   onListCheck?: (id: number, key: string) => void;
   onListXCheck?: (id: number, key: string) => void;
   onDeselectAll: (type: string) => void;
@@ -24,6 +27,8 @@ type VisibleParams = {
   initiatives: boolean;
   grants: boolean;
   accounts: boolean;
+  years: boolean;
+  statuses: boolean;
 };
 
 const ReproParams2 = memo(
@@ -37,20 +42,43 @@ const ReproParams2 = memo(
     onDeselectAll,
     onSelectAll,
     onStatusChange,
+    years,
   }: Props) => {
+    // console.log('ReproParams2 render');
+
     const [visible, setVisisble] = useState<VisibleParams>({
       initiatives: false,
       grants: false,
       accounts: false,
+      years: false,
+      statuses: false,
     });
+
+    const statuses = getStatuses();
+    // const [setSelectedYear] = useState(years[0].id);
+
+    // const [startYear, setStartYear] = useState(() => initialYear);
+    const [yearOptions, setYearOptions] = useState<
+      {
+        id: number;
+        name: string;
+        checked: boolean;
+      }[]
+    >(() =>
+      years.map((y) => ({
+        id: +y.id,
+        name: y.name,
+        checked: y.id === years[0].id,
+      })),
+    );
+    console.log('yearOptions', yearOptions);
     const [iLabel, setILabel] = useState('Initiative');
     const [gLabel, setGLabel] = useState('Grant');
     const [aLabel, setALabel] = useState('Account');
-    
+    const [selectedStatus, setSelectedStatus] = useState(statuses[0].id);
     const gRef = useOutsideClick<HTMLDivElement>(() => {
       setVisisble((prev) => ({ ...prev, grants: false }));
     }, false);
-
     const iRef = useOutsideClick<HTMLDivElement>(() => {
       setVisisble((prev) => ({ ...prev, initiatives: false }));
     }, false);
@@ -59,8 +87,34 @@ const ReproParams2 = memo(
       setVisisble((prev) => ({ ...prev, accounts: false }));
     }, false);
 
-    function handleYearChange(e: ChangeEvent<HTMLSelectElement>) {
-      onYearChange(+e.target.value);
+    const yRef = useOutsideClick<HTMLDivElement>(() => {
+      setVisisble((prev) => ({ ...prev, years: false }));
+    }, false);
+
+    const sRef = useOutsideClick<HTMLDivElement>(() => {
+      setVisisble((prev) => ({ ...prev, statuses: false }));
+    }, false);
+
+    // function handleYearChange(e: ChangeEvent<HTMLSelectElement>) {}
+
+    function handleStatusChange(id: number) {
+      setSelectedStatus(id);
+      onStatusChange(id);
+      setVisisble((prev) => ({
+        ...prev,
+        statuses: false,
+      }));
+    }
+    function handleYearSelected(id: number) {
+      // setSelectedYear(id);
+      setYearOptions((prev) =>
+        prev.map((y) => ({ ...y, checked: y.id === id })),
+      );
+      setVisisble((prev) => ({
+        ...prev,
+        years: false,
+      }));
+      onYearChange(id);
     }
 
     function handleCheck(id: number, type: string) {
@@ -101,6 +155,16 @@ const ReproParams2 = memo(
         setVisisble((prev) => ({
           ...prev,
           accounts: visible.accounts === true ? false : true,
+        }));
+      } else if (type == YEARS_LIST_TYPE) {
+        setVisisble((prev) => ({
+          ...prev,
+          years: visible.years === true ? false : true,
+        }));
+      } else if (type == STATUS_LIST_TYPE) {
+        setVisisble((prev) => ({
+          ...prev,
+          statuses: visible.statuses === true ? false : true,
         }));
       }
     }
@@ -152,24 +216,41 @@ const ReproParams2 = memo(
 
     return (
       <div className="flex justify-center gap-3">
-        <div className="flex gap-3 border  rounded-md py-2 px-3">
-          <div className="font-semibold text-neutral-600 self-center p-0">
-            Year
+        <div className="relative" ref={yRef}>
+          <div className="flex">
+            <button
+              className="rounded-md border border-neutral-300 py-2 px-3 font-semibold flex cursor-pointer text-neutral-700 items-center w-45"
+              onClick={() => onListVisible(YEARS_LIST_TYPE)}
+            >
+              <div className="grow">
+                {yearOptions.filter((y) => y.checked)[0].name}
+              </div>
+              <div>
+                <ChevronUp
+                  className={`${visible.years === true ? 'hidden' : ''}`}
+                ></ChevronUp>
+                <ChevronDown
+                  className={`${visible.years === false ? 'hidden' : ''}`}
+                ></ChevronDown>
+              </div>
+            </button>
           </div>
-          <Select
-            id="year-select"
-            onChange={handleYearChange}
-            additionalclasses="border-0 p-0"
+
+          <div
+            className={` flex flex-col absolute shadow-lg shadow-neutral-300 w-50 rounded-md mt-1 z-1000 opacity-100 bg-white ${visible.years ? '' : 'hidden'}`}
           >
-            <option value="2025">2025</option>
-            <option value="2026">2026</option>
-          </Select>
+            <RadioButtonList
+              id={YEARS_LIST_TYPE}
+              onSelected={handleYearSelected}
+              items={yearOptions}
+            ></RadioButtonList>
+          </div>
         </div>
         {initiatives !== undefined && initiatives.length > 0 && (
           <div className="relative" ref={iRef}>
             <div className="flex">
               <button
-                className="rounded-md border-2 py-2 px-3 font-semibold flex cursor-pointer text-neutral-700 items-center w-45"
+                className="rounded-md border border-neutral-300 py-2 px-3 font-semibold flex cursor-pointer text-neutral-700 items-center w-45"
                 onClick={() => onListVisible(INITIATIVES_LIST_TYPE)}
               >
                 <div className="grow">{iLabel}</div>
@@ -218,7 +299,7 @@ const ReproParams2 = memo(
           <div className="relative" ref={gRef}>
             <div className="flex">
               <button
-                className="flex justify-between rounded-md border-2 py-2 px-3 font-semibold  cursor-pointer text-neutral-700 items-center w-35"
+                className="flex justify-between rounded-md border border-neutral-300 py-2 px-3 font-semibold  cursor-pointer text-neutral-700 items-center w-35"
                 onClick={() => onListVisible(GRANTS_LIST_TYPE)}
               >
                 <div className="grow">{gLabel}</div>
@@ -266,7 +347,7 @@ const ReproParams2 = memo(
           <div className="relative" ref={aRef}>
             <div className="flex">
               <button
-                className="rounded-md border-2 py-2 px-3 font-semibold flex cursor-pointer text-neutral-700 items-center w-45"
+                className="rounded-md border border-neutral-300 py-2 px-3 font-semibold flex cursor-pointer text-neutral-700 items-center w-45"
                 onClick={() => onListVisible(ACCOUNTS_LIST_TYPE)}
               >
                 <div className="grow">{aLabel}</div>
@@ -310,9 +391,65 @@ const ReproParams2 = memo(
             </div>
           </div>
         )}
+        <div className="relative" ref={sRef}>
+          <div className="flex">
+            <button
+              className="rounded-md border border-neutral-300 py-2 px-3 font-semibold flex cursor-pointer text-neutral-700 items-center w-45"
+              onClick={() => onListVisible(STATUS_LIST_TYPE)}
+            >
+              <div className="grow">
+                {statuses.filter((x) => x.id == selectedStatus)[0].name}
+              </div>
+              <div>
+                <ChevronUp
+                  className={`${visible.statuses === true ? 'hidden' : ''}`}
+                ></ChevronUp>
+                <ChevronDown
+                  className={`${visible.statuses === false ? 'hidden' : ''}`}
+                ></ChevronDown>
+              </div>
+            </button>
+          </div>
+
+          <div
+            className={` flex flex-col absolute shadow-lg shadow-neutral-300 w-50 rounded-md mt-1 z-1000 opacity-100 bg-white ${visible.statuses ? '' : 'hidden'}`}
+          >
+            <RadioButtonList
+              id={STATUS_LIST_TYPE}
+              onSelected={handleStatusChange}
+              items={statuses.map((y) => ({
+                ...y,
+                checked: selectedStatus === y.id,
+              }))}
+            ></RadioButtonList>
+          </div>
+        </div>
       </div>
     );
   },
 );
 
 export default ReproParams2;
+
+// function getYears(): {
+//   id: number;
+//   name: string;
+//   checked: boolean;
+// }[] {
+//   return [
+//     { id: 2026, name: '2026', checked: true },
+//     { id: 2025, name: '2025', checked: false },
+//   ];
+// }
+
+function getStatuses(): {
+  id: number;
+  name: string;
+  checked: boolean;
+}[] {
+  return [
+    { id: 0, name: 'All', checked: true },
+    { id: 1, name: 'Saved', checked: false },
+    { id: 2, name: 'Posted', checked: false },
+  ];
+}

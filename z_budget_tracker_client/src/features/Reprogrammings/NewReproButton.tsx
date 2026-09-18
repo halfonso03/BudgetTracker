@@ -10,6 +10,10 @@ type Props = {
   onSearchClick: () => void;
 };
 const NewReproButton = ({ onYearSelected, onSearchClick }: Props) => {
+
+    console.log('NewReproButton render')
+
+
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);

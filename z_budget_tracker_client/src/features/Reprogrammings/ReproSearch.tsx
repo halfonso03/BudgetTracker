@@ -4,7 +4,6 @@ import useCategories from '../../api/hooks/common/useCategories';
 import { useReproSearch } from '../../api/hooks/repro/useReproSearch';
 
 import { parseFormattedNumber } from '../../app/util';
-import ReproParams from './ReproParams';
 import ReproSearchReults from './ReproSearchReults';
 import React from 'react';
 import useGrantsAllYears from '../../api/hooks/common/useGrantsAllYears';
@@ -28,9 +27,11 @@ const ACCOUNTS_LIST_TYPE = 'A';
 const MemoizedReproParams = React.memo(ReproParams2);
 
 const ReproSearch = () => {
+  // console.log('ReproSearch render');
+
   const queryClient = useQueryClient();
 
-  const [year, setYear] = useState<number>(2025);
+  const [year, setYear] = useState<number>(2026);
   const [status, setStatus] = useState<number>(0);
   const [debitComparer, setDebitComparer] = useState<number>(0);
   const [creditComparer, setCreditComparer] = useState<number>(0);
@@ -45,6 +46,11 @@ const ReproSearch = () => {
     useState(false);
 
   const [idToDelete, setIdToDelete] = useState(0);
+
+  const [years] = useState<{ id: number; name: string }[]>(() => [
+    { id: 2026, name: '2026' },
+    { id: 2025, name: '2025' },
+  ]);
 
   const initiativesList = useMemo(() => {
     return initiatives;
@@ -286,7 +292,7 @@ const ReproSearch = () => {
       <div className="flex gap-2 mt-10">
         {/* <div className="flex flex-2">
           <div></div>
-        </div> */}{' '}
+        </div> */}
         {/* <MemoizedReproParams
           initiatives={initiativesList?.map((x) => ({
             id: x.id,
@@ -322,14 +328,15 @@ const ReproSearch = () => {
                 id: x.id,
                 name: x.name,
               }))}
+              years={years}
               onListCheck={handleListCheck}
               onListXCheck={handleListXCheck}
               onDeselectAll={handleDeselectAll}
               onSelectAll={handleSelectAll}
               onStatusChange={handleStatusChange}
               onYearChange={handleYearChange}
-              onAmountBlur={handleAmountBlur}
-              onAmountComparerChange={handleComparerChange}
+              // onAmountBlur={handleAmountBlur}
+              // onAmountComparerChange={handleComparerChange}
             ></MemoizedReproParams>
           </div>
 

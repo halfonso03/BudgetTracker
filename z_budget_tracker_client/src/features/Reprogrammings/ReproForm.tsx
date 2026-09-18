@@ -69,6 +69,8 @@ type Selections = {
 };
 
 const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
+  console.log('ReproForm render');
+
   const DUP_LINES =
     'There are duplicate lines (Look for the duplicate selections for an Initiative, Grant, Category and Account)';
   const NO_INC_AND_NO_DEC_LINES =

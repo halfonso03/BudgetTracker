@@ -21,6 +21,7 @@ import { useBudgetMutations } from '../../api/hooks/budgets/useBudgetMutations';
 import Button from '../../components/Button';
 import TransactionsModal from './modals/TransactionsModal';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
+import ReproMiniDetailsModal from '../Reprogrammings/modals/ReproMiniDetailModal';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
 
@@ -28,7 +29,7 @@ type TrxIds = {
   initiativeId: number;
   grantId: number;
   accountId: number;
-  category: string;
+  accountName: string;
 };
 
 const Details = () => {
@@ -39,8 +40,12 @@ const Details = () => {
     initiativeId: 0,
     grantId: 0,
     accountId: 0,
-    category: '',
+    accountName: '',
   });
+  const [miniDetailsIsOpen, setMiniDetailsIsOpen] = useState(false);
+  const [selectedId, setSelectedId] = useState(0);
+  const [selectedAccountName, setSelectedAccountName] = useState('');
+  const [selectedInitiativeId, setSelectedInitiativeId] = useState(0);
 
   const { updateBudget } = useBudgetMutations();
 
@@ -266,11 +271,22 @@ const Details = () => {
     initiativeId: number,
     grantId: number,
     accountId: number,
-    category: string,
+    accountName: string,
   ) => {
-    setTrxIds({ initiativeId, grantId, accountId, category });
+    setTrxIds({ initiativeId, grantId, accountId, accountName });
     setTrxModalIsOpen(true);
   };
+
+  function handleSelectedId(
+    id: number,
+    accountName: string,
+    initiativeId: number,
+  ) {
+    setMiniDetailsIsOpen(true);
+    setSelectedId(id);
+    setSelectedAccountName(accountName);
+    setSelectedInitiativeId(initiativeId);
+  }
 
   useEffect(() => {
     calculateTotals();
@@ -471,15 +487,30 @@ const Details = () => {
           );
         })}
       </form>
-      <TransactionsModal
-        {...trxIds}
-        isOpen={trxModalIsOpen}
-        onCancel={() => {
-          setTimeout(() => {
-            setTrxModalIsOpen(false);
-          }, 500);
-        }}
-      ></TransactionsModal>
+      {trxModalIsOpen && (
+        <TransactionsModal
+          {...trxIds}
+          isOpen={trxModalIsOpen}
+          onSelectedId={handleSelectedId}
+          onCancel={() => {
+            setTimeout(() => {
+              setTrxModalIsOpen(false);
+            }, 500);
+          }}
+        ></TransactionsModal>
+      )}
+
+      {selectedId !== 0 && (
+        <ReproMiniDetailsModal
+          reproId={selectedId}
+          accountName={selectedAccountName}
+          initiativeId={selectedInitiativeId}
+          isOpen={miniDetailsIsOpen}
+          onCancel={() => {
+            setMiniDetailsIsOpen(false);
+          }}
+        ></ReproMiniDetailsModal>
+      )}
     </div>
   );
 };

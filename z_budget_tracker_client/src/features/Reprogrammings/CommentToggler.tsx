@@ -10,6 +10,9 @@ interface Props {
 }
 
 const CommentToggler = ({ uuid, itemComment, saveComment, canEdit }: Props) => {
+    console.log('CommentToggler render')
+
+
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const [isOpenerClass, setIsOpenerClass] = useState<string>('');

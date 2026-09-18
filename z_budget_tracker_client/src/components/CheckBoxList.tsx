@@ -64,7 +64,6 @@ const CheckBoxList = ({ label, items, id, maxHeight, onCheck }: Props) => {
                     <input
                       type="checkbox"
                       onChange={() => {
-                        console.log('i.id', i.id, id);
 
                         handleCheck(i.id, id);
                       }}

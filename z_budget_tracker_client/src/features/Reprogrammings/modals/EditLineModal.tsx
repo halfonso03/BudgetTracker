@@ -29,6 +29,8 @@ type Props = {
 };
 
 const EditLineModal = ({ ...props }: Props) => {
+
+  console.log('EditLineModal render');
   const { initiatives } = useInitiatives(props.isOpen);
   const { categories } = useCategories(props.isOpen);
   const { grants } = useGrants(props.year, props.isOpen);

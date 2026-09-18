@@ -27,6 +27,9 @@ type Props = {
 };
 
 const AddLineModal = ({ ...props }: Props) => {
+
+  console.log('AddLineModal render');
+
   const [selections, setSelections] = useState<Selections | null>(null);
   const [animateOut, setAnimateOut] = useState(false);
   const { grants } = useGrants(props.year, props.isOpen);

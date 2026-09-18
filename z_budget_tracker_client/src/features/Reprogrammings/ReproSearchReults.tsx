@@ -19,6 +19,10 @@ type Props = {
 };
 
 const ReproSearchReults = ({ onDelete, results }: Props) => {
+
+  console.log('ReproSearchReults render');
+
+
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
 
   const { sortByValue } = useSortingContext();

@@ -3,6 +3,8 @@ import { ReproProvider } from '../../contexts/ReproContext';
 import SortingProvider from '../../contexts/SortingContextProvider';
 
 const ReproLanding = () => {
+  console.log('ReproLanding render');
+
   return (
     <div>
       <ReproProvider>

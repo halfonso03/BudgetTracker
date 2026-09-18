@@ -11,6 +11,7 @@ type Props = {
 
 const ConfirmModal = ({ ...props }: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
+  console.log('ConfirmModal render');
 
   return (
     <Modal2 size="sm" {...props} title="Confirm Action" animateOut={animateOut}>

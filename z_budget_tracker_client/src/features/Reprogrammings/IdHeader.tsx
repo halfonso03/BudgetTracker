@@ -10,11 +10,13 @@ const SAVED = 2;
 const POSTED = 3;
 
 const IdHeader = React.memo(({ id, status, created }: Props) => {
+  console.log('IdHeader render');
+
   return (
     <div className={`flex gap-10 ${created ? '' : 'animate-page-fade-in'}`}>
       <div className="flex gap-3 ml-3">
         <span className="font-semibold text-neutral-500">ID</span>
-        <div className='w-10'>
+        <div className="w-10">
           {id == 0 ? (
             <div className="font-semibold">-</div>
           ) : (

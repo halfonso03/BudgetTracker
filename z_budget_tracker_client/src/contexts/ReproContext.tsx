@@ -19,6 +19,8 @@ interface ReproProps {
 const ReproContext = createContext<ReproContextType | null>(null);
 
 export const ReproProvider = ({ children }: ReproProps) => {
+  console.log('ReproProvider render');
+
   // const [isSearching, setIsSearching] = useState(false);
   // const [resultCount, setResultCount] = useState(0);
   const [searchParams, setSearchParams] = useState<ReproSearchParams | null>(

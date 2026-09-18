@@ -158,7 +158,7 @@ const CheckBoxListReproSearchParam = ({
                     </div>
                   </div>
                   <div
-                    className={`text-[0.9rem] italic ${i.checked ? 'text-neutral-700' : 'text-neutral-500'}`}
+                    className={`text-[0.9rem]  ${i.checked ? 'text-neutral-700' : 'text-neutral-500'}`}
                   >
                     {i.name}
                   </div>
