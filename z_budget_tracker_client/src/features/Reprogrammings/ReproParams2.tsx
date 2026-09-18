@@ -1,7 +1,9 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useState, type ChangeEvent, type FocusEvent } from 'react';
 import CheckBoxListReproSearchParam from '../../components/CheckBoxListReproSearchParam';
 import RadioButtonList from '../../components/RadioButtonList';
 import ReproSearchFilter from './ReproSearchFilter';
+import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
+import Select from '../../components/Select';
 
 const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
@@ -53,9 +55,7 @@ const ReproParams2 = memo(
     });
 
     const statuses = getStatuses();
-    // const [setSelectedYear] = useState(years[0].id);
 
-    // const [startYear, setStartYear] = useState(() => initialYear);
     const [yearOptions, setYearOptions] = useState<
       {
         id: number;
@@ -75,6 +75,7 @@ const ReproParams2 = memo(
     const [selectedStatus, setSelectedStatus] = useState(statuses[0].id);
     const [statusVisible, setStatusVisible] = useState(false);
     const [yearVisible, setYearVisible] = useState(false);
+    const [amountFilterVisible, setAmountFilterVisible] = useState(false);
 
     function handleStatusChange(id: number) {
       setSelectedStatus(id);
@@ -167,12 +168,20 @@ const ReproParams2 = memo(
       setYearVisible((prev) => !prev);
     }
 
+    function handleAmountFilterOpened() {
+      setAmountFilterVisible((prev) => !prev);
+    }
+
     function handleStatusOutsideCLick() {
       setStatusVisible(false);
     }
 
     function handleYearOutsideCLick() {
       setYearVisible(false);
+    }
+
+    function handleAmountFilterOutsideClick() {
+      setAmountFilterVisible(false);
     }
 
     return (
@@ -329,6 +338,73 @@ const ReproParams2 = memo(
             </div>
           </ReproSearchFilter>
         )}
+
+        <ReproSearchFilter
+          selectedItemLabel={''}
+          usaOutsideShowList={true}
+          outsideShowList={amountFilterVisible}
+          listOpened={handleAmountFilterOpened}
+          outsideClicked={handleAmountFilterOutsideClick}
+        >
+          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-80 rounded-md mt-1 z-1000 opacity-100 bg-white">
+            <div className="border border-b-0 border-neutral-200 p-2 py-3">
+              <div className="font-semibold text-neutral-600 ml-1">
+                Debit Amount
+              </div>
+              <div className="flex gap-2">
+                <Select
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                    // handleComparerChange(+e.target.value, 'debit');
+                  }}
+                >
+                  <option value="0">None</option>
+                  <option value="1">Greater Than</option>
+                  <option value="2">Less than</option>
+                  <option value="3">Equal To</option>
+                </Select>
+                <NumericInputUncontrolled
+                  className="border border-neutral-300 p-1 rounded-md text-end "
+                  placeholder="Amount..."
+                  onBlur={(e: FocusEvent<HTMLInputElement>) => {
+                    // handleAmountBlur(e, 'debit');
+                  }}
+                ></NumericInputUncontrolled>
+              </div>
+            </div>
+            <div className="border border-neutral-200 p-2 py-3">
+              <div className="font-semibold text-neutral-600 ml-1">
+                Credit Amount
+              </div>
+              <div className="flex gap-2">
+                <Select
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                    // handleComparerChange(+e.target.value, 'credit');
+                  }}
+                >
+                  <option value="0">None</option>
+                  <option value="1">Greater Than</option>
+                  <option value="2">Less than</option>
+                  <option value="3">Equal To</option>
+                </Select>
+                <NumericInputUncontrolled
+                  className="border border-neutral-300 p-1 rounded-md text-end "
+                  placeholder="Amount..."
+                  onBlur={(e) => {
+                    // handleAmountBlur(e, 'credit');
+                  }}
+                ></NumericInputUncontrolled>
+              </div>
+            </div>
+            <button
+              className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer"
+              onClick={() => {
+                setAmountFilterVisible(false);
+              }}
+            >
+              Apply
+            </button>
+          </div>
+        </ReproSearchFilter>
       </div>
     );
   },

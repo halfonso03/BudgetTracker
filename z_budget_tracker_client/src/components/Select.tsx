@@ -13,7 +13,7 @@ const Select = ({
   ...props
 }: SelectProps) => {
   const classes =
-    ' border border-neutral-300 rounded-sm text-neutral-800 rounded-sm  focus:outline-none focus:ring-0 focus:ring-offset-0 disabled:opacity-90 disabled:bg-neutral-200 ' +
+    ' border p-2 border-neutral-300 rounded-sm text-neutral-800 rounded-sm  focus:outline-none focus:ring-0 focus:ring-offset-0 disabled:opacity-90 disabled:bg-neutral-200 ' +
     (additionalclasses ?? '') +
     (widthClass ?? ' w-full');
 
