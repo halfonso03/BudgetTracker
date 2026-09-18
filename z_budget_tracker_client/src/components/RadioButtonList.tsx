@@ -4,8 +4,7 @@ type Props = {
   onSelected: (id: number) => void;
 };
 
-const RadioButtonList = ({ items, onSelected,id }: Props) => {
-
+const RadioButtonList = ({ items, onSelected, id }: Props) => {
   return (
     <div className="p-2 mt-4 pl-4">
       {items.map((item, index) => (

@@ -356,7 +356,7 @@ const ReproSearch = () => {
                     </button>
                   )}
                 </div>
-                <div className="flex flex-col gap-3 items-center justify-between min-h-[75dvh]">
+                <div className="flex flex-col gap-3 items-center justify-between min-h-[63dvh]">
                   <ReproSearchReults
                     key={searchResults.searchId}
                     results={searchResults.items}

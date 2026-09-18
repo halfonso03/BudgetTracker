@@ -469,13 +469,19 @@ namespace Application.Services
                 {
                     var removeIds = new List<int>();
 
-                    foreach (var reproId in reproLineItems.Select(x => x.ReproId))
+                    var reproIds = reproLineItems.Select(x => x.ReproId).Distinct();
+                    var repros = _dbContext.Repros
+                                            .Include(x => x.Items)
+                                            .Where(x => reproIds.Contains(x.Id));
+
+                    foreach (var reproId in reproIds)
                     {
                         foreach (var xIid in searchParams.XInitiativeIds)
                         {
                             if (!searchParams.InitiativeIds.Contains(xIid) || removeIds.Contains(reproId)) break;
 
-                            removeIds.AddIfTrue(!reproLineItems.Where(x => x.ReproId == reproId).All(x => x.InitiativeId == xIid), reproId);
+                            var exclusive = repros.First(x => x.Id == reproId).Items.Any(x => x.InitiativeId != xIid);
+                            removeIds.AddIfTrue(exclusive, reproId);
                         }
                     }
 

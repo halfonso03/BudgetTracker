@@ -314,8 +314,6 @@ namespace Application.services
                                     select TransactionResponseDto.Create(r.ReproId, b.ItemType, b.CreateDate, b.Amount))
                             .ToListAsync();
                             
-            Console.WriteLine("-------------------------");
-            Console.WriteLine(reproItems.Count);
             List<TransactionResponseDto> mergedLists = [.. budgetLineItems, .. reproItems];
 
             return [.. mergedLists.OrderBy(x => x.PostedDate)];
