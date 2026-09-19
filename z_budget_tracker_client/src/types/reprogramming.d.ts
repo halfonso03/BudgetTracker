@@ -180,3 +180,10 @@ type ReproSearchResult = {
     justification: string | null,
     lineItems: ReprLineItemSearchResult[]
 }
+
+type ReproAmountFilter = {
+    debitAmount: number,
+    creditAmount: number,
+    debitComparer: number,
+    creditComparer: number
+}

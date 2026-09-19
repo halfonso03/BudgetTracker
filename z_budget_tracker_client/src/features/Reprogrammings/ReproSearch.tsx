@@ -3,7 +3,6 @@ import useInitiatives from '../../api/hooks/common/useInitiatives';
 import useCategories from '../../api/hooks/common/useCategories';
 import { useReproSearch } from '../../api/hooks/repro/useReproSearch';
 
-import { parseFormattedNumber } from '../../app/util';
 import ReproSearchReults from './ReproSearchReults';
 import React from 'react';
 import useGrantsAllYears from '../../api/hooks/common/useGrantsAllYears';
@@ -33,14 +32,16 @@ const ReproSearch = () => {
 
   const [year, setYear] = useState<number>(2026);
   const [status, setStatus] = useState<number>(0);
-  const [debitComparer, setDebitComparer] = useState<number>(0);
-  const [creditComparer, setCreditComparer] = useState<number>(0);
-  const [debit, setDebit] = useState<number>(0);
-  const [credit, setCredit] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const { initiatives } = useInitiatives();
   const { grants } = useGrantsAllYears();
   const { categories } = useCategories(true, true);
+  const [amountFilter, setAmountFilter] = useState<ReproAmountFilter>({
+    debitAmount: 0,
+    creditAmount: 0,
+    debitComparer: 0,
+    creditComparer: 0,
+  });
 
   const [deleteConfirmModalIsOpen, setDeleteConfirmModalIsOpen] =
     useState(false);
@@ -126,10 +127,7 @@ const ReproSearch = () => {
       xSelectedIds,
       status,
       year,
-      debitComparer,
-      debitAmount: debit,
-      creditComparer,
-      creditAmount: credit,
+      ...amountFilter,
     },
   );
 
@@ -199,39 +197,39 @@ const ReproSearch = () => {
     [grants],
   );
 
-  const handleAmountBlur = useCallback(
-    (amount: string, key: string) => {
-      const number = parseFormattedNumber(amount);
-      if (key == 'debit') {
-        if (debit !== number) {
-          setDebit(number);
-        }
-      }
-      if (key == 'credit') {
-        if (credit !== number) {
-          setCredit(number);
-        }
-      }
-      setPageNumber(1);
-    },
-    [credit, debit],
-  );
+  // const handleAmountBlur = useCallback(
+  //   (amount: string, key: string) => {
+  //     const number = parseFormattedNumber(amount);
+  //     if (key == 'debit') {
+  //       if (debit !== number) {
+  //         setDebit(number);
+  //       }
+  //     }
+  //     if (key == 'credit') {
+  //       if (credit !== number) {
+  //         setCredit(number);
+  //       }
+  //     }
+  //     setPageNumber(1);
+  //   },
+  //   [credit, debit],
+  // );
 
-  const handleComparerChange = useCallback(
-    (value: number, key: string) => {
-      if (key == 'debit') {
-        if (debitComparer !== value) {
-          setDebitComparer(value);
-        }
-      }
-      if (key == 'credit') {
-        if (creditComparer !== value) {
-          setCreditComparer(value);
-        }
-      }
-    },
-    [creditComparer, debitComparer],
-  );
+  // const handleComparerChange = useCallback(
+  //   (value: number, key: string) => {
+  //     if (key == 'debit') {
+  //       if (debitComparer !== value) {
+  //         setDebitComparer(value);
+  //       }
+  //     }
+  //     if (key == 'credit') {
+  //       if (creditComparer !== value) {
+  //         setCreditComparer(value);
+  //       }
+  //     }
+  //   },
+  //   [creditComparer, debitComparer],
+  // );
 
   const handlePageNumberChange = useCallback((pageNumber2: number) => {
     setPageNumber(pageNumber2);
@@ -285,9 +283,13 @@ const ReproSearch = () => {
     setXSelectedIds((prev) => prev.filter((x) => x.type !== type));
   }
 
+  function handleAmountFilter(amountFilter: ReproAmountFilter) {
+    setAmountFilter(amountFilter);
+    console.log('amountFilter', amountFilter);
+  }
+
   return (
     <div>
-   
       <div className="flex gap-2 mt-10">
         {/* <div className="flex flex-2">
           <div></div>
@@ -334,6 +336,7 @@ const ReproSearch = () => {
               onSelectAll={handleSelectAll}
               onStatusChange={handleStatusChange}
               onYearChange={handleYearChange}
+              onAmountFilter={handleAmountFilter}
               // onAmountBlur={handleAmountBlur}
               // onAmountComparerChange={handleComparerChange}
             ></MemoizedReproParams>

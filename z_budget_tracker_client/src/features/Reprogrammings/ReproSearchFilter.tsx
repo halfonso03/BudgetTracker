@@ -23,7 +23,6 @@ const ReproSearchFilter = ({
   const [showList, setShowList] = useState(
     usaOutsideShowList ? outsideShowList : false,
   );
-  //   const [outsideListOpenedeState, setOutsideListOpenState] = useState(false);
 
   const ref = useOutsideClick<HTMLDivElement>(() => {
     if (usaOutsideShowList) {
@@ -43,8 +42,6 @@ const ReproSearchFilter = ({
 
   return (
     <Fragment>
-      {/* <div>{id}</div>
-      {show ? <span>SHOW</span> : <span>no show</span>} */}
       <div className="relative" ref={ref}>
         <div className="flex">
           <button
@@ -73,9 +70,6 @@ const ReproSearchFilter = ({
                   className={`${showList ? 'hidden' : ''}`}
                 ></ChevronDown>
               )}
-              {/* <ChevronDown
-                className={`${!showList ? 'hidden' : ''}`}
-              ></ChevronDown> */}
             </div>
           </button>
         </div>
