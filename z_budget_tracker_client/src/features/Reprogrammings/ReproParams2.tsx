@@ -1,6 +1,5 @@
 import {
   memo,
-  RefObject,
   useRef,
   useState,
   type ChangeEvent,
@@ -10,7 +9,6 @@ import CheckBoxListReproSearchParam from '../../components/CheckBoxListReproSear
 import RadioButtonList from '../../components/RadioButtonList';
 import ReproSearchFilter from './ReproSearchFilter';
 import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
-import Select from '../../components/Select';
 import { parseFormattedNumber } from '../../app/util';
 
 const INITIATIVES_LIST_TYPE = 'I';
@@ -31,15 +29,8 @@ type Props = {
   onDeselectAll: (type: string) => void;
   onSelectAll: (type: string) => void;
   onAmountFilter: (amountFilter: ReproAmountFilter) => void;
+  onAmountFilterCancel: () => void;
 };
-
-// type VisibleParams = {
-//   initiatives: boolean;
-//   grants: boolean;
-//   accounts: boolean;
-//   years: boolean;
-//   statuses: boolean;
-// };
 
 const ReproParams2 = memo(
   ({
@@ -54,18 +45,13 @@ const ReproParams2 = memo(
     onStatusChange,
     years,
     onAmountFilter,
+    onAmountFilterCancel,
   }: Props) => {
     console.log('ReproParams2 render');
-    // const [visible, setVisisble] = useState<VisibleParams>({
-    //   initiatives: false,
-    //   grants: false,
-    //   accounts: false,
-    //   years: false,
-    //   statuses: false,
-    // });
-
     const statuses = getStatuses();
 
+    const debitRef = useRef<HTMLInputElement | null>(null);
+    const creditRef = useRef<HTMLInputElement | null>(null);
     const [yearOptions, setYearOptions] = useState<
       {
         id: number;
@@ -92,7 +78,7 @@ const ReproParams2 = memo(
       debitComparer: 0,
       creditComparer: 0,
     });
-    const [amountFilterLabel, setAmountFilterLabel] = useState('-');
+    const [amountFilterLabel, setAmountFilterLabel] = useState('$');
 
     function handleStatusChange(id: number) {
       setSelectedStatus(id);
@@ -181,6 +167,7 @@ const ReproParams2 = memo(
     function handleStatusOpened() {
       setStatusVisible((prev) => !prev);
     }
+
     function handleYearOpened() {
       setYearVisible((prev) => !prev);
     }
@@ -210,24 +197,23 @@ const ReproParams2 = memo(
         (amountFilter.creditAmount !== 0 ? 1 : 0) +
         (amountFilter.debitComparer !== 0 ? 1 : 0) +
         (amountFilter.creditComparer !== 0 ? 1 : 0);
-      setAmountFilterLabel(valueCount == 0 ? '-' : valueCount + ' input(s)');
+      setAmountFilterLabel(valueCount == 0 ? '$' : valueCount + ' input(s)');
     }
 
     function handleAmountFilterCancel() {
+      debitRef!.current!.value = '';
+      creditRef!.current!.value = '';
       setAmountFilter({
         debitAmount: 0,
         creditAmount: 0,
         debitComparer: 0,
         creditComparer: 0,
       });
-      debitRef!.current!.value = '';
-      creditRef!.current!.value = '';
-      setAmountFilterVisible(false);
-      setAmountFilterLabel('-');
-    }
 
-    const debitRef = useRef<HTMLInputElement | null>(null);
-    const creditRef = useRef<HTMLInputElement | null>(null);
+      setAmountFilterVisible(false);
+      setAmountFilterLabel('$');
+      onAmountFilterCancel();
+    }
 
     function handleDebitBlur(e: ChangeEvent<HTMLInputElement>) {
       const amount = parseFormattedNumber(e.target.value);
@@ -264,7 +250,7 @@ const ReproParams2 = memo(
       <div className="flex justify-center gap-3">
         <ReproSearchFilter
           selectedItemLabel={amountFilterLabel}
-          usaOutsideShowList={true}
+          parentCorntrolled={true}
           outsideShowList={amountFilterVisible}
           listOpened={handleAmountFilterOpened}
           outsideClicked={handleAmountFilterOutsideClick}
@@ -350,7 +336,7 @@ const ReproParams2 = memo(
         </ReproSearchFilter>
 
         <ReproSearchFilter
-          usaOutsideShowList={true}
+          parentCorntrolled={true}
           outsideShowList={yearVisible}
           listOpened={handleYearOpened}
           outsideClicked={handleYearOutsideCLick}
@@ -374,7 +360,7 @@ const ReproParams2 = memo(
         </ReproSearchFilter>
 
         <ReproSearchFilter
-          usaOutsideShowList={true}
+          parentCorntrolled={true}
           outsideShowList={statusVisible}
           listOpened={handleStatusOpened}
           outsideClicked={handleStatusOutsideCLick}
@@ -405,7 +391,7 @@ const ReproParams2 = memo(
         {initiatives !== undefined && initiatives.length > 0 && (
           <ReproSearchFilter
             selectedItemLabel={iLabel}
-            usaOutsideShowList={false}
+            parentCorntrolled={false}
             outsideShowList={false}
           >
             <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">
@@ -435,7 +421,7 @@ const ReproParams2 = memo(
         {grants !== undefined && grants.length > 0 && (
           <ReproSearchFilter
             selectedItemLabel={gLabel}
-            usaOutsideShowList={false}
+            parentCorntrolled={false}
             outsideShowList={false}
           >
             <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">
@@ -470,7 +456,7 @@ const ReproParams2 = memo(
         {accounts !== undefined && accounts.length > 0 && (
           <ReproSearchFilter
             selectedItemLabel={aLabel}
-            usaOutsideShowList={false}
+            parentCorntrolled={false}
             outsideShowList={false}
           >
             <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">

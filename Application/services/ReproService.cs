@@ -125,6 +125,7 @@ namespace Application.Services
                     Id = 0,
                     Amount = reproRequestDto.LineItems.Sum(x => x.Increase),
                     CreatedById = reproRequestDto.CreatedById,
+                    Year = grant.Year,
                     CreatedDate = DateTime.Now,
                     Justification = reproRequestDto.Justification,
                     Posted = reproRequestDto.Posted,
@@ -153,7 +154,7 @@ namespace Application.Services
 
                 if (newRepro.Posted)
                 {
-                    await PostRepro(newRepro.Items, newRepro.Id, reproRequestDto.CreatedById);
+                    await PostRepro(newRepro.Items, newRepro.Id, reproRequestDto.CreatedById, reproRequestDto.OverrideNegativeBalance);
                 }
 
                 newId = newRepro.Id;
@@ -294,7 +295,7 @@ namespace Application.Services
                         })
                         .ToList();
 
-                    await PostRepro(reproLineItems, reproRequestDto.Id, reproRequestDto.UpdatedById);
+                    await PostRepro(reproLineItems, reproRequestDto.Id, reproRequestDto.UpdatedById, reproRequestDto.OverrideNegativeBalance);
                     // foreach (var line in reproRequestDto.LineItems)
                     // {
                     //     var amount = 0M;
@@ -346,26 +347,26 @@ namespace Application.Services
             return Result<Unit>.Success(Unit.Value);
         }
 
-        private async Task<bool> PostRepro(IList<ReproLineItem> items, int reproId, int userId)
+        private async Task<bool> PostRepro(IList<ReproLineItem> items, int reproId, int userId, bool overrideNegativeBalance)
         {
 
             var postedBudgetLineItems = new List<BudgetLineItem>();
 
             foreach (var line in items)
             {
-                var amount = line.Increase > 0
+                var lineAmount = line.Increase > 0
                         ? Convert.ToDecimal(line.Increase ?? 0M)
                         : (line.Decrease > 0)
                         ? Convert.ToDecimal(line.Decrease ?? 0M) * -1
                         : 0;
 
-                if (amount == 0)
+                if (lineAmount == 0)
                 {
                     throw new Exception($"Error in {nameof(CreateRepro)}. Increase and decrease are both zero.");
                 }
 
                 // check if there is more than the reduction amount
-                if (amount < 0)
+                if (lineAmount < 0 && !overrideNegativeBalance)
                 {
                     var availableForAccount = _dbContext.BudgetLineItems
                                                    .Where(x => x.InitiativeId == line.InitiativeId
@@ -373,7 +374,7 @@ namespace Application.Services
                                                         && x.AccountId == line.AccountId)
                                                     .Sum(x => x.Amount);
 
-                    if (availableForAccount - Math.Abs(amount) < 0)
+                    if (availableForAccount - Math.Abs(lineAmount) < 0)
                     {
                         throw new Exception("Account being reduced by more that is available.");
                     }
@@ -385,7 +386,7 @@ namespace Application.Services
                     InitiativeId = line.InitiativeId,
                     GrantId = line.GrantId,
                     AccountId = line.AccountId,
-                    Amount = amount,
+                    Amount = lineAmount,
                     ItemType = "R",
                     CreateDate = DateTime.Now,
                     CreatedBy = userId

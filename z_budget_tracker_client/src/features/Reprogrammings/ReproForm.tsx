@@ -30,6 +30,7 @@ import AddLineModal from './modals/AddLineModal';
 import EditLineModal from './modals/EditLineModal';
 import ErrorsModal from './modals/ErrorsModal';
 import JustificaModal from './modals/JustificaModal';
+import CheckBox from '../../components/CheckBox';
 
 const EDITED = 1;
 const SAVED = 2;
@@ -92,20 +93,22 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
   const [justModalIsOpen, setJustModalIsOpen] = useState(
-    location.state &&
-      location.state.ids !== undefined &&
-      location.state.ids !== null
-      ? true
-      : false,
+    false
   );
   // fr above useState add back in later 9/13 11:45
 
+  // location.state &&
+  //     location.state.ids !== undefined &&
+  //     location.state.ids !== null
+  //     ? true
+  //     : false,
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [confirmPostModalIsOpen, setConfirmPostModal] =
     useState<boolean>(false);
   // const [isDirtyState, setIsDirtyState] = useState<DirtyState>({
   //   formValuesIsDirty: false,
   //   numbersAresDirty: false,
+  const [overrideNeg, setOverrideNeg] = useState(false);
 
   if (repro.year === 0) throw new Error('no year');
 
@@ -199,7 +202,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       errors.push(NEGATIVE_CURRENT_BALANCE);
     }
 
-    if (hasNegativeRemainingBalances(lines)) {
+    if (hasNegativeRemainingBalances(lines) && !overrideNeg) {
       errors.push(NEGATIVE_REMAINING_BALANCE);
     }
 
@@ -211,7 +214,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     }
 
     return errors;
-  }, [getTotalAmounts, lines, reproHeader.justification]);
+  }, [getTotalAmounts, lines, overrideNeg, reproHeader.justification]);
 
   const { inc, dec } = getTotalAmounts();
 
@@ -596,6 +599,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       posted: posted,
       justification: reproHeader.justification,
       lineItems: lineItems,
+      overrideNegativeBalance: overrideNeg,
     };
     await createRepro.mutateAsync(reproToSave, {
       onSuccess: async (id) => {
@@ -652,6 +656,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       posted: posted,
       justification: reproHeader.justification,
       lineItems: lineItems,
+      overrideNegativeBalance: overrideNeg,
     };
     await updateRepro.mutateAsync(reproToSave, {
       onSuccess: async () => {
@@ -850,6 +855,25 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             <div></div>
           </div>
         )}
+
+        {(reproHeader.status !== POSTED &&
+          hasNegativeRemainingBalances(lines))
+           && (
+            <div className="flex gap-4 items-start my-9 border border-red-300 p-3">
+              <div className="flex-1 text-end text-red-600 ">
+                One more more accounts will
+                have a negative balance. Click the check box to override this
+                behavior and allow posting the reprogramming
+              </div>
+              <div className=" flex justify-center mt-1">
+                <CheckBox
+                  onCheck={() => setOverrideNeg((prev) => !prev)}
+                  label=""
+                  checked={overrideNeg}
+                ></CheckBox>
+              </div>
+            </div>
+          )}
 
         {lines.length > 0 && reproHeader.status !== POSTED && (
           <div className=" grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 text-neutral-600 font-semibold">
@@ -1100,7 +1124,7 @@ function noNegativeBalances(lines: ReproLineItem[]): boolean {
 function hasNegativeRemainingBalances(lines: ReproLineItem[]): boolean {
   const lines2 = lines
     .map((l) => ({
-      rem: l.remainingAmount,
+      rem: l.newRemainingAmount,
       inc: +(l.increase ?? 0),
       dec: +(l.decrease ?? 0),
     }))

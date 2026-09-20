@@ -29,7 +29,6 @@ const ReproSearch = () => {
   // console.log('ReproSearch render');
 
   const queryClient = useQueryClient();
-
   const [year, setYear] = useState<number>(2026);
   const [status, setStatus] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -197,40 +196,6 @@ const ReproSearch = () => {
     [grants],
   );
 
-  // const handleAmountBlur = useCallback(
-  //   (amount: string, key: string) => {
-  //     const number = parseFormattedNumber(amount);
-  //     if (key == 'debit') {
-  //       if (debit !== number) {
-  //         setDebit(number);
-  //       }
-  //     }
-  //     if (key == 'credit') {
-  //       if (credit !== number) {
-  //         setCredit(number);
-  //       }
-  //     }
-  //     setPageNumber(1);
-  //   },
-  //   [credit, debit],
-  // );
-
-  // const handleComparerChange = useCallback(
-  //   (value: number, key: string) => {
-  //     if (key == 'debit') {
-  //       if (debitComparer !== value) {
-  //         setDebitComparer(value);
-  //       }
-  //     }
-  //     if (key == 'credit') {
-  //       if (creditComparer !== value) {
-  //         setCreditComparer(value);
-  //       }
-  //     }
-  //   },
-  //   [creditComparer, debitComparer],
-  // );
-
   const handlePageNumberChange = useCallback((pageNumber2: number) => {
     setPageNumber(pageNumber2);
   }, []);
@@ -285,7 +250,15 @@ const ReproSearch = () => {
 
   function handleAmountFilter(amountFilter: ReproAmountFilter) {
     setAmountFilter(amountFilter);
-    console.log('amountFilter', amountFilter);
+  }
+
+  function handleAmountFilterCancel() {
+    setAmountFilter({
+      debitAmount: 0,
+      creditAmount: 0,
+      debitComparer: 0,
+      creditComparer: 0,
+    });
   }
 
   return (
@@ -337,8 +310,7 @@ const ReproSearch = () => {
               onStatusChange={handleStatusChange}
               onYearChange={handleYearChange}
               onAmountFilter={handleAmountFilter}
-              // onAmountBlur={handleAmountBlur}
-              // onAmountComparerChange={handleComparerChange}
+              onAmountFilterCancel={handleAmountFilterCancel}
             ></MemoizedReproParams>
           </div>
 
@@ -393,6 +365,7 @@ const ReproSearch = () => {
     </div>
   );
 };
+
 export default ReproSearch;
 
 // if (loadingInit || loadingGrants || loadingCat) return <div>Loading...</div>;

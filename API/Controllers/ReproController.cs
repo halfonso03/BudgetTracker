@@ -36,6 +36,10 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(CreateReproRequestDto reproRequestDto)
         {
+            Console.WriteLine("------------------------");
+            Console.WriteLine(reproRequestDto.OverrideNegativeBalance);
+            Console.WriteLine("------------------------");
+
             return HandleResult(await _reproService.CreateRepro(reproRequestDto));
         }
 

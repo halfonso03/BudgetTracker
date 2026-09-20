@@ -154,6 +154,7 @@ const ReproNew = () => {
           }, 500);
         }}
         onConfirm={() => {
+          setHasUnsavedChanges(false)
           navigate('/reprogramming/search');
         }}
         message="There are unsaved changes in this reprogramming. Any changes made to this entry will be lost. Click OK to continue."

@@ -7,13 +7,13 @@ type Props = {
   selectedItemLabel: string;
   children: React.ReactNode;
   outsideShowList: boolean;
-  usaOutsideShowList: boolean;
+  parentCorntrolled: boolean;
   outsideClicked?: () => void;
   listOpened?: () => void;
 };
 
 const ReproSearchFilter = ({
-  usaOutsideShowList,
+  parentCorntrolled,
   outsideShowList,
   selectedItemLabel,
   outsideClicked,
@@ -21,11 +21,11 @@ const ReproSearchFilter = ({
   children,
 }: Props) => {
   const [showList, setShowList] = useState(
-    usaOutsideShowList ? outsideShowList : false,
+    parentCorntrolled ? outsideShowList : false,
   );
 
   const ref = useOutsideClick<HTMLDivElement>(() => {
-    if (usaOutsideShowList) {
+    if (parentCorntrolled) {
       outsideClicked?.();
     } else {
       setShowList(false);
@@ -34,7 +34,7 @@ const ReproSearchFilter = ({
 
   let show: boolean;
 
-  if (usaOutsideShowList) {
+  if (parentCorntrolled) {
     show = outsideShowList || showList;
   } else {
     show = showList;
@@ -47,7 +47,7 @@ const ReproSearchFilter = ({
           <button
             className="rounded-md border border-neutral-300 py-2 px-3 font-semibold flex cursor-pointer text-neutral-700 items-center w-45"
             onClick={() => {
-              if (usaOutsideShowList) {
+              if (parentCorntrolled) {
                 listOpened?.();
               } else {
                 setShowList((prev) => !prev);
@@ -56,17 +56,21 @@ const ReproSearchFilter = ({
           >
             <div className="grow">{selectedItemLabel}</div>
             <div>
-              {usaOutsideShowList && outsideShowList && <ChevronUp></ChevronUp>}
-              {usaOutsideShowList && !outsideShowList && (
-                <ChevronDown></ChevronDown>
+              {parentCorntrolled && outsideShowList && (
+                <ChevronUp style={{ pointerEvents: 'none' }}></ChevronUp>
               )}
-              {!usaOutsideShowList && (
+              {parentCorntrolled && !outsideShowList && (
+                <ChevronDown style={{ pointerEvents: 'none' }}></ChevronDown>
+              )}
+              {!parentCorntrolled && (
                 <ChevronUp
+                  style={{ pointerEvents: 'none' }}
                   className={`${!showList ? 'hidden' : ''}`}
                 ></ChevronUp>
               )}
-              {!usaOutsideShowList && (
+              {!parentCorntrolled && (
                 <ChevronDown
+                  style={{ pointerEvents: 'none' }}
                   className={`${showList ? 'hidden' : ''}`}
                 ></ChevronDown>
               )}

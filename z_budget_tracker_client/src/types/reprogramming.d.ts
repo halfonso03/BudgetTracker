@@ -79,6 +79,7 @@ type CreateReproRequest = {
     createdById: number
     posted: boolean
     lineItems: ReproLineItemRequest[]
+    overrideNegativeBalance: boolean
 }
 
 type UpdateReproRequest = {
@@ -87,6 +88,8 @@ type UpdateReproRequest = {
     updatedById: number
     posted: boolean
     lineItems: ReproLineItemRequest[]
+    overrideNegativeBalance: boolean
+
 }
 
 type ReproLineItemRequest = {

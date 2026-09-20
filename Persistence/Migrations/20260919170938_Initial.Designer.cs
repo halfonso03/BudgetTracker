@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260915213703_seeddate")]
-    partial class seeddate
+    [Migration("20260919170938_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -691,6 +691,10 @@ namespace Persistence.Migrations
                     b.Property<int?>("UpdatedById")
                         .HasColumnType("int")
                         .HasColumnName("updated_by");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int")
+                        .HasColumnName("year");
 
                     b.HasKey("Id");
 

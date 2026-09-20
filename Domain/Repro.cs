@@ -13,6 +13,7 @@ namespace Domain
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public required int Year { get; set; }
         public required DateTime CreatedDate { get; set; }
         public required int CreatedById { get; set; }
         public int? UpdatedById { get; set; }

@@ -75,6 +75,7 @@ namespace Persistence.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    year = table.Column<int>(type: "int", nullable: false),
                     create_date = table.Column<DateTime>(type: "DATETIME", nullable: false),
                     created_by = table.Column<int>(type: "int", nullable: false),
                     updated_by = table.Column<int>(type: "int", nullable: true),
@@ -334,7 +335,22 @@ namespace Persistence.Migrations
                     { 2, "Training" },
                     { 3, "ORS" },
                     { 4, "Multimedia & Technology Unit" },
-                    { 5, "DHE" }
+                    { 5, "DHE" },
+                    { 6, "Management & Coordination 2" },
+                    { 7, "Training 2" },
+                    { 8, "ORS 2" },
+                    { 9, "Multimedia & Technology Unit 2" },
+                    { 10, "DHE 3" },
+                    { 11, "Management & Coordination 3" },
+                    { 12, "Training 3" },
+                    { 13, "ORS 3" },
+                    { 14, "Multimedia & Technology Unit 3" },
+                    { 15, "DHE 4" },
+                    { 16, "Management & Coordination 4" },
+                    { 17, "Training 4" },
+                    { 18, "ORS 4" },
+                    { 19, "Multimedia & Technology Unit 4" },
+                    { 20, "DHE 4" }
                 });
 
             migrationBuilder.InsertData(

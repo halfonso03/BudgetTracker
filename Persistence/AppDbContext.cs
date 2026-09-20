@@ -354,6 +354,7 @@ namespace Persistence
             builder.Entity<Repro>().Property(x => x.UpdatedById).HasColumnName("updated_by");
             builder.Entity<Repro>().Property(x => x.Posted).HasColumnName("posted");
             builder.Entity<Repro>().Property(x => x.PostedById).HasColumnName("posted_by");
+            builder.Entity<Repro>().Property(x => x.Year).HasColumnName("year");
             builder.Entity<Repro>().Property(x => x.PostedDate).HasColumnName("posted_date").HasColumnType("DATETIME");
             builder.Entity<Repro>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
             builder.Entity<Repro>().Property(x => x.Justification).HasColumnName("justification").HasColumnType("VARCHAR(MAX)");

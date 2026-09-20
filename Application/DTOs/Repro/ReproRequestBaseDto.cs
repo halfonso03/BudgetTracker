@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Application.Validators;
 
@@ -15,7 +16,9 @@ namespace Application.DTOs.Repro
 
         [Required]
         public required bool Posted { get; set; }
-       
+
+        public required bool OverrideNegativeBalance { get; set; }
+
         public List<ReproRequestLineItemDto> LineItems { get; set; } = [];
 
         [ValueMustBeTrueValidator(ErrorMessage = "Row Ids are not sequential")]
@@ -45,7 +48,7 @@ namespace Application.DTOs.Repro
             {
 
                 if (!Posted) return true;
-                
+
                 if (LineItems.Count == 0) return null;
 
                 var itemCount = LineItems.Count;

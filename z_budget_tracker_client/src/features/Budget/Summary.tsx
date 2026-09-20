@@ -188,122 +188,133 @@ function CategorySummary({
       <div className="entity-label mb-2 border-b border-b-neutral-300 p-3 pt-3">
         Category
       </div>
-      {categoryTotals.map((c, index) => (
-        <div
-          className=" relative z-6 border-b border-b-slate-300 last:border-0"
-          key={index}
-        >
+      {categoryTotals.map((c, index) => {
+        const n = items
+          .filter((x) => x.category?.name == c.category)
+          .map((i) => i.current_amount + i.spent_amount)
+          .some((x) => x < 0);
+        const cateoryRedClass = n === true ? 'text-red-600' : '';
+        console.log(n, c.category, cateoryRedClass);
+        return (
           <div
-            className={`py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 px-3 mt-2 items-center`}
+            className=" relative z-6 border-b border-b-slate-300 last:border-0"
             key={index}
           >
-            <div className="entity-name pl-2 " key={index}>
-              {c.category}
-            </div>
-            <div></div>
-            <div className="text-end">
-              {c.amount > 0 ? (
-                formatCurrency(c.amount)
-              ) : (
-                <span className="text-neutral-400">-</span>
-              )}
-            </div>
-            <div className="text-end">
-              {c.current_amount !== 0 ? (
-                formatCurrency(c.current_amount)
-              ) : (
-                <span className="text-neutral-400">-</span>
-              )}
-            </div>
-            <div className="text-end">
-              {c.spent_amount !== 0 ? (
-                formatCurrency(c.spent_amount)
-              ) : (
-                <span className="text-neutral-400">-</span>
-              )}
-            </div>
-            <div className="text-end">
-              {c.current_amount - c.spent_amount > 0 ? (
-                formatCurrency(c.current_amount + c.spent_amount)
-              ) : (
-                <span className="text-neutral-400">-</span>
-              )}
-            </div>
-            <div className="flex justify-center items-center">
-              <ChevronDownSquare
-                className={`text-neutral-500 cursor-pointer 
+            <div
+              className={`py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 px-3 mt-2 items-center`}
+              key={index}
+            >
+              <div className={`font-bold pl-2 ${cateoryRedClass}`} key={index}>
+                {c.category} 
+              </div>
+              <div></div>
+              <div className="text-end">
+                {c.amount > 0 ? (
+                  formatCurrency(c.amount)
+                ) : (
+                  <span className="text-neutral-400">-</span>
+                )}
+              </div>
+              <div className="text-end">
+                {c.current_amount !== 0 ? (
+                  formatCurrency(c.current_amount)
+                ) : (
+                  <span className="text-neutral-400">-</span>
+                )}
+              </div>
+              <div className="text-end">
+                {c.spent_amount !== 0 ? (
+                  formatCurrency(c.spent_amount)
+                ) : (
+                  <span className="text-neutral-400">-</span>
+                )}
+              </div>
+              <div className="text-end">
+                {c.current_amount - c.spent_amount > 0 ? (
+                  formatCurrency(c.current_amount + c.spent_amount)
+                ) : (
+                  <span className="text-neutral-400">-</span>
+                )}
+              </div>
+              <div className="flex justify-center items-center">
+                <ChevronDownSquare
+                  className={`text-neutral-500 cursor-pointer 
                   ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
-                onClick={() => {
-                  if (expandedIndexes.some((x) => x == index)) {
-                    setExpandedIndexes((prev) =>
-                      prev.filter((x) => x !== index),
-                    );
-                  } else {
-                    setExpandedIndexes((prev) => [...prev, index]);
-                  }
-                }}
-              ></ChevronDownSquare>
+                  onClick={() => {
+                    if (expandedIndexes.some((x) => x == index)) {
+                      setExpandedIndexes((prev) =>
+                        prev.filter((x) => x !== index),
+                      );
+                    } else {
+                      setExpandedIndexes((prev) => [...prev, index]);
+                    }
+                  }}
+                ></ChevronDownSquare>
+              </div>
             </div>
-          </div>
-          <div
-            className={`pb-0  box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}  mt-1  `}
-          >
-            <div className="pl-5 pb-0 font-semibold entity-label">Account</div>
-            <div className="py-1 bg-neutral-50 border-t border-t-neutral-300  ">
-              {items
-                .filter((x) => x.category?.name == c.category)
-                .sort((a, b) => a.account_name.localeCompare(b.account_name))
-                .map((i) => (
-                  <div
-                    className="my-0 p-1 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 mb-1 last:mb-0 transition-all duration-200 hover:bg-neutral-200"
-                    key={i.account_id}
-                  >
-                    <div className="italic pl-8">{i.account_name}</div>
-                    <div></div>
-                    <div className="text-end italic text-neutral-700">
-                      {i.amount > 0 ? (
-                        formatCurrency(i.amount)
-                      ) : (
-                        <span className="text-neutral-400">-</span>
-                      )}
-                    </div>
-                    <div className="text-end italic text-neutral-700">
-                      {i.current_amount !== 0 ? (
-                        formatCurrency(i.current_amount)
-                      ) : (
-                        <span className="text-neutral-400">-</span>
-                      )}
-                    </div>
-                    <div className="text-end italic text-neutral-700">
-                      {i.spent_amount !== 0 ? (
-                        formatCurrency(i.spent_amount)
-                      ) : (
-                        <span className="text-neutral-400">-</span>
-                      )}
-                    </div>
-                    <div>
-                      <div className="text-end">
-                        {i.current_amount - i.spent_amount > 0 ? (
-                          formatCurrency(i.current_amount + i.spent_amount)
+            <div
+              className={`pb-0  box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}  mt-1  `}
+            >
+              <div className="pl-5 pb-0 font-semibold entity-label">
+                Account
+              </div>
+              <div className="py-1 bg-neutral-50 border-t border-t-neutral-300  ">
+                {items
+                  .filter((x) => x.category?.name == c.category)
+                  .sort((a, b) => a.account_name.localeCompare(b.account_name))
+                  .map((i) => (
+                    <div
+                      className="my-0 p-1 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 mb-1 last:mb-0 transition-all duration-200 hover:bg-neutral-200"
+                      key={i.account_id}
+                    >
+                      <div className="italic pl-8">{i.account_name}</div>
+                      <div></div>
+                      <div className="text-end italic text-neutral-700">
+                        {i.amount > 0 ? (
+                          formatCurrency(i.amount)
                         ) : (
                           <span className="text-neutral-400">-</span>
                         )}
                       </div>
-                    </div>
-                    <div className="flex justify-around text-blue-500 text-[.9rem] cursor-pointer">
-                      <Link
-                        to={`/reprogramming/${year}/${initiativeId}/${grantId}/${i.category_id}/${i.account_id}`}
-                      >
-                        <ArrowLeftRight></ArrowLeftRight>
-                      </Link>
-                      <DollarSign
-                        onClick={() => {
-                          navigate(
-                            `/disbusersement/create/${initiativeId}/${grantId}/${i.account_id}`,
-                          );
-                        }}
-                      ></DollarSign>
-                      {/* <Menus>
+                      <div className="text-end italic text-neutral-700">
+                        {i.current_amount !== 0 ? (
+                          formatCurrency(i.current_amount)
+                        ) : (
+                          <span className="text-neutral-400">-</span>
+                        )}
+                      </div>
+                      <div className="text-end italic text-neutral-700">
+                        {i.spent_amount !== 0 ? (
+                          formatCurrency(i.spent_amount)
+                        ) : (
+                          <span className="text-neutral-400">-</span>
+                        )}
+                      </div>
+                      <div>
+                        <div
+                          className={`italic text-end ${i.current_amount + i.spent_amount < 0 ? 'text-red-600' : ''}`}
+                        >
+                          {i.current_amount - i.spent_amount > 0 ? (
+                            formatCurrency(i.current_amount + i.spent_amount)
+                          ) : (
+                            <span className="text-neutral-400">-</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex justify-around text-blue-500 text-[.9rem] cursor-pointer">
+                        <Link
+                          to={`/reprogramming/${year}/${initiativeId}/${grantId}/${i.category_id}/${i.account_id}`}
+                        >
+                          <ArrowLeftRight></ArrowLeftRight>
+                        </Link>
+                        <DollarSign
+                          onClick={() => {
+                            navigate(
+                              `/disbusersement/create/${initiativeId}/${grantId}/${i.account_id}`,
+                            );
+                          }}
+                        ></DollarSign>
+                        {/* <Menus>
                         <Menus.Toggler id={i.account_id.toString()}>
                           <div className="text-center text-blue-500 text-[.9rem] flex gap-2 justify-around">
                             Actions
@@ -334,13 +345,14 @@ function CategorySummary({
                           </Menus.MenuItem>
                         </Menus.List>
                       </Menus> */}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

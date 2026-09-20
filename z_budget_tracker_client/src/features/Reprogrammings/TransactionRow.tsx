@@ -36,7 +36,7 @@ const TransactionRow = ({
   },
 }: Props) => {
 
-  // console.log('balances', balances)
+  console.log('balances', balances)
   const accounts = balances.map((b) => ({
     value: b.accountId,
     label: (

@@ -689,6 +689,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("updated_by");
 
+                    b.Property<int>("Year")
+                        .HasColumnType("int")
+                        .HasColumnName("year");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
