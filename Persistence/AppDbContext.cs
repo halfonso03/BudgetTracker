@@ -15,11 +15,11 @@ namespace Persistence
         public required DbSet<BudgetComment> BudgetComments { get; set; }
         public required DbSet<Repro> Repros { get; set; }
         public required DbSet<ReproLineItem> ReproLineItems { get; set; }
+        public required DbSet<Disb> Disbs { get; set; }
+        public required DbSet<DisbLineItem> DisbLineItems { get; set; }
         public required DbSet<Report> Reports { get; set; }
         public required DbSet<ReportParameter> ReportParameters { get; set; }
-
         public required DbSet<ReportCategory> ReportCategories { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -382,6 +382,37 @@ namespace Persistence
             builder.Entity<ReproLineItem>()
                     .HasIndex(a => new { a.ReproId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
                     .IsUnique();
+
+            builder.Entity<Disb>().Property(x => x.Id).HasColumnName("id");
+            builder.Entity<Disb>().Property(x => x.CreatedDate).HasColumnName("create_date").HasColumnType("DATETIME");
+            builder.Entity<Disb>().Property(x => x.CreatedById).HasColumnName("created_by");
+            builder.Entity<Disb>().Property(x => x.UpdateDate).HasColumnName("updated_date").HasColumnType("DATETIME");
+            builder.Entity<Disb>().Property(x => x.UpdatedById).HasColumnName("updated_by");
+            builder.Entity<Disb>().Property(x => x.Posted).HasColumnName("posted");
+            builder.Entity<Disb>().Property(x => x.PostedById).HasColumnName("posted_by");
+            builder.Entity<Disb>().Property(x => x.Year).HasColumnName("year");
+            builder.Entity<Disb>().Property(x => x.PostedDate).HasColumnName("posted_date").HasColumnType("DATETIME");
+            builder.Entity<Disb>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
+            builder.Entity<Disb>().Property(x => x.Justification).HasColumnName("justification").HasColumnType("VARCHAR(MAX)");
+
+            builder.Entity<DisbLineItem>().Property(x => x.Id).HasColumnName("id");
+            builder.Entity<DisbLineItem>().Property(x => x.DisbId).HasColumnName("disb_id");
+            builder.Entity<DisbLineItem>().Property(x => x.RowId).HasColumnName("row_id");
+            builder.Entity<DisbLineItem>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
+            builder.Entity<DisbLineItem>().Property(x => x.GrantId).HasColumnName("grant_id");
+            builder.Entity<DisbLineItem>().Property(x => x.CategoryId).HasColumnName("category_id");
+            builder.Entity<DisbLineItem>().Property(x => x.AccountId).HasColumnName("account_id");
+            builder.Entity<DisbLineItem>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
+            builder.Entity<DisbLineItem>().Property(x => x.Year).HasColumnName("year");
+            builder.Entity<DisbLineItem>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME");
+            builder.Entity<DisbLineItem>().Property(x => x.UpdatedById).HasColumnName("updated_by");
+            builder.Entity<DisbLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME");
+            builder.Entity<DisbLineItem>().Property(x => x.Comment).HasColumnName("comment").HasColumnType("VARCHAR(MAX)");
+            builder.Entity<DisbLineItem>().Property(x => x.BudgetLineItemId).HasColumnName("budget_line_id");
+            builder.Entity<DisbLineItem>()
+                    .HasIndex(a => new { a.DisbId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
+                    .IsUnique();
+
 
             builder.Entity<Report>().Property(x => x.Name).HasColumnType("VARCHAR(200)");
             builder.Entity<Report>().Property(x => x.Path).HasColumnType("VARCHAR(1000)");

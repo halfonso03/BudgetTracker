@@ -25,7 +25,7 @@ namespace API.Controllers
         public async Task<IActionResult> Index()
         {
 
-            var result = await reportService.RunReport("HOTTReports/UserList");
+            var result = await reportService.RunReport("/HOTTReports/UserList");
 
             return new FileContentResult(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             {

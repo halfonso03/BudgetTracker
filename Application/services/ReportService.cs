@@ -29,7 +29,7 @@ namespace Application.Services
             return param;
         }
 
-        public async Task<byte[]> RunReport (string path, ParameterValue[]? parameters = null, ReportExportFormat exportFormat = ReportExportFormat.EXCELOPENXML)
+        public async Task<byte[]> RunReport(string path, ParameterValue[]? parameters = null, ReportExportFormat exportFormat = ReportExportFormat.EXCELOPENXML)
         {
 
             var binding = new BasicHttpBinding(BasicHttpSecurityMode.TransportCredentialOnly);
@@ -64,11 +64,15 @@ namespace Application.Services
 
                 //Set the parameteres asked for by the report
                 //var reportParameters = taskLoadReport.Where(x => parameters.ContainsKey(x.Name)).Select(x => new ParameterValue() { Name = x.Name, Value = parameters[x.Name].ToString() }).ToArray();
-                await rsExec.SetExecutionParametersAsync(
-                    executionHeader,
-                    trusteduserHeader,
-                    parameters,
-                    "en-us");
+
+                if (parameters != null && parameters.Length > 0)
+                {
+                    await rsExec.SetExecutionParametersAsync(
+                        executionHeader,
+                        trusteduserHeader,
+                        parameters,
+                        "en-us");
+                }
 
                 //run the report
                 const string deviceInfo = @"<DeviceInfo><Toolbar>False</Toolbar></DeviceInfo>";

@@ -1,0 +1,37 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace Domain
+{
+    [Table("tblDisb")]
+    public class Disb
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public required int Year { get; set; }
+        public required DateTime CreatedDate { get; set; }
+        public required int CreatedById { get; set; }
+        public int? UpdatedById { get; set; }
+        public required bool Posted { get; set; }
+        public int? PostedById { get; set; }
+        public DateTime? PostedDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
+        public required decimal Amount { get; set; }
+        public required string Justification { get; set; }
+        public required IList<DisbLineItem> Items { get; set; }
+
+        [ForeignKey("CreatedById")]
+        public AuthorizedUser? CreatedBy { get; set; }
+
+        [ForeignKey("UpdatedById")]
+        public AuthorizedUser? UpdatedBy { get; set; }
+
+        [ForeignKey("PostedById")]
+        public AuthorizedUser? PostedBy { get; set; }
+    }
+}
