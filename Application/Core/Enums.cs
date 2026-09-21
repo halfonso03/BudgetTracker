@@ -12,5 +12,13 @@ namespace Application.Core
             CurrentAmount,
             RemainingAmount
         }
+        public enum ReportExportFormat
+        {
+            PDF,
+            WORD,
+            WORD97,
+            EXCEL,
+            EXCELOPENXML,
+        }
     }
 }

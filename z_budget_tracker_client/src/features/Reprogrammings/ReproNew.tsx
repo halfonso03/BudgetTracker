@@ -5,12 +5,8 @@ import useAuth from '../../contexts/useAuth';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import NewReproButton from './NewReproButton';
 import ReproForm from './ReproForm';
-import { useQueryClient } from '@tanstack/react-query';
-import useCategories from '../../api/hooks/common/useCategories';
 
 const ReproNew = () => {
-  const { categories: accounts } = useCategories(false, true);
-
   const navigate = useNavigate();
   const location = useLocation();
   const { userId } = useAuth();
@@ -26,9 +22,6 @@ const ReproNew = () => {
   //   formValuesIsDirty: false,
   // });
 
-  //  preloadState
-  //     ? preloadState?.year !== undefined || preloadState?.ids !== undefined
-  //     :
 
   let initialYear = 0;
   let justification = '';

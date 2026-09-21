@@ -45,7 +45,7 @@ const TransactionsModal = (props: Props) => {
         onCancel={handleCancel}
       >
         <div className="">
-          <div className='font-semibold text-neutral-700'>Account</div>
+          <div className="font-semibold text-neutral-700">Account</div>
           <div className="font-semibold self-end mb-3">{props.accountName}</div>
           <div className="grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 my-3 border-b border-b-neutral-200">
             <div></div>
@@ -73,7 +73,25 @@ const TransactionsModal = (props: Props) => {
                       <button
                         className="cursor-pointer underline underline-offset-3 text-blue-600"
                         onClick={() => {
-                          props.onSelectedId(t.id, props.accountName, props.initiativeId);
+                          props.onSelectedId(
+                            t.id,
+                            props.accountName,
+                            props.initiativeId,
+                          );
+                        }}
+                      >
+                        {t.id}
+                      </button>
+                    ) : null}
+                    {t.typeName == 'Disbursement' ? (
+                      <button
+                        className="cursor-pointer underline underline-offset-3 text-blue-600"
+                        onClick={() => {
+                          props.onSelectedId(
+                            t.id,
+                            props.accountName,
+                            props.initiativeId,
+                          );
                         }}
                       >
                         {t.id}

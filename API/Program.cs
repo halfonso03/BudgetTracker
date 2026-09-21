@@ -24,6 +24,18 @@ builder.Services.AddTransient<IGrantService, GrantService>();
 builder.Services.AddTransient<IInitiativeService, InitiativesService>();
 builder.Services.AddTransient<IBudgetService, BudgetService>();
 builder.Services.AddTransient<IReproService, ReproService>();
+builder.Services.AddTransient<IReportService, ReportService>((provider) =>
+{
+    var dbContext = provider.GetRequiredService<AppDbContext>();
+
+    return new ReportService(
+        dbContext,
+        builder.Configuration["ReportServerUserName"]!,
+        builder.Configuration["ReportServerPassword"]!,
+        builder.Configuration["ReportServerIP"]!,
+        builder.Configuration["ReportServerAddress"]!
+    );
+});
 
 
 builder.Services.AddControllers();
@@ -59,7 +71,6 @@ app.MapFallbackToController("Index", "Fallback");
 
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
-
 
 try
 {

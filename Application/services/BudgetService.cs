@@ -313,12 +313,18 @@ namespace Application.services
                                     where b.InitiativeId == initiativeId && b.GrantId == grantId && b.AccountId == accountId
                                     select TransactionResponseDto.Create(r.ReproId, b.ItemType, b.CreateDate, b.Amount))
                             .ToListAsync();
-                            
-            List<TransactionResponseDto> mergedLists = [.. budgetLineItems, .. reproItems];
+
+            var disbItems = await (from b in _dbContext.BudgetLineItems
+                                   where b.InitiativeId == initiativeId && b.GrantId == grantId && b.AccountId == accountId
+                                      && b.ItemType == Globals.ITEM_TYPE_DISB
+                                   select TransactionResponseDto.Create(b.Id, b.ItemType, b.CreateDate, b.Amount))
+                            .ToListAsync();
+
+            List<TransactionResponseDto> mergedLists = [.. budgetLineItems, .. reproItems, .. disbItems];
 
             return [.. mergedLists.OrderBy(x => x.PostedDate)];
         }
-       
+
         public async Task<List<ReproCategoryBalanceDto>> GetBalancesForCategory(int initiativeId, int grantId, int categoryId)
         {
             var accounts = _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId).Select(x => x).ToList();
@@ -354,15 +360,15 @@ namespace Application.services
                                  };
 
             var currentAmount_WithAccounts = from a in accounts
-                                        join b in currentAmounts on a.Id equals b.Key.accountId into itemsGroup
-                                        from subItems in itemsGroup.DefaultIfEmpty()
-                                        orderby a.Name
-                                        select new
-                                        {
-                                            accountId = a.Id,
-                                            accountName = a.Name,
-                                            currentAmount = subItems != null ? subItems.amount : 0,
-                                        };
+                                             join b in currentAmounts on a.Id equals b.Key.accountId into itemsGroup
+                                             from subItems in itemsGroup.DefaultIfEmpty()
+                                             orderby a.Name
+                                             select new
+                                             {
+                                                 accountId = a.Id,
+                                                 accountName = a.Name,
+                                                 currentAmount = subItems != null ? subItems.amount : 0,
+                                             };
 
             var remainingAmounts = from l in lineItems
                                    group l by new { l.accountId, l.accountName } into catBal

@@ -15,6 +15,11 @@ namespace Persistence
         public required DbSet<BudgetComment> BudgetComments { get; set; }
         public required DbSet<Repro> Repros { get; set; }
         public required DbSet<ReproLineItem> ReproLineItems { get; set; }
+        public required DbSet<Report> Reports { get; set; }
+        public required DbSet<ReportParameter> ReportParameters { get; set; }
+
+        public required DbSet<ReportCategory> ReportCategories { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -374,13 +379,21 @@ namespace Persistence
             builder.Entity<ReproLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME");
             builder.Entity<ReproLineItem>().Property(x => x.Comment).HasColumnName("comment").HasColumnType("VARCHAR(MAX)");
             builder.Entity<ReproLineItem>().Property(x => x.BudgetLineItemId).HasColumnName("budget_line_id");
-
-
             builder.Entity<ReproLineItem>()
                     .HasIndex(a => new { a.ReproId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
                     .IsUnique();
 
+            builder.Entity<Report>().Property(x => x.Name).HasColumnType("VARCHAR(200)");
+            builder.Entity<Report>().Property(x => x.Path).HasColumnType("VARCHAR(1000)");
 
+            builder.Entity<ReportParameter>().Property(x => x.Name).HasColumnType("VARCHAR(75)");
+
+            builder.Entity<ReportParameter>()
+                   .HasIndex(a => new { a.ReportId, a.SortOrder })
+                   .IsUnique();
+
+
+            builder.Entity<ReportCategory>().Property(x => x.Name).HasColumnType("VARCHAR(50)");
         }
     }
 }
