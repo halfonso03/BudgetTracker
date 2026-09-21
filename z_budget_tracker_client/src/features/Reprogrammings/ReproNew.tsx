@@ -5,8 +5,12 @@ import useAuth from '../../contexts/useAuth';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import NewReproButton from './NewReproButton';
 import ReproForm from './ReproForm';
+import { useQueryClient } from '@tanstack/react-query';
+import useCategories from '../../api/hooks/common/useCategories';
 
 const ReproNew = () => {
+  const { categories: accounts } = useCategories(false, true);
+
   const navigate = useNavigate();
   const location = useLocation();
   const { userId } = useAuth();
@@ -49,18 +53,27 @@ const ReproNew = () => {
         balances: preloadState.balances,
       });
 
+
       const currentAmount = preloadState.balances.filter(
         (x: ReproLineItem) => x.accountId === preloadState.ids.accountId,
       )[0].currentAmount;
 
-      lineItems.push({
+      const remainingAmount = preloadState.balances.filter(
+        (x: ReproLineItem) => x.accountId === preloadState.ids.accountId,
+      )[0].remainingAmount;
+
+
+      console.log('preloadState.ids.accountName', preloadState.ids.accountName)
+      const lineItem: ReproLineItem = {
         ...preloadState.ids,
         rowId: 0,
         uuid: crypto.randomUUID(),
-        accountName: '',
+        accountName: preloadState.ids.accountName,
         currentAmount: currentAmount,
         newCurrentAmount: currentAmount,
-      });
+        newRemainingAmount: remainingAmount,
+      };
+      lineItems.push(lineItem);
     }
   }
 
@@ -154,7 +167,7 @@ const ReproNew = () => {
           }, 500);
         }}
         onConfirm={() => {
-          setHasUnsavedChanges(false)
+          setHasUnsavedChanges(false);
           navigate('/reprogramming/search');
         }}
         message="There are unsaved changes in this reprogramming. Any changes made to this entry will be lost. Click OK to continue."

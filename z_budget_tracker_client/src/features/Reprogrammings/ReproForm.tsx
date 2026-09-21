@@ -92,9 +92,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [editSelections, setEditSelections] = useState<Selections | null>(null);
-  const [justModalIsOpen, setJustModalIsOpen] = useState(
-    false
-  );
+  const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   // fr above useState add back in later 9/13 11:45
 
   // location.state &&
@@ -135,6 +133,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
       const line: ReproLineItem = {
         ...l,
+
         remainingAmount: remainingAmount,
         newCurrentAmount:
           l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
@@ -144,6 +143,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       return line;
     }),
   );
+
+  // console.log('lines render', lines)
 
   const [savedBalances, setSavedBalances] = useState<ReproRowBalance[]>(
     repro && repro.rowBalances ? repro.rowBalances! : [],
@@ -392,7 +393,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       const lines = prev.map((line: ReproLineItem, index) => {
         if (rowUuid !== line.uuid) return line;
         const { inc, dec } = getRowIncreaseAndDecrease(index);
-        const { currentAmount, remainingAmount } = savedBalances
+        const { currentAmount, remainingAmount, accountName } = savedBalances
           .filter(
             (b) =>
               b.key.initiativeId == line.initiativeId &&
@@ -400,12 +401,15 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
               b.key.categoryId == line.categoryId,
           )[0]
           .balances.filter((x) => x.accountId == accountId)[0];
+
         const newLine: ReproLineItem = {
           ...line,
+          accountName: accountName,
           accountId: accountId,
           increase: inc,
           decrease: dec,
           currentAmount: currentAmount,
+          remainingAmount: remainingAmount,
           newCurrentAmount: currentAmount + +inc - +dec,
           newRemainingAmount: remainingAmount + +inc - +dec,
         };
@@ -757,6 +761,9 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   return (
     <MenuIdProvider>
       <div>
+        <pre>{JSON.stringify(lines)}</pre>
+      </div>
+      <div>
         {!userId && (
           <div className="text-xl p-1 text-red-500 font-semibold">
             Your are not logged in!
@@ -856,21 +863,25 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           </div>
         )}
 
-        {(reproHeader.status !== POSTED &&
-          hasNegativeRemainingBalances(lines))
-           && (
-            <div className="flex gap-4 items-start my-9 border border-red-300 p-3">
-              <div className="flex-1 text-end text-red-600 ">
-                One more more accounts will
-                have a negative balance. Click the check box to override this
-                behavior and allow posting the reprogramming
-              </div>
-              <div className=" flex justify-center mt-1">
-                <CheckBox
-                  onCheck={() => setOverrideNeg((prev) => !prev)}
-                  label=""
-                  checked={overrideNeg}
-                ></CheckBox>
+        {reproHeader.status !== POSTED &&
+          hasNegativeRemainingBalances(lines) && (
+            <div className="flex justify-end items-start my-9">
+              <div className="border border-red-300 shrink p-3">
+                <div className="text-end text-red-600 ">
+                  This reprogramming cannot be posted with the propsed Increase
+                  and Decrease amounts as one or more accounts will have a
+                  negative balance.
+                </div>
+                <div className="flex gap-2 items-center justify-end mt-2 text-red-600">
+                  <div>
+                    Click the check box to override this behavior and allow
+                    posting the reprogramming with the negative balance.
+                  </div>
+                  <CheckBox
+                    onCheck={() => setOverrideNeg((prev) => !prev)}
+                    checked={overrideNeg}
+                  ></CheckBox>
+                </div>
               </div>
             </div>
           )}
@@ -1122,15 +1133,33 @@ function noNegativeBalances(lines: ReproLineItem[]): boolean {
 }
 
 function hasNegativeRemainingBalances(lines: ReproLineItem[]): boolean {
+  console.log('lines', lines);
+
+  const t = lines.map((x) => ({
+    accname: x.accountName,
+    curr: x.currentAmount,
+    nCurr: x.newCurrentAmount,
+    inc: x.increase,
+    dec: x.decrease,
+    rem: x.remainingAmount,
+    newRem: x.newRemainingAmount,
+  }));
+
+  console.log('t', t);
+
   const lines2 = lines
     .map((l) => ({
-      rem: l.newRemainingAmount,
+      rem: l.remainingAmount,
       inc: +(l.increase ?? 0),
       dec: +(l.decrease ?? 0),
     }))
-    .map((l) => l.rem + l.inc - l.dec);
+    .map((l) => ({
+      proposedRem: l.rem + l.inc - l.dec,
+    }));
 
-  return lines2.some((x) => x < 0);
+  // console.log('lines2', lines2);
+
+  return lines2.some((x) => x.proposedRem < 0);
 }
 
 function noZeroOnlyLines(lines: ReproLineItem[]): boolean {

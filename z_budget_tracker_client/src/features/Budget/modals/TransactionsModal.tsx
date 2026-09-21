@@ -20,8 +20,6 @@ const TransactionsModal = (props: Props) => {
     props.grantId,
     props.accountId,
   );
-  console.log('props', props);
-  console.log('data', data);
   const [animateOut, setAnimateOut] = useState(false);
 
   if (isLoading) return <div>Loading...</div>;

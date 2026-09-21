@@ -30,8 +30,18 @@ type LineItem = {
     uuid: string
 }
 
-type ReproLineItem = LineItem & {
+type ReproLineItem = {
     rowId: number
+     year?: number
+    accountId: number
+    accountName: string
+    categoryId: number,
+    categoryName: string,
+    initiativeId: number,
+    initiativeName: string
+    grantId: number,
+    grantName: string,
+    uuid: string
     currentAmount: number
     increase?: string | number
     decrease?: string | number

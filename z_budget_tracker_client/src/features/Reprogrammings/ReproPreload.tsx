@@ -11,10 +11,8 @@ const ReproPreload = () => {
     +grantId!,
     +categoryId!,
   );
-
   useEffect(() => {
     if (isSuccess) {
-
       navigate('/reprogramming/new', {
         state: {
           balances: data,
@@ -27,6 +25,8 @@ const ReproPreload = () => {
             initiativeName: data![0].initiativeName,
             grantName: data![0].grantName,
             categoryName: data![0].categoryName,
+            accountName: data!.filter((x) => x.accountId === +accountId!)[0]
+              .accountName,
           },
         },
         replace: true,

@@ -6,6 +6,7 @@ import {
   type PieLabelRenderProps,
 } from 'recharts';
 import { RechartsDevtools } from '@recharts/devtools';
+import useCategories from '../api/hooks/common/useCategories';
 
 const renderCustomizedLabel = ({
   cx,
@@ -34,6 +35,9 @@ const renderCustomizedLabel = ({
 
 const RADIAN = Math.PI / 180;
 const Home = () => {
+  const { categories: accounts, catSuccess } = useCategories(true, true);
+  if (catSuccess) console.log('categories', accounts);
+
   const data01 = [
     {
       value: 20,
@@ -64,7 +68,6 @@ const Home = () => {
       name: 'Drug Threat Analysis Group',
     },
   ];
-
 
   return (
     <div>

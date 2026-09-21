@@ -43,9 +43,6 @@ const CheckBoxListReproSearchParam = ({
     })),
   );
 
-  // if (id === 'G') {
-  //   console.log('options', options);
-  // }
 
   const overflowClass =
     maxHeight !== null && maxHeight !== undefined

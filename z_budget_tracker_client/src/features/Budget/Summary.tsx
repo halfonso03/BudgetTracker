@@ -47,10 +47,10 @@ const Summary = ({ year }: Props) => {
       >
         <div>Initiative</div>
         <div>Grant</div>
-        <div className="text-end">Approved Budget</div>
-        <div className="text-end">Current Budget</div>
-        <div className="text-end">Spent Amount</div>
-        <div className="text-end">Remaining Balance</div>
+        <div className="text-end">Approved </div>
+        <div className="text-end">Current </div>
+        <div className="text-end">Spent </div>
+        <div className="text-end">Remaining </div>
         {/* <div className="text-center entity-label">Details</div> */}
         <div></div>
       </div>
@@ -194,7 +194,6 @@ function CategorySummary({
           .map((i) => i.current_amount + i.spent_amount)
           .some((x) => x < 0);
         const cateoryRedClass = n === true ? 'text-red-600' : '';
-        console.log(n, c.category, cateoryRedClass);
         return (
           <div
             className=" relative z-6 border-b border-b-slate-300 last:border-0"
