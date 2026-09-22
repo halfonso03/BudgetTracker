@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Net.WebSockets;
+using System.Runtime.InteropServices.Marshalling;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Persistence;
+using static Application.Core.Enums;
 
 namespace Application.services
 {
@@ -296,7 +298,6 @@ namespace Application.services
             return Result<Unit>.Success(Unit.Value);
         }
 
-
         public async Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)
         {
             var budgetLineItems = await _dbContext.BudgetLineItems
@@ -438,7 +439,73 @@ namespace Application.services
 
         }
 
+        public async Task<Result<List<TransactionResponseDto>>> GetTransactionsForAccount(BudgetType budgetType, int initiativeId, int grantId, int accountId)
+        {
+
+            var query = _dbContext.BudgetLineItems
+                    .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId && x.AccountId == accountId && x.ItemType == "B")
+                    .Select(x => new
+                    {
+                        x.Id,
+                        x.ItemType,
+                        x.Amount,
+                        x.InitiativeId,
+                        x.GrantId,
+                        x.AccountId,
+                        x.CreateDate,
+                    });
 
 
+            if (budgetType == BudgetType.Current || budgetType == BudgetType.Remaining)
+            {
+
+                var repros = from b in _dbContext.BudgetLineItems
+                             join
+                             r in _dbContext.ReproLineItems on b.Id equals r.BudgetLineItemId
+                             where b.InitiativeId == initiativeId && b.GrantId == grantId && b.AccountId == accountId
+                             && (b.ItemType == Globals.ITEM_TYPE_REPRO)
+                             select new
+                             {
+                                 Id = r.ReproId,
+                                 b.ItemType,
+                                 b.Amount,
+                                 b.InitiativeId,
+                                 b.GrantId,
+                                 b.AccountId,
+                                 b.CreateDate,
+                             };
+
+                query = query.Union(repros);
+            }
+
+            if (budgetType == BudgetType.Remaining)
+            {
+                var disbs = from b in _dbContext.BudgetLineItems
+                            join
+                            r in _dbContext.DisbLineItems on b.Id equals r.BudgetLineItemId
+                            where b.InitiativeId == initiativeId && b.GrantId == grantId && b.AccountId == accountId
+                            && (b.ItemType == Globals.ITEM_TYPE_DISB)
+                            select new
+                            {
+                                Id = r.DisbId,
+                                b.ItemType,
+                                b.Amount,
+                                b.InitiativeId,
+                                b.GrantId,
+                                b.AccountId,
+                                b.CreateDate,
+                            };
+
+                query = query.Union(disbs);
+            }
+
+
+            var items = await query.ToListAsync();
+
+            var result = from q in items
+                         select TransactionResponseDto.Create(q.Id, q.ItemType, q.CreateDate, q.Amount);
+
+            return Result<List<TransactionResponseDto>>.Success([.. result.OrderBy(x => x.PostedDate)]);
+        }
     }
 }

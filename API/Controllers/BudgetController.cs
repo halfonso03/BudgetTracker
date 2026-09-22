@@ -9,6 +9,7 @@ using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using static Application.Core.Enums;
 
 namespace API.Controllers
 {
@@ -46,12 +47,18 @@ namespace API.Controllers
             return HandleResult(await _budgetService.UpdateBudget(updateBudgetDto));
         }
 
-        [HttpGet("GetLineItemsForAccount")]
-        public async Task<IActionResult> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)
-        {
-            var budgets = await _budgetService.GetLineItemsForAccount(initiativeId, grantId, accountId);
+        // [HttpGet("GetLineItemsForAccount")]
+        // public async Task<IActionResult> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)
+        // {
+        //     var budgets = await _budgetService.GetLineItemsForAccount(initiativeId, grantId, accountId);
 
-            return Ok(budgets);
+        //     return Ok(budgets);
+        // }
+
+        [HttpGet("GetTransactionsForAccount/{budgetType:int}")]
+        public async Task<IActionResult> GetTransactionsForAccount(BudgetType budgetType, int initiativeId, int grantId, int accountId)
+        {
+            return HandleResult(await _budgetService.GetTransactionsForAccount(budgetType, initiativeId, grantId, accountId));
         }
     }
 }

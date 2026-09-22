@@ -21,11 +21,12 @@ import { useBudgetMutations } from '../../api/hooks/budgets/useBudgetMutations';
 import Button from '../../components/Button';
 import TransactionsModal from './modals/TransactionsModal';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
-import ReproMiniDetailsModal from '../Reprogrammings/modals/ReproMiniDetailModal';
+import ReproMiniDetailsModal from './modals/ReproMiniDetailModal';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
 
 type TrxIds = {
+  budgetType: number;
   initiativeId: number;
   grantId: number;
   accountId: number;
@@ -37,6 +38,7 @@ const Details = () => {
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
   const [trxModalIsOpen, setTrxModalIsOpen] = useState(false);
   const [trxIds, setTrxIds] = useState<TrxIds>({
+    budgetType: 0,
     initiativeId: 0,
     grantId: 0,
     accountId: 0,
@@ -268,12 +270,13 @@ const Details = () => {
   };
 
   const handleShowAccountHistory = (
+    budgetType: number,
     initiativeId: number,
     grantId: number,
     accountId: number,
     accountName: string,
   ) => {
-    setTrxIds({ initiativeId, grantId, accountId, accountName });
+    setTrxIds({ budgetType, initiativeId, grantId, accountId, accountName });
     setTrxModalIsOpen(true);
   };
 
@@ -333,10 +336,19 @@ const Details = () => {
             (x) => x.categoryId == c.id && x.accountId === 999,
           );
 
+          const n = budget.account_balances
+            .filter((x) => x.category_id == c.id)
+
+            .some((c) => c.current_amount + c.spent_amount < 0);
+
+          const categoryRedClass = n === true ? 'text-red-600' : '';
+
+          console.log('categoryRedClass', categoryRedClass)
+
           return (
             <div className="border border-neutral-200 mb-7" key={c.id}>
               <div className="flex justify-between bg-neutral-100 ">
-                <div className="pl-3 py-2 font-bold">{c.name}</div>
+                <div className={`pl-3 py-2 font-bold ${categoryRedClass}`}>{c.name}</div>
                 <div className="self-center mr-2">
                   <ChevronDownSquare
                     className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}

@@ -17,5 +17,6 @@ namespace Application.Interfaces
         Task<Result<Unit>> DeleteRepro(int id);
         Task<Result<Unit>> UpdateRepro(UpdateReproRequestDto reproRequestDto);
         Task<Result<ReproSearchResponseDto>> Search(ReproSearchParams searchParams, PaginationParams paginationParams, string sortBy);
+        Task<Result<ReproResponseDto>> DuplicateRepro(int id,  int userId);
     }
 }

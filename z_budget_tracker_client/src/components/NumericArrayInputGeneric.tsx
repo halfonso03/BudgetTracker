@@ -1,11 +1,9 @@
 import type {
   Path,
-  UseFormGetValues,
   UseFormRegisterReturn,
   UseFormSetValue,
 } from 'react-hook-form';
 import { formatNumber } from '../app/util';
-import { useState } from 'react';
 
 interface Props<T extends string> {
   index: number;
@@ -13,7 +11,6 @@ interface Props<T extends string> {
   disabled: boolean;
   register: UseFormRegisterReturn<T>;
   setValue: UseFormSetValue<ReprogInputRows>;
-  getValues: UseFormGetValues<ReprogInputRows>;
   fieldName: string;
   classes?: string;
   onBlur: () => void;
@@ -25,16 +22,16 @@ const NumericArrayInputGeneric = ({
   disabled,
   register,
   setValue,
-  getValues,
   classes,
   fieldName,
   onBlur,
 }: Props<string>) => {
-  const [oldValue] = useState<string | undefined>(() => {
-    return getValues(
-      `rows.${index}.${fieldName}` as Path<ReprogInputRows>,
-    )?.toString();
-  });
+  
+  // const [oldValue] = useState<string | undefined>(() => {
+  //   return getValues(
+  //     `rows.${index}.${fieldName}` as Path<ReprogInputRows>,
+  //   )?.toString();
+  // });
 
   function handleOnKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (
@@ -78,16 +75,14 @@ const NumericArrayInputGeneric = ({
     if (formatter.format(+amount) === 'NaN') {
       setValue(
         `rows.${index}.${fieldName}` as Path<ReprogInputRows>,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        '0.00' as any,
+        '0.00' as string,
       );
       return;
     }
 
     setValue(
       `rows.${index}.${fieldName}` as Path<ReprogInputRows>,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      formatNumber(+amount) as any,
+      formatNumber(+amount) as string,
     );
   }
 

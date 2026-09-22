@@ -5,22 +5,34 @@ import ConfirmModal from '../../components/ConfirmModal';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ChooseYearModal from './modals/ChooseYearModal';
 
+// const NEW_REPRO
+// type Actions:number
 type Props = {
+  reproId: number | undefined;
   onYearSelected: (year: number, justification: string) => void;
   onSearchClick: () => void;
+  onDuplicateReprogramming: () => void;
 };
-const NewReproButton = ({ onYearSelected, onSearchClick }: Props) => {
 
-    console.log('NewReproButton render')
-
+const ReproControls = ({
+  onYearSelected,
+  onSearchClick,
+  onDuplicateReprogramming,
+  reproId,
+}: Props) => {
+  console.log('ReproControls render');
 
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
-  const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-
+  const [confirmLooseChangesModalIsOpen, setConfirmLooseChangesModalIsOpen] =
+    useState(false);
+  const [confirmDuplicateModalIsOpen, setConfirmDuplicateModalIsOpen] =
+    useState(false);
   const hasUnsavedChanges = useHasUnsavedChangesStore(
     (x) => x.hasUnsavedChanges,
   );
+
+  const [duplicating, setDuplicating] = useState(false);
 
   const handleYearSelected = (e: { year: number; justification: string }) => {
     onYearSelected(e.year, e.justification);
@@ -34,6 +46,17 @@ const NewReproButton = ({ onYearSelected, onSearchClick }: Props) => {
     onSearchClick();
   }
 
+  function handleDuplicateClick() {
+    if (hasUnsavedChanges) {
+      setDuplicating(true);
+      setConfirmLooseChangesModalIsOpen(true);
+    } else {
+      setConfirmDuplicateModalIsOpen(true);
+    }
+  }
+
+  
+
   return (
     <>
       <div className="flex justify-end gap-3 mt-6">
@@ -42,7 +65,7 @@ const NewReproButton = ({ onYearSelected, onSearchClick }: Props) => {
           variation="primary"
           onClick={() => {
             if (hasUnsavedChanges) {
-              setConfirmModalIsOpen(true);
+              setConfirmLooseChangesModalIsOpen(true);
             } else {
               setChoosingYear(true);
               setNewReproJustification('');
@@ -58,6 +81,15 @@ const NewReproButton = ({ onYearSelected, onSearchClick }: Props) => {
         >
           <Search></Search>
         </Button>
+        {reproId && (
+          <Button
+            buttonSize="small"
+            variation="secondary"
+            onClick={handleDuplicateClick}
+          >
+            Duplicate
+          </Button>
+        )}
       </div>
       <ChooseYearModal
         isOpen={choosingYear}
@@ -70,23 +102,43 @@ const NewReproButton = ({ onYearSelected, onSearchClick }: Props) => {
         }}
       ></ChooseYearModal>
       <ConfirmModal
-        isOpen={confirmModalIsOpen}
+        isOpen={confirmLooseChangesModalIsOpen}
         onCancel={() => {
           setTimeout(() => {
-            setConfirmModalIsOpen(false);
+            setConfirmLooseChangesModalIsOpen(false);
           }, 500);
         }}
         onConfirm={() => {
           setTimeout(() => {
-            setConfirmModalIsOpen(false);
+            setConfirmLooseChangesModalIsOpen(false);
           }, 500);
           setTimeout(() => {
-            setChoosingYear(true);
+            if (duplicating) {
+              onDuplicateReprogramming();
+            } else {
+              setChoosingYear(true);
+            }
           }, 500);
         }}
         message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
       ></ConfirmModal>
+      <ConfirmModal
+        isOpen={confirmDuplicateModalIsOpen}
+        onCancel={() => {
+          setTimeout(() => {
+            setConfirmDuplicateModalIsOpen(false);
+            setDuplicating(false)
+          }, 500);
+        }}
+        onConfirm={() => {
+          setTimeout(() => {
+            setConfirmDuplicateModalIsOpen(false);
+          }, 500);
+          onDuplicateReprogramming();
+        }}
+        message="Duplicate the current reprogramming? Click OK to continue."
+      ></ConfirmModal>
     </>
   );
 };
-export default NewReproButton;
+export default ReproControls;

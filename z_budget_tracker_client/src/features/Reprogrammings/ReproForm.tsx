@@ -760,9 +760,9 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
   return (
     <MenuIdProvider>
-      <div>
+      {/* <div>
         <pre>{JSON.stringify(lines)}</pre>
-      </div>
+      </div> */}
       <div>
         {!userId && (
           <div className="text-xl p-1 text-red-500 font-semibold">
@@ -887,22 +887,20 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           )}
 
         {lines.length > 0 && reproHeader.status !== POSTED && (
-          <div className=" grid grid-cols-[1.2fr_.5fr_.5fr_1.25fr_2fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 text-neutral-600 font-semibold">
+          <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_1.65fr_.3fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 text-neutral-600 font-semibold">
             <div className="self-end col-span-4 "></div>
             <div className="flex ">
-              <div className="flex-2 text-center w-[25%]"></div>
-              <div className="self-end text-end w-[25%] pr-1">Increase</div>
-              <div className="self-end text-end w-[25%] pr-1">Decrease</div>
-              <div className="flex-2 text-end w-[25%] pr-1">Variance</div>
+              <div className=" text-center w-[25%]"></div>
+              <div className="self-end text-end w-[20%] pr-1">Increase</div>
+              <div className="self-end text-end w-[20%] pr-1">Decrease</div>
+              <div className=" text-center w-[30%] pr-1">Variance</div>
             </div>
             <div></div>
-            <div>Total</div>
             <div></div>
-            <div></div>
-            <div></div>
+            <div className='col-span-4'>Total</div>
             <div className="flex">
-              <div className="flex-1"></div>
-              <div className="flex justify-end flex-1 ">
+              <div className="w-[25%]"></div>
+              <div className="flex justify-end  w-[20%]">
                 <input
                   readOnly={true}
                   value={inc}
@@ -910,7 +908,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                   className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
                 ></input>
               </div>
-              <div className="justify-end flex-1 ">
+              <div className="justify-end w-[20%]">
                 <input
                   readOnly={true}
                   disabled={true}
@@ -918,16 +916,20 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                   className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
                 ></input>
               </div>
-              <div className="flex-1">
+              <div className=" w-[30%]">
                 <input
                   readOnly={true}
                   disabled={true}
                   value={formatNumber(+(inc ?? 0) - +(dec ?? 0))}
-                  className={`text-blue-500 border-0 font-semibold flex-1 w-[98%] px-1 pr-1 text-end focus:outline-none focus:ring-0 focus:ring-offset-0`}
+                  className={`text-blue-500 border-0 font-semibold flex-1 w-[98%] px-1 pr-1 text-center focus:outline-none focus:ring-0 focus:ring-offset-0`}
                 ></input>
               </div>
             </div>
             <div></div>
+            <div></div>
+            <div></div>
+            
+            
           </div>
         )}
 
@@ -996,7 +998,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                       <NumericArrayInputGeneric
                         index={index}
                         setValue={setValue}
-                        getValues={getValues}
                         register={register(`rows.${index}.increase`)}
                         fieldName="increase"
                         readOnly={reproHeader.status === POSTED}
@@ -1005,23 +1006,24 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                           debitCreditOnBlur(item.uuid);
                         }}
                         classes={`flex-[1.5] w-full pl-1 mr-1 pr-1 py-1 text-end border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
-                       ${reproHeader.status === POSTED ? 'border-b-0' : 'border-b-2 '}
-                       ${reproHeader.status === POSTED && +item.increase! === 0 ? '  opacity-0  ' : '  '}`}
+                       ${reproHeader.status === POSTED ? ' border-b-0 ' : ' border-b-2 '}
+                       ${reproHeader.status === POSTED && +item.increase! === 0 ? ' opacity-0  ' : '  '}
+                       `}
                       />
                       <NumericArrayInputGeneric
                         index={index}
                         register={register(`rows.${index}.decrease`)}
                         fieldName="decrease"
                         setValue={setValue}
-                        getValues={getValues}
                         readOnly={reproHeader.status === POSTED}
                         disabled={reproHeader.status === POSTED}
                         onBlur={() => {
                           debitCreditOnBlur(item.uuid);
                         }}
                         classes={`flex-[1.5] w-full pl-1 mr-1 pr-1 py-1 text-end  border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
-                       ${reproHeader.status === POSTED ? 'border-b-0' : 'border-b-2 '}
-                       ${reproHeader.status === POSTED && +item.decrease! === 0 ? '  opacity-0  ' : '  '}`}
+                       ${reproHeader.status === POSTED ? ' border-b-0 ' : ' border-b-2 '}
+                       ${reproHeader.status === POSTED && +item.decrease! === 0 ? ' opacity-0  ' : '  '}
+                       `}
                       />
                       <div
                         className={`text-center flex-2 self-center text-neutral-600  ${item.newCurrentAmount < 0 ? 'text-red-500' : ''}`}

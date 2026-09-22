@@ -18,10 +18,17 @@ export const useReproMutations = () => {
 
   const deleteRepro = useMutation({
     mutationFn: async (id: number) => {
-      const response = await agent.delete(`/repro/${id}`, );
+      const response = await agent.delete(`/repro/${id}`);
       return response.data;
     },
   });
 
-  return { createRepro, updateRepro, deleteRepro };
+  const duplicateRepro = useMutation({
+    mutationFn: async (data: { id: number; userId: number }) => {
+      const response = await agent.post(`/repro/duplicate`, data);
+      return response.data;
+    },
+  });
+
+  return { createRepro, updateRepro, deleteRepro, duplicateRepro };
 };

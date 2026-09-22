@@ -20,5 +20,13 @@ namespace Application.Core
             EXCEL,
             EXCELOPENXML,
         }
+
+        public enum BudgetType
+        {
+            Approved = 1,
+            Current = 2,
+            Remaining = 3
+        }
+      
     }
 }

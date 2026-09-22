@@ -142,31 +142,7 @@ input:-webkit-autofill:focus {
     }
   }
 
-  --animate-top-menu: topMenuFadeIn 0.7s ease-in forwards;
 
-  @keyframes topMenuFadeIn {
-    0% {
-      /* opacity: 0; */
-      tranform: scale(0.1);
-    }
-    100% {
-      /* opacity: 1; */
-      tranform: scale(0.7);
-    }
-  }
-
-  --animate-repro-comment: reproCommentFadeIn 0.7s ease-in forwards;
-
-  @keyframes reproCommentFadeIn {
-    0% {
-      /* opacity: 0; */
-      tranform: scale(0.1);
-    }
-    100% {
-      /* opacity: 1; */
-      tranform: scale(0.7);
-    }
-  }
 
   /* @keyframes custom-enter {
     0% {

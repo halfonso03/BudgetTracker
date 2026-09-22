@@ -3,12 +3,16 @@ import { useState } from 'react';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import useGetRepro from '../../api/hooks/repro/useGetRepro';
 import ConfirmModal from '../../components/ConfirmModal';
-import NewReproButton from './NewReproButton';
+import ReproControls from './ReproControls';
 import ReproForm from './ReproForm';
+import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
+import useAuth from '../../contexts/useAuth';
+import toast from 'react-hot-toast';
 
 const ReproDetails = () => {
   console.log('ReproDetails render');
-  
+  const { userId } = useAuth();
+
   const navigate = useNavigate();
   const { id } = useParams();
   const { hasUnsavedChanges, setHasUnsavedChanges } =
@@ -21,6 +25,8 @@ const ReproDetails = () => {
     isFetching,
     isLoading,
   } = useGetRepro(reproId ?? 0);
+
+  const { duplicateRepro } = useReproMutations();
 
   if (isLoading || isFetching) return <div></div>;
 
@@ -56,6 +62,36 @@ const ReproDetails = () => {
     }
   }
 
+  async function handleDuplicateReprogramming() {
+    setTimeout(async () => {
+      try {
+        await duplicateRepro.mutateAsync(
+          { id: reproFromDb!.id!, userId: userId! },
+          {
+            onSuccess: async (repro) => {
+              toast.success(
+                <div>
+                  <div className="pb-1">{`Reprogramming Id ${+id!} duplicated.`}</div>
+                  <div>{`Opening reprogramming id ${repro.id}.`}</div>
+                </div>,
+
+                {
+                  duration: 2000,
+                },
+              );
+
+              setTimeout(() => {
+                navigate(`/reprogramming/${repro.id}`);
+              }, 2000);
+            },
+          },
+        );
+      } catch (error) {
+        console.log('e', error);
+      }
+    }, 500);
+  }
+
   const body = () => {
     if (reproFromDb && reproFromDb.year !== 0) {
       const repro2 = createReproFromDb(reproFromDb);
@@ -75,10 +111,12 @@ const ReproDetails = () => {
   };
   return (
     <>
-      <NewReproButton
+      <ReproControls
+        reproId={reproFromDb?.id}
         onYearSelected={handleYearSelected}
         onSearchClick={handleSearchClick}
-      ></NewReproButton>
+        onDuplicateReprogramming={handleDuplicateReprogramming}
+      ></ReproControls>
       {body()}
       <ConfirmModal
         isOpen={confirmModalIsOpen}

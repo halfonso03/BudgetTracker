@@ -61,16 +61,12 @@ const ReproMiniDetailsModal = ({ reproId, ...props }: Props) => {
         {data?.lineItems.map((item, index) => (
           <div
             key={index}
-            className={`grid grid-cols-[1.5fr_.7fr_.7fr_1fr_.5fr_.5fr] mb-3 ${props.accountName == item.accountName ? 'bg-neutral-100' : ''} py-2 px-2`}
+            className={`grid grid-cols-[1.5fr_.7fr_.7fr_1fr_.5fr_.5fr] mb-3 ${props.accountName == item.accountName ? 'border border-neutral-300' : ''} py-2 px-2`}
           >
             <div>{item.initiativeName}</div>
             <div>{item.grantName}</div>
             <div>{item.categoryName}</div>
-            <div
-              className={``}
-            >
-              {item.accountName}
-            </div>
+            <div>{item.accountName}</div>
             <div className=" text-end">
               {+item.increase! > 0 && formatNumber(+item.increase!)}
             </div>

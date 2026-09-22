@@ -33,6 +33,7 @@ interface Props {
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
   onShowAccountHistory?: (
+    budgetType: number,
     initiativeId: number,
     grantId: number,
     accountId: number,
@@ -91,12 +92,19 @@ const BudgetInputFields = ({
   }
 
   function showAccountHistory(
+    budgetType: number,
     initiativeId: number,
     grantId: number,
     accountId: number,
     category: string,
   ) {
-    onShowAccountHistory?.(initiativeId, grantId, accountId, category);
+    onShowAccountHistory?.(
+      budgetType,
+      initiativeId,
+      grantId,
+      accountId,
+      category,
+    );
   }
 
   return (
@@ -156,6 +164,7 @@ const BudgetInputFields = ({
                   type="button"
                   onClick={() =>
                     showAccountHistory(
+                      2,
                       initiativeId,
                       grantId,
                       accountId,

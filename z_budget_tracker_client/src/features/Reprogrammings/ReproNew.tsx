@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import ConfirmModal from '../../components/ConfirmModal';
 import useAuth from '../../contexts/useAuth';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
-import NewReproButton from './NewReproButton';
+import ReproControls from './ReproControls';
 import ReproForm from './ReproForm';
 
 const ReproNew = () => {
@@ -21,7 +21,6 @@ const ReproNew = () => {
   //   numbersAresDirty: false,
   //   formValuesIsDirty: false,
   // });
-
 
   let initialYear = 0;
   let justification = '';
@@ -46,7 +45,6 @@ const ReproNew = () => {
         balances: preloadState.balances,
       });
 
-
       const currentAmount = preloadState.balances.filter(
         (x: ReproLineItem) => x.accountId === preloadState.ids.accountId,
       )[0].currentAmount;
@@ -55,8 +53,7 @@ const ReproNew = () => {
         (x: ReproLineItem) => x.accountId === preloadState.ids.accountId,
       )[0].remainingAmount;
 
-
-      console.log('preloadState.ids.accountName', preloadState.ids.accountName)
+      console.log('preloadState.ids.accountName', preloadState.ids.accountName);
       const lineItem: ReproLineItem = {
         ...preloadState.ids,
         rowId: 0,
@@ -147,10 +144,10 @@ const ReproNew = () => {
 
   return (
     <>
-      <NewReproButton
+      <ReproControls
         onYearSelected={handleYearSelected}
         onSearchClick={handleSearchClick}
-      ></NewReproButton>
+      ></ReproControls>
       {body()}
       <ConfirmModal
         isOpen={confirmModalIsOpen}

@@ -1,4 +1,4 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 import { formatDate, formatNumber } from '../../app/util';
 import {
   ChevronDownSquare,
@@ -19,9 +19,7 @@ type Props = {
 };
 
 const ReproSearchReults = ({ onDelete, results }: Props) => {
-
   console.log('ReproSearchReults render');
-
 
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
 
@@ -129,6 +127,7 @@ const ReproSearchReults = ({ onDelete, results }: Props) => {
                     <Download size={18}></Download>
                     &nbsp;&nbsp;Download
                   </Menus.MenuItem>
+
                   {r.posted !== null && !r.posted && (
                     <Menus.MenuItem onClick={() => onDelete(r.id)}>
                       <Trash className="text-red-500" size={18}></Trash>

@@ -2,12 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import agent from '../../agent';
 
 const fetchTransactions = async (
+  budgetType: number,
   initiative_id: number,
   grant_id: number,
   accountId: number,
 ): Promise<TransactionResponse[]> => {
   const response = await agent.get<TransactionResponse[]>(
-    '/Budget/GetLineItemsForAccount',
+    `/Budget/GetTransactionsForAccount/${budgetType}`,
     {
       params: {
         initiativeId: initiative_id,
@@ -28,13 +29,14 @@ const fetchTransactions = async (
 };
 
 const useTransactions = (
+  budgetType: number,
   initiativeId: number,
   grantId: number,
   accountId: number,
 ) => {
   const { data, isLoading } = useQuery<TransactionResponse[]>({
-    queryFn: () => fetchTransactions(initiativeId, grantId, accountId),
-    queryKey: ['transactions', initiativeId, grantId, accountId],
+    queryFn: () => fetchTransactions(budgetType, initiativeId, grantId, accountId),
+    queryKey: ['transactions', budgetType, initiativeId, grantId, accountId],
   });
 
   return { data, isLoading };

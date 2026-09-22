@@ -36,9 +36,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(CreateReproRequestDto reproRequestDto)
         {
-            Console.WriteLine("------------------------");
             Console.WriteLine(reproRequestDto.OverrideNegativeBalance);
-            Console.WriteLine("------------------------");
 
             return HandleResult(await _reproService.CreateRepro(reproRequestDto));
         }
@@ -50,13 +48,19 @@ namespace API.Controllers
         }
 
         [HttpPost("search")]
-        public async Task<IActionResult> Search([FromBody] ReproSearchParams searchParams, [FromQuery]PaginationParams paginationParams, [FromQuery] string sortBy)
+        public async Task<IActionResult> Search([FromBody] ReproSearchParams searchParams, [FromQuery] PaginationParams paginationParams, [FromQuery] string sortBy)
         {
             var result = await _reproService.Search(searchParams, paginationParams, sortBy);
 
             Response.AddPaginationHeader(result.Value!.MetaData);
 
             return HandleResult(result);
+        }
+
+        [HttpPost("duplicate")]
+        public async Task<IActionResult> Duplicate([FromBody] ReproDuplicateRequestDto data)
+        {
+            return HandleResult(await _reproService.DuplicateRepro(data.Id, data.UserId));
         }
     }
 }

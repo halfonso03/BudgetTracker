@@ -24,6 +24,8 @@ builder.Services.AddTransient<IGrantService, GrantService>();
 builder.Services.AddTransient<IInitiativeService, InitiativesService>();
 builder.Services.AddTransient<IBudgetService, BudgetService>();
 builder.Services.AddTransient<IReproService, ReproService>();
+builder.Services.AddTransient<IDisbService, DisbService>();
+
 builder.Services.AddTransient<IReportService, ReportService>((provider) =>
 {
     var dbContext = provider.GetRequiredService<AppDbContext>();

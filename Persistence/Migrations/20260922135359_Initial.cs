@@ -70,6 +70,57 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tblReportCategory",
+                columns: table => new
+                {
+                    id = table.Column<byte>(type: "tinyint", nullable: false),
+                    name = table.Column<string>(type: "VARCHAR(50)", nullable: false),
+                    sort_order = table.Column<byte>(type: "tinyint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblReportCategory", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblDisb",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    year = table.Column<int>(type: "int", nullable: false),
+                    create_date = table.Column<DateTime>(type: "DATETIME", nullable: false),
+                    created_by = table.Column<int>(type: "int", nullable: false),
+                    updated_by = table.Column<int>(type: "int", nullable: true),
+                    posted = table.Column<bool>(type: "bit", nullable: false),
+                    posted_by = table.Column<int>(type: "int", nullable: true),
+                    posted_date = table.Column<DateTime>(type: "DATETIME", nullable: true),
+                    updated_date = table.Column<DateTime>(type: "DATETIME", nullable: true),
+                    amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
+                    justification = table.Column<string>(type: "VARCHAR(MAX)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblDisb", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tblDisb_tblAuthorizedUsers_created_by",
+                        column: x => x.created_by,
+                        principalTable: "tblAuthorizedUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblDisb_tblAuthorizedUsers_posted_by",
+                        column: x => x.posted_by,
+                        principalTable: "tblAuthorizedUsers",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tblDisb_tblAuthorizedUsers_updated_by",
+                        column: x => x.updated_by,
+                        principalTable: "tblAuthorizedUsers",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tblRepro",
                 columns: table => new
                 {
@@ -124,6 +175,27 @@ namespace Persistence.Migrations
                         name: "FK_tblAccount_tblCategory_category_id",
                         column: x => x.category_id,
                         principalTable: "tblCategory",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblReport",
+                columns: table => new
+                {
+                    id = table.Column<byte>(type: "tinyint", nullable: false),
+                    name = table.Column<string>(type: "VARCHAR(200)", nullable: false),
+                    path = table.Column<string>(type: "VARCHAR(1000)", nullable: false),
+                    category_id = table.Column<byte>(type: "tinyint", nullable: false),
+                    enabled = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblReport", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tblReport_tblReportCategory_category_id",
+                        column: x => x.category_id,
+                        principalTable: "tblReportCategory",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -221,6 +293,92 @@ namespace Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_tblBudgetComment_tblInitiative_initiative_id",
+                        column: x => x.initiative_id,
+                        principalTable: "tblInitiative",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblReportParamter",
+                columns: table => new
+                {
+                    id = table.Column<byte>(type: "tinyint", nullable: false),
+                    sort_order = table.Column<byte>(type: "tinyint", nullable: false),
+                    name = table.Column<string>(type: "VARCHAR(75)", nullable: false),
+                    label = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    report_id = table.Column<byte>(type: "tinyint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblReportParamter", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tblReportParamter_tblReport_report_id",
+                        column: x => x.report_id,
+                        principalTable: "tblReport",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblDisbLineItem",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    disb_id = table.Column<int>(type: "int", nullable: false),
+                    row_id = table.Column<int>(type: "int", nullable: false),
+                    initiative_id = table.Column<int>(type: "int", nullable: false),
+                    grant_id = table.Column<int>(type: "int", nullable: false),
+                    category_id = table.Column<int>(type: "int", nullable: false),
+                    account_id = table.Column<int>(type: "int", nullable: false),
+                    amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
+                    year = table.Column<int>(type: "int", nullable: false),
+                    entry_date = table.Column<DateTime>(type: "DATETIME", nullable: false),
+                    update_date = table.Column<DateTime>(type: "DATETIME", nullable: true),
+                    updated_by = table.Column<int>(type: "int", nullable: true),
+                    comment = table.Column<string>(type: "VARCHAR(MAX)", nullable: true),
+                    budget_line_id = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblDisbLineItem", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblAccount_account_id",
+                        column: x => x.account_id,
+                        principalTable: "tblAccount",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblAuthorizedUsers_updated_by",
+                        column: x => x.updated_by,
+                        principalTable: "tblAuthorizedUsers",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblBudget_budget_line_id",
+                        column: x => x.budget_line_id,
+                        principalTable: "tblBudget",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblCategory_category_id",
+                        column: x => x.category_id,
+                        principalTable: "tblCategory",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.NoAction);
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblDisb_disb_id",
+                        column: x => x.disb_id,
+                        principalTable: "tblDisb",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblGrant_grant_id",
+                        column: x => x.grant_id,
+                        principalTable: "tblGrant",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblInitiative_initiative_id",
                         column: x => x.initiative_id,
                         principalTable: "tblInitiative",
                         principalColumn: "id",
@@ -443,6 +601,68 @@ namespace Persistence.Migrations
                 column: "update_user_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tblDisb_created_by",
+                table: "tblDisb",
+                column: "created_by");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblDisb_posted_by",
+                table: "tblDisb",
+                column: "posted_by");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblDisb_updated_by",
+                table: "tblDisb",
+                column: "updated_by");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblDisbLineItem_account_id",
+                table: "tblDisbLineItem",
+                column: "account_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblDisbLineItem_budget_line_id",
+                table: "tblDisbLineItem",
+                column: "budget_line_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblDisbLineItem_category_id",
+                table: "tblDisbLineItem",
+                column: "category_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblDisbLineItem_disb_id_initiative_id_grant_id_category_id_account_id",
+                table: "tblDisbLineItem",
+                columns: new[] { "disb_id", "initiative_id", "grant_id", "category_id", "account_id" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblDisbLineItem_grant_id",
+                table: "tblDisbLineItem",
+                column: "grant_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblDisbLineItem_initiative_id",
+                table: "tblDisbLineItem",
+                column: "initiative_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblDisbLineItem_updated_by",
+                table: "tblDisbLineItem",
+                column: "updated_by");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblReport_category_id",
+                table: "tblReport",
+                column: "category_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblReportParamter_report_id_sort_order",
+                table: "tblReportParamter",
+                columns: new[] { "report_id", "sort_order" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tblRepro_created_by",
                 table: "tblRepro",
                 column: "created_by");
@@ -501,13 +721,28 @@ namespace Persistence.Migrations
                 name: "tblBudgetComment");
 
             migrationBuilder.DropTable(
+                name: "tblDisbLineItem");
+
+            migrationBuilder.DropTable(
+                name: "tblReportParamter");
+
+            migrationBuilder.DropTable(
                 name: "tblReproLineItem");
+
+            migrationBuilder.DropTable(
+                name: "tblDisb");
+
+            migrationBuilder.DropTable(
+                name: "tblReport");
 
             migrationBuilder.DropTable(
                 name: "tblBudget");
 
             migrationBuilder.DropTable(
                 name: "tblRepro");
+
+            migrationBuilder.DropTable(
+                name: "tblReportCategory");
 
             migrationBuilder.DropTable(
                 name: "tblAccount");

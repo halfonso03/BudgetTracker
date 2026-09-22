@@ -5,6 +5,7 @@ import { Fragment, useState } from 'react';
 import Button from '../../../components/Button';
 
 type Props = {
+  budgetType:number,
   initiativeId: number;
   grantId: number;
   accountId: number;
@@ -16,6 +17,7 @@ type Props = {
 
 const TransactionsModal = (props: Props) => {
   const { data, isLoading } = useTransactions(
+    props.budgetType,
     props.initiativeId,
     props.grantId,
     props.accountId,
@@ -63,10 +65,10 @@ const TransactionsModal = (props: Props) => {
             if (i > 0) remaining += data[i].amount;
             return (
               <div
-                className="grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 my-3"
+                className="grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 rounded-sm p-2 hover:bg-neutral-200 duration-200 transition-all"
                 key={i}
               >
-                <div className="flex gap-2">
+                <div className="flex justify-between gap-2 ">
                   <div>{t.typeName}</div>
                   <div>
                     {t.typeName == 'Reprogramming' ? (

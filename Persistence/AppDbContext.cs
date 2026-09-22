@@ -7,6 +7,7 @@ namespace Persistence
 {
     public class AppDbContext(DbContextOptions options) : DbContext(options)
     {
+        public required DbSet<AuthorizedUser> AuthorizedUsers { get; set; }
         public required DbSet<Initiative> Initiatives { get; set; }
         public required DbSet<Category> Categories { get; set; }
         public required DbSet<Account> Accounts { get; set; }

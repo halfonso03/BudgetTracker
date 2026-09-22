@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.DTOs.Budgets;
+using static Application.Core.Enums;
 
 namespace Application.Interfaces
 {
@@ -15,5 +16,6 @@ namespace Application.Interfaces
         Task<Result<Unit>> UpdateBudget(UpdateBudgetRequestDto updateBudgetDto);
         Task<List<ReproCategoryBalanceDto>> GetBalancesForCategory(int initiativeId, int grantId, int categoryId);
         Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId);
+        Task<Result<List<TransactionResponseDto>>> GetTransactionsForAccount(BudgetType budgetType, int initiativeId, int grantId, int accountId);
     }
 }

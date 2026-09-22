@@ -12,7 +12,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260919170938_Initial")]
+    [Migration("20260922135359_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -459,6 +459,148 @@ namespace Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Domain.Disb", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("NUMERIC(15,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("int")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("create_date");
+
+                    b.Property<string>("Justification")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(MAX)")
+                        .HasColumnName("justification");
+
+                    b.Property<bool>("Posted")
+                        .HasColumnType("bit")
+                        .HasColumnName("posted");
+
+                    b.Property<int?>("PostedById")
+                        .HasColumnType("int")
+                        .HasColumnName("posted_by");
+
+                    b.Property<DateTime?>("PostedDate")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("posted_date");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("updated_date");
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int")
+                        .HasColumnName("updated_by");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int")
+                        .HasColumnName("year");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("PostedById");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.ToTable("tblDisb");
+                });
+
+            modelBuilder.Entity("Domain.DisbLineItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int")
+                        .HasColumnName("account_id");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("NUMERIC(15,2)")
+                        .HasColumnName("amount");
+
+                    b.Property<int?>("BudgetLineItemId")
+                        .HasColumnType("int")
+                        .HasColumnName("budget_line_id");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int")
+                        .HasColumnName("category_id");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("VARCHAR(MAX)")
+                        .HasColumnName("comment");
+
+                    b.Property<int>("DisbId")
+                        .HasColumnType("int")
+                        .HasColumnName("disb_id");
+
+                    b.Property<DateTime>("EntryDate")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("entry_date");
+
+                    b.Property<int>("GrantId")
+                        .HasColumnType("int")
+                        .HasColumnName("grant_id");
+
+                    b.Property<int>("InitiativeId")
+                        .HasColumnType("int")
+                        .HasColumnName("initiative_id");
+
+                    b.Property<int>("RowId")
+                        .HasColumnType("int")
+                        .HasColumnName("row_id");
+
+                    b.Property<DateTime?>("UpdateDate")
+                        .HasColumnType("DATETIME")
+                        .HasColumnName("update_date");
+
+                    b.Property<int?>("UpdatedById")
+                        .HasColumnType("int")
+                        .HasColumnName("updated_by");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int")
+                        .HasColumnName("year");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("BudgetLineItemId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("GrantId");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.HasIndex("UpdatedById");
+
+                    b.HasIndex("DisbId", "InitiativeId", "GrantId", "CategoryId", "AccountId")
+                        .IsUnique();
+
+                    b.ToTable("tblDisbLineItem");
+                });
+
             modelBuilder.Entity("Domain.Grant", b =>
                 {
                     b.Property<int>("Id")
@@ -644,6 +786,89 @@ namespace Persistence.Migrations
                             Id = 20,
                             Name = "DHE 4"
                         });
+                });
+
+            modelBuilder.Entity("Domain.Report", b =>
+                {
+                    b.Property<byte>("Id")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("id");
+
+                    b.Property<byte>("CategoryId")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("category_id");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("bit")
+                        .HasColumnName("enabled");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(200)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(1000)")
+                        .HasColumnName("path");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("tblReport");
+                });
+
+            modelBuilder.Entity("Domain.ReportCategory", b =>
+                {
+                    b.Property<byte>("Id")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(50)")
+                        .HasColumnName("name");
+
+                    b.Property<byte>("SortOrder")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("sort_order");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblReportCategory");
+                });
+
+            modelBuilder.Entity("Domain.ReportParameter", b =>
+                {
+                    b.Property<byte>("Id")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("label");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(75)")
+                        .HasColumnName("name");
+
+                    b.Property<byte>("ReportId")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("report_id");
+
+                    b.Property<byte>("SortOrder")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("sort_order");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReportId", "SortOrder")
+                        .IsUnique();
+
+                    b.ToTable("tblReportParamter");
                 });
 
             modelBuilder.Entity("Domain.Repro", b =>
@@ -885,6 +1110,106 @@ namespace Persistence.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
+            modelBuilder.Entity("Domain.Disb", b =>
+                {
+                    b.HasOne("Domain.AuthorizedUser", "CreatedBy")
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.AuthorizedUser", "PostedBy")
+                        .WithMany()
+                        .HasForeignKey("PostedById");
+
+                    b.HasOne("Domain.AuthorizedUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("PostedBy");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Domain.DisbLineItem", b =>
+                {
+                    b.HasOne("Domain.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.BudgetLineItem", "BudgetLineItem")
+                        .WithMany()
+                        .HasForeignKey("BudgetLineItemId");
+
+                    b.HasOne("Domain.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Disb", "Disb")
+                        .WithMany("Items")
+                        .HasForeignKey("DisbId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Grant", "Grant")
+                        .WithMany()
+                        .HasForeignKey("GrantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Initiative", "Initiative")
+                        .WithMany()
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.AuthorizedUser", "UpdatedBy")
+                        .WithMany()
+                        .HasForeignKey("UpdatedById");
+
+                    b.Navigation("Account");
+
+                    b.Navigation("BudgetLineItem");
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Disb");
+
+                    b.Navigation("Grant");
+
+                    b.Navigation("Initiative");
+
+                    b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Domain.Report", b =>
+                {
+                    b.HasOne("Domain.ReportCategory", "Category")
+                        .WithMany("Reports")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Domain.ReportParameter", b =>
+                {
+                    b.HasOne("Domain.Report", "Report")
+                        .WithMany("Parameters")
+                        .HasForeignKey("ReportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Report");
+                });
+
             modelBuilder.Entity("Domain.Repro", b =>
                 {
                     b.HasOne("Domain.AuthorizedUser", "CreatedBy")
@@ -966,6 +1291,21 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Category", b =>
                 {
                     b.Navigation("Accounts");
+                });
+
+            modelBuilder.Entity("Domain.Disb", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Domain.Report", b =>
+                {
+                    b.Navigation("Parameters");
+                });
+
+            modelBuilder.Entity("Domain.ReportCategory", b =>
+                {
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("Domain.Repro", b =>

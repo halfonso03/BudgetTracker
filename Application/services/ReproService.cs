@@ -4,6 +4,8 @@ using System.Data.Common;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Application.Core;
@@ -14,6 +16,7 @@ using Application.Interfaces;
 using Application.PaginationHelpers;
 using Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.VisualBasic;
 using Persistence;
 
@@ -52,7 +55,6 @@ namespace Application.Services
                 foreach (var key in keys)
                 {
                     var balances = await _budgetService.GetBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
-
 
                     rowBalances.Add(new ReproBalanceResponseDto()
                     {
@@ -658,6 +660,115 @@ namespace Application.Services
 
 
             return Result<ReproSearchResponseDto>.Success(result);
+        }
+
+        public async Task<Result<ReproResponseDto>> DuplicateRepro(int id, int userId)
+        {
+            var repro = await _dbContext.Repros.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (repro == null) return Result<ReproResponseDto>.Failure("", 404);
+
+            var reproLineItems = await _dbContext.ReproLineItems
+                                                .Include(x => x.Initiative)
+                                                .Include(x => x.Grant)
+                                                .Include(x => x.Account)
+                                                .Include(x => x.Category)
+                                                .Where(x => x.ReproId == id)
+                                                .ToListAsync();
+            try
+            {
+                var grant = await _dbContext.Grants.FirstAsync(x => x.Id == reproLineItems.First().GrantId);
+                var loginid = await _dbContext.AuthorizedUsers.FirstAsync(x => x.Id == userId);
+
+                var newRepro = new Repro()
+                {
+                    Id = 0,
+                    Amount = Convert.ToDecimal(reproLineItems.Sum(x => x.Increase)),
+                    CreatedById = userId,
+                    Year = grant.Year,
+                    CreatedDate = DateTime.Now,
+                    Justification = repro.Justification,
+                    Posted = false,
+                    Items = [.. reproLineItems.Select(x => new ReproLineItem
+                    {
+                        ReproId = 0,
+                        EntryDate = DateTime.Now,
+                        InitiativeId = x.InitiativeId,
+                        GrantId = x.GrantId,
+                        AccountId = x.AccountId,
+                        Increase = x.Increase,
+                        Decrease = x.Decrease,
+                        CategoryId = x.CategoryId,
+                        RowId = x.RowId,
+                        Year = grant.Year,
+                        Comment = x.Comment,
+                        BudgetLineItemId = null
+                    })]
+                };
+
+                _dbContext.Repros.Add(newRepro);
+
+                await _dbContext.SaveChangesAsync();
+
+                var keys = reproLineItems.Select(x => new { x.InitiativeId, x.GrantId, x.CategoryId }).Distinct();
+
+                var rowBalances = new List<ReproBalanceResponseDto>();
+
+                foreach (var key in keys)
+                {
+                    var balances = await _budgetService.GetBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
+
+                    rowBalances.Add(new ReproBalanceResponseDto()
+                    {
+                        Key = new()
+                        {
+                            InitiativeId = key.InitiativeId,
+                            GrantId = key.GrantId,
+                            CategoryId = key.CategoryId
+                        },
+                        Balances = [.. balances.Select(x => Balance.Create(x.AccountId, x.CurrentAmount, x.RemainingAmount, x.AccountName))]
+                    });
+                }
+
+                var response = new ReproResponseDto
+                {
+                    Id = newRepro.Id,
+                    Justification = newRepro.Justification,
+                    CreateDate = newRepro.CreatedDate,
+                    CreatedById = newRepro.CreatedById,
+                    CreatedBy = loginid.WindowsLogin,
+                    Year = newRepro.Year,
+                    Posted = false,
+                    RowBalances = rowBalances,
+                    LineItems = [.. reproLineItems.Select(x => new ReproLineItemResponseDto
+                    {
+                        RowId = x.RowId,
+                        Year = x.Year,
+                        InitiativeId = x.InitiativeId,
+                        GrantId = x.GrantId,
+                        AccountId = x.AccountId,
+                        CategoryId = x.CategoryId,
+                        Increase = x.Increase ?? 0,
+                        Decrease = x.Decrease ?? 0,
+                        InitiativeName = x.Initiative!.Name,
+                        GrantName = x.Grant!.Name,
+                        AccountName = x.Account!.Name,
+                        CategoryName = x.Category!.Name,
+                        Comment = x.Comment
+                    })]
+                };
+
+                return Result<ReproResponseDto>.Success(response);
+
+            }
+            catch (DbException ex)
+            {
+                return Result<ReproResponseDto>.Failure($"DB Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 500);
+            }
+            catch (Exception ex)
+            {
+                return Result<ReproResponseDto>.Failure(ex.Message, 500);
+            }
         }
     }
 }
