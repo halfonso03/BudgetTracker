@@ -11,6 +11,7 @@ import Login from '../../features/Auth/Login';
 import ReproPreload from '../../features/Reprogrammings/ReproPreload';
 import ReproDetails from '../../features/Reprogrammings/ReproDetails';
 import ReproNew from '../../features/Reprogrammings/ReproNew';
+import Reports from '../../features/Reports/Reports';
 
 export const routes: RouteObject[] = [
   {
@@ -67,6 +68,10 @@ export const routes: RouteObject[] = [
       {
         path: '/reprogramming/create/:initiativeId?/:grantId?/:accountId?',
         element: <Home />,
+      },
+      {
+        path: '/reports',
+        element: <Reports />,
       },
     ],
   },

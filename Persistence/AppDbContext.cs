@@ -40,11 +40,20 @@ namespace Persistence
                 new ()
                 {
                     Id = 1,
-                    Name = "2c. Grant Balance By Initiative and AR",
+                    Name = "Grant Balance By Initiative and AR",
                     Path = "/GrantBalanceByInitiativeAndAR",
                     CategoryId = 1,
                     Enabled = true,
                     DefaultFileName = "GrantBalanceByInitiativeAndAR"
+                },
+                new ()
+                {
+                    Id = 2,
+                    Name = "Budget Detail",
+                    Path = "/BudgetDetail",
+                    CategoryId = 1,
+                    Enabled = true,
+                    DefaultFileName = "BudgetDetail"
                 }
             });
 
@@ -53,11 +62,44 @@ namespace Persistence
                 new ()
                 {
                     Id = 1,
+                    Name = "aiYear",
+                    Label = "Year",
+                    ReportId = 1,
+                    SortOrder = 1,
+                    ControlType = "dropdownlist",
+                    Enabled = true
+                },
+                new ()
+                {
+                    Id = 2,
                     Name = "avcInitiatives",
                     Label = "Initiative",
                     ReportId = 1,
-                    SortOrder = 1
-                }
+                    SortOrder = 2,
+                    ControlType = "checkboxlist",
+                    Enabled = true
+                },
+                new ()
+                {
+                    Id = 3,
+                    Name = "aiYear",
+                    Label = "Year",
+                    ReportId = 2,
+                    SortOrder = 1,
+                    ControlType = "dropdownlist",
+                    Enabled = true
+                },
+                new ()
+                {
+                    Id = 4,
+                    Name = "avcGrants",
+                    Label = "Grant",
+                    ReportId = 2,
+                    SortOrder = 2,
+                    ControlType = "checkboxlist",
+                    DependsOn = "aiYear",
+                    Enabled = true
+                },
             });
 
 

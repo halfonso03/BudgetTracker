@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260923141512_AddReport")]
+    partial class AddReport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -830,17 +833,8 @@ namespace Persistence.Migrations
                             CategoryId = (byte)1,
                             DefaultFileName = "GrantBalanceByInitiativeAndAR",
                             Enabled = true,
-                            Name = "Grant Balance By Initiative and AR",
+                            Name = "2c. Grant Balance By Initiative and AR",
                             Path = "/GrantBalanceByInitiativeAndAR"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryId = (byte)1,
-                            DefaultFileName = "BudgetDetail",
-                            Enabled = true,
-                            Name = "Budget Detail",
-                            Path = "/BudgetDetail"
                         });
                 });
 
@@ -881,19 +875,6 @@ namespace Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ControlType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("control_type");
-
-                    b.Property<string>("DependsOn")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("depends_on");
-
-                    b.Property<bool>("Enabled")
-                        .HasColumnType("bit")
-                        .HasColumnName("enabled");
-
                     b.Property<string>("Label")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -923,8 +904,6 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            ControlType = "dropdownlist",
-                            Enabled = true,
                             Label = "Year",
                             Name = "aiYear",
                             ReportId = 1,
@@ -933,32 +912,9 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 2,
-                            ControlType = "checkboxlist",
-                            Enabled = true,
                             Label = "Initiative",
                             Name = "avcInitiatives",
                             ReportId = 1,
-                            SortOrder = (byte)2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ControlType = "dropdownlist",
-                            Enabled = true,
-                            Label = "Year",
-                            Name = "aiYear",
-                            ReportId = 2,
-                            SortOrder = (byte)1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            ControlType = "checkboxlist",
-                            DependsOn = "aiYear",
-                            Enabled = true,
-                            Label = "Grant",
-                            Name = "avcGrants",
-                            ReportId = 2,
                             SortOrder = (byte)2
                         });
                 });

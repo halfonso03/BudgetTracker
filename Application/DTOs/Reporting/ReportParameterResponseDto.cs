@@ -16,8 +16,10 @@ namespace Application.DTOs.Reporting
         public required string Label { get; set; }
 
         public required int ReportId { get; set; }
+        public required string ControlType { get; set; }
+        public string? DependsOn { get; set; }
 
-        public static ReportParameterResponseDto Create(int id, byte sortOrder, string name, int reportId, string label)
+        public static ReportParameterResponseDto Create(int id, byte sortOrder, string name, int reportId, string label, string controlType, string? dependsOn)
         {
             return new ReportParameterResponseDto
             {
@@ -25,7 +27,9 @@ namespace Application.DTOs.Reporting
                 Name = name,
                 SortOrder = sortOrder,
                 ReportId = reportId,
-                Label = label
+                Label = label,
+                ControlType = controlType,
+                DependsOn = dependsOn
             };
         }
     }

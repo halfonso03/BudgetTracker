@@ -6,7 +6,7 @@ type Props = {
 
 const CheckBox = ({ checked, label, onCheck }: Props) => {
   return (
-    <div>
+    <div className="flex gap-2">
       <div className="relative flex items-start">
         <input
           type="checkbox"

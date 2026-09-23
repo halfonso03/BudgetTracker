@@ -5,7 +5,7 @@ type Props = {
   label: string;
   items: { id: number; name: string; checked: boolean }[];
   key: string;
-  onItemChecked: (id: number, key: string) => void;
+  onItemChecked?: (id: number, key: string) => void;
   maxHeight?: number | null | undefined;
 };
 
@@ -31,7 +31,7 @@ const CheckBoxList = ({
         checked: i.id === id ? !i.checked : i.checked,
       }));
     });
-    onItemChecked(id, key);
+    onItemChecked?.(id, key);
   }
 
   function handleCheckBoxChecked(id: string) {
@@ -40,7 +40,7 @@ const CheckBoxList = ({
 
   return (
     <div>
-      <div className="font-semibold text-neutral-600 pl-3 pt-2 pb-0  ">
+      <div className="font-semibold text-neutral-600">
         {label}
       </div>
       <div

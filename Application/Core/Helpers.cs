@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.DTOs.Reporting;
 using static Application.Core.Enums;
 
 namespace Application.Core
@@ -57,6 +58,11 @@ namespace Application.Core
                 ReportExportFormat.EXCELOPENXML => "xlsx",
                 _ => "",
             };
+        }
+
+        public static List<ReportParameterResponseDto> ConvertReportParametersToDto(List<Domain.ReportParameter> parameters)
+        {
+            return [.. parameters.Select(y => ReportParameterResponseDto.Create(y.Id, y.SortOrder, y.Name, y.ReportId, y.Label, y.ControlType, y.DependsOn))];
         }
     }
 }

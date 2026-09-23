@@ -4,7 +4,7 @@ import agent from '../../agent';
 const useReport = (report_id: number) => {
   const { data, isLoading } = useQuery<Report>({
     queryFn: async (): Promise<Report> => {
-      const response = await agent.get<Report>(`/Report/${report_id}`);
+      const response = await agent.get<Report>(`/report/${report_id}`);
       const report = response.data;
       return report;
     },
@@ -15,4 +15,3 @@ const useReport = (report_id: number) => {
 };
 
 export default useReport;
-

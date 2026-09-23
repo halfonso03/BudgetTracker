@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Core;
 
 namespace Application.DTOs.Reporting
 {
@@ -16,10 +17,11 @@ namespace Application.DTOs.Reporting
         public required byte CategoryId { get; set; }
 
         public required bool Enabled { get; set; }
+        
         public List<ReportParameterResponseDto>? Parameters { get; set; } = [];
         // public required ReportCategory Category { get; set; }
 
-        public static ReportResponseDto Create(byte id, string name, string path, List<Domain.ReportParameter>? parameters = null)
+        public static ReportResponseDto Create(int id, string name, string path, List<ReportParameterResponseDto>? parameters = null)
         {
             return new ReportResponseDto
             {
@@ -29,7 +31,7 @@ namespace Application.DTOs.Reporting
                 CategoryId = 0,
                 Enabled = true,
                 Parameters = parameters != null 
-                    ? [.. parameters.Select(x => ReportParameterResponseDto.Create(x.Id, x.SortOrder, x.Name, x.ReportId, x.Label))] 
+                    ? parameters
                     : null
             };
         }

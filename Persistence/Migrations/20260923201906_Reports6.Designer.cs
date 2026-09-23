@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260923201906_Reports6")]
+    partial class Reports6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -890,10 +893,6 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("depends_on");
 
-                    b.Property<bool>("Enabled")
-                        .HasColumnType("bit")
-                        .HasColumnName("enabled");
-
                     b.Property<string>("Label")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -924,7 +923,6 @@ namespace Persistence.Migrations
                         {
                             Id = 1,
                             ControlType = "dropdownlist",
-                            Enabled = true,
                             Label = "Year",
                             Name = "aiYear",
                             ReportId = 1,
@@ -934,7 +932,6 @@ namespace Persistence.Migrations
                         {
                             Id = 2,
                             ControlType = "checkboxlist",
-                            Enabled = true,
                             Label = "Initiative",
                             Name = "avcInitiatives",
                             ReportId = 1,
@@ -944,7 +941,6 @@ namespace Persistence.Migrations
                         {
                             Id = 3,
                             ControlType = "dropdownlist",
-                            Enabled = true,
                             Label = "Year",
                             Name = "aiYear",
                             ReportId = 2,
@@ -955,7 +951,6 @@ namespace Persistence.Migrations
                             Id = 4,
                             ControlType = "checkboxlist",
                             DependsOn = "aiYear",
-                            Enabled = true,
                             Label = "Grant",
                             Name = "avcGrants",
                             ReportId = 2,
