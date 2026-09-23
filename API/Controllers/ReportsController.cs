@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel;
 using System.Threading.Tasks;
+using Application.DTOs.Reporting;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,30 +14,18 @@ using ServiceReference;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
-    public class ReportsController(IReportService reportService) : Controller
+    public class ReportsController(IReportService reportService) : BaseApiController
     {
-        [HttpGet("/test")]
-        public async Task<IActionResult> Test()
+        [HttpGet("{reportId}")]
+        public async Task<IActionResult> Report(int reportId)
         {
-            return Ok(new { x = 1 });
+            return HandleResult(await reportService.GetReport(reportId));
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> RunReport([FromBody] RunReportRequestDto request)
         {
-
-            var result = await reportService.RunReport("/HOTTReports/UserList");
-
-            return new FileContentResult(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-            {
-                FileDownloadName = $"users.xlsx"
-            };
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View("Error!");
+            return HandleFileResult(await reportService.RunReport(request));
         }
     }
 }

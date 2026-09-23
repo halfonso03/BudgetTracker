@@ -26,5 +26,18 @@ namespace API.Controllers
 
             return BadRequest(result.Error);
         }
+
+        protected ActionResult HandleFileResult<T>(FileResult<T> result)
+        {
+            if (!result.IsSuccess && result.Code == 404) return NotFound();
+            if (!result.IsSuccess && result.Code == 500) return BadRequest();
+            if (!result.IsSuccess) return new FileContentResult(result.Bytes, result.ContentType)
+            {
+                FileDownloadName = $"users.xlsx"
+            };
+
+            return BadRequest(result.Error);
+
+        }
     }
 }

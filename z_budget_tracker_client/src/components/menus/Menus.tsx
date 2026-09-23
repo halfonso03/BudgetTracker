@@ -52,7 +52,7 @@ function List({ id, children }: ListProps) {
 
   return (
     <div
-      className="absolute animate-repro-fade-in z-1000  translate-x-30 translate-y-5 bg-neutral-50  bg-dark-content border border-gray-300 dark:border-neutral-700 p-2 rounded-sm cursor-pointer "
+      className="absolute animate-repro-fade-in z-1000 translate-x-30 translate-y-5 bg-neutral-50  bg-dark-content border border-gray-300 dark:border-neutral-700 p-2 rounded-sm cursor-pointer"
       ref={ref}
     >
       <ul className="w-50 ">{children}</ul>

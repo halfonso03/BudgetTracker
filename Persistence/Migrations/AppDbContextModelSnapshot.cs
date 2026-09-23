@@ -787,13 +787,21 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Report", b =>
                 {
-                    b.Property<byte>("Id")
-                        .HasColumnType("tinyint")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<byte>("CategoryId")
                         .HasColumnType("tinyint")
                         .HasColumnName("category_id");
+
+                    b.Property<string>("DefaultFileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("default_download_filename");
 
                     b.Property<bool>("Enabled")
                         .HasColumnType("bit")
@@ -814,6 +822,17 @@ namespace Persistence.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("tblReport");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = (byte)1,
+                            DefaultFileName = "GrantBalanceByInitiativeAndAR",
+                            Enabled = true,
+                            Name = "2c. Grant Balance By Initiative and AR",
+                            Path = "/GrantBalanceByInitiativeAndAR"
+                        });
                 });
 
             modelBuilder.Entity("Domain.ReportCategory", b =>
@@ -834,13 +853,24 @@ namespace Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tblReportCategory");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = (byte)1,
+                            Name = "NHAC",
+                            SortOrder = (byte)1
+                        });
                 });
 
             modelBuilder.Entity("Domain.ReportParameter", b =>
                 {
-                    b.Property<byte>("Id")
-                        .HasColumnType("tinyint")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Label")
                         .IsRequired()
@@ -852,8 +882,8 @@ namespace Persistence.Migrations
                         .HasColumnType("VARCHAR(75)")
                         .HasColumnName("name");
 
-                    b.Property<byte>("ReportId")
-                        .HasColumnType("tinyint")
+                    b.Property<int>("ReportId")
+                        .HasColumnType("int")
                         .HasColumnName("report_id");
 
                     b.Property<byte>("SortOrder")
@@ -866,6 +896,16 @@ namespace Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("tblReportParamter");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Label = "Initiative",
+                            Name = "avcInitiatives",
+                            ReportId = 1,
+                            SortOrder = (byte)1
+                        });
                 });
 
             modelBuilder.Entity("Domain.Repro", b =>

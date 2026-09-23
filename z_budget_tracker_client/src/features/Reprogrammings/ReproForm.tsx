@@ -863,29 +863,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           </div>
         )}
 
-        {reproHeader.status !== POSTED &&
-          hasNegativeRemainingBalances(lines) && (
-            <div className="flex justify-end items-start my-9">
-              <div className="border border-red-300 shrink p-3">
-                <div className="text-end text-red-600 ">
-                  This reprogramming cannot be posted with the propsed Increase
-                  and Decrease amounts as one or more accounts will have a
-                  negative balance.
-                </div>
-                <div className="flex gap-2 items-center justify-end mt-2 text-red-600">
-                  <div>
-                    Click the check box to override this behavior and allow
-                    posting the reprogramming with the negative balance.
-                  </div>
-                  <CheckBox
-                    onCheck={() => setOverrideNeg((prev) => !prev)}
-                    checked={overrideNeg}
-                  ></CheckBox>
-                </div>
-              </div>
-            </div>
-          )}
-
         {lines.length > 0 && reproHeader.status !== POSTED && (
           <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_1.65fr_.3fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 text-neutral-600 font-semibold">
             <div className="self-end col-span-4 "></div>
@@ -897,7 +874,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             </div>
             <div></div>
             <div></div>
-            <div className='col-span-4'>Total</div>
+            <div className="col-span-4">Total</div>
             <div className="flex">
               <div className="w-[25%]"></div>
               <div className="flex justify-end  w-[20%]">
@@ -928,8 +905,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             <div></div>
             <div></div>
             <div></div>
-            
-            
           </div>
         )}
 
@@ -967,7 +942,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             </div>
           </div>
         )}
-        <div className="pb-100">
+        <div className="pb-10">
           {lines.map((item, index) => {
             const balances = savedBalances.filter(
               (b) =>
@@ -1049,6 +1024,28 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             );
           })}
         </div>
+        {reproHeader.status !== POSTED &&
+          hasNegativeRemainingBalances(lines) && (
+            <div className="flex justify-end items-start my-9">
+              <div className="border border-red-300 shrink p-3">
+                <div className="text-end text-red-600 ">
+                  This reprogramming cannot be posted with the propsed Increase
+                  and Decrease amounts as one or more accounts will have a
+                  negative balance.
+                </div>
+                <div className="flex gap-2 items-center justify-end mt-2 text-red-600">
+                  <div>
+                    Click the check box to override this behavior and allow
+                    posting the reprogramming with the negative balance.
+                  </div>
+                  <CheckBox
+                    onCheck={() => setOverrideNeg((prev) => !prev)}
+                    checked={overrideNeg}
+                  ></CheckBox>
+                </div>
+              </div>
+            </div>
+          )}
         <AddLineModal
           year={repro.year}
           isOpen={addLineModalIsOpen}

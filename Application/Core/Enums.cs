@@ -17,8 +17,8 @@ namespace Application.Core
             PDF,
             WORD,
             WORD97,
-            EXCEL,
             EXCELOPENXML,
+            EXCEL
         }
 
         public enum BudgetType

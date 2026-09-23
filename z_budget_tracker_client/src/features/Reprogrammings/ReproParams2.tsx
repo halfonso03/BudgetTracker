@@ -247,7 +247,7 @@ const ReproParams2 = memo(
     }
 
     return (
-      <div className="flex justify-center gap-3">
+      <div className="flex justify-center gap-3 z-10">
         <ReproSearchFilter
           selectedItemLabel={amountFilterLabel}
           parentCorntrolled={true}
@@ -255,7 +255,10 @@ const ReproParams2 = memo(
           listOpened={handleAmountFilterOpened}
           outsideClicked={handleAmountFilterOutsideClick}
         >
-          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-80 rounded-md mt-1 z-1000 opacity-100 bg-white">
+          <div
+            style={{ height: 'auto', zIndex: 10, overflow: 'visible' }}
+            className="flex flex-col absolute shadow-lg shadow-neutral-300 w-80 rounded-md mt-1 opacity-100 bg-white"
+          >
             <div className="border border-b-0 border-neutral-200 p-2 py-3">
               <div className="font-semibold text-neutral-600 ml-1">
                 Debit Amount

@@ -77,7 +77,7 @@ const ReproSearchFilter = ({
             </div>
           </button>
         </div>
-        <div className={`${show ? 'animate-repro-fade-in' : 'hidden'}`}>{children}</div>
+        <div className={`relative z-1 ${show ? 'animate-repro-fade-in' : 'hidden'}`}>{children}</div>
       </div>
     </Fragment>
   );

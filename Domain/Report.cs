@@ -8,7 +8,7 @@ namespace Domain
     {
         [Key]
         [Column("id")]
-        public byte Id { get; set; }
+        public int Id { get; set; }
 
         [Column("name")]
         public required string Name { get; set; }
@@ -22,8 +22,13 @@ namespace Domain
         [Column("enabled")]
         public required bool Enabled { get; set; }
 
+        [Column("default_download_filename")]
+        public required string DefaultFileName { get; set; }
         public List<ReportParameter> Parameters { get; set; } = [];
-        public required ReportCategory Category { get; set; }
+        public ReportCategory? Category { get; set; }
+
+
+
 
         // [NotMapped]
         // public bool IsFavorite { get; internal set; }
@@ -36,7 +41,7 @@ namespace Domain
 
         [Key]
         [Column("id")]
-        public byte Id { get; set; }
+        public int Id { get; set; }
 
         [Column("sort_order")]
         public required byte SortOrder { get; set; }
@@ -48,9 +53,10 @@ namespace Domain
         public required string Label { get; set; }
 
         [Column("report_id")]
-        public required byte ReportId { get; set; }
+        public required int ReportId { get; set; }
 
-        public required Report Report { get; set; }
+
+        public Report? Report { get; set; }
 
 
         // public required string ControlName { get; set; }

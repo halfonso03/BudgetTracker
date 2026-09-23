@@ -24,6 +24,44 @@ namespace Persistence
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            builder.Entity<ReportCategory>().HasData(new List<ReportCategory>()
+            {
+                new()
+                {
+                    Id = 1,
+                    Name = "NHAC",
+                    SortOrder = 1
+                }
+            });
+
+            builder.Entity<Report>().HasData(new List<Report>()
+            {
+                new ()
+                {
+                    Id = 1,
+                    Name = "2c. Grant Balance By Initiative and AR",
+                    Path = "/GrantBalanceByInitiativeAndAR",
+                    CategoryId = 1,
+                    Enabled = true,
+                    DefaultFileName = "GrantBalanceByInitiativeAndAR"
+                }
+            });
+
+            builder.Entity<ReportParameter>().HasData(new List<ReportParameter>()
+            {
+                new ()
+                {
+                    Id = 1,
+                    Name = "avcInitiatives",
+                    Label = "Initiative",
+                    ReportId = 1,
+                    SortOrder = 1
+                }
+            });
+
+
+
             var categories = new List<Category>
             {
                 new() { Id = 1, Name = "Services" },

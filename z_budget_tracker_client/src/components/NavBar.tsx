@@ -161,6 +161,15 @@ const NavBar = () => {
         >
           Reprogrammings
         </NavLink>
+        <NavLink
+          to="/reports"
+          className="nav-link"
+          onClick={(e: React.MouseEvent<HTMLElement>) => {
+            handleReproNavigation(e, '/reports');
+          }}
+        >
+          Reports
+        </NavLink>
         {/* <div className="flex text-sm gap-3">
           <input
             type="text"

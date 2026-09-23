@@ -1,5 +1,7 @@
 using System.Net;
 using System.ServiceModel;
+using Application.Core;
+using Application.DTOs.Reporting;
 using Application.Exceptions;
 using Application.Interfaces;
 using Domain;
@@ -29,7 +31,7 @@ namespace Application.Services
             return param;
         }
 
-        public async Task<byte[]> RunReport(string path, ParameterValue[]? parameters = null, ReportExportFormat exportFormat = ReportExportFormat.EXCELOPENXML)
+        public async Task<FileResult<byte[]>> RunReport(RunReportRequestDto runReportRequestDto)
         {
 
             var binding = new BasicHttpBinding(BasicHttpSecurityMode.TransportCredentialOnly);
@@ -55,7 +57,7 @@ namespace Application.Services
 
             try
             {
-                var taskLoadReport = await rsExec.LoadReportAsync(trusteduserHeader, path, null);
+                var taskLoadReport = await rsExec.LoadReportAsync(trusteduserHeader, runReportRequestDto.Path, null);
 
                 var executionHeader = new ExecutionHeader
                 {
@@ -65,20 +67,22 @@ namespace Application.Services
                 //Set the parameteres asked for by the report
                 //var reportParameters = taskLoadReport.Where(x => parameters.ContainsKey(x.Name)).Select(x => new ParameterValue() { Name = x.Name, Value = parameters[x.Name].ToString() }).ToArray();
 
-                if (parameters != null && parameters.Length > 0)
+                if (runReportRequestDto.Parameters != null && runReportRequestDto.Parameters.Count > 0)
                 {
                     await rsExec.SetExecutionParametersAsync(
                         executionHeader,
                         trusteduserHeader,
-                        parameters,
+                        [.. runReportRequestDto.Parameters.Select(x => CreateReportParameter(x.Name, x.Value))],
                         "en-us");
                 }
 
-                //run the report
                 const string deviceInfo = @"<DeviceInfo><Toolbar>False</Toolbar></DeviceInfo>";
-                var response = await rsExec.RenderAsync(new RenderRequest(executionHeader, trusteduserHeader, exportFormat.ToString(), deviceInfo));
+                var response = await rsExec.RenderAsync(new RenderRequest(executionHeader, trusteduserHeader, runReportRequestDto.Format.ToString(), deviceInfo));
 
-                return response.Result;
+                return FileResult<byte[]>.Success(
+                    response.Result,
+                    Helpers.GetContentTypeFromRSFormat(runReportRequestDto.Format),
+                    runReportRequestDto.FileName);
             }
             catch (Exception ex)
             {
@@ -86,9 +90,24 @@ namespace Application.Services
             }
         }
 
-        public async Task<Report> GetReportInfo(int reportId)
+        public async Task<Result<ReportResponseDto>> GetReport(int reportId)
         {
-            return await _dbContext.Reports.FirstAsync(x => x.Id == reportId);
+            var report = await _dbContext.Reports
+                    .Include(x => x.Parameters)
+                    .Include(x => x.Category)
+                    .FirstAsync(x => x.Id == reportId);
+
+            var response = new ReportResponseDto
+            {
+                Id = report.Id,
+                Name = report.Name,
+                CategoryId = report.CategoryId,
+                Path = report.Path,
+                Enabled = true,
+                Parameters = report.Parameters?.Select(x => ReportParameterResponseDto.Create(x.Id, x.SortOrder, x.Name, x.ReportId, x.Label)).ToList()
+            };
+
+            return Result<ReportResponseDto>.Success(response);
         }
 
         public async Task<List<Domain.ReportParameter>> GetReportParameters(int reportId)

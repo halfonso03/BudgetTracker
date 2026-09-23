@@ -183,11 +183,13 @@ namespace Persistence.Migrations
                 name: "tblReport",
                 columns: table => new
                 {
-                    id = table.Column<byte>(type: "tinyint", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(type: "VARCHAR(200)", nullable: false),
                     path = table.Column<string>(type: "VARCHAR(1000)", nullable: false),
                     category_id = table.Column<byte>(type: "tinyint", nullable: false),
-                    enabled = table.Column<bool>(type: "bit", nullable: false)
+                    enabled = table.Column<bool>(type: "bit", nullable: false),
+                    default_download_filename = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -303,11 +305,12 @@ namespace Persistence.Migrations
                 name: "tblReportParamter",
                 columns: table => new
                 {
-                    id = table.Column<byte>(type: "tinyint", nullable: false),
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     sort_order = table.Column<byte>(type: "tinyint", nullable: false),
                     name = table.Column<string>(type: "VARCHAR(75)", nullable: false),
                     label = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    report_id = table.Column<byte>(type: "tinyint", nullable: false)
+                    report_id = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -512,6 +515,11 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "tblReportCategory",
+                columns: new[] { "id", "name", "sort_order" },
+                values: new object[] { (byte)1, "NHAC", (byte)1 });
+
+            migrationBuilder.InsertData(
                 table: "tblAccount",
                 columns: new[] { "id", "category_id", "name", "number" },
                 values: new object[,]
@@ -526,6 +534,11 @@ namespace Persistence.Migrations
                     { 8, 3, "Pens", "11-102-0312-54707" },
                     { 9, 3, "Erasers", "11-102-0312-54708" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "tblReport",
+                columns: new[] { "id", "category_id", "default_download_filename", "enabled", "name", "path" },
+                values: new object[] { 1, (byte)1, "GrantBalanceByInitiativeAndAR", true, "2c. Grant Balance By Initiative and AR", "/GrantBalanceByInitiativeAndAR" });
 
             migrationBuilder.InsertData(
                 table: "tblBudget",
@@ -544,6 +557,11 @@ namespace Persistence.Migrations
                     { 12, 8, 250m, "7/31/2026", 1, 3, 2, "B", null, null },
                     { 13, 1, -50m, "7/31/2026", 1, 1, 1, "D", null, null }
                 });
+
+            migrationBuilder.InsertData(
+                table: "tblReportParamter",
+                columns: new[] { "id", "label", "name", "report_id", "sort_order" },
+                values: new object[] { 1, "Initiative", "avcInitiatives", 1, (byte)1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblAccount_category_id",

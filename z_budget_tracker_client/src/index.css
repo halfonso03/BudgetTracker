@@ -55,12 +55,10 @@ input:-webkit-autofill:focus {
   height: 0;
   overflow: hidden;
   transition: height 0.2s ease-in-out;
-  z-index: 1;
 }
 
 .box.expanded {
   height: auto; /* Works flawlessly if interpolate-size is enabled */
-  z-index: 10;
 }
 
 .s {
