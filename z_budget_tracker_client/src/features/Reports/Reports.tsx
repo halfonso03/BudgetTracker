@@ -14,7 +14,7 @@ const Reports = () => {
     setReportId(id);
     setSelected(data!.filter((r) => r.id === id)[0]!.parameters);
   }
-
+  // console.log('reports render');
   return (
     <div>
       <div className="grid grid-cols-[1fr_3fr]">
@@ -22,11 +22,10 @@ const Reports = () => {
           {data?.map((r, i) => (
             <div key={i} className="mb-4">
               <button
-                className="cursor-pointer"
+                className={`cursor-pointer ${r.id === reportId ? ' font-bold ' : ''}`}
                 onClick={() => loadParams(r.id)}
               >
-                {r.id} - 
-                {r.name}
+                {r.name} ( {r.id} )
               </button>
             </div>
           ))}

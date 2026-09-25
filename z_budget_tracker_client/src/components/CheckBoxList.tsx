@@ -2,74 +2,93 @@ import { useState } from 'react';
 import CheckBox from './CheckBox';
 
 type Props = {
-  label: string;
+  label?: string;
   items: { id: number; name: string; checked: boolean }[];
-  key: string;
+  controlId: string;
+  tailWindBorderStyles?: string;
   onItemChecked?: (id: number, key: string) => void;
+  onAllItemsChecked?: (key: string, items: number[]) => void;
   maxHeight?: number | null | undefined;
+  onItemsCheckedSnapshot: (key: string, checkedItems: { id: number }[]) => void;
 };
 
 const CheckBoxList = ({
   label,
   items,
-  key,
+  controlId,
+  tailWindBorderStyles,
   maxHeight,
   onItemChecked,
+  onItemsCheckedSnapshot,
+  onAllItemsChecked,
 }: Props) => {
   const [options, setOptions] = useState<
     { id: number; name: string; checked: boolean }[]
   >(items.map((i) => ({ id: i.id, name: i.name, checked: i.checked })));
 
-  const maxHeightClass =
-    maxHeight !== null && maxHeight !== undefined ? ` overflow-y-auto ` : ' ';
-
+  const overFlowYAutoClass = maxHeight ? ` overflow-y-auto ` : ' ';
+  const updatedMaxHeight = maxHeight ? maxHeight + 10 + 'px' : '';
+  const [checkAll, setCheckAll] = useState(true);
 
   function handleCheck(id: number, key: string) {
-    setOptions((prev) => {
-      return prev.map((i) => ({
-        ...i,
-        checked: i.id === id ? !i.checked : i.checked,
-      }));
-    });
+    const newOptions = options.map((i) => ({
+      ...i,
+      checked: i.id === id ? !i.checked : i.checked,
+    }));
+    setOptions(newOptions);
     onItemChecked?.(id, key);
+    onItemsCheckedSnapshot(
+      key,
+      newOptions.filter((x) => x.checked),
+    );
   }
 
-  function handleCheckBoxChecked(id: string) {
-    handleCheck(+id, key);
+  function onCheckboxChecked(itemId: string) {
+    handleCheck(+itemId, controlId);
+  }
+
+  function onCheckBoxAllChecked(key: string) {
+    onAllItemsChecked?.(
+      key,
+      options.map((x) => x.id),
+    );
+    setOptions((prev) => prev.map((p) => ({ ...p, checked: !checkAll })));
   }
 
   return (
     <div>
-      <div className="font-semibold text-neutral-600">
-        {label}
-      </div>
+      <div className="font-semibold text-neutral-600">{label}</div>
       <div
         style={{
-          maxHeight:
-            maxHeight !== null && maxHeight !== undefined
-              ? maxHeight + 10 + 'px'
-              : '',
+          maxHeight: updatedMaxHeight,
           padding: '4px',
         }}
       >
+        <div className="flex gap-2 p-1 pl-2 py-2 text-neutral-700 border-l border-l-transparent ">
+          <CheckBox
+            checked={checkAll}
+            label={'ALL'}
+            onCheck={() => {
+              setCheckAll(!checkAll);
+              onCheckBoxAllChecked(controlId);
+            }}
+          ></CheckBox>
+        </div>
         <div
-          className={maxHeightClass}
+          className={overFlowYAutoClass + (tailWindBorderStyles ?? '')}
           style={{
-            maxHeight:
-              maxHeight !== null && maxHeight !== undefined
-                ? maxHeight + 'px'
-                : '',
-            padding: '4px',
+            maxHeight: updatedMaxHeight,
+            padding: '1px',
           }}
         >
           <ul>
             {options?.map((i, index) => (
-              <li key={index} className="flex gap-2 p-1 text-neutral-700">
+              <li key={index} className="flex gap-2 p-1 pl-2 text-neutral-700">
                 <CheckBox
                   checked={i.checked}
                   label={i.name}
                   onCheck={() => {
-                    handleCheckBoxChecked(i.id.toString());
+                    onCheckboxChecked(i.id.toString());
                   }}
                 ></CheckBox>
               </li>

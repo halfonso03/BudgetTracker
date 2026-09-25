@@ -26,23 +26,21 @@ type ParameterDependency = {
   value: string;
 };
 
-async function fetchSelectionOptions(
+type ParameterSelections = {
+  name: string;
+  value?: string;
+  values?: string[];
+};
+
+async function fetchOptions(
   reportId: number,
   reportParameter: ReportParameter2,
-  dependentvalues: ParameterDependency[] | null,
+  dependentvalue: string | null,
 ): Promise<{ id: number }[]> {
   let url = `/reports/parameters/values/${reportId}/${reportParameter.id}?showAllOption=false`;
 
-  if (
-    dependentvalues?.some(
-      (x) => x.dependentParameterName === reportParameter.name,
-    )
-  ) {
-    const dependsOnValue = dependentvalues.filter(
-      (x) => x.dependentParameterName === reportParameter.name,
-    )[0].value;
-
-    url += '&selectedValue=' + dependsOnValue;
+  if (dependentvalue) {
+    url += '&selectedValue=' + dependentvalue;
   }
 
   const response = await agent.get(url);
@@ -50,24 +48,31 @@ async function fetchSelectionOptions(
 }
 
 const ReportParameters = ({ reportId, parameters }: Props) => {
-  const [parentValues, setParentValues] = useState<
-    ParameterDependency[] | null
-  >(null);
+  // console.log('ReportParameters render');
+  const [paramDep, setParamDep] = useState<ParameterDependency[]>([]);
+  const [selectedValues, setSelectedValues] = useState<ParameterSelections[]>(
+    [],
+  );
 
   const userQueries = useQueries({
     queries: parameters.map((parameter) => {
-      let parentValue2 = null;
-      if (
-        parentValues?.some((x) => x.dependentParameterName === parameter.name)
-      ) {
-        parentValue2 = parentValues.filter(
+      let parentValue1 = null;
+      if (paramDep?.some((x) => x.dependentParameterName === parameter.name)) {
+        parentValue1 = paramDep.filter(
           (x) => x.dependentParameterName === parameter.name,
         )[0].value;
       }
 
+      //  this might not do anything
+      // for (const s of selectedValues) {
+      //   if (paramDep.some((x) => x.parameterName === s.name)) {
+      //     parentValue1 = s.value;
+      //   }
+      // }
+
       return {
-        queryKey: ['report', 'parameters', parentValue2, parameter.id],
-        queryFn: () => fetchSelectionOptions(reportId, parameter, parentValues),
+        queryKey: ['report', 'parameters', parentValue1, parameter.id],
+        queryFn: () => fetchOptions(reportId, parameter, parentValue1),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         select: (data: any) => {
           return {
@@ -81,19 +86,138 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
     }),
   });
 
-  function getControl(
+  const succeededCount = userQueries.filter((q) => q.isSuccess).length;
+  const initialSelectedValues: ParameterSelections[] = [];
+
+  if (succeededCount === userQueries.length && selectedValues.length === 0) {
+    for (const q of userQueries) {
+      const pName = q.data?.parameterName;
+      if (!selectedValues.some((s) => s.name === pName)) {
+        if (q.data?.controlType === 'dropdownlist') {
+          initialSelectedValues.push({
+            name: pName!,
+            value: q.data.data[0].id.toString(),
+          });
+        }
+        if (q.data?.controlType === 'checkboxlist') {
+          initialSelectedValues.push({
+            name: pName!,
+            values: [],
+          });
+        }
+      }
+    }
+    setSelectedValues(initialSelectedValues);
+  }
+
+  // save any param dependencie
+  const initialDependentSelectedValues: ParameterDependency[] = [];
+
+  if (succeededCount === userQueries.length && paramDep.length === 0) {
+    for (const q of userQueries) {
+      const pName = q.data?.parameterName;
+      if (pName && !paramDep.some((s) => s.parameterName === pName)) {
+        if (
+          q.data?.controlType === 'checkboxlist' &&
+          q.data.dependsOn !== null
+        ) {
+          const firstValue = userQueries.filter(
+            (x) => x.data?.parameterName === q.data?.dependsOn,
+          )[0].data?.data[0].id;
+
+          if (firstValue) {
+            const t: ParameterDependency = {
+              parameterName: q.data?.dependsOn,
+              dependentParameterName: pName,
+              value: firstValue.toString(),
+            };
+            initialDependentSelectedValues.push(t);
+          }
+        }
+      }
+    }
+
+    if (initialDependentSelectedValues.length > 0) {
+      setParamDep(initialDependentSelectedValues);
+    }
+  }
+
+  // find any params that are not a dependancy of any other params and remove from paramDep
+  // if (paramDep.length > 0) {
+  //   const deleP: ParameterDependency[] = [];
+  //   for (const dep of paramDep) {
+  //     if (
+  //       parameters.filter((x) => x.dependsOn === dep.parameterName).length === 0
+  //     ) {
+  //       deleP.push({
+  //         parameterName: dep.parameterName,
+  //         dependentParameterName: dep.dependentParameterName,
+  //         value: dep.value,
+  //       });
+  //     }
+  //   }
+
+  //   if (deleP.length > 0) {
+  //     let newparamDep = [...paramDep];
+  //     for (const p of deleP) {
+  //       const n = newparamDep.filter(
+  //         (x) => x.parameterName !== p.parameterName,
+  //       );
+  //       newparamDep = [...n];
+  //     }
+  //     setParamDep(newparamDep);
+  //   }
+  // }
+
+  const updatedParameterDependencies: ParameterDependency[] = [];
+  for (const d of paramDep) {
+    for (const s of selectedValues) {
+      if (s.name !== d.parameterName) break;
+
+      if (s.value !== d.value) {
+        updatedParameterDependencies.push({
+          parameterName: d.parameterName,
+          dependentParameterName: d.dependentParameterName,
+          value: s.value!,
+        });
+      }
+    }
+  }
+
+  if (updatedParameterDependencies.length > 0) {
+    setParamDep((prev) => {
+      const n = prev.map((p) => {
+        let nvalue = p.value;
+        const exists = updatedParameterDependencies.some(
+          (x) => x.parameterName === p.parameterName,
+        );
+
+        if (exists) {
+          nvalue = updatedParameterDependencies.filter(
+            (x) => x.parameterName === p.parameterName,
+          )[0].value;
+        }
+
+        return { ...p, value: nvalue };
+      });
+      return n;
+    });
+  }
+
+  function createControls(
     parameterName: string,
     controlType: string,
     results: ParameterQueryResult[],
   ) {
+    console.log('controlType', controlType);
     if (controlType === 'dropdownlist') {
-      return getDropdownList(results, parameterName);
+      return createDropdownList(results, parameterName);
     } else if (controlType === 'checkboxlist') {
-      return getCheckboxList(results, parameterName);
+      return createCheckboxList(results, parameterName);
     }
   }
 
-  function getCheckboxList(
+  function createCheckboxList(
     results: ParameterQueryResult[],
     parameterName: string,
   ) {
@@ -101,6 +225,7 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
       const data = results.filter(
         (x) => x.data?.parameterName == parameterName,
       )[0].data;
+
       if (data) {
         const items: { id: number; name: string; checked: boolean }[] =
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -109,21 +234,62 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
             name: d.text,
             checked: true,
           }));
+
+        const handleAllChecked = (controlId: string) => {
+          setSelectedValues((prev) => {
+            const newS = prev.map((p) => ({
+              ...p,
+              values: p.name === controlId ? [] : p.values,
+            }));
+            return newS;
+          });
+        };
+        const handleItemsCheckedSnapshot = (
+          controlId: string,
+          checkedItems: { id: number }[],
+        ) => {
+          const newS = selectedValues.map((p) => ({
+            ...p,
+            values:
+              p.name === controlId
+                ? checkedItems.map((x) => x.id.toString())
+                : p.values,
+          }));
+
+          if (!newS.some((x) => x.name === controlId)) {
+            newS.push({
+              name: controlId,
+              values: checkedItems.map((x) => x.id.toString()),
+            });
+          }
+          setSelectedValues(newS);
+        };
+
+        let listKey = parameterName;
+
+        if (paramDep.some((x) => x.dependentParameterName === parameterName)) {
+          listKey +=
+            '_' +
+            paramDep.filter((x) => x.dependentParameterName == parameterName)[0]
+              .value;
+        }
+
         return (
-          <div className="border border-neutral-300 rounded-sm">
-            <CheckBoxList
-              label=""
-              key={crypto.randomUUID()}
-              items={items}
-              maxHeight={199}
-            ></CheckBoxList>
-          </div>
+          <CheckBoxList
+            key={listKey}
+            controlId={parameterName}
+            items={items}
+            maxHeight={200}
+            onAllItemsChecked={handleAllChecked}
+            onItemsCheckedSnapshot={handleItemsCheckedSnapshot}
+            tailWindBorderStyles="rounded-md border border-neutral-300"
+          ></CheckBoxList>
         );
       }
     }
   }
 
-  function getDropdownList(
+  function createDropdownList(
     results: ParameterQueryResult[],
     parameterName: string,
   ) {
@@ -133,21 +299,42 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
       )[0].data;
 
       if (data) {
+        const paramSelection: ParameterSelections | null = selectedValues.some(
+          (x) => x.name === parameterName,
+        )
+          ? selectedValues.filter((x) => x.name === parameterName)[0]
+          : null;
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const options = data.data.map((d: any, i: number) => (
-          <option key={i} value={d.id}>
-            {d.text}
-          </option>
-        ));
+        const options = data.data.map((d: any, i: number) => {
+          const selected = paramSelection?.value === d.id.toString();
+          return (
+            <option key={i} value={d.id} selected={selected}>
+              {d.text}
+            </option>
+          );
+        });
+
+        const onSaveSelectedValues = (e: ChangeEvent<HTMLSelectElement>) => {
+          setSelectedValues((prev) => {
+            if (!prev) return [];
+            return prev?.map((p: ParameterSelections) => {
+              return {
+                ...p,
+                value: p.name === parameterName ? e.target.value : p.value,
+              };
+            });
+          });
+        };
 
         if (parameters.some((x) => x.dependsOn === parameterName)) {
-          const onClick = (e: ChangeEvent<HTMLSelectElement>) => {
+          const onSaveDependentValue = (e: ChangeEvent<HTMLSelectElement>) => {
             const value = e.target.value;
             const depParam = parameters.filter(
               (x) => x.dependsOn === parameterName,
             )[0];
             if (
-              parentValues?.some(
+              paramDep?.some(
                 (x) =>
                   x.parameterName === parameterName &&
                   x.dependentParameterName == depParam.name &&
@@ -156,7 +343,7 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
             )
               return;
 
-            setParentValues((prev) => {
+            setParamDep((prev) => {
               const old = prev ?? [];
               if (
                 old.some(
@@ -183,9 +370,19 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
               ];
             });
           };
-          return <Select onChange={onClick}>{options}</Select>;
+
+          return (
+            <Select
+              onChange={(e) => {
+                onSaveDependentValue(e);
+                onSaveSelectedValues(e);
+              }}
+            >
+              {options}
+            </Select>
+          );
         } else {
-          return <Select>{options}</Select>;
+          return <Select onChange={onSaveSelectedValues}>{options}</Select>;
         }
       }
     }
@@ -195,7 +392,9 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
 
   return (
     <div>
-      {/* <pre>{JSON.stringify(parentValues)}</pre> */}
+      {/* parameters <pre>{JSON.stringify(parameters)}</pre> */}
+      paramDep: <pre>{JSON.stringify(paramDep)}</pre>
+      selectedValues: <pre>{JSON.stringify(selectedValues)}</pre>
       {parameters.map((p, index) => {
         return (
           <div
@@ -203,7 +402,7 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
             className="grid gap-2 grid-cols-[.3fr_1fr] mb-3 items-center"
           >
             <div className="self-start">{p.label}</div>
-            <div>{getControl(p.name, p.controlType, userQueries)}</div>
+            <div>{createControls(p.name, p.controlType, userQueries)}</div>
           </div>
         );
       })}
