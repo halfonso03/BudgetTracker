@@ -71,7 +71,7 @@ const CheckBoxList = ({
           padding: '4px',
         }}
       >
-        <div className="flex gap-2 p-1 pl-2 py-2 text-neutral-700 border-l border-l-transparent ">
+        <div className="flex gap-4 items-center  p-1 pl-2 py-2 text-neutral-700 border-l border-l-transparent ">
           <CheckBox
             checked={checkAll}
             label={'ALL'}
@@ -80,6 +80,11 @@ const CheckBoxList = ({
               onCheckBoxAllChecked(controlId);
             }}
           ></CheckBox>
+          {options.filter((x) => x.checked).length !== options.length && (
+            <div className="italic text-neutral-500 text-sma animate-repro-fade-in">
+              ({options.filter((x) => x.checked).length} items checked)
+            </div>
+          )}
         </div>
         <div
           className={overFlowYAutoClass + (tailWindBorderStyles ?? '')}

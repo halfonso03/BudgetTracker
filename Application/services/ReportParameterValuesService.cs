@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Application.DTOs.Reporting;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using Application.Interfaces;
 
 namespace Application.Services
 {
@@ -15,9 +16,8 @@ namespace Application.Services
         public required string Value { get; set; }
     }
 
-    public class ReportParameterValuesService(AppDbContext dbContext)
+    public class ReportParameterValuesService(AppDbContext dbContext) : IReportParameterValuesService
     {
-
         private readonly Dictionary<string, Func<Selection?, Task<List<SelectOption>?>>> values = new()
         {
             {
@@ -75,9 +75,6 @@ namespace Application.Services
 
         public async Task<List<SelectOption>?> GetDropdownValues(string parameterName, bool showAllOption, string? selectedValue = null)
         {
-
-
-
             var options = await values[parameterName](selectedValue == null
                     ? null
                     : new Selection { Value = selectedValue });

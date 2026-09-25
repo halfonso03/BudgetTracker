@@ -9,6 +9,25 @@ namespace Application.Core
 {
     public class Helpers
     {
+
+        public static ParameterValue CreateReportParameter(string astrName, string astrValue)
+        {
+            ParameterValue param = new()
+            {
+                Name = astrName
+            };
+
+            if (astrValue == null)
+                return param;
+
+            if (!string.IsNullOrEmpty(astrValue.Trim()))
+            {
+                param.Value = astrValue;
+            }
+
+            return param;
+        }
+
         public static string GetContentTypeFromRSFormat(ReportExportFormat format)
         {
             return format switch

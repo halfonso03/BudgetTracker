@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 namespace API.Controllers
 {
     [Route("api/[controller]")]
-    public class ReportsController(IReportService reportService) : BaseApiController
+    public class ReportsController(IReportService reportService, IReportRunnerService reportRunnerService) : BaseApiController
     {
         [HttpGet("list")]
         public async Task<IActionResult> List()
@@ -25,7 +25,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> RunReport([FromBody] RunReportRequestDto request)
         {
-            return HandleFileResult(await reportService.RunReport(request));
+            return HandleFileResult(await reportRunnerService.RunReport(request));
         }
 
         [HttpGet("parameters/values/{reportId}/{parameterId}")]
