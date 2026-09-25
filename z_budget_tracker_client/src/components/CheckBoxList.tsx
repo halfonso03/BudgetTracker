@@ -28,13 +28,20 @@ const CheckBoxList = ({
 
   const overFlowYAutoClass = maxHeight ? ` overflow-y-auto ` : ' ';
   const updatedMaxHeight = maxHeight ? maxHeight + 10 + 'px' : '';
-  const [checkAll, setCheckAll] = useState(true);
+  const [checkAll, setCheckAll] = useState(!items.some((x) => !x.checked));
 
   function handleCheck(id: number, key: string) {
     const newOptions = options.map((i) => ({
       ...i,
       checked: i.id === id ? !i.checked : i.checked,
     }));
+
+    if (newOptions.filter((x) => x.checked).length !== options.length)
+      setCheckAll(false);
+
+    if (newOptions.filter((x) => x.checked).length == options.length)
+      setCheckAll(true);
+
     setOptions(newOptions);
     onItemChecked?.(id, key);
     onItemsCheckedSnapshot(

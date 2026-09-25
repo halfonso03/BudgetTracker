@@ -1,96 +1,38 @@
-import { useQueries, type UseQueryResult } from '@tanstack/react-query';
-import agent from '../../api/agent';
 import Select from '../../components/Select';
 import CheckBoxList from '../../components/CheckBoxList';
-import { useState, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent, type ChangeEventHandler } from 'react';
+import Button from '../../components/Button';
+import useParamOptionsQueries from '../../api/hooks/reports/useParamOptionsQueries';
 
 type Props = {
   reportId: number;
   parameters: ReportParameter2[];
+  onRunReport: (selectedValues: ParameterSelections[]) => void;
 };
 
-type ParameterQueryResult = {} & UseQueryResult<
-  {
-    parameterName: string;
-    controlType: string;
-    dependsOn: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any;
-  },
-  Error
->;
 
-type ParameterDependency = {
-  parameterName: string;
-  dependentParameterName: string;
-  value: string;
-};
 
-type ParameterSelections = {
-  name: string;
-  value?: string;
-  values?: string[];
-};
-
-async function fetchOptions(
-  reportId: number,
-  reportParameter: ReportParameter2,
-  dependentvalue: string | null,
-): Promise<{ id: number }[]> {
-  let url = `/reports/parameters/values/${reportId}/${reportParameter.id}?showAllOption=false`;
-
-  if (dependentvalue) {
-    url += '&selectedValue=' + dependentvalue;
-  }
-
-  const response = await agent.get(url);
-  return response.data;
-}
-
-const ReportParameters = ({ reportId, parameters }: Props) => {
+const ReportParameters = ({ reportId, parameters, onRunReport }: Props) => {
   // console.log('ReportParameters render');
   const [paramDep, setParamDep] = useState<ParameterDependency[]>([]);
   const [selectedValues, setSelectedValues] = useState<ParameterSelections[]>(
     [],
   );
 
-  const userQueries = useQueries({
-    queries: parameters.map((parameter) => {
-      let parentValue1 = null;
-      if (paramDep?.some((x) => x.dependentParameterName === parameter.name)) {
-        parentValue1 = paramDep.filter(
-          (x) => x.dependentParameterName === parameter.name,
-        )[0].value;
-      }
+  const { paramOptionsQueries } = useParamOptionsQueries(
+    reportId,
+    parameters,
+    paramDep,
+  );
 
-      //  this might not do anything
-      // for (const s of selectedValues) {
-      //   if (paramDep.some((x) => x.parameterName === s.name)) {
-      //     parentValue1 = s.value;
-      //   }
-      // }
-
-      return {
-        queryKey: ['report', 'parameters', parentValue1, parameter.id],
-        queryFn: () => fetchOptions(reportId, parameter, parentValue1),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        select: (data: any) => {
-          return {
-            parameterName: parameter.name,
-            controlType: parameter.controlType,
-            dependsOn: parameter.dependsOn,
-            data,
-          };
-        },
-      };
-    }),
-  });
-
-  const succeededCount = userQueries.filter((q) => q.isSuccess).length;
+  const succeededCount = paramOptionsQueries.filter((q) => q.isSuccess).length;
   const initialSelectedValues: ParameterSelections[] = [];
 
-  if (succeededCount === userQueries.length && selectedValues.length === 0) {
-    for (const q of userQueries) {
+  if (
+    succeededCount === paramOptionsQueries.length &&
+    selectedValues.length === 0
+  ) {
+    for (const q of paramOptionsQueries) {
       const pName = q.data?.parameterName;
       if (!selectedValues.some((s) => s.name === pName)) {
         if (q.data?.controlType === 'dropdownlist') {
@@ -110,18 +52,29 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
     setSelectedValues(initialSelectedValues);
   }
 
+  if (selectedValues.length > 0) {
+    for (const p of parameters) {
+      if (!selectedValues.some((x) => x.name === p.name)) {
+        if (p.controlType === 'checkboxlist') {
+          const newS = [...selectedValues, { name: p.name, values: [] }];
+          setSelectedValues(newS);
+        }
+      }
+    }
+  }
+
   // save any param dependencie
   const initialDependentSelectedValues: ParameterDependency[] = [];
 
-  if (succeededCount === userQueries.length && paramDep.length === 0) {
-    for (const q of userQueries) {
+  if (succeededCount === paramOptionsQueries.length && paramDep.length === 0) {
+    for (const q of paramOptionsQueries) {
       const pName = q.data?.parameterName;
       if (pName && !paramDep.some((s) => s.parameterName === pName)) {
         if (
           q.data?.controlType === 'checkboxlist' &&
           q.data.dependsOn !== null
         ) {
-          const firstValue = userQueries.filter(
+          const firstValue = paramOptionsQueries.filter(
             (x) => x.data?.parameterName === q.data?.dependsOn,
           )[0].data?.data[0].id;
 
@@ -209,7 +162,6 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
     controlType: string,
     results: ParameterQueryResult[],
   ) {
-    console.log('controlType', controlType);
     if (controlType === 'dropdownlist') {
       return createDropdownList(results, parameterName);
     } else if (controlType === 'checkboxlist') {
@@ -229,11 +181,34 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
       if (data) {
         const items: { id: number; name: string; checked: boolean }[] =
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          data.data.map((d: any) => ({
-            id: d.id,
-            name: d.text,
-            checked: true,
-          }));
+          data.data.map((d: any) => {
+            let checked = false;
+
+            // determine the selected values for the checkbox if any and update
+            const param = parameters.filter((x) => x.name === parameterName)[0];
+            if (
+              param.controlType === 'checkboxlist' &&
+              selectedValues.length &&
+              selectedValues.some((x) => x.name === parameterName)
+            ) {
+              const sValues = selectedValues.filter(
+                (x) => x.name === parameterName,
+              )[0].values;
+
+              if (sValues?.length == 0) {
+                checked = true;
+              } else {
+                checked =
+                  sValues!.some((x) => x.toString() === d.id.toString()) ??
+                  false;
+              }
+            }
+            return {
+              id: d.id,
+              name: d.text,
+              checked: checked,
+            };
+          });
 
         const handleAllChecked = (controlId: string) => {
           setSelectedValues((prev) => {
@@ -316,19 +291,26 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
         });
 
         const onSaveSelectedValues = (e: ChangeEvent<HTMLSelectElement>) => {
-          setSelectedValues((prev) => {
-            if (!prev) return [];
-            return prev?.map((p: ParameterSelections) => {
-              return {
-                ...p,
-                value: p.name === parameterName ? e.target.value : p.value,
-              };
-            });
+          const newS = selectedValues?.map((p: ParameterSelections) => {
+            const param = parameters.filter((x) => x.name === p.name)[0];
+            const resetSelections =
+              param?.controlType === 'checkboxlist' &&
+              param.dependsOn === parameterName;
+
+            return {
+              ...p,
+              value: p.name === parameterName ? e.target.value : p.value,
+              values: resetSelections ? [] : p.values,
+            };
           });
+          // onSelectedValueChange(newS);
+          setSelectedValues(newS);
         };
 
+        let onSaveDependentValue: ChangeEventHandler | null = null;
+
         if (parameters.some((x) => x.dependsOn === parameterName)) {
-          const onSaveDependentValue = (e: ChangeEvent<HTMLSelectElement>) => {
+          onSaveDependentValue = (e: ChangeEvent<HTMLSelectElement>) => {
             const value = e.target.value;
             const depParam = parameters.filter(
               (x) => x.dependsOn === parameterName,
@@ -370,42 +352,81 @@ const ReportParameters = ({ reportId, parameters }: Props) => {
               ];
             });
           };
-
-          return (
+        }
+        return (
+          <div className="pl-1">
             <Select
               onChange={(e) => {
-                onSaveDependentValue(e);
+                onSaveDependentValue?.(e);
                 onSaveSelectedValues(e);
               }}
             >
               {options}
             </Select>
-          );
-        } else {
-          return <Select onChange={onSaveSelectedValues}>{options}</Select>;
-        }
+          </div>
+        );
       }
     }
 
     return null;
   }
 
+  //   for (const p of parameters) {
+  //   if (!selectedValues.some((x) => x.name === p.name)) {
+  //     if (p.controlType === 'checkboxlist') {
+  //       const newS1 = [...selectedValues, { name: p.name, values: [] }];
+  //       setSelectedValues(newS1);
+  //     } else if (p.controlType === 'dropdownlist') {
+  //       const paramValues = userQueries
+  //         .map((x) => x.data)
+  //         .filter((x) => x?.parameterName === p.name)[0]!.data;
+  //       console.log('paramValues', paramValues);
+  //       const newS2 = [
+  //         ...selectedValues,
+  //         { name: p.name, value: paramValues[0].id.toString() },
+  //       ];
+  //       setSelectedValues(newS2);
+  //     }
+  //   }
+  // }
+
   return (
     <div>
       {/* parameters <pre>{JSON.stringify(parameters)}</pre> */}
-      paramDep: <pre>{JSON.stringify(paramDep)}</pre>
-      selectedValues: <pre>{JSON.stringify(selectedValues)}</pre>
+      {/* paramDep: <pre>{JSON.stringify(paramDep)}</pre>*/}
+      {/* selectedValues: <pre>{JSON.stringify(selectedValues)}</pre> */}
       {parameters.map((p, index) => {
         return (
           <div
             key={index}
-            className="grid gap-2 grid-cols-[.3fr_1fr] mb-3 items-center"
+            className="grid grid-cols-[.3fr_1fr] mb-3 items-center"
           >
             <div className="self-start">{p.label}</div>
-            <div>{createControls(p.name, p.controlType, userQueries)}</div>
+            <div>
+              {createControls(p.name, p.controlType, paramOptionsQueries)}
+            </div>
           </div>
         );
       })}
+      <div className="grid grid-cols-[.3fr_1fr] mt-20 ">
+        <div></div>
+        <Button
+          buttonSize={'medium'}
+          onClick={() => {
+            const reportSelections: ParameterSelections[] = [];
+            for (const parameter of parameters) {
+              if (selectedValues.some((x) => x.name === parameter.name)) {
+                reportSelections.push(
+                  selectedValues.filter((x) => x.name === parameter.name)[0],
+                );
+              }
+            }
+            onRunReport(reportSelections);
+          }}
+        >
+          Run Report
+        </Button>
+      </div>
     </div>
   );
 };

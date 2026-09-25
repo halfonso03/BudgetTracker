@@ -4,7 +4,7 @@ type ReportParameter2 = {
     label: string
     sortOrder: number
     controlType: string
-    dependsOn:string
+    dependsOn: string
 }
 
 type Report2 = {
@@ -20,3 +20,26 @@ type ReportParamterValue = {
     id: number,
     text: number
 }
+
+type ParameterSelections = {
+    name: string;
+    value?: string;
+    values?: string[];
+};
+
+type ParameterDependency = {
+    parameterName: string;
+    dependentParameterName: string;
+    value: string;
+};
+
+type ParameterQueryResult = {} & UseQueryResult<
+    {
+        parameterName: string;
+        controlType: string;
+        dependsOn: string;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        data: any;
+    },
+    Error
+>;
