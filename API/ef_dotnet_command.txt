@@ -4,3 +4,4 @@ dotnet add reference ../MyLibrary/MyLibrary.csproj
 
 dotnet ef migrations add initial -p Persistence -s API
 dotnet ef database update -p Persistence -s API
+dotnet ef database update -p Persistence -s API

@@ -16,7 +16,7 @@ namespace Domain
         public required string Name { get; set; }
         public required DateTime StartDate { get; set; }
         public required DateTime EndDate { get; set; }
-        public int Year => StartDate.Year;
+        public int Year { get; set; }
         public required string Fiduciary { get; set; }
     }
 }

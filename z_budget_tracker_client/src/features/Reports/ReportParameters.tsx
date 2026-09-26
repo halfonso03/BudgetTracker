@@ -392,7 +392,7 @@ const ReportParameters = ({ reportId, parameters, onRunReport }: Props) => {
   return (
     <div>
       {/* parameters <pre>{JSON.stringify(parameters)}</pre> */}
-      paramDep: <pre>{JSON.stringify(paramDep)}</pre>
+      {/* paramDep: <pre>{JSON.stringify(paramDep)}</pre> */}
       {/* selectedValues: <pre>{JSON.stringify(selectedValues)}</pre> */}
       {parameters.map((p, index) => {
         return (

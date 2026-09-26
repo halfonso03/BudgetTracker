@@ -157,7 +157,8 @@ namespace Persistence
                     StartDate = new DateTime(2025, 1, 1),
                     EndDate = new DateTime(2026, 12, 31),
                     Name = "G25001",
-                    Fiduciary = "MSCO"
+                    Fiduciary = "MSCO",
+                    Year = 2025
                 },
                 new Grant()
                 {
@@ -165,7 +166,8 @@ namespace Persistence
                     StartDate = new DateTime(2025, 1, 1),
                     EndDate = new DateTime(2026, 12, 31),
                     Name = "G25002",
-                    Fiduciary = "Cameron Co"
+                    Fiduciary = "Cameron Co",
+                    Year = 2025
                 },
                 new Grant
                 {
@@ -173,7 +175,8 @@ namespace Persistence
                     StartDate = new DateTime(2026, 1, 1),
                     EndDate = new DateTime(2027, 12, 31),
                     Name = "G26001",
-                    Fiduciary = "MCSO"
+                    Fiduciary = "MCSO",
+                    Year = 2026
                 },
                 new Grant
                 {
@@ -181,7 +184,8 @@ namespace Persistence
                     StartDate = new DateTime(2026, 1, 1),
                     EndDate = new DateTime(2027, 12, 31),
                     Name = "G26002",
-                    Fiduciary = "Cameron Co"
+                    Fiduciary = "Cameron Co",
+                    Year = 2026
                 }
             );
 

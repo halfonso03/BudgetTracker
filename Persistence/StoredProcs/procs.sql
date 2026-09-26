@@ -1,6 +1,6 @@
 
 
-CREATE proCEDURE [Reports].[spBudgetDetail]
+CREATE proCEDURE [Report].[spBudgetDetail]
 (
 	@aiYear				SMALLINT = 2025,
 	@avcGrants			VARCHAR(MAX) = '',
@@ -17,7 +17,7 @@ BEGIN
 	DECLARE @grantid INT 
 	
 	DECLARE @initiatives TABLE (initiative_id INT, [description] VARCHAR(8000), init_type_id SMALLINT)
-	DECLARE @grants TABLE (grant_id INT, ar_id INT, priorgrant1 INT, priorgrant2 INT, description VARCHAR(300))
+	DECLARE @grants TABLE (grant_id INT,description VARCHAR(300))
 
 	DECLARE @item_types TABLE (item_type CHAR(10))
 
@@ -57,3 +57,5 @@ BEGIN
 	ORDER BY item_type
 		
 END
+
+go

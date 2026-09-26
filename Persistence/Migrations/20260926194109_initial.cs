@@ -31,14 +31,14 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblBudgetItemType2",
+                name: "tblBudgetItemType",
                 columns: table => new
                 {
                     item_type = table.Column<string>(type: "CHAR(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblBudgetItemType2", x => x.item_type);
+                    table.PrimaryKey("PK_tblBudgetItemType", x => x.item_type);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,6 +63,7 @@ namespace Persistence.Migrations
                     name = table.Column<string>(type: "VARCHAR(50)", nullable: false),
                     start_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     end_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Year = table.Column<int>(type: "int", nullable: false),
                     fiduciary = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -257,9 +258,9 @@ namespace Persistence.Migrations
                         principalTable: "tblAuthorizedUsers",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_tblBudget_tblBudgetItemType2_item_type",
+                        name: "FK_tblBudget_tblBudgetItemType_item_type",
                         column: x => x.item_type,
-                        principalTable: "tblBudgetItemType2",
+                        principalTable: "tblBudgetItemType",
                         principalColumn: "item_type",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -492,7 +493,7 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "tblBudgetItemType2",
+                table: "tblBudgetItemType",
                 column: "item_type",
                 values: new object[]
                 {
@@ -515,13 +516,13 @@ namespace Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "tblGrant",
-                columns: new[] { "id", "end_date", "fiduciary", "name", "start_date" },
+                columns: new[] { "id", "end_date", "fiduciary", "name", "start_date", "Year" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "MSCO", "G25001", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cameron Co", "G25002", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "MCSO", "G26001", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cameron Co", "G26002", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "MSCO", "G25001", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2025 },
+                    { 2, new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cameron Co", "G25002", new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2025 },
+                    { 3, new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "MCSO", "G26001", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2026 },
+                    { 4, new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified), "Cameron Co", "G26002", new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2026 }
                 });
 
             migrationBuilder.InsertData(
@@ -827,7 +828,7 @@ namespace Persistence.Migrations
                 name: "tblAccount");
 
             migrationBuilder.DropTable(
-                name: "tblBudgetItemType2");
+                name: "tblBudgetItemType");
 
             migrationBuilder.DropTable(
                 name: "tblGrant");

@@ -29,7 +29,7 @@ namespace Domain
         public required string ItemType { get; set; }
 
         [Column(Order = 6)]
-        public int Year { get; set; }
+        public required int Year { get; set; }
         public Initiative? Initiative { get; set; }
         public Grant? Grant { get; set; }
         public Account? Account { get; set; }

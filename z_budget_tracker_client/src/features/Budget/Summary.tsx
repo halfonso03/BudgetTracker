@@ -43,7 +43,49 @@ const Summary = ({ year }: Props) => {
   return (
     <div>
       <div
-        className={`entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-4 `}
+        className={`border-b border-b-neutral-200 mb-8 entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-2 `}
+      >
+        <div>Total</div>
+        <div></div>
+        <div className="text-end">Approved</div>
+        <div className="text-end">Curent</div>
+        <div className="text-end">Spent</div>
+        <div className="text-end">Remaining</div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div className="text-end text-neutral-950">
+          {formatCurrency(
+            budgetSummaries
+              .map((x) => x.approved_amount)
+              .reduce((acc, cur) => acc + cur, 0),
+          )}
+        </div>
+        <div className="text-end text-neutral-950">
+          {formatCurrency(
+            budgetSummaries
+              .map((x) => x.current_amount)
+              .reduce((acc, cur) => acc + cur, 0),
+          )}
+        </div>
+        <div className="text-end text-neutral-950">
+          {formatCurrency(
+            budgetSummaries
+              .map((x) => x.spent_amount)
+              .reduce((acc, cur) => acc + cur, 0),
+          )}
+        </div>
+        <div className="text-end text-neutral-950">
+          {formatCurrency(
+            budgetSummaries
+              .map((x) => x.remaining_amount)
+              .reduce((acc, cur) => acc + cur, 0),
+          )}
+        </div>
+        <div></div>
+      </div>
+      <div
+        className={`entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-2 `}
       >
         <div>Initiative</div>
         <div>Grant</div>
@@ -204,7 +246,7 @@ function CategorySummary({
               key={index}
             >
               <div className={`font-bold pl-2 ${cateoryRedClass}`} key={index}>
-                {c.category} 
+                {c.category}
               </div>
               <div></div>
               <div className="text-end">

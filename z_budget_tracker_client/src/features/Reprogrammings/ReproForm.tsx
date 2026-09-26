@@ -428,11 +428,10 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       indexOfDup++;
       if (l.uuid == uuid) break;
     }
-    const { inc, dec } = getRowIncreaseAndDecrease(indexOfDup);
     const duplicatedLine: ReproLineItem = {
       ...lines.filter((x) => x.uuid === uuid)[0],
-      increase: inc,
-      decrease: dec,
+      increase: 0,
+      decrease: 0,
       rowId: lines.length,
       uuid: crypto.randomUUID(),
     };

@@ -391,7 +391,8 @@ namespace Application.Services
                     Amount = lineAmount,
                     ItemType = "R",
                     CreateDate = DateTime.Now,
-                    CreatedBy = userId
+                    CreatedBy = userId,
+                    Year = line.Year
                 };
 
                 postedBudgetLineItems.Add(budgetLineItem);

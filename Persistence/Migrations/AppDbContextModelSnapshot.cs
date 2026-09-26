@@ -668,6 +668,9 @@ namespace Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("start_date");
 
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("tblGrant");
@@ -679,7 +682,8 @@ namespace Persistence.Migrations
                             EndDate = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Fiduciary = "MSCO",
                             Name = "G25001",
-                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Year = 2025
                         },
                         new
                         {
@@ -687,7 +691,8 @@ namespace Persistence.Migrations
                             EndDate = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Fiduciary = "Cameron Co",
                             Name = "G25002",
-                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Year = 2025
                         },
                         new
                         {
@@ -695,7 +700,8 @@ namespace Persistence.Migrations
                             EndDate = new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Fiduciary = "MCSO",
                             Name = "G26001",
-                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Year = 2026
                         },
                         new
                         {
@@ -703,7 +709,8 @@ namespace Persistence.Migrations
                             EndDate = new DateTime(2027, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Fiduciary = "Cameron Co",
                             Name = "G26002",
-                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            StartDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Year = 2026
                         });
                 });
 
