@@ -26,24 +26,16 @@ builder.Services.AddTransient<IBudgetService, BudgetService>();
 builder.Services.AddTransient<IReproService, ReproService>();
 builder.Services.AddTransient<IDisbService, DisbService>();
 builder.Services.AddTransient<IReportParameterValuesService, ReportParameterValuesService>();
-builder.Services.AddTransient<IReportService, ReportService>((provider) =>
-{
-    var dbContext = provider.GetRequiredService<AppDbContext>();
-    var valuesService = provider.GetRequiredService<ReportParameterValuesService>();
-
-    return new ReportService(
-        dbContext,
-        valuesService
-    );
-});
+builder.Services.AddTransient<IReportService, ReportService>();
 
 builder.Services.AddTransient<IReportRunnerService, ReportRunnerService>((provider) =>
 {
     return new ReportRunnerService(
         builder.Configuration.GetValue<string>("ReportServerUserName")!,
-        builder.Configuration.GetValue<string>("ReportServerUserName")!,
-        builder.Configuration.GetValue<string>("ReportServerUserName")!,
-        builder.Configuration.GetValue<string>("ReportServerUserName")!
+        builder.Configuration.GetValue<string>("ReportServerPassword")!,
+        builder.Configuration.GetValue<string>("ReportServerIp")!,
+        builder.Configuration.GetValue<string>("ReportServerUrl")!,
+        builder.Configuration.GetValue<string>("ReportServerFolder")!
     );
 });
 

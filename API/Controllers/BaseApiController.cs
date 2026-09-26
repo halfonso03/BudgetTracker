@@ -31,10 +31,7 @@ namespace API.Controllers
         {
             if (!result.IsSuccess && result.Code == 404) return NotFound();
             if (!result.IsSuccess && result.Code == 500) return BadRequest();
-            if (!result.IsSuccess) return new FileContentResult(result.Bytes, result.ContentType)
-            {
-                FileDownloadName = $"users.xlsx"
-            };
+            if (result.IsSuccess) return File(result.Bytes, result.ContentType, "users.xlsx");
 
             return BadRequest(result.Error);
 

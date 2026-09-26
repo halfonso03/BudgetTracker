@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Application.Core;
 
@@ -17,11 +18,13 @@ namespace Application.DTOs.Reporting
         public required byte CategoryId { get; set; }
 
         public required bool Enabled { get; set; }
-        
+
+        public required string DownloadFilename { get; set; }
+
         public List<ReportParameterResponseDto>? Parameters { get; set; } = [];
         // public required ReportCategory Category { get; set; }
 
-        public static ReportResponseDto Create(int id, string name, string path, List<ReportParameterResponseDto>? parameters = null)
+        public static ReportResponseDto Create(int id, string name, string path, string dlFileName, List<ReportParameterResponseDto>? parameters = null)
         {
             return new ReportResponseDto
             {
@@ -30,9 +33,8 @@ namespace Application.DTOs.Reporting
                 Path = path,
                 CategoryId = 0,
                 Enabled = true,
-                Parameters = parameters != null 
-                    ? parameters
-                    : null
+                DownloadFilename = dlFileName,
+                Parameters = parameters ?? null
             };
         }
     }

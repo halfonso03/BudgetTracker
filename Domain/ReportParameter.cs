@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-    [Table("tblReportParamter")]
+    [Table("tblReportParamter",  Schema = "Report")]
     public class ReportParameter
     {
 

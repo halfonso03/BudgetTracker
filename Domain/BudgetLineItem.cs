@@ -11,10 +11,6 @@ namespace Domain
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Column(Order = 0)]
         public required int Id { get; set; } = 0;
-        [Column(Order = 4)]
-        public required decimal Amount { get; set; }
-        [Column(Order = 5)]
-        public required string ItemType { get; set; }
 
         [Column(Order = 1)]
         public int InitiativeId { get; set; }
@@ -24,27 +20,39 @@ namespace Domain
 
         [Column(Order = 3)]
         public int AccountId { get; set; }
+
+        [Column(Order = 4)]
+        public required decimal Amount { get; set; }
+
+        [Column(Order = 5)]
+        [ForeignKey("BudgetItemType")]
+        public required string ItemType { get; set; }
+
+        [Column(Order = 6)]
+        public int Year { get; set; }
         public Initiative? Initiative { get; set; }
         public Grant? Grant { get; set; }
         public Account? Account { get; set; }
 
-        [Column(Order = 7)]
+        [Column(Order = 8)]
         public required DateTime CreateDate { get; set; }
 
-        [Column(Order = 6)]
+        [Column(Order = 7)]
         public int CreatedBy { get; set; }
 
         [ForeignKey(nameof(CreatedBy))]
         public AuthorizedUser? CreatedByUser { get; set; }
 
-        [Column(Order = 9)]
+        [Column(Order = 10)]
         public DateTime? UpdateDate { get; set; }
 
-        [Column(Order = 8)]
+        [Column(Order = 9)]
         public int? UpdatedBy { get; set; }
 
         [ForeignKey(nameof(UpdatedBy))]
         public AuthorizedUser? UpdatedByUser { get; set; }
+
+        public  BudgetItemType? BudgetItemType { get; set; }
 
     }
 }

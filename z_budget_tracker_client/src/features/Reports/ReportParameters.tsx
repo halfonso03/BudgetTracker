@@ -10,8 +10,6 @@ type Props = {
   onRunReport: (selectedValues: ParameterSelections[]) => void;
 };
 
-
-
 const ReportParameters = ({ reportId, parameters, onRunReport }: Props) => {
   // console.log('ReportParameters render');
   const [paramDep, setParamDep] = useState<ParameterDependency[]>([]);
@@ -138,6 +136,7 @@ const ReportParameters = ({ reportId, parameters, onRunReport }: Props) => {
   }
 
   if (updatedParameterDependencies.length > 0) {
+    console.log('updatedParameterDependencies', updatedParameterDependencies);
     setParamDep((prev) => {
       const n = prev.map((p) => {
         let nvalue = p.value;
@@ -340,7 +339,7 @@ const ReportParameters = ({ reportId, parameters, onRunReport }: Props) => {
                     x.parameterName === parameterName &&
                     x.dependentParameterName == depParam.name,
                 )[0].value = value;
-                return { ...old, value: value };
+                return [...old];
               }
 
               return [
@@ -393,7 +392,7 @@ const ReportParameters = ({ reportId, parameters, onRunReport }: Props) => {
   return (
     <div>
       {/* parameters <pre>{JSON.stringify(parameters)}</pre> */}
-      {/* paramDep: <pre>{JSON.stringify(paramDep)}</pre>*/}
+      paramDep: <pre>{JSON.stringify(paramDep)}</pre>
       {/* selectedValues: <pre>{JSON.stringify(selectedValues)}</pre> */}
       {parameters.map((p, index) => {
         return (

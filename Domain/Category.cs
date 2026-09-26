@@ -11,6 +11,9 @@ namespace Domain
         public int Id { get; set; }
         public required string Name { get; set; }
         public IList<Account> Accounts { get; set; } = [];
+        public IList<ReproLineItem>? ReproLineItems { get; set; }
+        public IList<DisbLineItem>? DisbLineItems { get; set; }
+
 
     }
 }

@@ -20,6 +20,5 @@ namespace Application.DTOs.Budgets
 
         [Required]
         public required decimal Amount { get; set; }
-
     }
 }

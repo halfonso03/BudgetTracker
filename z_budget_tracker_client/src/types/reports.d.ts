@@ -13,10 +13,11 @@ type Report2 = {
     path: string,
     categoryId: number,
     enabled: boolean,
-    parameters: ReportParameter2[]
+    parameters: ReportParameter2[],
+    downloadFilename: string
 }
 
-type ReportParamterValue = {
+type ReportParameterValue = {
     id: number,
     text: number
 }
@@ -43,3 +44,16 @@ type ParameterQueryResult = {} & UseQueryResult<
     },
     Error
 >;
+
+type RunReportRequest = {
+    path: string,
+    reportId: number
+    reportExportFormat: number
+    fileName: string
+    parameters: RunReportParameterRequest[]
+}
+
+type RunReportParameterRequest = {
+    name: string,
+    value: string
+}

@@ -21,6 +21,16 @@ namespace Application.Services
         private readonly Dictionary<string, Func<Selection?, Task<List<SelectOption>?>>> values = new()
         {
             {
+                ReportParameterGlobalNames.BUDGET_CATEGORY,
+                async selection =>
+                {
+                    var option1 = new SelectOption { Id = 1, Selected  = true, Text = "Approved"};
+                    var option2 = new SelectOption { Id = 2, Selected  = false, Text = "Current"};
+
+                    return [option1, option2];
+                }
+            },
+            {
                 ReportParameterGlobalNames.YEAR,
                 async selection => {
                     var years = await dbContext
@@ -64,7 +74,6 @@ namespace Application.Services
                     }
                     catch (Exception ex)
                     {
-
                         Console.WriteLine(ex.Message);
                         return null;
                     }

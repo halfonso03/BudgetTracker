@@ -171,7 +171,7 @@ namespace Persistence.Migrations
 
                     b.Property<DateTime>("EntryDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("entry_date")
                         .HasDefaultValueSql("GETDATE()");
 
@@ -194,7 +194,7 @@ namespace Persistence.Migrations
 
                     b.Property<DateTime?>("UpdateDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("update_date")
                         .HasDefaultValueSql("GETDATE()");
 
@@ -217,6 +217,31 @@ namespace Persistence.Migrations
                     b.ToTable("tblBudgetComment");
                 });
 
+            modelBuilder.Entity("Domain.BudgetItemType", b =>
+                {
+                    b.Property<string>("ItemType")
+                        .HasColumnType("CHAR(1)")
+                        .HasColumnName("item_type");
+
+                    b.HasKey("ItemType");
+
+                    b.ToTable("tblBudgetItemType");
+
+                    b.HasData(
+                        new
+                        {
+                            ItemType = "B"
+                        },
+                        new
+                        {
+                            ItemType = "R"
+                        },
+                        new
+                        {
+                            ItemType = "D"
+                        });
+                });
+
             modelBuilder.Entity("Domain.BudgetLineItem", b =>
                 {
                     b.Property<int>("Id")
@@ -237,14 +262,14 @@ namespace Persistence.Migrations
                         .HasColumnOrder(4);
 
                     b.Property<DateTime>("CreateDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("create_date")
-                        .HasColumnOrder(7);
+                        .HasColumnOrder(8);
 
                     b.Property<int>("CreatedBy")
                         .HasColumnType("int")
                         .HasColumnName("created_by")
-                        .HasColumnOrder(6);
+                        .HasColumnOrder(7);
 
                     b.Property<int>("GrantId")
                         .HasColumnType("int")
@@ -263,14 +288,19 @@ namespace Persistence.Migrations
                         .HasColumnOrder(5);
 
                     b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("update_date")
-                        .HasColumnOrder(9);
+                        .HasColumnOrder(10);
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int")
                         .HasColumnName("updated_by")
-                        .HasColumnOrder(8);
+                        .HasColumnOrder(9);
+
+                    b.Property<short>("Year")
+                        .HasColumnType("SMALLINT")
+                        .HasColumnName("year")
+                        .HasColumnOrder(6);
 
                     b.HasKey("Id");
 
@@ -281,6 +311,8 @@ namespace Persistence.Migrations
                     b.HasIndex("GrantId");
 
                     b.HasIndex("InitiativeId");
+
+                    b.HasIndex("ItemType");
 
                     b.HasIndex("UpdatedBy");
 
@@ -296,7 +328,8 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 1,
                             InitiativeId = 1,
-                            ItemType = "B"
+                            ItemType = "B",
+                            Year = (short)2025
                         },
                         new
                         {
@@ -307,7 +340,8 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 1,
                             InitiativeId = 1,
-                            ItemType = "B"
+                            ItemType = "B",
+                            Year = (short)2025
                         },
                         new
                         {
@@ -318,7 +352,8 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 1,
                             InitiativeId = 1,
-                            ItemType = "B"
+                            ItemType = "B",
+                            Year = (short)2025
                         },
                         new
                         {
@@ -329,7 +364,8 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 1,
                             InitiativeId = 1,
-                            ItemType = "B"
+                            ItemType = "B",
+                            Year = (short)2025
                         },
                         new
                         {
@@ -340,7 +376,8 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 1,
                             InitiativeId = 1,
-                            ItemType = "B"
+                            ItemType = "B",
+                            Year = (short)2025
                         },
                         new
                         {
@@ -351,7 +388,8 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 1,
                             InitiativeId = 1,
-                            ItemType = "B"
+                            ItemType = "B",
+                            Year = (short)2025
                         },
                         new
                         {
@@ -362,7 +400,8 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 1,
                             InitiativeId = 2,
-                            ItemType = "B"
+                            ItemType = "B",
+                            Year = (short)2025
                         },
                         new
                         {
@@ -373,7 +412,8 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 3,
                             InitiativeId = 1,
-                            ItemType = "B"
+                            ItemType = "B",
+                            Year = (short)2026
                         },
                         new
                         {
@@ -384,7 +424,8 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 3,
                             InitiativeId = 2,
-                            ItemType = "B"
+                            ItemType = "B",
+                            Year = (short)2026
                         },
                         new
                         {
@@ -395,7 +436,8 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 3,
                             InitiativeId = 2,
-                            ItemType = "B"
+                            ItemType = "B",
+                            Year = (short)2026
                         },
                         new
                         {
@@ -406,7 +448,8 @@ namespace Persistence.Migrations
                             CreatedBy = 1,
                             GrantId = 1,
                             InitiativeId = 1,
-                            ItemType = "D"
+                            ItemType = "D",
+                            Year = (short)2025
                         });
                 });
 
@@ -474,7 +517,7 @@ namespace Persistence.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("create_date");
 
                     b.Property<string>("Justification")
@@ -491,11 +534,11 @@ namespace Persistence.Migrations
                         .HasColumnName("posted_by");
 
                     b.Property<DateTime?>("PostedDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("posted_date");
 
                     b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("updated_date");
 
                     b.Property<int?>("UpdatedById")
@@ -551,7 +594,7 @@ namespace Persistence.Migrations
                         .HasColumnName("disb_id");
 
                     b.Property<DateTime>("EntryDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("entry_date");
 
                     b.Property<int>("GrantId")
@@ -567,7 +610,7 @@ namespace Persistence.Migrations
                         .HasColumnName("row_id");
 
                     b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("update_date");
 
                     b.Property<int?>("UpdatedById")
@@ -821,7 +864,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("tblReport");
+                    b.ToTable("tblReport", "Report");
 
                     b.HasData(
                         new
@@ -861,7 +904,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("tblReportCategory");
+                    b.ToTable("tblReportCategory", "Report");
 
                     b.HasData(
                         new
@@ -917,7 +960,7 @@ namespace Persistence.Migrations
                     b.HasIndex("ReportId", "SortOrder")
                         .IsUnique();
 
-                    b.ToTable("tblReportParamter");
+                    b.ToTable("tblReportParamter", "Report");
 
                     b.HasData(
                         new
@@ -960,6 +1003,16 @@ namespace Persistence.Migrations
                             Name = "avcGrants",
                             ReportId = 2,
                             SortOrder = (byte)2
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ControlType = "dropdownlist",
+                            Enabled = true,
+                            Label = "Budget Category",
+                            Name = "aiBudgetCat",
+                            ReportId = 2,
+                            SortOrder = (byte)3
                         });
                 });
 
@@ -981,7 +1034,7 @@ namespace Persistence.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("create_date");
 
                     b.Property<string>("Justification")
@@ -998,11 +1051,11 @@ namespace Persistence.Migrations
                         .HasColumnName("posted_by");
 
                     b.Property<DateTime?>("PostedDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("posted_date");
 
                     b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("updated_date");
 
                     b.Property<int?>("UpdatedById")
@@ -1054,7 +1107,7 @@ namespace Persistence.Migrations
                         .HasColumnName("decrease");
 
                     b.Property<DateTime>("EntryDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("entry_date");
 
                     b.Property<int>("GrantId")
@@ -1078,7 +1131,7 @@ namespace Persistence.Migrations
                         .HasColumnName("row_id");
 
                     b.Property<DateTime?>("UpdateDate")
-                        .HasColumnType("DATETIME")
+                        .HasColumnType("DATETIME2")
                         .HasColumnName("update_date");
 
                     b.Property<int?>("UpdatedById")
@@ -1187,11 +1240,19 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.BudgetItemType", "BudgetItemType")
+                        .WithMany("BudgetLineItems")
+                        .HasForeignKey("ItemType")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.AuthorizedUser", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy");
 
                     b.Navigation("Account");
+
+                    b.Navigation("BudgetItemType");
 
                     b.Navigation("CreatedByUser");
 
@@ -1238,9 +1299,9 @@ namespace Persistence.Migrations
                         .HasForeignKey("BudgetLineItemId");
 
                     b.HasOne("Domain.Category", "Category")
-                        .WithMany()
+                        .WithMany("DisbLineItems")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Domain.Disb", "Disb")
@@ -1338,9 +1399,9 @@ namespace Persistence.Migrations
                         .HasForeignKey("BudgetLineItemId");
 
                     b.HasOne("Domain.Category", "Category")
-                        .WithMany()
+                        .WithMany("ReproLineItems")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("Domain.Grant", "Grant")
@@ -1380,9 +1441,18 @@ namespace Persistence.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
+            modelBuilder.Entity("Domain.BudgetItemType", b =>
+                {
+                    b.Navigation("BudgetLineItems");
+                });
+
             modelBuilder.Entity("Domain.Category", b =>
                 {
                     b.Navigation("Accounts");
+
+                    b.Navigation("DisbLineItems");
+
+                    b.Navigation("ReproLineItems");
                 });
 
             modelBuilder.Entity("Domain.Disb", b =>

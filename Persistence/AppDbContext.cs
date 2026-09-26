@@ -21,7 +21,7 @@ namespace Persistence
         public required DbSet<Report> Reports { get; set; }
         public required DbSet<ReportParameter> ReportParameters { get; set; }
         public required DbSet<ReportCategory> ReportCategories { get; set; }
-
+        public required DbSet<BudgetItemType> BudgetItemTypes { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
@@ -98,6 +98,16 @@ namespace Persistence
                     SortOrder = 2,
                     ControlType = "checkboxlist",
                     DependsOn = "aiYear",
+                    Enabled = true
+                },
+                new ()
+                {
+                    Id = 5,
+                    Name = "aiBudgetCat",
+                    Label = "Budget Category",
+                    ReportId = 2,
+                    SortOrder = 3,
+                    ControlType = "dropdownlist",
                     Enabled = true
                 },
             });
@@ -260,6 +270,13 @@ namespace Persistence
                     WindowsLogin = "rescobar"
                 }
             );
+
+            builder.Entity<BudgetItemType>().HasData(
+                new BudgetItemType { ItemType = Globals.ITEM_TYPE_BUDGET },
+                new BudgetItemType { ItemType = Globals.ITEM_TYPE_REPRO },
+                new BudgetItemType { ItemType = Globals.ITEM_TYPE_DISB }
+            );
+
             builder.Entity<BudgetLineItem>().HasData(
               new BudgetLineItem()
               {
@@ -270,7 +287,8 @@ namespace Persistence
                   GrantId = 1,
                   InitiativeId = 1,
                   ItemType = Globals.ITEM_TYPE_BUDGET,
-                  Id = 1
+                  Id = 1,
+                  Year = 2025
               },
               new BudgetLineItem()
               {
@@ -281,7 +299,8 @@ namespace Persistence
                   GrantId = 1,
                   InitiativeId = 1,
                   ItemType = Globals.ITEM_TYPE_BUDGET,
-                  Id = 2
+                  Id = 2,
+                  Year = 2025
               },
               new BudgetLineItem()
               {
@@ -292,7 +311,8 @@ namespace Persistence
                   GrantId = 1,
                   InitiativeId = 1,
                   ItemType = Globals.ITEM_TYPE_BUDGET,
-                  Id = 3
+                  Id = 3,
+                  Year = 2025
               },
               new BudgetLineItem()
               {
@@ -303,7 +323,8 @@ namespace Persistence
                   GrantId = 1,
                   InitiativeId = 1,
                   ItemType = Globals.ITEM_TYPE_BUDGET,
-                  Id = 5
+                  Id = 5,
+                  Year = 2025
               },
               new BudgetLineItem()
               {
@@ -314,7 +335,8 @@ namespace Persistence
                   GrantId = 1,
                   InitiativeId = 1,
                   ItemType = Globals.ITEM_TYPE_BUDGET,
-                  Id = 6
+                  Id = 6,
+                  Year = 2025
               },
               new BudgetLineItem()
               {
@@ -325,7 +347,8 @@ namespace Persistence
                   GrantId = 1,
                   InitiativeId = 1,
                   ItemType = Globals.ITEM_TYPE_BUDGET,
-                  Id = 7
+                  Id = 7,
+                  Year = 2025
               },
               new BudgetLineItem()
               {
@@ -336,7 +359,8 @@ namespace Persistence
                   GrantId = 1,
                   InitiativeId = 2,
                   ItemType = Globals.ITEM_TYPE_BUDGET,
-                  Id = 9
+                  Id = 9,
+                  Year = 2025
               },
               new BudgetLineItem()
               {
@@ -347,7 +371,8 @@ namespace Persistence
                   GrantId = 3,
                   InitiativeId = 1,
                   ItemType = Globals.ITEM_TYPE_BUDGET,
-                  Id = 10
+                  Id = 10,
+                  Year = 2026
               },
               new BudgetLineItem()
               {
@@ -358,7 +383,8 @@ namespace Persistence
                   GrantId = 3,
                   InitiativeId = 2,
                   ItemType = Globals.ITEM_TYPE_BUDGET,
-                  Id = 11
+                  Id = 11,
+                  Year = 2026
               },
                new BudgetLineItem()
                {
@@ -369,7 +395,8 @@ namespace Persistence
                    GrantId = 3,
                    InitiativeId = 2,
                    ItemType = Globals.ITEM_TYPE_BUDGET,
-                   Id = 12
+                   Id = 12,
+                   Year = 2026
                },
             new BudgetLineItem()
             {
@@ -380,11 +407,10 @@ namespace Persistence
                 GrantId = 1,
                 InitiativeId = 1,
                 ItemType = Globals.ITEM_TYPE_DISB,
-                Id = 13
+                Id = 13,
+                Year = 2025
             }
           );
-
-
 
             builder.Entity<Category>()
                 .HasMany(x => x.Accounts)
@@ -413,20 +439,23 @@ namespace Persistence
 
             builder.Entity<Grant>().Property(x => x.Name).HasColumnName("name").HasColumnType("VARCHAR(50)"); ;
 
+            builder.Entity<BudgetItemType>().Property(x => x.ItemType).HasColumnName("item_type").HasColumnType("CHAR(1)");
+
+            builder.Entity<BudgetLineItem>().Property(x => x.Year).HasColumnName("year").HasColumnType("SMALLINT");
             builder.Entity<BudgetLineItem>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
             builder.Entity<BudgetLineItem>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
             builder.Entity<BudgetLineItem>().Property(x => x.GrantId).HasColumnName("grant_id");
             builder.Entity<BudgetLineItem>().Property(x => x.AccountId).HasColumnName("account_id");
             builder.Entity<BudgetLineItem>().Property(x => x.ItemType).HasColumnName("item_type").HasColumnType("CHAR(1)");
-            builder.Entity<BudgetLineItem>().Property(x => x.CreateDate).HasColumnName("create_date").HasColumnType("DATETIME");
+            builder.Entity<BudgetLineItem>().Property(x => x.CreateDate).HasColumnName("create_date").HasColumnType("DATETIME2");
             builder.Entity<BudgetLineItem>().Property(x => x.CreatedBy).HasColumnName("created_by");
-            builder.Entity<BudgetLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME");
+            builder.Entity<BudgetLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME2");
             builder.Entity<BudgetLineItem>().Property(x => x.UpdatedBy).HasColumnName("updated_by");
 
             builder.Entity<BudgetComment>().Property(x => x.Text).HasColumnName("comment_text").HasColumnType("VARCHAR(MAX)"); ;
-            builder.Entity<BudgetComment>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME").HasDefaultValueSql("GETDATE()");
+            builder.Entity<BudgetComment>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME2").HasDefaultValueSql("GETDATE()");
             builder.Entity<BudgetComment>().Property(x => x.EntryPersonId).HasColumnName("entry_user_id");
-            builder.Entity<BudgetComment>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME").HasDefaultValueSql("GETDATE()");
+            builder.Entity<BudgetComment>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME2").HasDefaultValueSql("GETDATE()");
             builder.Entity<BudgetComment>().Property(x => x.UpdatePersonId).HasColumnName("update_user_id");
 
             builder.Entity<BudgetComment>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
@@ -434,14 +463,14 @@ namespace Persistence
             builder.Entity<BudgetComment>().Property(x => x.AccountId).HasColumnName("account_id");
 
             builder.Entity<Repro>().Property(x => x.Id).HasColumnName("id");
-            builder.Entity<Repro>().Property(x => x.CreatedDate).HasColumnName("create_date").HasColumnType("DATETIME");
+            builder.Entity<Repro>().Property(x => x.CreatedDate).HasColumnName("create_date").HasColumnType("DATETIME2");
             builder.Entity<Repro>().Property(x => x.CreatedById).HasColumnName("created_by");
-            builder.Entity<Repro>().Property(x => x.UpdateDate).HasColumnName("updated_date").HasColumnType("DATETIME");
+            builder.Entity<Repro>().Property(x => x.UpdateDate).HasColumnName("updated_date").HasColumnType("DATETIME2");
             builder.Entity<Repro>().Property(x => x.UpdatedById).HasColumnName("updated_by");
             builder.Entity<Repro>().Property(x => x.Posted).HasColumnName("posted");
             builder.Entity<Repro>().Property(x => x.PostedById).HasColumnName("posted_by");
             builder.Entity<Repro>().Property(x => x.Year).HasColumnName("year");
-            builder.Entity<Repro>().Property(x => x.PostedDate).HasColumnName("posted_date").HasColumnType("DATETIME");
+            builder.Entity<Repro>().Property(x => x.PostedDate).HasColumnName("posted_date").HasColumnType("DATETIME2");
             builder.Entity<Repro>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
             builder.Entity<Repro>().Property(x => x.Justification).HasColumnName("justification").HasColumnType("VARCHAR(MAX)");
 
@@ -455,24 +484,36 @@ namespace Persistence
             builder.Entity<ReproLineItem>().Property(x => x.Increase).HasColumnName("increase").HasColumnType("NUMERIC(15,2)");
             builder.Entity<ReproLineItem>().Property(x => x.Decrease).HasColumnName("decrease").HasColumnType("NUMERIC(15,2)");
             builder.Entity<ReproLineItem>().Property(x => x.Year).HasColumnName("year");
-            builder.Entity<ReproLineItem>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME");
+            builder.Entity<ReproLineItem>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME2");
             builder.Entity<ReproLineItem>().Property(x => x.UpdatedById).HasColumnName("updated_by");
-            builder.Entity<ReproLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME");
+            builder.Entity<ReproLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME2");
             builder.Entity<ReproLineItem>().Property(x => x.Comment).HasColumnName("comment").HasColumnType("VARCHAR(MAX)");
             builder.Entity<ReproLineItem>().Property(x => x.BudgetLineItemId).HasColumnName("budget_line_id");
             builder.Entity<ReproLineItem>()
                     .HasIndex(a => new { a.ReproId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
                     .IsUnique();
 
+            builder.Entity<ReproLineItem>()
+                        .HasOne(x => x.Category)
+                        .WithMany(x => x.ReproLineItems)
+                        .HasForeignKey(x => x.CategoryId)
+                        .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<DisbLineItem>()
+                        .HasOne(x => x.Category)
+                        .WithMany(x => x.DisbLineItems)
+                        .HasForeignKey(x => x.CategoryId)
+                        .OnDelete(DeleteBehavior.NoAction);
+
             builder.Entity<Disb>().Property(x => x.Id).HasColumnName("id");
-            builder.Entity<Disb>().Property(x => x.CreatedDate).HasColumnName("create_date").HasColumnType("DATETIME");
+            builder.Entity<Disb>().Property(x => x.CreatedDate).HasColumnName("create_date").HasColumnType("DATETIME2");
             builder.Entity<Disb>().Property(x => x.CreatedById).HasColumnName("created_by");
-            builder.Entity<Disb>().Property(x => x.UpdateDate).HasColumnName("updated_date").HasColumnType("DATETIME");
+            builder.Entity<Disb>().Property(x => x.UpdateDate).HasColumnName("updated_date").HasColumnType("DATETIME2");
             builder.Entity<Disb>().Property(x => x.UpdatedById).HasColumnName("updated_by");
             builder.Entity<Disb>().Property(x => x.Posted).HasColumnName("posted");
             builder.Entity<Disb>().Property(x => x.PostedById).HasColumnName("posted_by");
             builder.Entity<Disb>().Property(x => x.Year).HasColumnName("year");
-            builder.Entity<Disb>().Property(x => x.PostedDate).HasColumnName("posted_date").HasColumnType("DATETIME");
+            builder.Entity<Disb>().Property(x => x.PostedDate).HasColumnName("posted_date").HasColumnType("DATETIME2");
             builder.Entity<Disb>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
             builder.Entity<Disb>().Property(x => x.Justification).HasColumnName("justification").HasColumnType("VARCHAR(MAX)");
 
@@ -485,9 +526,9 @@ namespace Persistence
             builder.Entity<DisbLineItem>().Property(x => x.AccountId).HasColumnName("account_id");
             builder.Entity<DisbLineItem>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
             builder.Entity<DisbLineItem>().Property(x => x.Year).HasColumnName("year");
-            builder.Entity<DisbLineItem>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME");
+            builder.Entity<DisbLineItem>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME2");
             builder.Entity<DisbLineItem>().Property(x => x.UpdatedById).HasColumnName("updated_by");
-            builder.Entity<DisbLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME");
+            builder.Entity<DisbLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME2");
             builder.Entity<DisbLineItem>().Property(x => x.Comment).HasColumnName("comment").HasColumnType("VARCHAR(MAX)");
             builder.Entity<DisbLineItem>().Property(x => x.BudgetLineItemId).HasColumnName("budget_line_id");
             builder.Entity<DisbLineItem>()

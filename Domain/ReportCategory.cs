@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-    [Table("tblReportCategory")]
+    [Table("tblReportCategory", Schema = "Report")]
     public partial class ReportCategory
     {
         [Key]

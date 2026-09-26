@@ -168,6 +168,7 @@ namespace Application.services
         {
             var initiativeId = createBudgetDto.LineItems.First().InitiativeId;
             var grantId = createBudgetDto.LineItems.First().GrantId;
+            var grant = await _dbContext.Grants.SingleAsync(x => x.Id == grantId);
 
             // check if budget records already exist for the initiative and grant
             if (_dbContext.BudgetLineItems.Any(x =>
@@ -189,7 +190,8 @@ namespace Application.services
                     Amount = x.Amount,
                     ItemType = "B",
                     CreateDate = DateTime.Now,
-                    CreatedBy = createBudgetDto.CreatedBy
+                    CreatedBy = createBudgetDto.CreatedBy,
+                    Year = grant.Year
                 }));
 
                 _dbContext.BudgetComments.AddRange(createBudgetDto.Comments
@@ -223,6 +225,8 @@ namespace Application.services
         {
             try
             {
+                var grant = await _dbContext.Grants.SingleAsync(x => x.Id == updateBudgetDto.GrantId);
+
                 var initiativeId = updateBudgetDto.InitiativeId;
                 var grantId = updateBudgetDto.GrantId;
 
@@ -277,7 +281,8 @@ namespace Application.services
                             Amount = u.Amount,
                             ItemType = "B",
                             CreateDate = DateTime.Now,
-                            CreatedBy = updateBudgetDto.UpdatedBy
+                            CreatedBy = updateBudgetDto.UpdatedBy,
+                            Year = grant.Year
                         };
 
                         _dbContext.BudgetLineItems.Add(newLineItem);
@@ -441,7 +446,6 @@ namespace Application.services
 
         public async Task<Result<List<TransactionResponseDto>>> GetTransactionsForAccount(BudgetType budgetType, int initiativeId, int grantId, int accountId)
         {
-
             var query = _dbContext.BudgetLineItems
                     .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId && x.AccountId == accountId && x.ItemType == "B")
                     .Select(x => new

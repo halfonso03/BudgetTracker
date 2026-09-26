@@ -1,4 +1,5 @@
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.ServiceModel;
 using Application.Core;
 using Application.DTOs.Reporting;
@@ -10,11 +11,30 @@ using Persistence;
 
 namespace Application.Services
 {
-    public class ReportRunnerService(string reportServerUserName,
-                    string reportServerPassword,
-                    string reportServerIP,
-                    string reportServerUrl) : IReportRunnerService
+    public class ReportRunnerService : IReportRunnerService
     {
+
+        private readonly string reportServerUserName;
+        private readonly string reportServerPassword;
+        private readonly string reportServerIP;
+        private readonly string reportServerUrl;
+        private readonly string reportsRootFolder;
+        private readonly bool isProduction;
+
+        public ReportRunnerService(string userName, string password, string serverIP, string serverUrl, string rootFolder)
+        {
+            string? env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+                            ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT");
+
+            isProduction = env != "Development";
+
+            reportServerUserName = userName;
+            reportServerPassword = password;
+            reportServerIP = serverIP;
+            reportServerUrl = serverUrl;
+            reportsRootFolder = rootFolder;
+        }
+
         public async Task<FileResult<byte[]>> RunReport(RunReportRequestDto runReportRequestDto)
         {
 
@@ -32,7 +52,16 @@ namespace Application.Services
                 reportServerPassword,
                 reportServerIP);
             rsExec.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Impersonation;
-            rsExec.ClientCredentials.Windows.ClientCredential = clientCredentials;
+
+
+            // if (isProduction)
+            // {
+            //     rsExec.ClientCredentials.Windows.ClientCredential = clientCredentials;
+            // }
+            // else
+            // {
+                rsExec.ClientCredentials.Windows.ClientCredential = System.Net.CredentialCache.DefaultNetworkCredentials;
+            // }
 
             //This handles the problem of "Missing session identifier"
             //rsExec.Endpoint.EndpointBehaviors.Add( new ReportingServicesEndpointBehavior());
@@ -41,7 +70,7 @@ namespace Application.Services
 
             try
             {
-                var taskLoadReport = await rsExec.LoadReportAsync(trusteduserHeader, runReportRequestDto.Path, null);
+                var taskLoadReport = await rsExec.LoadReportAsync(trusteduserHeader, $"{reportsRootFolder}{runReportRequestDto.Path}", null);
 
                 var executionHeader = new ExecutionHeader
                 {

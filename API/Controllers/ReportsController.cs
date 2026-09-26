@@ -22,9 +22,10 @@ namespace API.Controllers
             return HandleResult(await reportService.GetReport(reportId));
         }
 
-        [HttpGet]
+        [HttpPost("runReport")]
         public async Task<IActionResult> RunReport([FromBody] RunReportRequestDto request)
         {
+            Console.WriteLine(request);
             return HandleFileResult(await reportRunnerService.RunReport(request));
         }
 

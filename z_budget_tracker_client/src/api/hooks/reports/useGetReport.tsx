@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import agent from '../../agent';
 
-const useReport = (report_id: number) => {
+const useGetReport = (report_id: number) => {
   const { data, isLoading } = useQuery<Report>({
     queryFn: async (): Promise<Report> => {
       const response = await agent.get<Report>(`/report/${report_id}`);
@@ -14,4 +14,4 @@ const useReport = (report_id: number) => {
   return { data, isLoading };
 };
 
-export default useReport;
+export default useGetReport;

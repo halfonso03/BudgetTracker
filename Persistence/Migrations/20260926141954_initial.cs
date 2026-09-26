@@ -8,11 +8,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.EnsureSchema(
+                name: "Report");
+
             migrationBuilder.CreateTable(
                 name: "tblAuthorizedUsers",
                 columns: table => new
@@ -25,6 +28,17 @@ namespace Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_tblAuthorizedUsers", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblBudgetItemType2",
+                columns: table => new
+                {
+                    item_type = table.Column<string>(type: "CHAR(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblBudgetItemType2", x => x.item_type);
                 });
 
             migrationBuilder.CreateTable(
@@ -71,6 +85,7 @@ namespace Persistence.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tblReportCategory",
+                schema: "Report",
                 columns: table => new
                 {
                     id = table.Column<byte>(type: "tinyint", nullable: false),
@@ -89,13 +104,13 @@ namespace Persistence.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     year = table.Column<int>(type: "int", nullable: false),
-                    create_date = table.Column<DateTime>(type: "DATETIME", nullable: false),
+                    create_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     created_by = table.Column<int>(type: "int", nullable: false),
                     updated_by = table.Column<int>(type: "int", nullable: true),
                     posted = table.Column<bool>(type: "bit", nullable: false),
                     posted_by = table.Column<int>(type: "int", nullable: true),
-                    posted_date = table.Column<DateTime>(type: "DATETIME", nullable: true),
-                    updated_date = table.Column<DateTime>(type: "DATETIME", nullable: true),
+                    posted_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
+                    updated_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
                     amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
                     justification = table.Column<string>(type: "VARCHAR(MAX)", nullable: false)
                 },
@@ -127,13 +142,13 @@ namespace Persistence.Migrations
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     year = table.Column<int>(type: "int", nullable: false),
-                    create_date = table.Column<DateTime>(type: "DATETIME", nullable: false),
+                    create_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     created_by = table.Column<int>(type: "int", nullable: false),
                     updated_by = table.Column<int>(type: "int", nullable: true),
                     posted = table.Column<bool>(type: "bit", nullable: false),
                     posted_by = table.Column<int>(type: "int", nullable: true),
-                    posted_date = table.Column<DateTime>(type: "DATETIME", nullable: true),
-                    updated_date = table.Column<DateTime>(type: "DATETIME", nullable: true),
+                    posted_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
+                    updated_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
                     amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
                     justification = table.Column<string>(type: "VARCHAR(MAX)", nullable: false)
                 },
@@ -181,6 +196,7 @@ namespace Persistence.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tblReport",
+                schema: "Report",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
@@ -197,6 +213,7 @@ namespace Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_tblReport_tblReportCategory_category_id",
                         column: x => x.category_id,
+                        principalSchema: "Report",
                         principalTable: "tblReportCategory",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -213,10 +230,11 @@ namespace Persistence.Migrations
                     account_id = table.Column<int>(type: "int", nullable: false),
                     amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
                     item_type = table.Column<string>(type: "CHAR(1)", nullable: false),
+                    year = table.Column<short>(type: "SMALLINT", nullable: false),
                     created_by = table.Column<int>(type: "int", nullable: false),
-                    create_date = table.Column<DateTime>(type: "DATETIME", nullable: false),
+                    create_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     updated_by = table.Column<int>(type: "int", nullable: true),
-                    update_date = table.Column<DateTime>(type: "DATETIME", nullable: true)
+                    update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -238,6 +256,12 @@ namespace Persistence.Migrations
                         column: x => x.updated_by,
                         principalTable: "tblAuthorizedUsers",
                         principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tblBudget_tblBudgetItemType2_item_type",
+                        column: x => x.item_type,
+                        principalTable: "tblBudgetItemType2",
+                        principalColumn: "item_type",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_tblBudget_tblGrant_grant_id",
                         column: x => x.grant_id,
@@ -262,9 +286,9 @@ namespace Persistence.Migrations
                     initiative_id = table.Column<int>(type: "int", nullable: false),
                     grant_id = table.Column<int>(type: "int", nullable: false),
                     account_id = table.Column<int>(type: "int", nullable: false),
-                    entry_date = table.Column<DateTime>(type: "DATETIME", nullable: false, defaultValueSql: "GETDATE()"),
+                    entry_date = table.Column<DateTime>(type: "DATETIME2", nullable: false, defaultValueSql: "GETDATE()"),
                     entry_user_id = table.Column<int>(type: "int", nullable: false),
-                    update_date = table.Column<DateTime>(type: "DATETIME", nullable: true, defaultValueSql: "GETDATE()"),
+                    update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true, defaultValueSql: "GETDATE()"),
                     update_user_id = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -303,6 +327,7 @@ namespace Persistence.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tblReportParamter",
+                schema: "Report",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
@@ -310,7 +335,10 @@ namespace Persistence.Migrations
                     sort_order = table.Column<byte>(type: "tinyint", nullable: false),
                     name = table.Column<string>(type: "VARCHAR(75)", nullable: false),
                     label = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    report_id = table.Column<int>(type: "int", nullable: false)
+                    report_id = table.Column<int>(type: "int", nullable: false),
+                    depends_on = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    enabled = table.Column<bool>(type: "bit", nullable: false),
+                    control_type = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -318,6 +346,7 @@ namespace Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_tblReportParamter_tblReport_report_id",
                         column: x => x.report_id,
+                        principalSchema: "Report",
                         principalTable: "tblReport",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -337,8 +366,8 @@ namespace Persistence.Migrations
                     account_id = table.Column<int>(type: "int", nullable: false),
                     amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
                     year = table.Column<int>(type: "int", nullable: false),
-                    entry_date = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    update_date = table.Column<DateTime>(type: "DATETIME", nullable: true),
+                    entry_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
+                    update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
                     updated_by = table.Column<int>(type: "int", nullable: true),
                     comment = table.Column<string>(type: "VARCHAR(MAX)", nullable: true),
                     budget_line_id = table.Column<int>(type: "int", nullable: true)
@@ -366,8 +395,7 @@ namespace Persistence.Migrations
                         name: "FK_tblDisbLineItem_tblCategory_category_id",
                         column: x => x.category_id,
                         principalTable: "tblCategory",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_tblDisbLineItem_tblDisb_disb_id",
                         column: x => x.disb_id,
@@ -403,8 +431,8 @@ namespace Persistence.Migrations
                     increase = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: true),
                     decrease = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: true),
                     year = table.Column<int>(type: "int", nullable: false),
-                    entry_date = table.Column<DateTime>(type: "DATETIME", nullable: false),
-                    update_date = table.Column<DateTime>(type: "DATETIME", nullable: true),
+                    entry_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
+                    update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
                     updated_by = table.Column<int>(type: "int", nullable: true),
                     comment = table.Column<string>(type: "VARCHAR(MAX)", nullable: true),
                     budget_line_id = table.Column<int>(type: "int", nullable: true)
@@ -432,8 +460,7 @@ namespace Persistence.Migrations
                         name: "FK_tblReproLineItem_tblCategory_category_id",
                         column: x => x.category_id,
                         principalTable: "tblCategory",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.NoAction);
+                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_tblReproLineItem_tblGrant_grant_id",
                         column: x => x.grant_id,
@@ -462,6 +489,16 @@ namespace Persistence.Migrations
                     { 1, null, "hialfonso" },
                     { 2, null, "rxleopold" },
                     { 3, null, "rescobar" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "tblBudgetItemType2",
+                column: "item_type",
+                values: new object[]
+                {
+                    "B",
+                    "D",
+                    "R"
                 });
 
             migrationBuilder.InsertData(
@@ -515,6 +552,7 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
+                schema: "Report",
                 table: "tblReportCategory",
                 columns: new[] { "id", "name", "sort_order" },
                 values: new object[] { (byte)1, "NHAC", (byte)1 });
@@ -536,32 +574,45 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
+                schema: "Report",
                 table: "tblReport",
                 columns: new[] { "id", "category_id", "default_download_filename", "enabled", "name", "path" },
-                values: new object[] { 1, (byte)1, "GrantBalanceByInitiativeAndAR", true, "2c. Grant Balance By Initiative and AR", "/GrantBalanceByInitiativeAndAR" });
-
-            migrationBuilder.InsertData(
-                table: "tblBudget",
-                columns: new[] { "Id", "account_id", "amount", "create_date", "created_by", "grant_id", "initiative_id", "item_type", "update_date", "updated_by" },
                 values: new object[,]
                 {
-                    { 1, 1, 100m, "7/31/2026", 1, 1, 1, "B", null, null },
-                    { 2, 3, 100m, "7/31/2026", 1, 1, 1, "B", null, null },
-                    { 3, 4, 105m, "7/31/2026", 1, 1, 1, "B", null, null },
-                    { 5, 7, 1200m, "7/31/2026", 1, 1, 1, "B", null, null },
-                    { 6, 8, 400m, "7/31/2026", 1, 1, 1, "B", null, null },
-                    { 7, 5, 596.0m, "7/31/2026", 1, 1, 1, "B", null, null },
-                    { 9, 8, 400m, "7/31/2026", 1, 1, 2, "B", null, null },
-                    { 10, 5, 750m, "7/31/2026", 1, 3, 1, "B", null, null },
-                    { 11, 8, 250m, "7/31/2026", 1, 3, 2, "B", null, null },
-                    { 12, 8, 250m, "7/31/2026", 1, 3, 2, "B", null, null },
-                    { 13, 1, -50m, "7/31/2026", 1, 1, 1, "D", null, null }
+                    { 1, (byte)1, "GrantBalanceByInitiativeAndAR", true, "Grant Balance By Initiative and AR", "/GrantBalanceByInitiativeAndAR" },
+                    { 2, (byte)1, "BudgetDetail", true, "Budget Detail", "/BudgetDetail" }
                 });
 
             migrationBuilder.InsertData(
+                table: "tblBudget",
+                columns: new[] { "Id", "account_id", "amount", "create_date", "created_by", "grant_id", "initiative_id", "item_type", "update_date", "updated_by", "year" },
+                values: new object[,]
+                {
+                    { 1, 1, 100m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 2, 3, 100m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 3, 4, 105m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 5, 7, 1200m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 6, 8, 400m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 7, 5, 596.0m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 9, 8, 400m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 2, "B", null, null, (short)2025 },
+                    { 10, 5, 750m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 1, "B", null, null, (short)2026 },
+                    { 11, 8, 250m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 2, "B", null, null, (short)2026 },
+                    { 12, 8, 250m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 2, "B", null, null, (short)2026 },
+                    { 13, 1, -50m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "D", null, null, (short)2025 }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "Report",
                 table: "tblReportParamter",
-                columns: new[] { "id", "label", "name", "report_id", "sort_order" },
-                values: new object[] { 1, "Initiative", "avcInitiatives", 1, (byte)1 });
+                columns: new[] { "id", "control_type", "depends_on", "enabled", "label", "name", "report_id", "sort_order" },
+                values: new object[,]
+                {
+                    { 1, "dropdownlist", null, true, "Year", "aiYear", 1, (byte)1 },
+                    { 2, "checkboxlist", null, true, "Initiative", "avcInitiatives", 1, (byte)2 },
+                    { 3, "dropdownlist", null, true, "Year", "aiYear", 2, (byte)1 },
+                    { 4, "checkboxlist", "aiYear", true, "Grant", "avcGrants", 2, (byte)2 },
+                    { 5, "dropdownlist", null, true, "Budget Category", "aiBudgetCat", 2, (byte)3 }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblAccount_category_id",
@@ -587,6 +638,11 @@ namespace Persistence.Migrations
                 name: "IX_tblBudget_initiative_id",
                 table: "tblBudget",
                 column: "initiative_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblBudget_item_type",
+                table: "tblBudget",
+                column: "item_type");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblBudget_updated_by",
@@ -671,11 +727,13 @@ namespace Persistence.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblReport_category_id",
+                schema: "Report",
                 table: "tblReport",
                 column: "category_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblReportParamter_report_id_sort_order",
+                schema: "Report",
                 table: "tblReportParamter",
                 columns: new[] { "report_id", "sort_order" },
                 unique: true);
@@ -742,7 +800,8 @@ namespace Persistence.Migrations
                 name: "tblDisbLineItem");
 
             migrationBuilder.DropTable(
-                name: "tblReportParamter");
+                name: "tblReportParamter",
+                schema: "Report");
 
             migrationBuilder.DropTable(
                 name: "tblReproLineItem");
@@ -751,7 +810,8 @@ namespace Persistence.Migrations
                 name: "tblDisb");
 
             migrationBuilder.DropTable(
-                name: "tblReport");
+                name: "tblReport",
+                schema: "Report");
 
             migrationBuilder.DropTable(
                 name: "tblBudget");
@@ -760,10 +820,14 @@ namespace Persistence.Migrations
                 name: "tblRepro");
 
             migrationBuilder.DropTable(
-                name: "tblReportCategory");
+                name: "tblReportCategory",
+                schema: "Report");
 
             migrationBuilder.DropTable(
                 name: "tblAccount");
+
+            migrationBuilder.DropTable(
+                name: "tblBudgetItemType2");
 
             migrationBuilder.DropTable(
                 name: "tblGrant");

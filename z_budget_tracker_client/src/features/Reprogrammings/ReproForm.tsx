@@ -866,18 +866,19 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         {lines.length > 0 && reproHeader.status !== POSTED && (
           <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_1.65fr_.3fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 text-neutral-600 font-semibold">
             <div className="self-end col-span-4 "></div>
-            <div className="flex ">
-              <div className=" text-center w-[25%]"></div>
-              <div className="self-end text-end w-[20%] pr-1">Increase</div>
-              <div className="self-end text-end w-[20%] pr-1">Decrease</div>
-              <div className=" text-center w-[30%] pr-1">Variance</div>
+            <div className="flex justify-between">
+              <div className="flex-1"></div>
+
+              <div className="flex-1 pr-1 text-end ">Increase</div>
+              <div className="flex-1 pr-1 text-end">Decrease</div>
+              <div className="flex-1 pr-1 text-end">Variance</div>
             </div>
             <div></div>
             <div></div>
             <div className="col-span-4">Total</div>
             <div className="flex">
-              <div className="w-[25%]"></div>
-              <div className="flex justify-end  w-[20%]">
+              <div className="flex-1"></div>
+              <div className="flex-1 ">
                 <input
                   readOnly={true}
                   value={inc}
@@ -885,7 +886,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                   className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
                 ></input>
               </div>
-              <div className="justify-end w-[20%]">
+              <div className="flex-1 ">
                 <input
                   readOnly={true}
                   disabled={true}
@@ -893,12 +894,12 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                   className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
                 ></input>
               </div>
-              <div className=" w-[30%]">
+              <div className="flex-1">
                 <input
                   readOnly={true}
                   disabled={true}
                   value={formatNumber(+(inc ?? 0) - +(dec ?? 0))}
-                  className={`text-blue-500 border-0 font-semibold flex-1 w-[98%] px-1 pr-1 text-center focus:outline-none focus:ring-0 focus:ring-offset-0`}
+                  className={`text-blue-500 border-0 font-semibold flex-1 w-[98%] px-1 pr-1 text-end focus:outline-none focus:ring-0 focus:ring-offset-0`}
                 ></input>
               </div>
             </div>
@@ -907,7 +908,28 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             <div></div>
           </div>
         )}
-
+        {reproHeader.status !== POSTED &&
+          hasNegativeRemainingBalances(lines) && (
+            <div className="flex justify-end items-start my-9">
+              <div className="border border-red-300 shrink p-3">
+                <div className="text-end text-red-600 ">
+                  This reprogramming cannot be posted with the propsed Increase
+                  and Decrease amounts as one or more accounts will have a
+                  negative balance.
+                </div>
+                <div className="flex gap-2 items-center justify-end mt-2 text-red-600">
+                  <div>
+                    Click the check box to override this behavior and allow
+                    posting the reprogramming with the negative balance.
+                  </div>
+                  <CheckBox
+                    onCheck={() => setOverrideNeg((prev) => !prev)}
+                    checked={overrideNeg}
+                  ></CheckBox>
+                </div>
+              </div>
+            </div>
+          )}
         {lines.length > 0 && (
           <div>
             <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-semibold text-neutral-600">
@@ -1024,28 +1046,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             );
           })}
         </div>
-        {reproHeader.status !== POSTED &&
-          hasNegativeRemainingBalances(lines) && (
-            <div className="flex justify-end items-start my-9">
-              <div className="border border-red-300 shrink p-3">
-                <div className="text-end text-red-600 ">
-                  This reprogramming cannot be posted with the propsed Increase
-                  and Decrease amounts as one or more accounts will have a
-                  negative balance.
-                </div>
-                <div className="flex gap-2 items-center justify-end mt-2 text-red-600">
-                  <div>
-                    Click the check box to override this behavior and allow
-                    posting the reprogramming with the negative balance.
-                  </div>
-                  <CheckBox
-                    onCheck={() => setOverrideNeg((prev) => !prev)}
-                    checked={overrideNeg}
-                  ></CheckBox>
-                </div>
-              </div>
-            </div>
-          )}
+
         <AddLineModal
           year={repro.year}
           isOpen={addLineModalIsOpen}

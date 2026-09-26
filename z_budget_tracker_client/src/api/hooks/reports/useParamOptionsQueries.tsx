@@ -24,6 +24,8 @@ const useParamOptionsQueries = (
   const paramOptionsQueries = useQueries({
     queries: parameters.map((parameter) => {
       let parentValue1 = null;
+
+      console.log('paramDep', paramDep)
       if (paramDep?.some((x) => x.dependentParameterName === parameter.name)) {
         parentValue1 = paramDep.filter(
           (x) => x.dependentParameterName === parameter.name,

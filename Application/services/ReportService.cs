@@ -10,9 +10,8 @@ using Persistence;
 namespace Application.Services
 {
     public class ReportService(AppDbContext dbContext,
-                ReportParameterValuesService reportParameterValuesService) : IReportService
+                IReportParameterValuesService reportParameterValuesService) : IReportService
     {
-
         public async Task<Result<ReportResponseDto>> GetReport(int reportId)
         {
             var report = await dbContext.Reports
@@ -20,15 +19,7 @@ namespace Application.Services
                     .Include(x => x.Category)
                     .FirstAsync(x => x.Id == reportId);
 
-            var response = new ReportResponseDto
-            {
-                Id = report.Id,
-                Name = report.Name,
-                CategoryId = report.CategoryId,
-                Path = report.Path,
-                Enabled = true,
-                Parameters = Helpers.ConvertReportParametersToDto(report.Parameters)
-            };
+            var response = ReportResponseDto.Create(report.Id, report.Name, report.Path, report.DefaultFileName, Helpers.ConvertReportParametersToDto(report.Parameters));
 
             return Result<ReportResponseDto>.Success(response);
         }
@@ -50,6 +41,7 @@ namespace Application.Services
                             x.Id,
                             x.Name,
                             x.Path,
+                            x.DefaultFileName,
                             Helpers.ConvertReportParametersToDto([.. x.Parameters.Where(x => x.Enabled)])))
                             .ToList();
 

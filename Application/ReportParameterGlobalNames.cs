@@ -10,5 +10,7 @@ namespace Application
         public static readonly string INITIATIVES = "avcInitiatives";
         public static readonly string GRANTS = "avcGrants";
         public static readonly string YEAR = "aiYear";
+        public static readonly string BUDGET_CATEGORY = "aiBudgetCat";
+
     }
 }
