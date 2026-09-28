@@ -41,9 +41,6 @@ export const AuthProvider = ({ children }: AuthProps) => {
   const logout = () => {
     setUser(null);
     setloginId(null);
-
-    // TODO:  Call backend endpoint here to clear HTTP-Only refresh cookies
-
   };
 
   // const isLoggedIn = () => {

@@ -19,7 +19,7 @@ const NavBar = () => {
     (x) => x.setHasUnsavedChanges,
   );
 
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const { currentUser, logoutUser } = useAccount();
 
   // const { login } = useAuth();
@@ -126,7 +126,7 @@ const NavBar = () => {
   return (
     <div>
       <div className="flex">
-        {currentUser && <pre>{JSON.stringify(currentUser)}</pre>}
+        {user && <pre>{JSON.stringify(user)}</pre>}
         <div className="border p-2">
           {hasUnsavedChanges ? <span>Yes</span> : <span>No</span>}
         </div>
@@ -142,16 +142,22 @@ const NavBar = () => {
           >
             Log In
           </NavLink>
-          {currentUser && (
+          {user && (
             <Button
               className="nav-link cursor-pointer"
               onClick={async () => {
-                logout()
+                console.log('1', 1)
+                // logout()
+                console.log('2', 2)
                 await logoutUser.mutateAsync();
+                console.log('3', 3)
+                // navigate('/login');
+                console.log('4', 4)
               }}
             >
               Log Out
             </Button>
+            
           )}
           <NavLink
             to="/"

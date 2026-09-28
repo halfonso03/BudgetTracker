@@ -37,10 +37,11 @@ export default function useAccount() {
     },
     onSuccess: async () => {
       // queryClient.removeQueries();
-      await queryClient.removeQueries({ queryKey: ['user'] });
+      logout();
+      queryClient.removeQueries({ queryKey: ['user'] });
       // queryClient.removeQueries({ queryKey: ["activities"] });
       // queryClient.removeQueries({ queryKey: ["profile"] });
-      navigate('/login');
+      navigate('login');
     },
   });
 
