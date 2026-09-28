@@ -4,6 +4,7 @@ import { useState, type ChangeEvent, type ChangeEventHandler } from 'react';
 import Button from '../../components/Button';
 import useParamOptionsQueries from '../../api/hooks/reports/useParamOptionsQueries';
 import useRunReport from '../../api/hooks/reports/useRunReport';
+import Spinner from '../../components/Spinner';
 
 type Props = {
   reportId: number;
@@ -12,11 +13,7 @@ type Props = {
   selectedReport: Report2;
 };
 
-const ReportParameters = ({
-  reportId,
-  parameters,
-  selectedReport,
-}: Props) => {
+const ReportParameters = ({ reportId, parameters, selectedReport }: Props) => {
   // console.log('ReportParameters render');
   const [paramDep, setParamDep] = useState<ParameterDependency[]>([]);
   const [selectedValues, setSelectedValues] = useState<ParameterSelections[]>(
@@ -179,6 +176,9 @@ const ReportParameters = ({
     results: ParameterQueryResult[],
     parameterName: string,
   ) {
+    if (!results.some((x) => x.data?.parameterName == parameterName)) {
+      return <Spinner></Spinner>;
+    }
     if (results.some((x) => x.data?.parameterName == parameterName)) {
       const data = results.filter(
         (x) => x.data?.parameterName == parameterName,
@@ -274,6 +274,10 @@ const ReportParameters = ({
     results: ParameterQueryResult[],
     parameterName: string,
   ) {
+    if (!results.some((x) => x.data?.parameterName == parameterName)) {
+      return <Spinner></Spinner>;
+    }
+
     if (results.some((x) => x.data?.parameterName == parameterName)) {
       const data = results.filter(
         (x) => x.data?.parameterName == parameterName,
@@ -447,7 +451,9 @@ const ReportParameters = ({
           }}
         >
           {reportIsRunning ? (
-            <div className="animate-spin h-6 w-6 border-4 border-gray-200 border-t-transparent border-b-transparent rounded-full"></div>
+            <div className='py-10'>
+              <Spinner></Spinner>
+            </div>
           ) : (
             'Run Report'
           )}

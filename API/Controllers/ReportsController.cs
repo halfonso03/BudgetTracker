@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
     public class ReportsController(IReportService reportService, IReportRunnerService reportRunnerService) : BaseApiController
     {
         [HttpGet("list")]

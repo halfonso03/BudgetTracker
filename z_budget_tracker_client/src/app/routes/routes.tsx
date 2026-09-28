@@ -12,6 +12,7 @@ import ReproPreload from '../../features/Reprogrammings/ReproPreload';
 import ReproDetails from '../../features/Reprogrammings/ReproDetails';
 import ReproNew from '../../features/Reprogrammings/ReproNew';
 import Reports from '../../features/Reports/Reports';
+import ProtectedRoute from '../../components/ProtectedRoute';
 
 export const routes: RouteObject[] = [
   {
@@ -20,7 +21,11 @@ export const routes: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <Home></Home>,
+        element: (
+          <ProtectedRoute>
+            <Home></Home>
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/login',
@@ -28,50 +33,93 @@ export const routes: RouteObject[] = [
       },
       {
         path: '/budget',
-        element: <Budgets />,
+        element: (
+          <ProtectedRoute>
+            <Budgets />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/budget/:year/:initiativeId/:grantId',
-        element: <Details />,
+        element: (
+          <ProtectedRoute>
+            <Details />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/budget/new/:year/:initiativeId/:grantId',
-        element: <CreateBudget />,
+        element: (
+          <ProtectedRoute>
+            <CreateBudget />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/reprogramming',
-        element: <ReproLanding></ReproLanding>,
+        element: (
+          <ProtectedRoute>
+            <ReproLanding></ReproLanding>
+          </ProtectedRoute>
+        ),
         children: [
           {
             path: '',
-            element: <ReproNew />,
+            element: (
+              <ProtectedRoute>
+                <ReproNew />
+              </ProtectedRoute>
+            ),
           },
           {
             path: 'new',
-            element: <ReproNew />,
+            element: (
+              <ProtectedRoute>
+                <ReproNew />
+              </ProtectedRoute>
+            ),
           },
           {
             path: ':id',
-            element: <ReproDetails />,
+            element: (
+              <ProtectedRoute>
+                <ReproDetails />,
+              </ProtectedRoute>
+            ),
           },
           {
             path: ':year/:initiativeId/:grantId/:categoryId/:accountId',
-            element: <ReproPreload></ReproPreload>,
+            element: (
+              <ProtectedRoute>
+                <ReproPreload></ReproPreload>
+              </ProtectedRoute>
+            ),
           },
           {
             path: 'search',
-            element: <ReproSearch />,
+            element: (
+              <ProtectedRoute>
+                <ReproSearch />
+              </ProtectedRoute>
+            ),
           },
         ],
       },
-
       {
         path: '/reprogramming/create/:initiativeId?/:grantId?/:accountId?',
-        element: <Home />,
+        element: (
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        ),
       },
       {
         path: '/reports',
-        element: <Reports />,
+        element: (
+          <ProtectedRoute>
+            <Reports />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

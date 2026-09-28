@@ -8,9 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CommentsController(ICommentsService _commentsService) : ControllerBase
+    public class CommentsController(ICommentsService _commentsService) : BaseApiController
     {
         // [HttpGet("/budget/account")]
         // public async Task<IActionResult> GetBudgetCommentsForAccount(int initiativeId, int grantId, int accountId)

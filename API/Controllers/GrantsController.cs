@@ -8,9 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class GrantController(IGrantService _grantService) : ControllerBase
+    public class GrantController(IGrantService _grantService) : BaseApiController
     {
 
         [HttpGet("{year}")]

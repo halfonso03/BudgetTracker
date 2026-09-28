@@ -8,9 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class CategoryController(ICategoryService _categoryService) : ControllerBase
+    public class CategoryController(ICategoryService _categoryService) : BaseApiController
     {
         [HttpGet()]
         public async Task<IActionResult> GetCategoriesAndAccounts()

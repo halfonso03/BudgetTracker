@@ -8,10 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [Authorize]
-    public class InitiativeController(IInitiativeService _initiativeService) : ControllerBase
+    public class InitiativeController(IInitiativeService _initiativeService) : BaseApiController
     {
         public async Task<IActionResult> Get()
         {
