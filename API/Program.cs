@@ -109,10 +109,10 @@ try
     var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
 
     await context.Database.MigrateAsync();
-    
+
     var signInManager = services.GetRequiredService<SignInManager<ApplicationUser>>();
 
-    var admin = await userManager.FindByEmailAsync("hialfonso@nhac.org");
+    var admin = await userManager.FindByEmailAsync(builder.Configuration.GetValue<string>("AdminEmail")!);
 
     var role = await roleManager.FindByNameAsync("ADMIN");
     if (role == null)
