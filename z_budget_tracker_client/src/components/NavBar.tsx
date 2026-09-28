@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Button from './Button';
 import ConfirmModal from './ConfirmModal';
 import { useHasUnsavedChangesStore } from '../state/useHasUnsavedChangesStore';
@@ -10,6 +10,8 @@ const NavBar = () => {
   const navigate = useNavigate();
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [urltoGoTo, setUrlToGoTo] = useState<string>('');
+  const [loggedOut, setLoggedout] = useState(false);
+
   // const reproInputRef = useRef<HTMLInputElement | null>(null);
   const location = useLocation();
   const hasUnsavedChanges = useHasUnsavedChangesStore(
@@ -19,14 +21,8 @@ const NavBar = () => {
     (x) => x.setHasUnsavedChanges,
   );
 
-  const { user, logout } = useAuth();
-  const { currentUser, logoutUser } = useAccount();
-
-  // const { login } = useAuth();
-
-  if (currentUser) {
-    // login(currentUser);
-  }
+  const { user } = useAuth();
+  const { logoutUser } = useAccount();
 
   // function gotoRepro() {
   //   navigate(`/reprogramming/${reproInputRef.current!.value}`, {
@@ -133,71 +129,68 @@ const NavBar = () => {
       </div>
       <div className="flex justify-between align-middle p-3 text-gray-900 dark:text-gray-100 bg-dark-nav ">
         <div className="flex gap-3 text-2xl p-2 flex-1">
-          <NavLink
-            to="/login"
-            className="nav-link"
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              handleNavigation(e, '/login');
-            }}
-          >
-            Log In
-          </NavLink>
-          {user && (
-            <Button
-              className="nav-link cursor-pointer"
-              onClick={async () => {
-                console.log('1', 1)
-                // logout()
-                console.log('2', 2)
-                await logoutUser.mutateAsync();
-                console.log('3', 3)
-                // navigate('/login');
-                console.log('4', 4)
+          {!user && (
+            <Link
+              to="/login"
+              className="nav-link"
+              onClick={(e: React.MouseEvent<HTMLElement>) => {
+                handleNavigation(e, '/login');
               }}
             >
-              Log Out
-            </Button>
-            
+              Log In
+            </Link>
           )}
-          <NavLink
-            to="/"
-            className="nav-link"
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              handleNavigation(e, '/');
-            }}
-          >
-            Home
-          </NavLink>
-          <NavLink
-            to="/budget"
-            className="nav-link"
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              handleBudgetNavigation(e, '/budget');
-            }}
-          >
-            Budgets
-          </NavLink>
-          {/* <NavLink to="/reprogramming" className="nav-link">
-          Reprogrammings v1
-        </NavLink> */}
-          <NavLink
-            to="/reprogramming"
-            className="nav-link"
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              handleReproNavigation(e, '/reprogramming');
-            }}
-          >
-            Reprogrammings
-          </NavLink>
-          <NavLink
-            to="/reports"
-            className="nav-link"
-            onClick={(e: React.MouseEvent<HTMLElement>) => {
-              handleReproNavigation(e, '/reports');
-            }}
-          >
-            Reports
-          </NavLink>
+          {user && (
+            <>
+              <Button
+                key={loggedOut.toString()}
+                className="nav-link cursor-pointer"
+                onClick={() => {
+                  logoutUser.mutate();
+                  setLoggedout((prev) => !prev);
+                }}
+              >
+                Log Out
+              </Button>
+              <NavLink
+                to="/"
+                className="nav-link"
+                onClick={(e: React.MouseEvent<HTMLElement>) => {
+                  handleNavigation(e, '/');
+                }}
+              >
+                Home
+              </NavLink>
+              <NavLink
+                to="/budget"
+                className="nav-link"
+                onClick={(e: React.MouseEvent<HTMLElement>) => {
+                  handleBudgetNavigation(e, '/budget');
+                }}
+              >
+                Budgets
+              </NavLink>
+              <NavLink
+                to="/reprogramming"
+                className="nav-link"
+                onClick={(e: React.MouseEvent<HTMLElement>) => {
+                  handleReproNavigation(e, '/reprogramming');
+                }}
+              >
+                Reprogrammings
+              </NavLink>
+              <NavLink
+                to="/reports"
+                className="nav-link"
+                onClick={(e: React.MouseEvent<HTMLElement>) => {
+                  handleReproNavigation(e, '/reports');
+                }}
+              >
+                Reports
+              </NavLink>
+            </>
+          )}
+
           {/* <div className="flex text-sm gap-3">
           <input
             type="text"

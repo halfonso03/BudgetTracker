@@ -1,5 +1,4 @@
 import { createContext, useState, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   // user: string | null;

@@ -39,9 +39,7 @@ export default function useAccount() {
       // queryClient.removeQueries();
       logout();
       queryClient.removeQueries({ queryKey: ['user'] });
-      // queryClient.removeQueries({ queryKey: ["activities"] });
-      // queryClient.removeQueries({ queryKey: ["profile"] });
-      navigate('login');
+      navigate('login', { replace: true });
     },
   });
 

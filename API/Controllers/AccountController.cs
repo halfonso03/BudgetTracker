@@ -41,7 +41,6 @@ namespace API.Controllers
             return ValidationProblem();
         }
 
-        [AllowAnonymous]
         [HttpGet("user-info")]
         public async Task<ActionResult<UserInfoResponseDto>> GetUserInfo()
         {
@@ -67,6 +66,22 @@ namespace API.Controllers
         public async Task<ActionResult> Logout()
         {
             await signInManager.SignOutAsync();
+
+            return NoContent();
+        }
+
+        [HttpPost("addRoles")]
+        [AllowAnonymous]
+        public async Task<ActionResult> Admin()
+        {
+            var user = await signInManager.UserManager.GetUserAsync(User);
+
+            var role = await roleManager.FindByNameAsync("ADMIN");
+            if (role == null)
+            {
+                
+            }
+            
 
             return NoContent();
         }

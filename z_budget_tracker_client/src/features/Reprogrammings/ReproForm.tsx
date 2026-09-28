@@ -613,7 +613,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           await invalidateBalances();
         }
 
-        await queryClient.setQueryData<Repro>(['repro', id], () => ({
+        queryClient.setQueryData<Repro>(['repro', id], () => ({
           ...reproToSave,
           id: id,
           year: repro.year,
@@ -628,10 +628,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             return {
               ...l,
               comment: l.comment ?? '',
-              newRemainingAmount:
-                l.remainingAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
-              newAmount:
-                l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+              newRemainingAmount: l.remainingAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+              newAmount: l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
             };
           }),
           rowBalances: savedBalances,
@@ -763,7 +761,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         <pre>{JSON.stringify(lines)}</pre>
       </div> */}
       <div>
-        {JSON.stringify(user)}
         {!user && (
           <div className="text-xl p-1 text-red-500 font-semibold">
             Your are not logged in!

@@ -12,7 +12,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools></ReactQueryDevtools>
       <AuthProvider>
-        <NavBar></NavBar>
+        <NavBar ></NavBar>
         <div className="p-3 w-[82%] mx-auto">
           <Outlet></Outlet>
         </div>

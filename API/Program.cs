@@ -3,6 +3,7 @@ using Application.services;
 using Application.Services;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -104,9 +105,27 @@ var services = scope.ServiceProvider;
 try
 {
     var context = services.GetRequiredService<AppDbContext>();
-    // var userManager = services.GetRequiredService<UserManager<User>>();
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
+
     await context.Database.MigrateAsync();
-    // await DbInitializer.SeedData(context);
+    
+    var signInManager = services.GetRequiredService<SignInManager<ApplicationUser>>();
+
+    var admin = await userManager.FindByEmailAsync("hialfonso@nhac.org");
+
+    var role = await roleManager.FindByNameAsync("ADMIN");
+    if (role == null)
+    {
+        await roleManager.CreateAsync(new ApplicationRole() { Name = "Admin", NormalizedName = "ADMIN" });
+    }
+
+    var userRole = await roleManager.FindByNameAsync("USER");
+
+    if (userRole == null)
+    {
+        await roleManager.CreateAsync(new ApplicationRole() { Name = "User", NormalizedName = "USER" });
+    }
 }
 catch (Exception ex)
 {
