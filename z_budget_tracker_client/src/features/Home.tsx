@@ -6,7 +6,8 @@ import {
   type PieLabelRenderProps,
 } from 'recharts';
 import { RechartsDevtools } from '@recharts/devtools';
-import useCategories from '../api/hooks/common/useCategories';
+import useAccount from '../api/hooks/auth/useAuth';
+import useAuth from '../contexts/useAuth';
 
 const renderCustomizedLabel = ({
   cx,
@@ -35,8 +36,19 @@ const renderCustomizedLabel = ({
 
 const RADIAN = Math.PI / 180;
 const Home = () => {
-  const { categories: accounts, catSuccess } = useCategories(true, true);
-  if (catSuccess) console.log('categories', accounts);
+  // const { categories: accounts, catSuccess } = useCategories(true, true);
+
+  // if (catSuccess) console.log('categories', accounts);
+  // const { currentUser, loadingUserInfo } = useAccount();
+
+  // // const { login } = useAuth();
+
+  // if (loadingUserInfo) return 'Loading user...';
+  // if (!currentUser) return 'Error loading user';
+
+  // if (currentUser) {
+  //   login(currentUser);
+  // }
 
   const data01 = [
     {

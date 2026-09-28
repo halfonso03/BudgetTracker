@@ -3,19 +3,26 @@ import CheckBoxList from '../../components/CheckBoxList';
 import { useState, type ChangeEvent, type ChangeEventHandler } from 'react';
 import Button from '../../components/Button';
 import useParamOptionsQueries from '../../api/hooks/reports/useParamOptionsQueries';
+import useRunReport from '../../api/hooks/reports/useRunReport';
 
 type Props = {
   reportId: number;
   parameters: ReportParameter2[];
   onRunReport: (selectedValues: ParameterSelections[]) => void;
+  selectedReport: Report2;
 };
 
-const ReportParameters = ({ reportId, parameters, onRunReport }: Props) => {
+const ReportParameters = ({
+  reportId,
+  parameters,
+  selectedReport,
+}: Props) => {
   // console.log('ReportParameters render');
   const [paramDep, setParamDep] = useState<ParameterDependency[]>([]);
   const [selectedValues, setSelectedValues] = useState<ParameterSelections[]>(
     [],
   );
+  const { getReport, reportIsRunning } = useRunReport();
 
   const { paramOptionsQueries } = useParamOptionsQueries(
     reportId,
@@ -410,8 +417,9 @@ const ReportParameters = ({ reportId, parameters, onRunReport }: Props) => {
       <div className="grid grid-cols-[.3fr_1fr] mt-20 ">
         <div></div>
         <Button
+          disabled={reportIsRunning}
           buttonSize={'medium'}
-          onClick={() => {
+          onClick={async () => {
             const reportSelections: ParameterSelections[] = [];
             for (const parameter of parameters) {
               if (selectedValues.some((x) => x.name === parameter.name)) {
@@ -420,10 +428,29 @@ const ReportParameters = ({ reportId, parameters, onRunReport }: Props) => {
                 );
               }
             }
-            onRunReport(reportSelections);
+            // onRunReport(reportSelections);
+
+            const request: RunReportRequest = {
+              path: selectedReport!.path,
+              reportId: selectedReport!.id,
+              reportExportFormat: 1,
+              fileName: selectedReport!.downloadFilename!,
+              parameters: reportSelections.map((v) => ({
+                name: v.name,
+                value:
+                  v.values !== null && v.values !== undefined
+                    ? v.values!.join(',')
+                    : v.value!,
+              })),
+            };
+            await getReport(request);
           }}
         >
-          Run Report
+          {reportIsRunning ? (
+            <div className="animate-spin h-6 w-6 border-4 border-gray-200 border-t-transparent border-b-transparent rounded-full"></div>
+          ) : (
+            'Run Report'
+          )}
         </Button>
       </div>
     </div>

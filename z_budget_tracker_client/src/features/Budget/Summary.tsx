@@ -45,7 +45,7 @@ const Summary = ({ year }: Props) => {
       <div
         className={`border-b border-b-neutral-200 mb-8 entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-2 `}
       >
-        <div>Total</div>
+        <div>Totals</div>
         <div></div>
         <div className="text-end">Approved</div>
         <div className="text-end">Curent</div>

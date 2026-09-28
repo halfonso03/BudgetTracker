@@ -423,11 +423,11 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   }
 
   function handleDuplicateRow(uuid: string) {
-    let indexOfDup = -1;
-    for (const l of lines) {
-      indexOfDup++;
-      if (l.uuid == uuid) break;
-    }
+    // let indexOfDup = -1;
+    // for (const l of lines) {
+    //   indexOfDup++;
+    //   if (l.uuid == uuid) break;
+    // }
     const duplicatedLine: ReproLineItem = {
       ...lines.filter((x) => x.uuid === uuid)[0],
       increase: 0,

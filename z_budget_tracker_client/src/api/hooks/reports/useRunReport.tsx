@@ -2,7 +2,7 @@ import { useState } from 'react';
 import agent from '../../agent';
 
 const useRunReport = () => {
-  const [running, setRunning] = useState(false);
+  const [reportIsRunning, setRunning] = useState(false);
 
   async function getReport(runReportRequest: RunReportRequest) {
     try {
@@ -29,7 +29,7 @@ const useRunReport = () => {
     }
   }
 
-  return { getReport, running };
+  return { getReport, reportIsRunning };
 };
 
 export default useRunReport;

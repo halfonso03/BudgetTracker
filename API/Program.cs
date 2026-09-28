@@ -2,6 +2,8 @@ using Application.Interfaces;
 using Application.services;
 using Application.Services;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -11,12 +13,26 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
+builder.Services.AddControllers(opt =>
+{
+    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    opt.Filters.Add(new AuthorizeFilter(policy));
+});
 
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+
+builder.Services.AddIdentityApiEndpoints<ApplicationUser>(opt =>
+{
+    opt.User.RequireUniqueEmail = true;
+    // opt.SignIn.RequireConfirmedEmail = true;
+})
+.AddRoles<ApplicationRole>()
+.AddEntityFrameworkStores<AppDbContext>();
+
 
 builder.Services.AddTransient<ICommentsService, CommentsService>();
 builder.Services.AddTransient<ICategoryService, CategoriesService>();
@@ -41,9 +57,15 @@ builder.Services.AddTransient<IReportRunnerService, ReportRunnerService>((provid
 
 
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    options.Cookie.SameSite = SameSiteMode.None; // or None if using HTTPS locally
+});
 
 
-builder.Services.AddControllers();
+builder.Services.AddAuthorization();
 builder.Services.AddCors(opt =>
             {
                 opt.AddPolicy("CorsPolicy", policy =>
@@ -62,15 +84,18 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
 
 app.MapControllers();
+app.MapGroup("api").MapIdentityApi<ApplicationUser>();
 app.MapFallbackToController("Index", "Fallback");
 
 

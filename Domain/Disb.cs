@@ -17,6 +17,7 @@ namespace Domain
         public required DateTime CreatedDate { get; set; }
         public required int CreatedById { get; set; }
         public int? UpdatedById { get; set; }
+        public int GrantId { get; set; }
         public required bool Posted { get; set; }
         public int? PostedById { get; set; }
         public DateTime? PostedDate { get; set; }
@@ -33,5 +34,8 @@ namespace Domain
 
         [ForeignKey("PostedById")]
         public AuthorizedUser? PostedBy { get; set; }
+        public Grant? Grant { get; set; }
+
     }
+
 }

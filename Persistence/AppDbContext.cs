@@ -1,11 +1,13 @@
 using System;
 using Domain;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 // using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Persistence
 {
-    public class AppDbContext(DbContextOptions options) : DbContext(options)
+    public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
     {
         public required DbSet<AuthorizedUser> AuthorizedUsers { get; set; }
         public required DbSet<Initiative> Initiatives { get; set; }
@@ -22,8 +24,23 @@ namespace Persistence
         public required DbSet<ReportParameter> ReportParameters { get; set; }
         public required DbSet<ReportCategory> ReportCategories { get; set; }
         public required DbSet<BudgetItemType> BudgetItemTypes { get; set; }
+
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
+            builder.Entity<ApplicationUser>().ToTable("Auth.tblUsers");
+            builder.Entity<ApplicationRole>().ToTable("Auth.tblRoles");
+            builder.Entity<IdentityUserRole<int>>().ToTable("Auth.tblUserRoles");
+            builder.Entity<IdentityUserClaim<int>>().ToTable("Auth.tblUserClaims");
+            builder.Entity<IdentityUserLogin<int>>().ToTable("Auth.tblUserLogins");
+            builder.Entity<IdentityRoleClaim<int>>().ToTable("Auth.tblRoleClaims");
+            builder.Entity<IdentityUserToken<int>>().ToTable("Auth.tblUserTokens");
+
 
             builder.Entity<ReportCategory>().HasData(new List<ReportCategory>()
             {
@@ -509,6 +526,12 @@ namespace Persistence
                         .HasForeignKey(x => x.CategoryId)
                         .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Entity<Disb>()
+                .HasOne(x => x.Grant)
+                .WithMany(x => x.Disbs)
+                .HasForeignKey(x => x.GrantId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             builder.Entity<Disb>().Property(x => x.Id).HasColumnName("id");
             builder.Entity<Disb>().Property(x => x.CreatedDate).HasColumnName("create_date").HasColumnType("DATETIME2");
             builder.Entity<Disb>().Property(x => x.CreatedById).HasColumnName("created_by");
@@ -520,6 +543,8 @@ namespace Persistence
             builder.Entity<Disb>().Property(x => x.PostedDate).HasColumnName("posted_date").HasColumnType("DATETIME2");
             builder.Entity<Disb>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
             builder.Entity<Disb>().Property(x => x.Justification).HasColumnName("justification").HasColumnType("VARCHAR(MAX)");
+            builder.Entity<Disb>().Property(x => x.GrantId).HasColumnName("grant_id");
+
 
             builder.Entity<DisbLineItem>().Property(x => x.Id).HasColumnName("id");
             builder.Entity<DisbLineItem>().Property(x => x.DisbId).HasColumnName("disb_id");

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import useReports from '../../api/hooks/reports/useReports';
 import ReportParameters from './ReportParameters';
-import useRunReport from '../../api/hooks/reports/useRunReport';
 
 const Reports = () => {
   const [reportParameters, setReportParameters] = useState<
@@ -12,7 +11,6 @@ const Reports = () => {
   //   [],
   // );
   const { data, isLoading } = useReports();
-  const { getReport, running } = useRunReport();
 
   if (!data || isLoading) return <div>Loading...</div>;
 
@@ -21,31 +19,28 @@ const Reports = () => {
     setReportParameters(data!.filter((r) => r.id === id)[0]!.parameters);
   }
 
-  async function handleRunReport(values: ParameterSelections[]) {
-    if (selectedReport) {
-      const request: RunReportRequest = {
-        path: selectedReport!.path,
-        reportId: selectedReport!.id,
-        reportExportFormat: 1,
-        fileName: selectedReport!.downloadFilename!,
-        parameters: values.map((v) => ({
-          name: v.name,
-          value:
-            v.values !== null && v.values !== undefined
-              ? v.values!.join(',')
-              : v.value!,
-        })),
-      };
-      await getReport(request);
-    }
-
-    // setSelectedValues(values);
-  }
-
+  // async function handleRunReport(values: ParameterSelections[]) {
+  //   if (selectedReport) {
+  //     const request: RunReportRequest = {
+  //       path: selectedReport!.path,
+  //       reportId: selectedReport!.id,
+  //       reportExportFormat: 1,
+  //       fileName: selectedReport!.downloadFilename!,
+  //       parameters: values.map((v) => ({
+  //         name: v.name,
+  //         value:
+  //           v.values !== null && v.values !== undefined
+  //             ? v.values!.join(',')
+  //             : v.value!,
+  //       })),
+  //     };
+  //     await getReport(request);
+  //   }
+  //   // setSelectedValues(values);
+  // }
   // console.log('reports render');
   return (
     <div className="pt-4">
-      {running && <div>Running report...</div>}
       {/* selectedValues: <pre>{JSON.stringify(selectedValues)}</pre> */}
       <div className="grid grid-cols-[1fr_3fr] gap-8 ">
         <div className="border-r border-r-neutral-300">
@@ -61,11 +56,12 @@ const Reports = () => {
           ))}
         </div>
         <div className="pt-4">
-          {reportParameters && (
+          {reportParameters && selectedReport && (
             <ReportParameters
               parameters={reportParameters}
               reportId={selectedReport!.id!}
-              onRunReport={handleRunReport}
+              onRunReport={() => {}}
+              selectedReport={selectedReport}
             ></ReportParameters>
           )}
         </div>

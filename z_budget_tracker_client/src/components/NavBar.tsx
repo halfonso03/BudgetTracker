@@ -4,20 +4,29 @@ import Button from './Button';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ConfirmModal from './ConfirmModal';
 import { useHasUnsavedChangesStore } from '../state/useHasUnsavedChangesStore';
+import useAccount from '../api/hooks/auth/useAuth';
+import useAuth from '../contexts/useAuth';
 
 const NavBar = () => {
-  const reproInputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
+  const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [urltoGoTo, setUrlToGoTo] = useState<string>('');
+  const reproInputRef = useRef<HTMLInputElement | null>(null);
   const location = useLocation();
-
   const hasUnsavedChanges = useHasUnsavedChangesStore(
     (x) => x.hasUnsavedChanges,
   );
-
   const setHasUnsavedChanges = useHasUnsavedChangesStore(
     (x) => x.setHasUnsavedChanges,
   );
+
+  const { currentUser, loadingUserInfo } = useAccount();
+
+  const { login } = useAuth();
+
+  if (currentUser) {
+    login(currentUser);
+  }
 
   function gotoRepro() {
     navigate(`/reprogramming/${reproInputRef.current!.value}`, {
@@ -114,10 +123,10 @@ const NavBar = () => {
     }
   }
 
-  const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-
   return (
     <div className="flex justify-between align-middle p-3  text-gray-900 dark:text-gray-100 bg-dark-nav ">
+      {loadingUserInfo && <div>Loading user</div>}
+      {currentUser && <pre>{JSON.stringify(currentUser)}</pre>}
       <div className="border p-2">
         {hasUnsavedChanges ? <span>Yes</span> : <span>No</span>}
       </div>
