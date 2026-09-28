@@ -18,7 +18,6 @@ interface AuthProps {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: AuthProps) => {
-  const navigate = useNavigate();
   const [user, setUser] = useState<User | null>(null);
   const [loginId, setloginId] = useState<string | null>(null);
 
@@ -42,7 +41,6 @@ export const AuthProvider = ({ children }: AuthProps) => {
   const logout = () => {
     setUser(null);
     setloginId(null);
-    navigate('/login');
 
     // TODO:  Call backend endpoint here to clear HTTP-Only refresh cookies
 

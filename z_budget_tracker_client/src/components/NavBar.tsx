@@ -1,7 +1,6 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Button from './Button';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ConfirmModal from './ConfirmModal';
 import { useHasUnsavedChangesStore } from '../state/useHasUnsavedChangesStore';
 import useAccount from '../api/hooks/auth/useAuth';
@@ -11,7 +10,7 @@ const NavBar = () => {
   const navigate = useNavigate();
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [urltoGoTo, setUrlToGoTo] = useState<string>('');
-  const reproInputRef = useRef<HTMLInputElement | null>(null);
+  // const reproInputRef = useRef<HTMLInputElement | null>(null);
   const location = useLocation();
   const hasUnsavedChanges = useHasUnsavedChangesStore(
     (x) => x.hasUnsavedChanges,
@@ -20,39 +19,40 @@ const NavBar = () => {
     (x) => x.setHasUnsavedChanges,
   );
 
-  const { currentUser, loadingUserInfo } = useAccount();
+  const { logout } = useAuth();
+  const { currentUser, logoutUser } = useAccount();
 
-  const { login } = useAuth();
+  // const { login } = useAuth();
 
   if (currentUser) {
-    login(currentUser);
+    // login(currentUser);
   }
 
-  function gotoRepro() {
-    navigate(`/reprogramming/${reproInputRef.current!.value}`, {
-      replace: true,
-    });
-  }
+  // function gotoRepro() {
+  //   navigate(`/reprogramming/${reproInputRef.current!.value}`, {
+  //     replace: true,
+  //   });
+  // }
 
-  function gotoPrev() {
-    reproInputRef.current!.value = (
-      +reproInputRef.current!.value - 1
-    ).toString();
+  // function gotoPrev() {
+  //   reproInputRef.current!.value = (
+  //     +reproInputRef.current!.value - 1
+  //   ).toString();
 
-    navigate(`/reprogramming/${reproInputRef.current!.value}`, {
-      replace: true,
-    });
-  }
+  //   navigate(`/reprogramming/${reproInputRef.current!.value}`, {
+  //     replace: true,
+  //   });
+  // }
 
-  function gotoNext() {
-    reproInputRef.current!.value = (
-      +reproInputRef.current!.value + 1
-    ).toString();
+  // function gotoNext() {
+  //   reproInputRef.current!.value = (
+  //     +reproInputRef.current!.value + 1
+  //   ).toString();
 
-    navigate(`/reprogramming/${reproInputRef.current!.value}`, {
-      replace: true,
-    });
-  }
+  //   navigate(`/reprogramming/${reproInputRef.current!.value}`, {
+  //     replace: true,
+  //   });
+  // }
   // const { logout, user } = useAuth();
   // if (!user) return null;
 
@@ -124,62 +124,75 @@ const NavBar = () => {
   }
 
   return (
-    <div className="flex justify-between align-middle p-3  text-gray-900 dark:text-gray-100 bg-dark-nav ">
-      {loadingUserInfo && <div>Loading user</div>}
-      {currentUser && <pre>{JSON.stringify(currentUser)}</pre>}
-      <div className="border p-2">
-        {hasUnsavedChanges ? <span>Yes</span> : <span>No</span>}
+    <div>
+      <div className="flex">
+        {currentUser && <pre>{JSON.stringify(currentUser)}</pre>}
+        <div className="border p-2">
+          {hasUnsavedChanges ? <span>Yes</span> : <span>No</span>}
+        </div>
       </div>
-      <div className="flex gap-3 text-2xl p-2 flex-1">
-        <NavLink
-          to="/login"
-          className="nav-link"
-          onClick={(e: React.MouseEvent<HTMLElement>) => {
-            handleNavigation(e, '/login');
-          }}
-        >
-          Log In
-        </NavLink>
-        <NavLink
-          to="/"
-          className="nav-link"
-          onClick={(e: React.MouseEvent<HTMLElement>) => {
-            handleNavigation(e, '/');
-          }}
-        >
-          Home
-        </NavLink>
-        <NavLink
-          to="/budget"
-          className="nav-link"
-          onClick={(e: React.MouseEvent<HTMLElement>) => {
-            handleBudgetNavigation(e, '/budget');
-          }}
-        >
-          Budgets
-        </NavLink>
-        {/* <NavLink to="/reprogramming" className="nav-link">
+      <div className="flex justify-between align-middle p-3 text-gray-900 dark:text-gray-100 bg-dark-nav ">
+        <div className="flex gap-3 text-2xl p-2 flex-1">
+          <NavLink
+            to="/login"
+            className="nav-link"
+            onClick={(e: React.MouseEvent<HTMLElement>) => {
+              handleNavigation(e, '/login');
+            }}
+          >
+            Log In
+          </NavLink>
+          {currentUser && (
+            <Button
+              className="nav-link cursor-pointer"
+              onClick={async () => {
+                logout()
+                await logoutUser.mutateAsync();
+              }}
+            >
+              Log Out
+            </Button>
+          )}
+          <NavLink
+            to="/"
+            className="nav-link"
+            onClick={(e: React.MouseEvent<HTMLElement>) => {
+              handleNavigation(e, '/');
+            }}
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to="/budget"
+            className="nav-link"
+            onClick={(e: React.MouseEvent<HTMLElement>) => {
+              handleBudgetNavigation(e, '/budget');
+            }}
+          >
+            Budgets
+          </NavLink>
+          {/* <NavLink to="/reprogramming" className="nav-link">
           Reprogrammings v1
         </NavLink> */}
-        <NavLink
-          to="/reprogramming"
-          className="nav-link"
-          onClick={(e: React.MouseEvent<HTMLElement>) => {
-            handleReproNavigation(e, '/reprogramming');
-          }}
-        >
-          Reprogrammings
-        </NavLink>
-        <NavLink
-          to="/reports"
-          className="nav-link"
-          onClick={(e: React.MouseEvent<HTMLElement>) => {
-            handleReproNavigation(e, '/reports');
-          }}
-        >
-          Reports
-        </NavLink>
-        {/* <div className="flex text-sm gap-3">
+          <NavLink
+            to="/reprogramming"
+            className="nav-link"
+            onClick={(e: React.MouseEvent<HTMLElement>) => {
+              handleReproNavigation(e, '/reprogramming');
+            }}
+          >
+            Reprogrammings
+          </NavLink>
+          <NavLink
+            to="/reports"
+            className="nav-link"
+            onClick={(e: React.MouseEvent<HTMLElement>) => {
+              handleReproNavigation(e, '/reports');
+            }}
+          >
+            Reports
+          </NavLink>
+          {/* <div className="flex text-sm gap-3">
           <input
             type="text"
             ref={reproInputRef}
@@ -197,28 +210,29 @@ const NavBar = () => {
             <ChevronRight></ChevronRight>
           </Button>
         </div> */}
-      </div>
-      <div className="flex justify-center items-center w-full flex-0 mr-2">
-        {/* <AccountToggler loginId={user} logOut={logout}></AccountToggler> */}
-      </div>
+        </div>
+        <div className="flex justify-center items-center w-full flex-0 mr-2">
+          {/* <AccountToggler loginId={user} logOut={logout}></AccountToggler> */}
+        </div>
 
-      <ConfirmModal
-        isOpen={confirmModalIsOpen}
-        onCancel={() => {
-          setTimeout(() => {
-            setConfirmModalIsOpen(false);
-          }, 500);
-          // navigate(currentLocation);
-        }}
-        onConfirm={() => {
-          setTimeout(() => {
-            setConfirmModalIsOpen(false);
-          }, 500);
-          setHasUnsavedChanges(false);
-          navigate(urltoGoTo);
-        }}
-        message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
-      ></ConfirmModal>
+        <ConfirmModal
+          isOpen={confirmModalIsOpen}
+          onCancel={() => {
+            setTimeout(() => {
+              setConfirmModalIsOpen(false);
+            }, 500);
+            // navigate(currentLocation);
+          }}
+          onConfirm={() => {
+            setTimeout(() => {
+              setConfirmModalIsOpen(false);
+            }, 500);
+            setHasUnsavedChanges(false);
+            navigate(urltoGoTo);
+          }}
+          message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
+        ></ConfirmModal>
+      </div>
     </div>
   );
 };

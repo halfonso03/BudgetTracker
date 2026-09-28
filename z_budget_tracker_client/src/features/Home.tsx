@@ -39,16 +39,16 @@ const Home = () => {
   // const { categories: accounts, catSuccess } = useCategories(true, true);
 
   // if (catSuccess) console.log('categories', accounts);
-  // const { currentUser, loadingUserInfo } = useAccount();
+  const { currentUser } = useAccount();
 
-  // // const { login } = useAuth();
+  const { login } = useAuth();
 
   // if (loadingUserInfo) return 'Loading user...';
   // if (!currentUser) return 'Error loading user';
 
-  // if (currentUser) {
-  //   login(currentUser);
-  // }
+  if (currentUser) {
+    login(currentUser);
+  }
 
   const data01 = [
     {

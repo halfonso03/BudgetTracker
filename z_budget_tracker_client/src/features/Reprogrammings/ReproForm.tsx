@@ -85,7 +85,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   const NEGATIVE_REMAINING_BALANCE =
     'There is a negative remaining balance in one or more lines';
 
-  const { userId, loginId } = useAuth();
+  const { user, loginId } = useAuth();
   const queryClient = useQueryClient();
   const location = useLocation();
   const created = location.state?.created ? location.state.created : false;
@@ -598,7 +598,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     posted: boolean = false,
   ) {
     const reproToSave: CreateReproRequest = {
-      createdById: userId!,
+      createdById: +user!.id,
       posted: posted,
       justification: reproHeader.justification,
       lineItems: lineItems,
@@ -623,7 +623,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           posted: posted,
           postedDate: posted ? postedDate : null,
           postedBy: posted ? loginId! : null,
-          postedById: posted ? userId! : null,
+          postedById: posted ? +user!.id! : null,
           lineItems: lines.map((l) => {
             return {
               ...l,
@@ -655,7 +655,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   ) {
     const reproToSave: UpdateReproRequest = {
       id: reproHeader.id,
-      updatedById: userId!,
+      updatedById: +user!.id!,
       posted: posted,
       justification: reproHeader.justification,
       lineItems: lineItems,
@@ -705,7 +705,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         return {
           ...prev,
           id: newId,
-          createdById: +userId!,
+          createdById: +user!.id!,
           createdBy: loginId!,
           createDate: createDate,
           status: posted ? POSTED : SAVED,
@@ -763,7 +763,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         <pre>{JSON.stringify(lines)}</pre>
       </div> */}
       <div>
-        {!userId && (
+        {JSON.stringify(user)}
+        {!user && (
           <div className="text-xl p-1 text-red-500 font-semibold">
             Your are not logged in!
           </div>
@@ -786,7 +787,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             )}
             <Button
               buttonSize="small"
-              disabled={!canSave() || !userId}
+              disabled={!canSave() || !user}
               onClick={saveReproButtonClick}
             >
               <Save className="mr-1"></Save>
@@ -798,7 +799,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                 !canPost() ||
                 getErrors().length > 0 ||
                 reproHeader.status === Number(POSTED) ||
-                !userId
+                !user
               }
               onClick={() => setConfirmPostModal(true)}
             >

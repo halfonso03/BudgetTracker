@@ -34,6 +34,27 @@ builder.Services.AddIdentityApiEndpoints<ApplicationUser>(opt =>
 .AddEntityFrameworkStores<AppDbContext>();
 
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    options.Cookie.SameSite = SameSiteMode.None; // or None if using HTTPS locally
+});
+
+builder.Services.AddAuthorization();
+builder.Services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                        .WithOrigins("http://localhost:3001", "https://localhost:3001", "https://localhost:5001");
+                });
+            });
+
+
 builder.Services.AddTransient<ICommentsService, CommentsService>();
 builder.Services.AddTransient<ICategoryService, CategoriesService>();
 builder.Services.AddTransient<IGrantService, GrantService>();
@@ -55,28 +76,6 @@ builder.Services.AddTransient<IReportRunnerService, ReportRunnerService>((provid
     );
 });
 
-
-
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-    options.Cookie.SameSite = SameSiteMode.None; // or None if using HTTPS locally
-});
-
-
-builder.Services.AddAuthorization();
-builder.Services.AddCors(opt =>
-            {
-                opt.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials()
-                        .WithOrigins("http://localhost:3001", "https://localhost:3001", "https://localhost:5001");
-                });
-            });
 
 
 

@@ -1,10 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import agent from '../../agent';
+import { useNavigate } from 'react-router-dom';
+import useAuth from '../../../contexts/useAuth';
 
 export default function useAccount() {
   const queryClient = useQueryClient();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
+  const { logout } = useAuth();
   const { data: currentUser, isLoading: loadingUserInfo } = useQuery({
     queryKey: ['user'],
     queryFn: async () => {
@@ -19,12 +22,25 @@ export default function useAccount() {
     mutationFn: async (creds: { email: string; password: string }) => {
       const response = await agent.post('/login?useCookies=true', creds);
 
-      console.log('response', response)
+      console.log('response', response);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: ['user'],
       });
+    },
+  });
+
+  const logoutUser = useMutation({
+    mutationFn: async () => {
+      agent.post('/account/logout');
+    },
+    onSuccess: async () => {
+      // queryClient.removeQueries();
+      await queryClient.removeQueries({ queryKey: ['user'] });
+      // queryClient.removeQueries({ queryKey: ["activities"] });
+      // queryClient.removeQueries({ queryKey: ["profile"] });
+      navigate('/login');
     },
   });
 
@@ -69,19 +85,6 @@ export default function useAccount() {
   // 	},
   // });
 
-  // const logoutUser = useMutation({
-  // 	mutationFn: async () => {
-  // 		agent.post("/account/logout");
-  // 	},
-  // 	onSuccess: async () => {
-  // 		queryClient.removeQueries();
-  // 		// queryClient.removeQueries({ queryKey: ["user"] });
-  // 		// queryClient.removeQueries({ queryKey: ["activities"] });
-  // 		// queryClient.removeQueries({ queryKey: ["profile"] });
-  // 		navigate("/");
-  // 	},
-  // });
-
   // const changePassword = useMutation({
   // 	mutationFn: async (data: ChangePasswordSchema) => {
   // 		await agent.post("/account/change-password", data);
@@ -103,7 +106,7 @@ export default function useAccount() {
   return {
     loginUser,
     // registerUser,
-    // logoutUser,
+    logoutUser,
     currentUser,
     loadingUserInfo,
     // verifyEmail,
