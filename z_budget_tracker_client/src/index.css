@@ -66,6 +66,19 @@ input:-webkit-autofill:focus {
 }
 
 @theme {
+  --animate-fade-in: fadeIn 0.45s ease-out forwards;
+
+  @keyframes fadeIn {
+    0% {
+      transform: translateY(-25%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(-5%);
+      opacity: 1;
+    }
+  }
+
   --animate-repro-fade-in: reproIn 0.25s ease-in-out forwards;
 
   @keyframes reproIn {
@@ -73,7 +86,7 @@ input:-webkit-autofill:focus {
       opacity: 0;
     }
     100% {
-      opacity: .99;
+      opacity: 0.99;
     }
   }
 
@@ -139,8 +152,6 @@ input:-webkit-autofill:focus {
       opacity: 0;
     }
   }
-
-
 
   /* @keyframes custom-enter {
     0% {

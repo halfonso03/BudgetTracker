@@ -450,13 +450,7 @@ const ReportParameters = ({ reportId, parameters, selectedReport }: Props) => {
             await getReport(request);
           }}
         >
-          {reportIsRunning ? (
-            <div className='py-10'>
-              <Spinner></Spinner>
-            </div>
-          ) : (
-            'Run Report'
-          )}
+          {reportIsRunning ? <Spinner></Spinner> : 'Run Report'}
         </Button>
       </div>
     </div>

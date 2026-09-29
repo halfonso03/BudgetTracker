@@ -14,9 +14,9 @@ const sleep = (delay: number) =>
 agent.interceptors.request.use(async (config) => {
 	// store.uiStore.isBusy();
 
-	if (import.meta.env.DEV) {
-		await sleep(1000);
-	}
+	// if (import.meta.env.DEV) {
+	// 	await sleep(1000);
+	// }
 	return config;
 });
 

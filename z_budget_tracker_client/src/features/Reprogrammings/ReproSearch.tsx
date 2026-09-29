@@ -14,6 +14,7 @@ import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../../components/ConfirmModal';
 import ReproParams2 from './ReproParams2';
+import Spinner from '../../components/Spinner';
 
 type SelectedItem = {
   id: number;
@@ -116,7 +117,7 @@ const ReproSearch = () => {
     setXSelectedIds(itemsList);
   }
 
-  const { searchResults, successLoadingResults } = useReproSearch(
+  const { searchResults, successLoadingResults, loadingSearchResults } = useReproSearch(
     {
       pageNumber: pageNumber,
       pageSize: import.meta.env.VITE_REPRO_SARCH_PAGE_SIZE,
@@ -332,6 +333,7 @@ const ReproSearch = () => {
                   )}
                 </div>
                 <div className="flex flex-col gap-3 items-center justify-between min-h-[63dvh]">
+                  {loadingSearchResults && <Spinner></Spinner>}
                   <ReproSearchReults
                     key={searchResults.searchId}
                     results={searchResults.items}

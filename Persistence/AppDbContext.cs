@@ -131,19 +131,6 @@ namespace Persistence
 
 
 
-            var categories = new List<Category>
-            {
-                new() { Id = 1, Name = "Services" },
-                new() { Id = 2, Name = "Facilities" },
-                new() { Id = 3, Name = "Supplies" },
-                new() { Id = 4, Name = "Personnel" },
-                new() { Id = 5, Name = "Fringe" }
-            };
-
-
-
-            builder.Entity<Category>().HasData(categories);
-
             builder.Entity<Initiative>().HasData(
                 new Initiative() { Id = 1, Name = "Management & Coordination" },
                 new Initiative() { Id = 2, Name = "Training" },
@@ -207,90 +194,73 @@ namespace Persistence
             );
 
 
+
+            builder.Entity<Category>().HasData(
+                new Category { Id = 1, Name = "Personnel" },
+                new Category { Id = 2, Name = "Facilities" },
+                new Category { Id = 3, Name = "Fringe" },
+                new Category { Id = 4, Name = "Equipment" },
+                new Category { Id = 5, Name = "Services Contractors" },
+                new Category { Id = 6, Name = "Services Vendors" },
+                new Category { Id = 7, Name = "Supplies" },
+                new Category { Id = 8, Name = "Travel Contractor" },
+                new Category { Id = 9, Name = "Travel Agency" }
+            );
+
             builder.Entity<Account>().HasData(
-                new Account()
-                {
-                    Id = 1,
-                    Name = "Printing & Binding",
-                    Number = "11-102-0312-54700",
-                    CategoryId = 1,
-                },
-                new Account()
-                {
-                    Id = 2,
-                    Name = "Insurance-Other",
-                    Number = "11-102-0312-54701",
-                    CategoryId = 1,
-                },
-                new Account()
-                {
-                    Id = 3,
-                    Name = "Freight & Postage Service",
-                    Number = "11-102-0312-54702",
-                    CategoryId = 1,
-                },
-                new Account()
-                {
-                    Id = 4,
-                    Name = "Communication Services",
-                    Number = "11-102-0312-54703",
-                    CategoryId = 1,
-                },
-                new Account()
-                {
-                    Id = 5,
-                    Name = "Rentals & Lease",
-                    Number = "11-102-0312-54704",
-                    CategoryId = 2,
-                },
-                new Account()
-                {
-                    Id = 6,
-                    Name = "Utilities - Electric",
-                    Number = "11-102-0312-54705",
-                    CategoryId = 2,
-                },
-                new Account()
-                {
-                    Id = 7,
-                    Name = "Toner",
-                    Number = "11-102-0312-54706",
-                    CategoryId = 3,
-                },
-                new Account()
-                {
-                    Id = 8,
-                    Name = "Pens",
-                    Number = "11-102-0312-54707",
-                    CategoryId = 3,
-                },
-                new Account()
-                {
-                    Id = 9,
-                    Name = "Erasers",
-                    Number = "11-102-0312-54708",
-                    CategoryId = 3,
-                }
+                new Account { Id = 1, Name = "Salaries", CategoryId = 1, Number = "1" },
+                new Account { Id = 2, Name = "Janitorial", CategoryId = 2, Number = "1" },
+                new Account { Id = 3, Name = "Rentals and Leases", CategoryId = 2, Number = "1" },
+                new Account { Id = 4, Name = "Utilities Services - Electric", CategoryId = 2, Number = "1" },
+                new Account { Id = 5, Name = "FICA", CategoryId = 3, Number = "1" },
+                new Account { Id = 6, Name = "Life & Health Insurance", CategoryId = 3, Number = "1" },
+                new Account { Id = 7, Name = "Insurance Fringe", CategoryId = 3, Number = "1" },
+                new Account { Id = 8, Name = "Retirement", CategoryId = 3, Number = "1" },
+                new Account { Id = 9, Name = "Workers Comp", CategoryId = 3, Number = "1" },
+                new Account { Id = 10, Name = "Equipment - Over $5,000", CategoryId = 4, Number = "1" },
+                new Account { Id = 11, Name = "Cardwell, Tim", CategoryId = 5, Number = "1" },
+                new Account { Id = 12, Name = "Cormier, Jim", CategoryId = 5, Number = "1" },
+                new Account { Id = 13, Name = "Doyne, Shaun", CategoryId = 5, Number = "1" },
+                new Account { Id = 14, Name = "Eadie, John", CategoryId = 5, Number = "1" },
+                new Account { Id = 15, Name = "Hall, Orman", CategoryId = 5, Number = "1" },
+                new Account { Id = 16, Name = "Hamby, David", CategoryId = 5, Number = "1" },
+                new Account { Id = 17, Name = "Jakim, Christopher", CategoryId = 5, Number = "1" },
+                new Account { Id = 18, Name = "Kempton, Emma", CategoryId = 5, Number = "1" },
+                new Account { Id = 19, Name = "Quigley, Dale", CategoryId = 5, Number = "1" },
+                new Account { Id = 20, Name = "Roggeveen, Rob", CategoryId = 5, Number = "1" },
+                new Account { Id = 21, Name = "Salas, Steve", CategoryId = 5, Number = "1" },
+                new Account { Id = 22, Name = "Snyders, Mike", CategoryId = 5, Number = "1" },
+                new Account { Id = 23, Name = "Tafoya, Martina", CategoryId = 5, Number = "1" },
+                new Account { Id = 24, Name = "Insurance Other", CategoryId = 6, Number = "1" },
+                new Account { Id = 25, Name = "Freight and Postage Services", CategoryId = 6, Number = "1" },
+                new Account { Id = 26, Name = "Communication Services", CategoryId = 6, Number = "1" },
+                new Account { Id = 27, Name = "Other Contractual Services", CategoryId = 6, Number = "1" },
+                new Account { Id = 28, Name = "Office", CategoryId = 7, Number = "1" },
+                new Account { Id = 29, Name = "Software", CategoryId = 7, Number = "1" },
+                new Account { Id = 30, Name = "Machinery and Equipment  ($1,000 to $5,000)", CategoryId = 7, Number = "1" },
+                new Account { Id = 31, Name = "Travel Contractor", CategoryId = 8, Number = "1" },
+                new Account { Id = 32, Name = "Travel Agency", CategoryId = 9, Number = "1" }
+
             );
 
             builder.Entity<AuthorizedUser>().HasData(
-                new AuthorizedUser
-                {
-                    Id = 1,
-                    WindowsLogin = "hialfonso"
-                },
-                new AuthorizedUser
-                {
-                    Id = 2,
-                    WindowsLogin = "rxleopold"
-                },
+                    new AuthorizedUser
+                    {
+                        Id = 1,
+                        WindowsLogin = "hialfonso"
+                    },
+                    new AuthorizedUser
+                    {
+                        Id = 2,
+                        WindowsLogin = "rxleopold"
+                    },
 
-                new AuthorizedUser
-                {
-                    Id = 3,
-                    WindowsLogin = "rescobar"
-                }
-            );
+                    new AuthorizedUser
+                    {
+                        Id = 3,
+                        WindowsLogin = "rescobar"
+                    }
+                );
 
             builder.Entity<BudgetItemType>().HasData(
                 new BudgetItemType { ItemType = Globals.ITEM_TYPE_BUDGET },
@@ -511,26 +481,26 @@ namespace Persistence
             builder.Entity<ReproLineItem>().Property(x => x.Comment).HasColumnName("comment").HasColumnType("VARCHAR(MAX)");
             builder.Entity<ReproLineItem>().Property(x => x.BudgetLineItemId).HasColumnName("budget_line_id");
             builder.Entity<ReproLineItem>()
-                    .HasIndex(a => new { a.ReproId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
-                    .IsUnique();
+                        .HasIndex(a => new { a.ReproId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
+                        .IsUnique();
 
             builder.Entity<ReproLineItem>()
-                        .HasOne(x => x.Category)
-                        .WithMany(x => x.ReproLineItems)
-                        .HasForeignKey(x => x.CategoryId)
-                        .OnDelete(DeleteBehavior.NoAction);
+                            .HasOne(x => x.Category)
+                            .WithMany(x => x.ReproLineItems)
+                            .HasForeignKey(x => x.CategoryId)
+                            .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<DisbLineItem>()
-                        .HasOne(x => x.Category)
-                        .WithMany(x => x.DisbLineItems)
-                        .HasForeignKey(x => x.CategoryId)
-                        .OnDelete(DeleteBehavior.NoAction);
+                            .HasOne(x => x.Category)
+                            .WithMany(x => x.DisbLineItems)
+                            .HasForeignKey(x => x.CategoryId)
+                            .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Disb>()
-                .HasOne(x => x.Grant)
-                .WithMany(x => x.Disbs)
-                .HasForeignKey(x => x.GrantId)
-                .OnDelete(DeleteBehavior.NoAction);
+                    .HasOne(x => x.Grant)
+                    .WithMany(x => x.Disbs)
+                    .HasForeignKey(x => x.GrantId)
+                    .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Disb>().Property(x => x.Id).HasColumnName("id");
             builder.Entity<Disb>().Property(x => x.CreatedDate).HasColumnName("create_date").HasColumnType("DATETIME2");
@@ -561,8 +531,8 @@ namespace Persistence
             builder.Entity<DisbLineItem>().Property(x => x.Comment).HasColumnName("comment").HasColumnType("VARCHAR(MAX)");
             builder.Entity<DisbLineItem>().Property(x => x.BudgetLineItemId).HasColumnName("budget_line_id");
             builder.Entity<DisbLineItem>()
-                    .HasIndex(a => new { a.DisbId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
-                    .IsUnique();
+                        .HasIndex(a => new { a.DisbId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
+                        .IsUnique();
 
 
             builder.Entity<Report>().Property(x => x.Name).HasColumnType("VARCHAR(200)");
@@ -571,8 +541,8 @@ namespace Persistence
             builder.Entity<ReportParameter>().Property(x => x.Name).HasColumnType("VARCHAR(75)");
 
             builder.Entity<ReportParameter>()
-                   .HasIndex(a => new { a.ReportId, a.SortOrder })
-                   .IsUnique();
+                       .HasIndex(a => new { a.ReportId, a.SortOrder })
+                       .IsUnique();
 
 
             builder.Entity<ReportCategory>().Property(x => x.Name).HasColumnType("VARCHAR(50)");

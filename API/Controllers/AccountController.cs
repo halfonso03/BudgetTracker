@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.DTOs;
 using Domain;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,68 @@ namespace API.Controllers
 {
     public class AccountController(SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager) : BaseApiController
     {
+
+        [HttpPost("login-user")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // 1. Find user by email
+            var user = await userManager.FindByEmailAsync(model.Email);
+            if (user == null)
+            {
+                // Return a generic message to prevent user enumeration attacks
+                return Unauthorized(new { message = "Invalid email or password." });
+            }
+
+            signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
+
+
+            // 2. Check password and handle lockout policies securely via SignInManager
+
+            // lockoutOnFailure: true protects against brute-force attacks
+            var result = await signInManager.CheckPasswordSignInAsync(user, model.Password, lockoutOnFailure: true);
+
+            if (result.Succeeded)
+            {
+                // 3. Return safe user data (avoid returning the raw EF Core entity with password hashes)
+
+                var claimsPrincipal = await signInManager.CreateUserPrincipalAsync(user);
+                
+                await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, claimsPrincipal);
+
+                var roles = await userManager.GetRolesAsync(user);
+
+                var safeUserResponse = new UserLoginResponseDto
+                {
+                    Id = user.Id,
+                    Email = user!.Email!,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Roles = [.. roles]
+                };
+
+                return Ok(safeUserResponse);
+            }
+
+            if (result.IsLockedOut)
+            {
+                return StatusCode(StatusCodes.Status423Locked, new { message = "Account locked out due to multiple failed login attempts. Please try again later." });
+            }
+
+            if (result.IsNotAllowed)
+            {
+                return Unauthorized(new { message = "Sign in is not allowed. Please confirm your email." });
+            }
+
+            // Default fallback for incorrect password
+            return Unauthorized(new { message = "Invalid email or password." });
+        }
+
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult> RegisterUser(RegisterDto registerDto)
@@ -79,9 +142,9 @@ namespace API.Controllers
             var role = await roleManager.FindByNameAsync("ADMIN");
             if (role == null)
             {
-                
+
             }
-            
+
 
             return NoContent();
         }

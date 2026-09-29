@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import {  NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Button from './Button';
 import ConfirmModal from './ConfirmModal';
 import { useHasUnsavedChangesStore } from '../state/useHasUnsavedChangesStore';
@@ -121,74 +121,76 @@ const NavBar = () => {
 
   return (
     <div>
-      <div className="flex">
+      {/* <div className="flex absolute bottom-0 left-0">
         {user && <pre>{JSON.stringify(user)}</pre>}
         <div className="border p-2">
           {hasUnsavedChanges ? <span>Yes</span> : <span>No</span>}
         </div>
-      </div>
+      </div> */}
+
       <div className="flex justify-between align-middle p-3 text-gray-900 dark:text-gray-100 bg-dark-nav ">
         <div className="flex gap-3 text-2xl p-2 flex-1">
-          {!user && (
-            <Link
-              to="/login"
-              className="nav-link"
-              onClick={(e: React.MouseEvent<HTMLElement>) => {
-                handleNavigation(e, '/login');
+          {/* <Link
+            to="/login"
+            className="nav-link"
+            onClick={(e: React.MouseEvent<HTMLElement>) => {
+              handleNavigation(e, '/login');
+            }}
+          >
+            Log In
+          </Link> */}
+          {/* {!user && (
+     
+          )} */}
+          {user && (
+          <>
+            <Button
+              key={loggedOut.toString()}
+              className="nav-link cursor-pointer"
+              onClick={() => {
+                logoutUser();
+                setLoggedout((prev) => !prev);
               }}
             >
-              Log In
-            </Link>
-          )}
-          {user && (
-            <>
-              <Button
-                key={loggedOut.toString()}
-                className="nav-link cursor-pointer"
-                onClick={() => {
-                  logoutUser.mutate();
-                  setLoggedout((prev) => !prev);
-                }}
-              >
-                Log Out
-              </Button>
-              <NavLink
-                to="/"
-                className="nav-link"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleNavigation(e, '/');
-                }}
-              >
-                Home
-              </NavLink>
-              <NavLink
-                to="/budget"
-                className="nav-link"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleBudgetNavigation(e, '/budget');
-                }}
-              >
-                Budgets
-              </NavLink>
-              <NavLink
-                to="/reprogramming"
-                className="nav-link"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleReproNavigation(e, '/reprogramming');
-                }}
-              >
-                Reprogrammings
-              </NavLink>
-              <NavLink
-                to="/reports"
-                className="nav-link"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleReproNavigation(e, '/reports');
-                }}
-              >
-                Reports
-              </NavLink>
-            </>
+              Log Out
+            </Button>
+            <NavLink
+              to="/"
+              className="nav-link"
+              onClick={(e: React.MouseEvent<HTMLElement>) => {
+                handleNavigation(e, '/');
+              }}
+            >
+              Home
+            </NavLink>
+            <NavLink
+              to="/budget"
+              className="nav-link"
+              onClick={(e: React.MouseEvent<HTMLElement>) => {
+                handleBudgetNavigation(e, '/budget');
+              }}
+            >
+              Budgets
+            </NavLink>
+            <NavLink
+              to="/reprogramming"
+              className="nav-link"
+              onClick={(e: React.MouseEvent<HTMLElement>) => {
+                handleReproNavigation(e, '/reprogramming');
+              }}
+            >
+              Reprogrammings
+            </NavLink>
+            <NavLink
+              to="/reports"
+              className="nav-link"
+              onClick={(e: React.MouseEvent<HTMLElement>) => {
+                handleReproNavigation(e, '/reports');
+              }}
+            >
+              Reports
+            </NavLink>
+          </>
           )}
 
           {/* <div className="flex text-sm gap-3">

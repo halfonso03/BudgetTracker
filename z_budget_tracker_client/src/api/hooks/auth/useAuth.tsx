@@ -1,44 +1,96 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import agent from '../../agent';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../../../contexts/useAuth';
-
+import toast from 'react-hot-toast';
+import { useHasUnsavedChangesStore } from '../../../state/useHasUnsavedChangesStore';
+import { useState } from 'react';
+import type { AxiosError, AxiosResponse } from 'axios';
+export type LoginFormValues = { email: string; password: string };
+export type LoginResponse = {
+  token: string;
+  loginId: string;
+};
 export default function useAccount() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
-  const { logout } = useAuth();
-  const { data: currentUser, isLoading: loadingUserInfo } = useQuery({
-    queryKey: ['user'],
-    queryFn: async () => {
-      const response = await agent.get<User>('/account/user-info');
-      console.log(response.data);
-      return response.data;
-    },
-    enabled: !queryClient.getQueryData(['user']),
-  });
+  const { hasUnsavedChanges, setHasUnsavedChanges } =
+    useHasUnsavedChangesStore();
 
-  const loginUser = useMutation({
+  const { login, logout } = useAuth();
+
+  // const { data: currentUser, isLoading: loadingUserInfo } = useQuery({
+  //   queryKey: ['user'],
+  //   queryFn: async () => {
+  //     const response = await agent.get<User>('/account/user-info');
+  //     console.log(response.data);
+  //     return response.data;
+  //   },
+  //   enabled: !queryClient.getQueryData(['user']),
+  // });
+
+  const {
+    mutate: loginUser,
+    isPending: isLoginPending,
+    isSuccess: isLoginSuccess,
+  } = useMutation({
     mutationFn: async (creds: { email: string; password: string }) => {
-      const response = await agent.post('/login?useCookies=true', creds);
+      const response: AxiosResponse = await agent.post(
+        '/account/login-user',
+        creds,
+      );
 
-      console.log('response', response);
+      console.log('response', response)
+      const loginResponse = response.data as LoginResponse;
+      return loginResponse;
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({
+    onSuccess: (response: LoginResponse) => {
+
+      console.log('loginResponse', response)
+      if (hasUnsavedChanges) {
+        setHasUnsavedChanges(false);
+      }
+      queryClient.invalidateQueries({
         queryKey: ['user'],
       });
+
+      console.log('response', response);
+      login({
+        id: '1',
+        firstName: 'hector',
+        lastName: 'alfonso',
+        email: 'hialfonso@nhac.org',
+      });
+      navigate('/', { replace: true });
+    },
+    onError: (error: AxiosError) => {
+      if (error.response) {
+        // The server responded with a status code outside the 2xx range (e.g., 400)
+        const errorData = error.response.data;
+        console.log('Server Error Status:', error.response); // 400
+        console.log('Server Error Data:', errorData); // { message: "Invalid payload", ... }
+        setErrorMessage(error.response.data as string);
+      } else {
+        console.error('Network or Setup Error:', error.message);
+        setErrorMessage(error.message as string);
+      }
+      toast.error(error.message);
     },
   });
 
-  const logoutUser = useMutation({
+  const { mutate: logoutUser } = useMutation({
     mutationFn: async () => {
       agent.post('/account/logout');
     },
     onSuccess: async () => {
       // queryClient.removeQueries();
+      if (hasUnsavedChanges) {
+        setHasUnsavedChanges(false);
+      }
       logout();
-      queryClient.removeQueries({ queryKey: ['user'] });
+      // queryClient.removeQueries({ queryKey: ['user'] });
       navigate('login', { replace: true });
     },
   });
@@ -104,10 +156,13 @@ export default function useAccount() {
 
   return {
     loginUser,
+    isLoginPending,
+    isLoginSuccess,
+    errorMessage,
     // registerUser,
     logoutUser,
-    currentUser,
-    loadingUserInfo,
+    // currentUser,
+    // loadingUserInfo,
     // verifyEmail,
     // resendConfirmationEmail,
     // changePassword,

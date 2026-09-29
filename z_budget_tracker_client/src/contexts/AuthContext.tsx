@@ -7,7 +7,7 @@ interface AuthContextType {
   login: (user: User) => void;
   logout: () => void;
   // login: (accessToken: string, userData: string, userId: number) => void;
-  // isLoggedIn: () => boolean;
+  isLoggedIn: () => boolean;
 }
 
 interface AuthProps {
@@ -42,25 +42,12 @@ export const AuthProvider = ({ children }: AuthProps) => {
     setloginId(null);
   };
 
-  // const isLoggedIn = () => {
-  //   if (localStorage.getItem('token')) {
-  //     const token = localStorage.getItem('token') as string;
-
-  //     const decodedToken = jwtDecode(token);
-  //     const currentTime = Date.now() / 1000;
-
-  //     // Check if token is expired
-  //     if (decodedToken.exp! < currentTime) {
-  //       return false;
-  //     } else {
-  //       return true;
-  //     }
-  //   }
-  //   return false;
-  // };
+  const isLoggedIn = () => {
+    return user !== null;
+  };
 
   return (
-    <AuthContext.Provider value={{ user, loginId, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, user, loginId, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

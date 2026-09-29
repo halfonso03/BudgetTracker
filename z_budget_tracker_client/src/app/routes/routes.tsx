@@ -123,7 +123,6 @@ export const routes: RouteObject[] = [
       },
     ],
   },
-  // { path: '/login', element: <Login /> },
   { path: '*', element: <NotFound /> },
 ];
 

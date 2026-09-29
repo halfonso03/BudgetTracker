@@ -10,6 +10,7 @@ import RadioButtonList from '../../components/RadioButtonList';
 import ReproSearchFilter from './ReproSearchFilter';
 import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
 import { parseFormattedNumber } from '../../app/util';
+import Spinner from '../../components/Spinner';
 
 const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
@@ -390,7 +391,12 @@ const ReproParams2 = memo(
             </button>
           </div>
         </ReproSearchFilter>
-
+        {!initiatives && (
+          <div className="py-2 w-45">
+            <Spinner></Spinner>
+          </div>
+        )}
+        
         {initiatives !== undefined && initiatives.length > 0 && (
           <ReproSearchFilter
             selectedItemLabel={iLabel}

@@ -36,11 +36,11 @@ const renderCustomizedLabel = ({
 
 const RADIAN = Math.PI / 180;
 const Home = () => {
+
   // const { categories: accounts, catSuccess } = useCategories(true, true);
-
   // if (catSuccess) console.log('categories', accounts);
-  const { currentUser } = useAccount();
 
+  const { currentUser } = useAccount();
   const { login } = useAuth();
 
   // if (loadingUserInfo) return 'Loading user...';
