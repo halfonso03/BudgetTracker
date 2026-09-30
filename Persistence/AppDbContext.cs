@@ -24,6 +24,8 @@ namespace Persistence
         public required DbSet<ReportParameter> ReportParameters { get; set; }
         public required DbSet<ReportCategory> ReportCategories { get; set; }
         public required DbSet<BudgetItemType> BudgetItemTypes { get; set; }
+        public required DbSet<Vendor> Vendors { get; set; }
+        public required DbSet<Contrator> Contrators { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -40,7 +42,6 @@ namespace Persistence
             builder.Entity<IdentityUserLogin<int>>().ToTable("Auth.tblUserLogins");
             builder.Entity<IdentityRoleClaim<int>>().ToTable("Auth.tblRoleClaims");
             builder.Entity<IdentityUserToken<int>>().ToTable("Auth.tblUserTokens");
-
 
             builder.Entity<ReportCategory>().HasData(new List<ReportCategory>()
             {
@@ -129,29 +130,13 @@ namespace Persistence
                 },
             });
 
-
-
             builder.Entity<Initiative>().HasData(
                 new Initiative() { Id = 1, Name = "Management & Coordination" },
                 new Initiative() { Id = 2, Name = "Training" },
                 new Initiative() { Id = 3, Name = "ORS" },
                 new Initiative() { Id = 4, Name = "Multimedia & Technology Unit" },
                 new Initiative() { Id = 5, Name = "DHE" },
-                new Initiative() { Id = 6, Name = "Management & Coordination 2" },
-                new Initiative() { Id = 7, Name = "Training 2" },
-                new Initiative() { Id = 8, Name = "ORS 2" },
-                new Initiative() { Id = 9, Name = "Multimedia & Technology Unit 2" },
-                new Initiative() { Id = 10, Name = "DHE 3" },
-                new Initiative() { Id = 11, Name = "Management & Coordination 3" },
-                new Initiative() { Id = 12, Name = "Training 3" },
-                new Initiative() { Id = 13, Name = "ORS 3" },
-                new Initiative() { Id = 14, Name = "Multimedia & Technology Unit 3" },
-                new Initiative() { Id = 15, Name = "DHE 4" },
-                new Initiative() { Id = 16, Name = "Management & Coordination 4" },
-                new Initiative() { Id = 17, Name = "Training 4" },
-                new Initiative() { Id = 18, Name = "ORS 4" },
-                new Initiative() { Id = 19, Name = "Multimedia & Technology Unit 4" },
-                new Initiative() { Id = 20, Name = "DHE 4" }
+                new Initiative() { Id = 6, Name = "DTAG" }
             );
 
             builder.Entity<Grant>().HasData(
@@ -194,7 +179,9 @@ namespace Persistence
             );
 
 
-
+            /// //////////////////////////////////
+            /// CATEGORIES
+            /// //////////////////////////////////
             builder.Entity<Category>().HasData(
                 new Category { Id = 1, Name = "Personnel" },
                 new Category { Id = 2, Name = "Facilities" },
@@ -207,41 +194,115 @@ namespace Persistence
                 new Category { Id = 9, Name = "Travel Agency" }
             );
 
+            // Personnel
             builder.Entity<Account>().HasData(
-                new Account { Id = 1, Name = "Salaries", CategoryId = 1, Number = "1" },
+                new Account { Id = 1, Name = "Salaries", CategoryId = 1, Number = "1" }
+            );
+
+            // Facilities
+            builder.Entity<Account>().HasData(
                 new Account { Id = 2, Name = "Janitorial", CategoryId = 2, Number = "1" },
                 new Account { Id = 3, Name = "Rentals and Leases", CategoryId = 2, Number = "1" },
-                new Account { Id = 4, Name = "Utilities Services - Electric", CategoryId = 2, Number = "1" },
-                new Account { Id = 5, Name = "FICA", CategoryId = 3, Number = "1" },
-                new Account { Id = 6, Name = "Life & Health Insurance", CategoryId = 3, Number = "1" },
-                new Account { Id = 7, Name = "Insurance Fringe", CategoryId = 3, Number = "1" },
-                new Account { Id = 8, Name = "Retirement", CategoryId = 3, Number = "1" },
-                new Account { Id = 9, Name = "Workers Comp", CategoryId = 3, Number = "1" },
-                new Account { Id = 10, Name = "Equipment - Over $5,000", CategoryId = 4, Number = "1" },
-                new Account { Id = 11, Name = "Cardwell, Tim", CategoryId = 5, Number = "1" },
-                new Account { Id = 12, Name = "Cormier, Jim", CategoryId = 5, Number = "1" },
-                new Account { Id = 13, Name = "Doyne, Shaun", CategoryId = 5, Number = "1" },
-                new Account { Id = 14, Name = "Eadie, John", CategoryId = 5, Number = "1" },
-                new Account { Id = 15, Name = "Hall, Orman", CategoryId = 5, Number = "1" },
-                new Account { Id = 16, Name = "Hamby, David", CategoryId = 5, Number = "1" },
-                new Account { Id = 17, Name = "Jakim, Christopher", CategoryId = 5, Number = "1" },
-                new Account { Id = 18, Name = "Kempton, Emma", CategoryId = 5, Number = "1" },
-                new Account { Id = 19, Name = "Quigley, Dale", CategoryId = 5, Number = "1" },
-                new Account { Id = 20, Name = "Roggeveen, Rob", CategoryId = 5, Number = "1" },
-                new Account { Id = 21, Name = "Salas, Steve", CategoryId = 5, Number = "1" },
-                new Account { Id = 22, Name = "Snyders, Mike", CategoryId = 5, Number = "1" },
-                new Account { Id = 23, Name = "Tafoya, Martina", CategoryId = 5, Number = "1" },
-                new Account { Id = 24, Name = "Insurance Other", CategoryId = 6, Number = "1" },
-                new Account { Id = 25, Name = "Freight and Postage Services", CategoryId = 6, Number = "1" },
-                new Account { Id = 26, Name = "Communication Services", CategoryId = 6, Number = "1" },
-                new Account { Id = 27, Name = "Other Contractual Services", CategoryId = 6, Number = "1" },
-                new Account { Id = 28, Name = "Office", CategoryId = 7, Number = "1" },
-                new Account { Id = 29, Name = "Software", CategoryId = 7, Number = "1" },
-                new Account { Id = 30, Name = "Machinery and Equipment  ($1,000 to $5,000)", CategoryId = 7, Number = "1" },
-                new Account { Id = 31, Name = "Travel Contractor", CategoryId = 8, Number = "1" },
-                new Account { Id = 32, Name = "Travel Agency", CategoryId = 9, Number = "1" }
-
+                new Account { Id = 4, Name = "Utilities Services - Electric", CategoryId = 2, Number = "1" }
             );
+
+            // Fringe
+            builder.Entity<Account>().HasData(
+               new Account { Id = 5, Name = "FICA", CategoryId = 3, Number = "1" },
+               new Account { Id = 6, Name = "Life & Health Insurance", CategoryId = 3, Number = "1" },
+               new Account { Id = 7, Name = "Insurance Fringe", CategoryId = 3, Number = "1" },
+               new Account { Id = 8, Name = "Retirement", CategoryId = 3, Number = "1" },
+               new Account { Id = 9, Name = "Workers Comp", CategoryId = 3, Number = "1" }
+            );
+
+            // Equipment
+            builder.Entity<Account>().HasData(
+               new Account { Id = 10, Name = "Equipment - Over $5,000", CategoryId = 4, Number = "1" }
+            );
+
+            // Services Contractors
+            builder.Entity<Account>().HasData(
+              new Account { Id = 11, Name = "Contractors", CategoryId = 5, Number = "1" }
+            );
+
+            // Services Vendors
+            builder.Entity<Account>().HasData(
+                new Account { Id = 12, Name = "Insurance Other", CategoryId = 6, Number = "1" },
+                new Account { Id = 13, Name = "Freight and Postage Services", CategoryId = 6, Number = "1" },
+                new Account { Id = 14, Name = "Communication Services", CategoryId = 6, Number = "1" },
+                new Account { Id = 15, Name = "Other Contractual Services", CategoryId = 6, Number = "1" }
+            );
+
+            // Supplies
+            builder.Entity<Account>().HasData(
+                new Account { Id = 16, Name = "Office", CategoryId = 7, Number = "1" },
+                new Account { Id = 17, Name = "Software", CategoryId = 7, Number = "1" },
+                new Account { Id = 18, Name = "Machinery and Equipment ($1,000 to $5,000)", CategoryId = 7, Number = "1" }
+            );
+
+            // Travel Contractor
+            builder.Entity<Account>().HasData(
+                new Account { Id = 19, Name = "Contractor", CategoryId = 8, Number = "1" }
+            );
+
+            // Travel Agency
+            builder.Entity<Account>().HasData(
+                new Account { Id = 20, Name = "Agency", CategoryId = 9, Number = "1" }
+            );
+
+
+            // //////////////////////////////
+            // Expenditure Center
+            // //////////////////////////////
+
+            //  25 - Services Vendors - Freight and Postage Services
+            builder.Entity<Vendor>().HasData(
+                new Vendor() { Id = 1, Name = "Kinkos", AccountId = 13, IsActive = true },
+                new Vendor() { Id = 2, Name = "FedEx", AccountId = 13, IsActive = true },
+                new Vendor() { Id = 3, Name = "Shipstation", AccountId = 13, IsActive = true },
+                new Vendor() { Id = 4, Name = "Navis Pack & Ship", AccountId = 13, IsActive = true },
+                new Vendor() { Id = 5, Name = "ShippyPro", AccountId = 13, IsActive = true },
+                new Vendor() { Id = 6, Name = "Mimeo", AccountId = 13, IsActive = true },
+                new Vendor() { Id = 7, Name = "EasySip", AccountId = 13, IsActive = true },
+                new Vendor() { Id = 8, Name = "PackAndShip", AccountId = 13, IsActive = true }
+            );
+
+
+            //  26 -Services Vendors -  Communication Services
+            builder.Entity<Vendor>().HasData(
+                new Vendor() { Id = 9, Name = "AT & T", AccountId = 14, IsActive = true },
+                new Vendor() { Id = 10, Name = "Comcast", AccountId = 14, IsActive = true },
+                new Vendor() { Id = 11, Name = "Sunshine", AccountId = 14, IsActive = true },
+                new Vendor() { Id = 12, Name = "Motorola", AccountId = 14, IsActive = true },
+                new Vendor() { Id = 13, Name = "Voip Comm", AccountId = 14, IsActive = true }
+            );
+
+
+            // 31 -  Travel Contractor - Contractor
+            builder.Entity<Contrator>().HasData(
+                new Contrator() { Id = 1, FirstName = "Tom", LastName = "Sanchez", Email = "tsanchez@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 2, FirstName = "Marc", LastName = "Greenstien", Email = "mreenstien@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 3, FirstName = "Troy", LastName = "Bankert", Email = "tankert@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 4, FirstName = "Charles", LastName = "Bengston", Email = "cengston@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 5, FirstName = "Ethan", LastName = "Steigerwald", Email = "esteigerwald@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 6, FirstName = "Steve", LastName = "Sales", Email = "ssales@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 7, FirstName = "Tim", LastName = "Cardwell", Email = "tcardwell@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 8, FirstName = "Tafoya", LastName = "Martina", Email = "tmartine@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 9, FirstName = "Jim", LastName = "Cormier", Email = "jcormier@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 10, FirstName = "Shaun", LastName = "Doyne", Email = "sdoyne@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 11, FirstName = "John", LastName = "Eadie", Email = "jeadie@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 12, FirstName = "Orman", LastName = "Hall", Email = "ohall@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 13, FirstName = "David", LastName = "Hamby", Email = "dhamby@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 14, FirstName = "Christopher", LastName = "Jakim", Email = "cjakim@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 15, FirstName = "Emma", LastName = "Kempton", Email = "ekempton@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 16, FirstName = "Rob", LastName = "Roggeveen", Email = "rroggeveen@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 17, FirstName = "Steve", LastName = "Salas", Email = "ssales@nhac.org", AccountId = 19, IsActive = true },
+                new Contrator() { Id = 18, FirstName = "Mike", LastName = "Snyders", Email = "msnyders@nhac.org", AccountId = 19, IsActive = true }
+            );
+
+
+
+
 
             builder.Entity<AuthorizedUser>().HasData(
                     new AuthorizedUser
@@ -544,8 +605,19 @@ namespace Persistence
                        .HasIndex(a => new { a.ReportId, a.SortOrder })
                        .IsUnique();
 
-
             builder.Entity<ReportCategory>().Property(x => x.Name).HasColumnType("VARCHAR(50)");
+
+            builder.Entity<Vendor>().Property(x => x.Id).HasColumnName("id");
+            builder.Entity<Vendor>().Property(x => x.Name).HasColumnType("VARCHAR(250)").HasColumnName("name");
+            builder.Entity<Vendor>().Property(x => x.AccountId).HasColumnName("account_id");
+            builder.Entity<Vendor>().Property(x => x.IsActive).HasColumnName("is_active").HasColumnType("bit");
+            builder.Entity<Contrator>().Property(x => x.Id).HasColumnName("id");
+
+            builder.Entity<Contrator>().Property(x => x.FirstName).HasColumnName("firstName").HasColumnType("VARCHAR(250)");
+            builder.Entity<Contrator>().Property(x => x.LastName).HasColumnName("lastName").HasColumnType("VARCHAR(250)");
+            builder.Entity<Contrator>().Property(x => x.Email).HasColumnName("email").HasColumnType("VARCHAR(250)");
+            builder.Entity<Contrator>().Property(x => x.AccountId).HasColumnName("account_id");
+            builder.Entity<Contrator>().Property(x => x.IsActive).HasColumnName("is_active").HasColumnType("bit");
         }
     }
 }

@@ -7,12 +7,13 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 function App() {
   const queryClient = new QueryClient();
+ 
 
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools></ReactQueryDevtools>
       <AuthProvider>
-        <NavBar ></NavBar>
+        <NavBar></NavBar>
         <div className="p-3 w-[82%] mx-auto">
           <Outlet></Outlet>
         </div>

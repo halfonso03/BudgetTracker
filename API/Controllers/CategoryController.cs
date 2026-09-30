@@ -15,5 +15,11 @@ namespace API.Controllers
         {
             return Ok(await _categoryService.GetCategoriesAndAccounts());
         }
+
+        [HttpGet("{categoryId}")]
+        public async Task<IActionResult> GetCategoriesAndAccounts(int categoryId)
+        {
+            return Ok(await _categoryService.GetAccountsForCategories(categoryId));
+        }
     }
 }

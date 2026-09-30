@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260928150920_InitialIdentitySetup2")]
-    partial class InitialIdentitySetup2
+    [Migration("20260930154251_initial2")]
+    partial class initial2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,64 +59,141 @@ namespace Persistence.Migrations
                         {
                             Id = 1,
                             CategoryId = 1,
-                            Name = "Printing & Binding",
-                            Number = "11-102-0312-54700"
+                            Name = "Salaries",
+                            Number = "1"
                         },
                         new
                         {
                             Id = 2,
-                            CategoryId = 1,
-                            Name = "Insurance-Other",
-                            Number = "11-102-0312-54701"
+                            CategoryId = 2,
+                            Name = "Janitorial",
+                            Number = "1"
                         },
                         new
                         {
                             Id = 3,
-                            CategoryId = 1,
-                            Name = "Freight & Postage Service",
-                            Number = "11-102-0312-54702"
+                            CategoryId = 2,
+                            Name = "Rentals and Leases",
+                            Number = "1"
                         },
                         new
                         {
                             Id = 4,
-                            CategoryId = 1,
-                            Name = "Communication Services",
-                            Number = "11-102-0312-54703"
+                            CategoryId = 2,
+                            Name = "Utilities Services - Electric",
+                            Number = "1"
                         },
                         new
                         {
                             Id = 5,
-                            CategoryId = 2,
-                            Name = "Rentals & Lease",
-                            Number = "11-102-0312-54704"
+                            CategoryId = 3,
+                            Name = "FICA",
+                            Number = "1"
                         },
                         new
                         {
                             Id = 6,
-                            CategoryId = 2,
-                            Name = "Utilities - Electric",
-                            Number = "11-102-0312-54705"
+                            CategoryId = 3,
+                            Name = "Life & Health Insurance",
+                            Number = "1"
                         },
                         new
                         {
                             Id = 7,
                             CategoryId = 3,
-                            Name = "Toner",
-                            Number = "11-102-0312-54706"
+                            Name = "Insurance Fringe",
+                            Number = "1"
                         },
                         new
                         {
                             Id = 8,
                             CategoryId = 3,
-                            Name = "Pens",
-                            Number = "11-102-0312-54707"
+                            Name = "Retirement",
+                            Number = "1"
                         },
                         new
                         {
                             Id = 9,
                             CategoryId = 3,
-                            Name = "Erasers",
-                            Number = "11-102-0312-54708"
+                            Name = "Workers Comp",
+                            Number = "1"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CategoryId = 4,
+                            Name = "Equipment - Over $5,000",
+                            Number = "1"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CategoryId = 5,
+                            Name = "Contractors",
+                            Number = "1"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CategoryId = 6,
+                            Name = "Insurance Other",
+                            Number = "1"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            CategoryId = 6,
+                            Name = "Freight and Postage Services",
+                            Number = "1"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            CategoryId = 6,
+                            Name = "Communication Services",
+                            Number = "1"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            CategoryId = 6,
+                            Name = "Other Contractual Services",
+                            Number = "1"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            CategoryId = 7,
+                            Name = "Office",
+                            Number = "1"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            CategoryId = 7,
+                            Name = "Software",
+                            Number = "1"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            CategoryId = 7,
+                            Name = "Machinery and Equipment ($1,000 to $5,000)",
+                            Number = "1"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            CategoryId = 8,
+                            Name = "Contractor",
+                            Number = "1"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            CategoryId = 9,
+                            Name = "Agency",
+                            Number = "1"
                         });
                 });
 
@@ -584,7 +661,7 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Services"
+                            Name = "Personnel"
                         },
                         new
                         {
@@ -594,17 +671,240 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 3,
-                            Name = "Supplies"
+                            Name = "Fringe"
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Personnel"
+                            Name = "Equipment"
                         },
                         new
                         {
                             Id = 5,
-                            Name = "Fringe"
+                            Name = "Services Contractors"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Services Vendors"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Supplies"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Travel Contractor"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Travel Agency"
+                        });
+                });
+
+            modelBuilder.Entity("Domain.Contrator", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int")
+                        .HasColumnName("account_id");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(250)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(250)")
+                        .HasColumnName("firstName");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(250)")
+                        .HasColumnName("lastName");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("tblContrator");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccountId = 19,
+                            Email = "tsanchez@nhac.org",
+                            FirstName = "Tom",
+                            IsActive = true,
+                            LastName = "Sanchez"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccountId = 19,
+                            Email = "mreenstien@nhac.org",
+                            FirstName = "Marc",
+                            IsActive = true,
+                            LastName = "Greenstien"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccountId = 19,
+                            Email = "tankert@nhac.org",
+                            FirstName = "Troy",
+                            IsActive = true,
+                            LastName = "Bankert"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AccountId = 19,
+                            Email = "cengston@nhac.org",
+                            FirstName = "Charles",
+                            IsActive = true,
+                            LastName = "Bengston"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AccountId = 19,
+                            Email = "esteigerwald@nhac.org",
+                            FirstName = "Ethan",
+                            IsActive = true,
+                            LastName = "Steigerwald"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AccountId = 19,
+                            Email = "ssales@nhac.org",
+                            FirstName = "Steve",
+                            IsActive = true,
+                            LastName = "Sales"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AccountId = 19,
+                            Email = "tcardwell@nhac.org",
+                            FirstName = "Tim",
+                            IsActive = true,
+                            LastName = "Cardwell"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AccountId = 19,
+                            Email = "tmartine@nhac.org",
+                            FirstName = "Tafoya",
+                            IsActive = true,
+                            LastName = "Martina"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AccountId = 19,
+                            Email = "jcormier@nhac.org",
+                            FirstName = "Jim",
+                            IsActive = true,
+                            LastName = "Cormier"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AccountId = 19,
+                            Email = "sdoyne@nhac.org",
+                            FirstName = "Shaun",
+                            IsActive = true,
+                            LastName = "Doyne"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            AccountId = 19,
+                            Email = "jeadie@nhac.org",
+                            FirstName = "John",
+                            IsActive = true,
+                            LastName = "Eadie"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AccountId = 19,
+                            Email = "ohall@nhac.org",
+                            FirstName = "Orman",
+                            IsActive = true,
+                            LastName = "Hall"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            AccountId = 19,
+                            Email = "dhamby@nhac.org",
+                            FirstName = "David",
+                            IsActive = true,
+                            LastName = "Hamby"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            AccountId = 19,
+                            Email = "cjakim@nhac.org",
+                            FirstName = "Christopher",
+                            IsActive = true,
+                            LastName = "Jakim"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            AccountId = 19,
+                            Email = "ekempton@nhac.org",
+                            FirstName = "Emma",
+                            IsActive = true,
+                            LastName = "Kempton"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            AccountId = 19,
+                            Email = "rroggeveen@nhac.org",
+                            FirstName = "Rob",
+                            IsActive = true,
+                            LastName = "Roggeveen"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            AccountId = 19,
+                            Email = "ssales@nhac.org",
+                            FirstName = "Steve",
+                            IsActive = true,
+                            LastName = "Salas"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            AccountId = 19,
+                            Email = "msnyders@nhac.org",
+                            FirstName = "Mike",
+                            IsActive = true,
+                            LastName = "Snyders"
                         });
                 });
 
@@ -876,77 +1176,7 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 6,
-                            Name = "Management & Coordination 2"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Training 2"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "ORS 2"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Multimedia & Technology Unit 2"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Name = "DHE 3"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Name = "Management & Coordination 3"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Name = "Training 3"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Name = "ORS 3"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Name = "Multimedia & Technology Unit 3"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Name = "DHE 4"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Name = "Management & Coordination 4"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Name = "Training 4"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Name = "ORS 4"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Name = "Multimedia & Technology Unit 4"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Name = "DHE 4"
+                            Name = "DTAG"
                         });
                 });
 
@@ -1284,6 +1514,127 @@ namespace Persistence.Migrations
                     b.ToTable("tblReproLineItem");
                 });
 
+            modelBuilder.Entity("Domain.Vendor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int")
+                        .HasColumnName("account_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(250)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("tblVendor");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "Kinkos"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "FedEx"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "Shipstation"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "Navis Pack & Ship"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "ShippyPro"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "Mimeo"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "EasySip"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "PackAndShip"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AccountId = 14,
+                            IsActive = true,
+                            Name = "AT & T"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AccountId = 14,
+                            IsActive = true,
+                            Name = "Comcast"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            AccountId = 14,
+                            IsActive = true,
+                            Name = "Sunshine"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AccountId = 14,
+                            IsActive = true,
+                            Name = "Motorola"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            AccountId = 14,
+                            IsActive = true,
+                            Name = "Voip Comm"
+                        });
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -1488,6 +1839,17 @@ namespace Persistence.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
+            modelBuilder.Entity("Domain.Contrator", b =>
+                {
+                    b.HasOne("Domain.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("Domain.Disb", b =>
                 {
                     b.HasOne("Domain.AuthorizedUser", "CreatedBy")
@@ -1672,6 +2034,17 @@ namespace Persistence.Migrations
                     b.Navigation("Repro");
 
                     b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Domain.Vendor", b =>
+                {
+                    b.HasOne("Domain.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

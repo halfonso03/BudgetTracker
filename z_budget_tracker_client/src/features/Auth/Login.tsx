@@ -14,7 +14,7 @@ const Login = () => {
   } = useForm({
     defaultValues: {
       email: 'hialfonso@nhac.org',
-      password: 'ReallyComplexPassword#1',
+      password: 'Password#1',
     },
   });
 

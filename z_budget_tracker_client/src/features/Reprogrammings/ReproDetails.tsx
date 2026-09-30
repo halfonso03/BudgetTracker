@@ -6,12 +6,11 @@ import ConfirmModal from '../../components/ConfirmModal';
 import ReproControls from './ReproControls';
 import ReproForm from './ReproForm';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
-import useAuth from '../../contexts/useAuth';
 import toast from 'react-hot-toast';
 
 const ReproDetails = () => {
   console.log('ReproDetails render');
-  const { userId } = useAuth();
+  // const { userId } = useAuth();
 
   const navigate = useNavigate();
   const { id } = useParams();

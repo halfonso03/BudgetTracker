@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import {  NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Button from './Button';
 import ConfirmModal from './ConfirmModal';
 import { useHasUnsavedChangesStore } from '../state/useHasUnsavedChangesStore';
 import useAccount from '../api/hooks/auth/useAuth';
+import axios from 'axios';
 import useAuth from '../contexts/useAuth';
 
 const NavBar = () => {
@@ -11,7 +12,8 @@ const NavBar = () => {
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [urltoGoTo, setUrlToGoTo] = useState<string>('');
   const [loggedOut, setLoggedout] = useState(false);
-
+  // const [user, setUser] = useState(null);
+  // const [loading, setLoading] = useState(true);
   // const reproInputRef = useRef<HTMLInputElement | null>(null);
   const location = useLocation();
   const hasUnsavedChanges = useHasUnsavedChangesStore(
@@ -21,8 +23,35 @@ const NavBar = () => {
     (x) => x.setHasUnsavedChanges,
   );
 
-  const { user } = useAuth();
+  const { user: user, login } = useAuth();
   const { logoutUser } = useAccount();
+  // if (!user) {
+  //   reLogin();
+  // }
+
+  useEffect(() => {
+    // Check if browser cookie is still valid on page reload
+    console.log('123', 123);
+    axios
+      .get('https://localhost:5001/api/account/user-info', {
+        withCredentials: true,
+      })
+      .then((response) => {
+        // .MapIdentityApi returns user info (like email) if the cookie is valid
+        login(response.data);
+
+        console.log('navbar useEffect success');
+        // setUser(response.data);
+      })
+      .catch((error) => {
+        // 401 Unauthorized means no cookie or expired cookie
+        console.log('error', error);
+        // setUser(null);
+      })
+      .finally(() => {
+        // setLoading(false); // Stop showing a blank/loading screen
+      });
+  }, [login]);
 
   // function gotoRepro() {
   //   navigate(`/reprogramming/${reproInputRef.current!.value}`, {
@@ -54,7 +83,6 @@ const NavBar = () => {
 
   function handleNavigation(e: React.MouseEvent<HTMLElement>, url: string) {
     e.preventDefault();
-
     navigate(url);
     return;
 
@@ -127,9 +155,13 @@ const NavBar = () => {
           {hasUnsavedChanges ? <span>Yes</span> : <span>No</span>}
         </div>
       </div> */}
+      <div>
+        {user ? <h1>Welcome back, {user.email}!</h1> : <h1>Please Log In</h1>}
+      </div>
+      <pre>{JSON.stringify(user)}</pre>
 
       <div className="flex justify-between align-middle p-3 text-gray-900 dark:text-gray-100 bg-dark-nav ">
-        <div className="flex gap-3 text-2xl p-2 flex-1">
+        <div className="flex gap-3 text-xl p-2 flex-1">
           {/* <Link
             to="/login"
             className="nav-link"
@@ -143,54 +175,74 @@ const NavBar = () => {
      
           )} */}
           {user && (
-          <>
-            <Button
-              key={loggedOut.toString()}
-              className="nav-link cursor-pointer"
-              onClick={() => {
-                logoutUser();
-                setLoggedout((prev) => !prev);
-              }}
-            >
-              Log Out
-            </Button>
-            <NavLink
-              to="/"
-              className="nav-link"
-              onClick={(e: React.MouseEvent<HTMLElement>) => {
-                handleNavigation(e, '/');
-              }}
-            >
-              Home
-            </NavLink>
-            <NavLink
-              to="/budget"
-              className="nav-link"
-              onClick={(e: React.MouseEvent<HTMLElement>) => {
-                handleBudgetNavigation(e, '/budget');
-              }}
-            >
-              Budgets
-            </NavLink>
-            <NavLink
-              to="/reprogramming"
-              className="nav-link"
-              onClick={(e: React.MouseEvent<HTMLElement>) => {
-                handleReproNavigation(e, '/reprogramming');
-              }}
-            >
-              Reprogrammings
-            </NavLink>
-            <NavLink
-              to="/reports"
-              className="nav-link"
-              onClick={(e: React.MouseEvent<HTMLElement>) => {
-                handleReproNavigation(e, '/reports');
-              }}
-            >
-              Reports
-            </NavLink>
-          </>
+            <div className="flex justify-between w-full">
+              <div className="flex gap-2">
+                <NavLink
+                  to="/"
+                  className="nav-link"
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    handleNavigation(e, '/');
+                  }}
+                >
+                  Home
+                </NavLink>
+                <NavLink
+                  to="/budget"
+                  className="nav-link"
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    handleBudgetNavigation(e, '/budget');
+                  }}
+                >
+                  Budgets
+                </NavLink>
+                <NavLink
+                  to="/reprogramming"
+                  className="nav-link"
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    handleReproNavigation(e, '/reprogramming');
+                  }}
+                >
+                  Reprogrammings
+                </NavLink>
+                <NavLink
+                  to="/reports"
+                  className="nav-link"
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    handleReproNavigation(e, '/reports');
+                  }}
+                >
+                  Reports
+                </NavLink>
+                <NavLink
+                  to="/vendors"
+                  className="nav-link"
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    handleReproNavigation(e, '/vendors');
+                  }}
+                >
+                  Vendors
+                </NavLink>
+                <NavLink
+                  to="/contractors"
+                  className="nav-link"
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    handleReproNavigation(e, '/contractors');
+                  }}
+                >
+                  Contractors
+                </NavLink>
+              </div>
+              <Button
+                key={loggedOut.toString()}
+                className="nav-link cursor-pointer self-end"
+                onClick={() => {
+                  logoutUser();
+                  setLoggedout((prev) => !prev);
+                }}
+              >
+                Log Out
+              </Button>
+            </div>
           )}
 
           {/* <div className="flex text-sm gap-3">

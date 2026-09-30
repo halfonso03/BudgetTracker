@@ -8,6 +8,8 @@ import {
 import { RechartsDevtools } from '@recharts/devtools';
 import useAccount from '../api/hooks/auth/useAuth';
 import useAuth from '../contexts/useAuth';
+import Switch from '../components/Switch';
+import { useState } from 'react';
 
 const renderCustomizedLabel = ({
   cx,
@@ -36,7 +38,6 @@ const renderCustomizedLabel = ({
 
 const RADIAN = Math.PI / 180;
 const Home = () => {
-
   // const { categories: accounts, catSuccess } = useCategories(true, true);
   // if (catSuccess) console.log('categories', accounts);
 
@@ -45,6 +46,8 @@ const Home = () => {
 
   // if (loadingUserInfo) return 'Loading user...';
   // if (!currentUser) return 'Error loading user';
+
+  const [isOn, setIsOn] = useState(false);
 
   if (currentUser) {
     login(currentUser);
@@ -83,6 +86,7 @@ const Home = () => {
 
   return (
     <div>
+      <Switch isOn={isOn} handleToggle={() => setIsOn(!isOn)}></Switch>
       <PieChart
         className="text-"
         style={{

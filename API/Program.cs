@@ -8,54 +8,64 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-
+// 1. Add Controllers with Global Authorization Filter
 builder.Services.AddControllers(opt =>
 {
-    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+    var policy = new AuthorizationPolicyBuilder()
+        .AddAuthenticationSchemes(IdentityConstants.ApplicationScheme)
+        .RequireAuthenticatedUser()
+        .Build();
+
     opt.Filters.Add(new AuthorizeFilter(policy));
 });
 
-
+// 2. Database Context configuration
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+// 3. Identity Setup
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
-    // opt.SignIn.RequireConfirmedEmail = true;
 })
 .AddRoles<ApplicationRole>()
 .AddEntityFrameworkStores<AppDbContext>();
 
-
+// FIX: Tells controllers to validate the Identity Cookie instead of checking for a Bearer token
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+    options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+});
+// 4. Fine-tune Application Cookies for React Integration
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-    options.Cookie.SameSite = SameSiteMode.None; // or None if using HTTPS locally
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Set to SameAsRequest if strict HTTP locally
+    options.Cookie.SameSite = SameSiteMode.None; // Set to Lax if React and API share exact same domain/port
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    options.SlidingExpiration = true;
 });
 
-builder.Services.AddAuthorization();
+// 5. Cross-Origin Resource Sharing (CORS) Configuration
 builder.Services.AddCors(opt =>
-            {
-                opt.AddPolicy("CorsPolicy", policy =>
-                {
-                    policy
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials()
-                        .WithOrigins("http://localhost:3001", "https://localhost:3001", "https://localhost:5001");
-                });
-            });
+{
+    opt.AddPolicy("CorsPolicy", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:3001", "https://localhost:3001", "https://localhost:5001")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials(); // Essential for passing cookies
+    });
+});
 
-
+// 6. Application Dependency Injections
 builder.Services.AddTransient<ICommentsService, CommentsService>();
 builder.Services.AddTransient<ICategoryService, CategoriesService>();
 builder.Services.AddTransient<IGrantService, GrantService>();
@@ -77,14 +87,11 @@ builder.Services.AddTransient<IReportRunnerService, ReportRunnerService>((provid
     );
 });
 
-
-
+builder.Services.AddTransient<VendorService, VendorService>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-
-// app.UseHttpsRedirection();
+// 7. Request Pipeline Routing Middleware
 app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
@@ -93,12 +100,14 @@ app.UseAuthorization();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-
 app.MapControllers();
-app.MapGroup("api").MapIdentityApi<ApplicationUser>();
+
+// Maps Identity to /api/login, /api/register, and /api/manage/info
+// app.MapGroup("api").MapIdentityApi<ApplicationUser>();
+
 app.MapFallbackToController("Index", "Fallback");
 
-
+// 8. DB Migration & Initial Seeding Configuration
 using var scope = app.Services.CreateScope();
 var services = scope.ServiceProvider;
 
@@ -110,29 +119,45 @@ try
 
     await context.Database.MigrateAsync();
 
-    var signInManager = services.GetRequiredService<SignInManager<ApplicationUser>>();
-
-    var admin = await userManager.FindByEmailAsync(builder.Configuration.GetValue<string>("AdminEmail")!);
-
+    // Seed Admin Role
     var role = await roleManager.FindByNameAsync("ADMIN");
     if (role == null)
     {
         await roleManager.CreateAsync(new ApplicationRole() { Name = "Admin", NormalizedName = "ADMIN" });
     }
 
-    var userRole = await roleManager.FindByNameAsync("USER");
-
+    // Seed User Role
+    var userRole = await userManager.FindByNameAsync("USER");
     if (userRole == null)
     {
         await roleManager.CreateAsync(new ApplicationRole() { Name = "User", NormalizedName = "USER" });
+    }
+
+    // Seed Default Administrator User
+    var adminEmail = builder.Configuration.GetValue<string>("AdminEmail")!;
+    var user1 = await userManager.FindByEmailAsync(adminEmail);
+
+    if (user1 == null)
+    {
+        var result = await userManager.CreateAsync(new ApplicationUser
+        {
+            FirstName = "Hector",
+            LastName = "Alfonso",
+            UserName = adminEmail,
+            NormalizedEmail = adminEmail.ToUpper(),
+            Email = adminEmail,
+        }, "Password#1");
+
+        if (!result.Succeeded)
+        {
+            throw new Exception("Could not create seeding user");
+        }
     }
 }
 catch (Exception ex)
 {
     var logger = services.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex, "migration error");
+    logger.LogError(ex, "An error occurred during database migration or seeding.");
 }
 
-
 app.Run();
-

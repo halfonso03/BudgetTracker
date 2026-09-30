@@ -8,9 +8,13 @@ import { useState } from 'react';
 import type { AxiosError, AxiosResponse } from 'axios';
 export type LoginFormValues = { email: string; password: string };
 export type LoginResponse = {
-  token: string;
-  loginId: string;
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  roles:string[]
 };
+
 export default function useAccount() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -42,27 +46,18 @@ export default function useAccount() {
         creds,
       );
 
-      console.log('response', response)
+      console.log('response', response);
       const loginResponse = response.data as LoginResponse;
       return loginResponse;
     },
     onSuccess: (response: LoginResponse) => {
-
-      console.log('loginResponse', response)
       if (hasUnsavedChanges) {
         setHasUnsavedChanges(false);
       }
       queryClient.invalidateQueries({
         queryKey: ['user'],
       });
-
-      console.log('response', response);
-      login({
-        id: '1',
-        firstName: 'hector',
-        lastName: 'alfonso',
-        email: 'hialfonso@nhac.org',
-      });
+      login(response);
       navigate('/', { replace: true });
     },
     onError: (error: AxiosError) => {

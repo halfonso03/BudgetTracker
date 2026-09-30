@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     public class AccountController(SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager) : BaseApiController
     {
 
@@ -43,9 +44,18 @@ namespace API.Controllers
             {
                 // 3. Return safe user data (avoid returning the raw EF Core entity with password hashes)
 
+
                 var claimsPrincipal = await signInManager.CreateUserPrincipalAsync(user);
-                
-                await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, claimsPrincipal);
+
+                // FIX: Configure cookie behavior explicitly so it persists across reloads
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = true, // <-- Crucial! Tell the browser to save the cookie on disk, not just RAM
+                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60)
+                };
+    
+
+                await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, claimsPrincipal, authProperties);
 
                 var roles = await userManager.GetRolesAsync(user);
 
@@ -103,6 +113,12 @@ namespace API.Controllers
 
             return ValidationProblem();
         }
+
+        // [HttpGet("me")]
+        // public IActionResult GetCurrentUser()
+        // {
+        //     return Ok(new { Username = User!.Identity!.Name });
+        // }
 
         [HttpGet("user-info")]
         public async Task<ActionResult<UserInfoResponseDto>> GetUserInfo()
