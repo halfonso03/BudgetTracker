@@ -6,18 +6,22 @@ type Props = {
 };
 
 const Switch = ({ isOn, handleToggle }: Props) => {
+  const id = crypto.randomUUID()
   return (
     <div>
       <input
         checked={isOn}
-        onChange={handleToggle}
+        onChange={() => {
+console.log('123', 123)
+          handleToggle();
+        }}
         className="react-switch-checkbox"
-        id={`react-switch-new`}
+        id={`react-switch-new_${id}`}
         type="checkbox"
       />
       <label
         className={`react-switch-label ${isOn ? 'bg-blue-700': 'bg-neutral-500' }`}
-        htmlFor={`react-switch-new`}
+        htmlFor={`react-switch-new_${id}`}
       >
         <span className={`react-switch-button`} />
       </label>

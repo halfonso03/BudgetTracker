@@ -70,7 +70,7 @@ type Selections = {
 };
 
 const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
-  console.log('ReproForm render');
+  // console.log('ReproForm render');
 
   const DUP_LINES =
     'There are duplicate lines (Look for the duplicate selections for an Initiative, Grant, Category and Account)';
@@ -106,7 +106,9 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   // const [isDirtyState, setIsDirtyState] = useState<DirtyState>({
   //   formValuesIsDirty: false,
   //   numbersAresDirty: false,
-  const [overrideNeg, setOverrideNeg] = useState(false);
+  const [overrideNeg, setOverrideNeg] = useState(
+    repro.lineItems.some((x) => x.overrideNegativeBalance === true),
+  );
 
   if (repro.year === 0) throw new Error('no year');
 
@@ -575,7 +577,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   }
 
   async function onConfirmPost() {
-    const lineItems = lines.map((l) => ({
+    const lineItems: ReproLineItemRequest[] = lines.map((l) => ({
       rowId: l.rowId,
       initiativeId: l.initiativeId,
       grantId: l.grantId,
@@ -584,6 +586,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       comment: l.comment,
       increase: parseFormattedNumber(l.increase?.toString() ?? '0.00'),
       decrease: parseFormattedNumber(l.decrease?.toString() ?? '0.00'),
+      newRemainingAmount: l.newRemainingAmount,
     }));
 
     if (reproHeader.id === 0) {
@@ -597,13 +600,21 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     lineItems: ReproLineItemRequest[],
     posted: boolean = false,
   ) {
+    const linesItems2 = lineItems.map((l) => {
+      return {
+        ...l,
+        overrideNegativeBalance:
+          overrideNeg === true && l.newRemainingAmount < 0 ? true : null,
+      };
+    });
     const reproToSave: CreateReproRequest = {
       createdById: +user!.id,
       posted: posted,
       justification: reproHeader.justification,
-      lineItems: lineItems,
+      lineItems: linesItems2,
       overrideNegativeBalance: overrideNeg,
     };
+
     await createRepro.mutateAsync(reproToSave, {
       onSuccess: async (id) => {
         const postedDate = new Date();
@@ -628,8 +639,10 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             return {
               ...l,
               comment: l.comment ?? '',
-              newRemainingAmount: l.remainingAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
-              newAmount: l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+              newRemainingAmount:
+                l.remainingAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+              newAmount:
+                l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
             };
           }),
           rowBalances: savedBalances,
@@ -1130,20 +1143,6 @@ function noNegativeBalances(lines: ReproLineItem[]): boolean {
 }
 
 function hasNegativeRemainingBalances(lines: ReproLineItem[]): boolean {
-  console.log('lines', lines);
-
-  const t = lines.map((x) => ({
-    accname: x.accountName,
-    curr: x.currentAmount,
-    nCurr: x.newCurrentAmount,
-    inc: x.increase,
-    dec: x.decrease,
-    rem: x.remainingAmount,
-    newRem: x.newRemainingAmount,
-  }));
-
-  console.log('t', t);
-
   const lines2 = lines
     .map((l) => ({
       rem: l.remainingAmount,
@@ -1153,8 +1152,6 @@ function hasNegativeRemainingBalances(lines: ReproLineItem[]): boolean {
     .map((l) => ({
       proposedRem: l.rem + l.inc - l.dec,
     }));
-
-  // console.log('lines2', lines2);
 
   return lines2.some((x) => x.proposedRem < 0);
 }

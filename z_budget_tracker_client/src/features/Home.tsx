@@ -41,17 +41,16 @@ const Home = () => {
   // const { categories: accounts, catSuccess } = useCategories(true, true);
   // if (catSuccess) console.log('categories', accounts);
 
-  const { currentUser } = useAccount();
-  const { login } = useAuth();
+  // const { currentUser } = useAccount();
+  // const { login } = useAuth();
 
   // if (loadingUserInfo) return 'Loading user...';
   // if (!currentUser) return 'Error loading user';
 
-  const [isOn, setIsOn] = useState(false);
 
-  if (currentUser) {
-    login(currentUser);
-  }
+  // if (currentUser) {
+  //   login(currentUser);
+  // }
 
   const data01 = [
     {
@@ -86,7 +85,6 @@ const Home = () => {
 
   return (
     <div>
-      <Switch isOn={isOn} handleToggle={() => setIsOn(!isOn)}></Switch>
       <PieChart
         className="text-"
         style={{

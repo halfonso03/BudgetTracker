@@ -99,7 +99,8 @@ namespace Application.Services
                             GrantName = x.Grant!.Name,
                             CategoryName = x.Category!.Name,
                             AccountName = x.Account!.Name,
-                            Year = x.Year
+                            Year = x.Year,
+                            OverrideNegativeBalance = x.AllowNegativeBalance
                         })]
                 };
 
@@ -146,7 +147,8 @@ namespace Application.Services
                         RowId = x.RowId,
                         Year = grant.Year,
                         Comment = x.Comment,
-                        BudgetLineItemId = null
+                        BudgetLineItemId = null,
+                        AllowNegativeBalance = x.OverrideNegativeBalance
                     })]
                 };
 

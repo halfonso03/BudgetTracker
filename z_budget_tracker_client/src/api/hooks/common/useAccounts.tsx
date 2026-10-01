@@ -9,12 +9,10 @@ const fetchAccounts = async (
 };
 
 const useAccounts = (categoryId: number | undefined) => {
-  const queryClient = useQueryClient();
 
   const { data, isLoading, status, isFetching } = useQuery<Account[]>({
     queryKey: ['accounts', categoryId],
     queryFn: () => fetchAccounts(+categoryId!),
-    enabled: !queryClient.getQueryData(['accounts', categoryId]),
   });
 
   return { data, isLoading, status, isFetching };

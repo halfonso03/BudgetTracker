@@ -183,15 +183,15 @@ namespace Persistence
             /// CATEGORIES
             /// //////////////////////////////////
             builder.Entity<Category>().HasData(
-                new Category { Id = 1, Name = "Personnel" },
-                new Category { Id = 2, Name = "Facilities" },
-                new Category { Id = 3, Name = "Fringe" },
-                new Category { Id = 4, Name = "Equipment" },
-                new Category { Id = 5, Name = "Services Contractors" },
-                new Category { Id = 6, Name = "Services Vendors" },
-                new Category { Id = 7, Name = "Supplies" },
-                new Category { Id = 8, Name = "Travel Contractor" },
-                new Category { Id = 9, Name = "Travel Agency" }
+                new Category { Id = 1, Name = "Personnel", SortOrder = 1 },
+                new Category { Id = 2, Name = "Facilities", SortOrder = 2 },
+                new Category { Id = 3, Name = "Fringe", SortOrder = 3 },
+                new Category { Id = 4, Name = "Equipment", SortOrder = 4 },
+                new Category { Id = 5, Name = "Services Contractors", SortOrder = 5 },
+                new Category { Id = 6, Name = "Services Vendors", SortOrder = 6 },
+                new Category { Id = 7, Name = "Supplies", SortOrder = 7 },
+                new Category { Id = 8, Name = "Travel Contractor", SortOrder = 8 },
+                new Category { Id = 9, Name = "Travel Agency", SortOrder = 9 }
             );
 
             // Personnel
@@ -479,7 +479,8 @@ namespace Persistence
             builder.Entity<Account>().Property(x => x.CategoryId).HasColumnName("category_id");
 
             builder.Entity<Category>().Property(x => x.Id).HasColumnName("id");
-            builder.Entity<Category>().Property(x => x.Name).HasColumnName("name").HasColumnType("VARCHAR(50)"); ;
+            builder.Entity<Category>().Property(x => x.SortOrder).HasColumnName("sort_order");
+            builder.Entity<Category>().Property(x => x.Name).HasColumnName("name").HasColumnType("VARCHAR(50)");
 
             builder.Entity<Initiative>().Property(x => x.Id).HasColumnName("id");
             builder.Entity<Initiative>().Property(x => x.Name).HasColumnName("name").HasColumnType("VARCHAR(200)"); ;
@@ -541,6 +542,7 @@ namespace Persistence
             builder.Entity<ReproLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME2");
             builder.Entity<ReproLineItem>().Property(x => x.Comment).HasColumnName("comment").HasColumnType("VARCHAR(MAX)");
             builder.Entity<ReproLineItem>().Property(x => x.BudgetLineItemId).HasColumnName("budget_line_id");
+            builder.Entity<ReproLineItem>().Property(x => x.AllowNegativeBalance).HasColumnType("bit").HasColumnName("allow_neg_balance");
             builder.Entity<ReproLineItem>()
                         .HasIndex(a => new { a.ReproId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
                         .IsUnique();

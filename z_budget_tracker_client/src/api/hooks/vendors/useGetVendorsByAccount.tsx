@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import agent from '../../agent';
 
 const useGetVendorsByAccount = (accountId: number | null) => {
+
   const { data, isLoading } = useQuery<Vendor[]>({
     queryFn: async (): Promise<Vendor[]> => {
       const response = await agent.get<Vendor[]>(
@@ -18,6 +19,8 @@ const useGetVendorsByAccount = (accountId: number | null) => {
 };
 
 const useGetAllVendors = () => {
+
+
   const { data, isLoading } = useQuery<Vendor[]>({
     queryFn: async (): Promise<Vendor[]> => {
       const response = await agent.get<Vendor[]>(`/vendor`);

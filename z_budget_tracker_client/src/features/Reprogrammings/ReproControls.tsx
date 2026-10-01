@@ -20,7 +20,7 @@ const ReproControls = ({
   onDuplicateReprogramming,
   reproId,
 }: Props) => {
-  console.log('ReproControls render');
+  // console.log('ReproControls render');
 
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');

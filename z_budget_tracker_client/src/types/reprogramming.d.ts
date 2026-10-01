@@ -32,7 +32,7 @@ type LineItem = {
 
 type ReproLineItem = {
     rowId: number
-     year?: number
+    year?: number
     accountId: number
     accountName: string
     categoryId: number,
@@ -49,6 +49,7 @@ type ReproLineItem = {
     remainingAmount: number
     newRemainingAmount: number
     comment?: string
+    overrideNegativeBalance?: boolean | null
 }
 
 type ReproAccountBalance = {
@@ -111,6 +112,8 @@ type ReproLineItemRequest = {
     increase: number
     decrease: number
     comment?: string | null
+    overrideNegativeBalance?: boolean | null
+    newRemainingAmount: number
 }
 
 

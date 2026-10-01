@@ -13,7 +13,6 @@ namespace Domain
         public IList<Account> Accounts { get; set; } = [];
         public IList<ReproLineItem>? ReproLineItems { get; set; }
         public IList<DisbLineItem>? DisbLineItems { get; set; }
-
-
+        public required int SortOrder { get; set; }
     }
 }

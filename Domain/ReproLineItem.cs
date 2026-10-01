@@ -22,6 +22,7 @@ namespace Domain
         public decimal? Increase { get; set; }
         public decimal? Decrease { get; set; }
         public required int Year { get; set; }
+        public bool? AllowNegativeBalance { get; set; }
         public required DateTime EntryDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public int? UpdatedById { get; set; }
@@ -31,7 +32,6 @@ namespace Domain
 
         [ForeignKey("ReproId")]
         public Repro? Repro { get; set; }
-
         public Initiative? Initiative { get; set; }
         public Grant? Grant { get; set; }
         public Category? Category { get; set; }

@@ -15,6 +15,5 @@ namespace Application.DTOs.Repro
         [Required]
         [DeniedValues(0)]
         public required int CreatedById { get; set; }
-
     }
 }

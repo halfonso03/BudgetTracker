@@ -38,5 +38,7 @@ namespace Application.DTOs.Repro
         public decimal Decrease { get; set; }
 
         public string? Comment { get; set; }
+
+        public bool? OverrideNegativeBalance{ get; set; }
     }
 }

@@ -12,10 +12,12 @@ const NavBar = () => {
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [urltoGoTo, setUrlToGoTo] = useState<string>('');
   const [loggedOut, setLoggedout] = useState(false);
+
+  const location = useLocation();
+
   // const [user, setUser] = useState(null);
   // const [loading, setLoading] = useState(true);
   // const reproInputRef = useRef<HTMLInputElement | null>(null);
-  const location = useLocation();
   const hasUnsavedChanges = useHasUnsavedChangesStore(
     (x) => x.hasUnsavedChanges,
   );
@@ -31,17 +33,19 @@ const NavBar = () => {
 
   useEffect(() => {
     // Check if browser cookie is still valid on page reload
-    console.log('123', 123);
+    if (user) return;
+
     axios
       .get('https://localhost:5001/api/account/user-info', {
         withCredentials: true,
       })
       .then((response) => {
         // .MapIdentityApi returns user info (like email) if the cookie is valid
-        login(response.data);
 
-        console.log('navbar useEffect success');
-        // setUser(response.data);
+        login(response.data);
+        console.log('location', location.pathname);
+        console.log('user', user);
+        navigate(location.pathname);
       })
       .catch((error) => {
         // 401 Unauthorized means no cookie or expired cookie
@@ -51,7 +55,7 @@ const NavBar = () => {
       .finally(() => {
         // setLoading(false); // Stop showing a blank/loading screen
       });
-  }, [login]);
+  }, [location.pathname, login, navigate, user]);
 
   // function gotoRepro() {
   //   navigate(`/reprogramming/${reproInputRef.current!.value}`, {
