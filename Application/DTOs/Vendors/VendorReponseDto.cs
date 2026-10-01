@@ -4,24 +4,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 
-namespace Application.DTOs.Vendors
+namespace Application.DTOs.Payees
 {
-    public class VendorReponseDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public int AccountId { get; set; }
-        public bool IsActive { get; set; }
+    // public class PayeeResponseDto
+    // {
+    //     public int Id { get; set; }
+    //     public string Name { get; set; } = "";
+    //     public int AccountId { get; set; }
+    //     public bool IsActive { get; set; }
+    //     public required string AccountName { get; set; }
 
-        public static VendorReponseDto Create(int id, string name, int accountId, bool isActive)
-        {
-            return new VendorReponseDto
-            {
-                Id = id,
-                Name = name,
-                AccountId = accountId,
-                IsActive = isActive
-            };
-        }
-    }
+    //     // public static PayeeResponseDto Create(int id, string name, int accountId, bool isActive)
+    //     // {
+    //     //     return new PayeeResponseDto
+    //     //     {
+    //     //         Id = id,
+    //     //         Name = name,
+    //     //         AccountId = accountId,
+    //     //         IsActive = isActive
+    //     //     };
+    //     // }
+    // }
 }

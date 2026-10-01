@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Domain;
 
-namespace Application.DTOs.Vendors
+namespace Application.DTOs.Payees
 {
     public class ContratorReponseDto
     {

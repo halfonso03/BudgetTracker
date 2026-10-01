@@ -20,3 +20,10 @@ join tblGrant g on g.id = b.grant_id
 
 GO
 
+create view vwVendorSummary
+AS
+SELECT v.id, v.name, v.is_active, MAX(d.posted_date) lastPayment, DATEDIFF(d, MAX(d.posted_date), GETDATE()) daysSinceLastPayment
+FROM tblVendor v LEFT OUTER JOIN tblAccount a ON v.account_id = a.id
+    LEFT OUTER JOIN tblDisbLineItem l ON v.id = l.vendor_id
+    LEFT OUTER JOIN tblDisb d ON d.id = l.disb_id
+GROUP BY v.id, v.name, v.is_active, a.name, a.id

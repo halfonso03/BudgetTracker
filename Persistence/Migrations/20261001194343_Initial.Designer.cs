@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260930154251_initial2")]
-    partial class initial2
+    [Migration("20261001194343_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -653,6 +653,10 @@ namespace Persistence.Migrations
                         .HasColumnType("VARCHAR(50)")
                         .HasColumnName("name");
 
+                    b.Property<int>("SortOrder")
+                        .HasColumnType("int")
+                        .HasColumnName("sort_order");
+
                     b.HasKey("Id");
 
                     b.ToTable("tblCategory");
@@ -661,47 +665,56 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Personnel"
+                            Name = "Personnel",
+                            SortOrder = 1
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Facilities"
+                            Name = "Facilities",
+                            SortOrder = 2
                         },
                         new
                         {
                             Id = 3,
-                            Name = "Fringe"
+                            Name = "Fringe",
+                            SortOrder = 3
                         },
                         new
                         {
                             Id = 4,
-                            Name = "Equipment"
+                            Name = "Equipment",
+                            SortOrder = 4
                         },
                         new
                         {
                             Id = 5,
-                            Name = "Services Contractors"
+                            Name = "Services Contractors",
+                            SortOrder = 5
                         },
                         new
                         {
                             Id = 6,
-                            Name = "Services Vendors"
+                            Name = "Services Payees",
+                            SortOrder = 6
                         },
                         new
                         {
                             Id = 7,
-                            Name = "Supplies"
+                            Name = "Supplies",
+                            SortOrder = 7
                         },
                         new
                         {
                             Id = 8,
-                            Name = "Travel Contractor"
+                            Name = "Travel Contractor",
+                            SortOrder = 8
                         },
                         new
                         {
                             Id = 9,
-                            Name = "Travel Agency"
+                            Name = "Travel Agency",
+                            SortOrder = 9
                         });
                 });
 
@@ -742,170 +755,6 @@ namespace Persistence.Migrations
                     b.HasIndex("AccountId");
 
                     b.ToTable("tblContrator");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccountId = 19,
-                            Email = "tsanchez@nhac.org",
-                            FirstName = "Tom",
-                            IsActive = true,
-                            LastName = "Sanchez"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AccountId = 19,
-                            Email = "mreenstien@nhac.org",
-                            FirstName = "Marc",
-                            IsActive = true,
-                            LastName = "Greenstien"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AccountId = 19,
-                            Email = "tankert@nhac.org",
-                            FirstName = "Troy",
-                            IsActive = true,
-                            LastName = "Bankert"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AccountId = 19,
-                            Email = "cengston@nhac.org",
-                            FirstName = "Charles",
-                            IsActive = true,
-                            LastName = "Bengston"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AccountId = 19,
-                            Email = "esteigerwald@nhac.org",
-                            FirstName = "Ethan",
-                            IsActive = true,
-                            LastName = "Steigerwald"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AccountId = 19,
-                            Email = "ssales@nhac.org",
-                            FirstName = "Steve",
-                            IsActive = true,
-                            LastName = "Sales"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AccountId = 19,
-                            Email = "tcardwell@nhac.org",
-                            FirstName = "Tim",
-                            IsActive = true,
-                            LastName = "Cardwell"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AccountId = 19,
-                            Email = "tmartine@nhac.org",
-                            FirstName = "Tafoya",
-                            IsActive = true,
-                            LastName = "Martina"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            AccountId = 19,
-                            Email = "jcormier@nhac.org",
-                            FirstName = "Jim",
-                            IsActive = true,
-                            LastName = "Cormier"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            AccountId = 19,
-                            Email = "sdoyne@nhac.org",
-                            FirstName = "Shaun",
-                            IsActive = true,
-                            LastName = "Doyne"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            AccountId = 19,
-                            Email = "jeadie@nhac.org",
-                            FirstName = "John",
-                            IsActive = true,
-                            LastName = "Eadie"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            AccountId = 19,
-                            Email = "ohall@nhac.org",
-                            FirstName = "Orman",
-                            IsActive = true,
-                            LastName = "Hall"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            AccountId = 19,
-                            Email = "dhamby@nhac.org",
-                            FirstName = "David",
-                            IsActive = true,
-                            LastName = "Hamby"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            AccountId = 19,
-                            Email = "cjakim@nhac.org",
-                            FirstName = "Christopher",
-                            IsActive = true,
-                            LastName = "Jakim"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            AccountId = 19,
-                            Email = "ekempton@nhac.org",
-                            FirstName = "Emma",
-                            IsActive = true,
-                            LastName = "Kempton"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            AccountId = 19,
-                            Email = "rroggeveen@nhac.org",
-                            FirstName = "Rob",
-                            IsActive = true,
-                            LastName = "Roggeveen"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            AccountId = 19,
-                            Email = "ssales@nhac.org",
-                            FirstName = "Steve",
-                            IsActive = true,
-                            LastName = "Salas"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            AccountId = 19,
-                            Email = "msnyders@nhac.org",
-                            FirstName = "Mike",
-                            IsActive = true,
-                            LastName = "Snyders"
-                        });
                 });
 
             modelBuilder.Entity("Domain.Disb", b =>
@@ -1020,6 +869,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("initiative_id");
 
+                    b.Property<int>("PayeeId")
+                        .HasColumnType("int")
+                        .HasColumnName("vendor_id");
+
                     b.Property<int>("RowId")
                         .HasColumnType("int")
                         .HasColumnName("row_id");
@@ -1047,6 +900,8 @@ namespace Persistence.Migrations
                     b.HasIndex("GrantId");
 
                     b.HasIndex("InitiativeId");
+
+                    b.HasIndex("PayeeId");
 
                     b.HasIndex("UpdatedById");
 
@@ -1442,6 +1297,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("account_id");
 
+                    b.Property<bool?>("AllowNegativeBalance")
+                        .HasColumnType("bit")
+                        .HasColumnName("allow_neg_balance");
+
                     b.Property<int?>("BudgetLineItemId")
                         .HasColumnType("int")
                         .HasColumnName("budget_line_id");
@@ -1533,7 +1392,8 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("VARCHAR(250)");
+                        .HasColumnType("VARCHAR(250)")
+                        .HasColumnName("name");
 
                     b.HasKey("Id");
 
@@ -1632,7 +1492,163 @@ namespace Persistence.Migrations
                             AccountId = 14,
                             IsActive = true,
                             Name = "Voip Comm"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Tom Sanchez"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Marc Greenstien"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Troy Bankert"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Charles Bengston"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Ethan Steigerwald"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Steve Sales"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Tim Cardwell"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Tafoya Martina"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Jim Cormier"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Shaun Doyne"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "John Eadie"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Orman Hall"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "David Hamby"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Christopher Jakim"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Emma Kempton"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Rob Roggeveen"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Steve Salas"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Mike Snyders"
                         });
+                });
+
+            modelBuilder.Entity("Domain.Views.PayeeSummary", b =>
+                {
+                    b.Property<int?>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AccountName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("DaysSinceLastPayment")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<DateTime?>("LastPayment")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vwPayeeSummary", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1917,6 +1933,12 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Vendor", "Payee")
+                        .WithMany("DisbLineItems")
+                        .HasForeignKey("PayeeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Domain.AuthorizedUser", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
@@ -1932,6 +1954,8 @@ namespace Persistence.Migrations
                     b.Navigation("Grant");
 
                     b.Navigation("Initiative");
+
+                    b.Navigation("Payee");
 
                     b.Navigation("UpdatedBy");
                 });
@@ -2135,6 +2159,11 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Repro", b =>
                 {
                     b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("Domain.Vendor", b =>
+                {
+                    b.Navigation("DisbLineItems");
                 });
 #pragma warning restore 612, 618
         }

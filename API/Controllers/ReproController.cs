@@ -1,21 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using API.Extensions;
-using Application.Core;
 using Application.DTOs;
-using Application.DTOs.Budgets;
 using Application.DTOs.Repro;
 using Application.Interfaces;
 using Application.PaginationHelpers;
-using Domain;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
 
 namespace API.Controllers
 {

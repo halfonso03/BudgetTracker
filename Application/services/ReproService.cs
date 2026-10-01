@@ -647,7 +647,7 @@ namespace Application.Services
 
 
             var pagedItemsList =
-                            await PagedList<ReproSearchReproResponseDto>.ToPagedList(sorted, paginationParams.PageNumber, paginationParams.PageSize);
+                           PagedList<ReproSearchReproResponseDto>.ToPagedList(sorted, paginationParams.PageNumber, paginationParams.PageSize);
 
             pagedItemsList.ForEach(r =>
             {
@@ -660,9 +660,6 @@ namespace Application.Services
                 ItemCount = pagedItemsList.Metadata.TotalCount,
                 MetaData = pagedItemsList.Metadata
             };
-
-
-
 
             return Result<ReproSearchResponseDto>.Success(result);
         }

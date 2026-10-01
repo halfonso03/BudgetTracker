@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -90,7 +90,8 @@ namespace Persistence.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    name = table.Column<string>(type: "VARCHAR(50)", nullable: false)
+                    name = table.Column<string>(type: "VARCHAR(50)", nullable: false),
+                    sort_order = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -510,7 +511,7 @@ namespace Persistence.Migrations
                 {
                     id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "VARCHAR(250)", nullable: false),
+                    name = table.Column<string>(type: "VARCHAR(250)", nullable: false),
                     account_id = table.Column<int>(type: "int", nullable: false),
                     is_active = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -553,70 +554,6 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblDisbLineItem",
-                columns: table => new
-                {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    disb_id = table.Column<int>(type: "int", nullable: false),
-                    row_id = table.Column<int>(type: "int", nullable: false),
-                    initiative_id = table.Column<int>(type: "int", nullable: false),
-                    grant_id = table.Column<int>(type: "int", nullable: false),
-                    category_id = table.Column<int>(type: "int", nullable: false),
-                    account_id = table.Column<int>(type: "int", nullable: false),
-                    amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
-                    year = table.Column<int>(type: "int", nullable: false),
-                    entry_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
-                    update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
-                    updated_by = table.Column<int>(type: "int", nullable: true),
-                    comment = table.Column<string>(type: "VARCHAR(MAX)", nullable: true),
-                    budget_line_id = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tblDisbLineItem", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_tblDisbLineItem_tblAccount_account_id",
-                        column: x => x.account_id,
-                        principalTable: "tblAccount",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tblDisbLineItem_tblAuthorizedUsers_updated_by",
-                        column: x => x.updated_by,
-                        principalTable: "tblAuthorizedUsers",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_tblDisbLineItem_tblBudget_budget_line_id",
-                        column: x => x.budget_line_id,
-                        principalTable: "tblBudget",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_tblDisbLineItem_tblCategory_category_id",
-                        column: x => x.category_id,
-                        principalTable: "tblCategory",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_tblDisbLineItem_tblDisb_disb_id",
-                        column: x => x.disb_id,
-                        principalTable: "tblDisb",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tblDisbLineItem_tblGrant_grant_id",
-                        column: x => x.grant_id,
-                        principalTable: "tblGrant",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tblDisbLineItem_tblInitiative_initiative_id",
-                        column: x => x.initiative_id,
-                        principalTable: "tblInitiative",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "tblReproLineItem",
                 columns: table => new
                 {
@@ -631,6 +568,7 @@ namespace Persistence.Migrations
                     increase = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: true),
                     decrease = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: true),
                     year = table.Column<int>(type: "int", nullable: false),
+                    allow_neg_balance = table.Column<bool>(type: "bit", nullable: true),
                     entry_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
                     updated_by = table.Column<int>(type: "int", nullable: true),
@@ -681,6 +619,76 @@ namespace Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "tblDisbLineItem",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    disb_id = table.Column<int>(type: "int", nullable: false),
+                    row_id = table.Column<int>(type: "int", nullable: false),
+                    initiative_id = table.Column<int>(type: "int", nullable: false),
+                    grant_id = table.Column<int>(type: "int", nullable: false),
+                    category_id = table.Column<int>(type: "int", nullable: false),
+                    account_id = table.Column<int>(type: "int", nullable: false),
+                    amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
+                    year = table.Column<int>(type: "int", nullable: false),
+                    vendor_id = table.Column<int>(type: "int", nullable: false),
+                    entry_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
+                    update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
+                    updated_by = table.Column<int>(type: "int", nullable: true),
+                    comment = table.Column<string>(type: "VARCHAR(MAX)", nullable: true),
+                    budget_line_id = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblDisbLineItem", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblAccount_account_id",
+                        column: x => x.account_id,
+                        principalTable: "tblAccount",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblAuthorizedUsers_updated_by",
+                        column: x => x.updated_by,
+                        principalTable: "tblAuthorizedUsers",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblBudget_budget_line_id",
+                        column: x => x.budget_line_id,
+                        principalTable: "tblBudget",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblCategory_category_id",
+                        column: x => x.category_id,
+                        principalTable: "tblCategory",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblDisb_disb_id",
+                        column: x => x.disb_id,
+                        principalTable: "tblDisb",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblGrant_grant_id",
+                        column: x => x.grant_id,
+                        principalTable: "tblGrant",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblInitiative_initiative_id",
+                        column: x => x.initiative_id,
+                        principalTable: "tblInitiative",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblDisbLineItem_tblVendor_vendor_id",
+                        column: x => x.vendor_id,
+                        principalTable: "tblVendor",
+                        principalColumn: "id");
+                });
+
             migrationBuilder.InsertData(
                 table: "tblAuthorizedUsers",
                 columns: new[] { "id", "last_login_date", "windows_login" },
@@ -703,18 +711,18 @@ namespace Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "tblCategory",
-                columns: new[] { "id", "name" },
+                columns: new[] { "id", "name", "sort_order" },
                 values: new object[,]
                 {
-                    { 1, "Personnel" },
-                    { 2, "Facilities" },
-                    { 3, "Fringe" },
-                    { 4, "Equipment" },
-                    { 5, "Services Contractors" },
-                    { 6, "Services Vendors" },
-                    { 7, "Supplies" },
-                    { 8, "Travel Contractor" },
-                    { 9, "Travel Agency" }
+                    { 1, "Personnel", 1 },
+                    { 2, "Facilities", 2 },
+                    { 3, "Fringe", 3 },
+                    { 4, "Equipment", 4 },
+                    { 5, "Services Contractors", 5 },
+                    { 6, "Services Payees", 6 },
+                    { 7, "Supplies", 7 },
+                    { 8, "Travel Contractor", 8 },
+                    { 9, "Travel Agency", 9 }
                 });
 
             migrationBuilder.InsertData(
@@ -803,20 +811,6 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "tblContrator",
-                columns: new[] { "id", "account_id", "email", "firstName", "is_active", "lastName" },
-                values: new object[,]
-                {
-                    { 1, 19, "tsanchez@nhac.org", "Tom", true, "Sanchez" },
-                    { 2, 19, "mreenstien@nhac.org", "Marc", true, "Greenstien" },
-                    { 3, 19, "tankert@nhac.org", "Troy", true, "Bankert" },
-                    { 4, 19, "cengston@nhac.org", "Charles", true, "Bengston" },
-                    { 5, 19, "esteigerwald@nhac.org", "Ethan", true, "Steigerwald" },
-                    { 6, 19, "ssales@nhac.org", "Steve", true, "Sales" },
-                    { 7, 19, "tcardwell@nhac.org", "Tim", true, "Cardwell" }
-                });
-
-            migrationBuilder.InsertData(
                 schema: "Report",
                 table: "tblReportParamter",
                 columns: new[] { "id", "control_type", "depends_on", "enabled", "label", "name", "report_id", "sort_order" },
@@ -831,7 +825,7 @@ namespace Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "tblVendor",
-                columns: new[] { "id", "account_id", "is_active", "Name" },
+                columns: new[] { "id", "account_id", "is_active", "name" },
                 values: new object[,]
                 {
                     { 1, 13, true, "Kinkos" },
@@ -846,7 +840,25 @@ namespace Persistence.Migrations
                     { 10, 14, true, "Comcast" },
                     { 11, 14, true, "Sunshine" },
                     { 12, 14, true, "Motorola" },
-                    { 13, 14, true, "Voip Comm" }
+                    { 13, 14, true, "Voip Comm" },
+                    { 14, 19, true, "Tom Sanchez" },
+                    { 15, 19, true, "Marc Greenstien" },
+                    { 16, 19, true, "Troy Bankert" },
+                    { 17, 19, true, "Charles Bengston" },
+                    { 18, 19, true, "Ethan Steigerwald" },
+                    { 19, 19, true, "Steve Sales" },
+                    { 20, 19, true, "Tim Cardwell" },
+                    { 21, 19, true, "Tafoya Martina" },
+                    { 22, 19, true, "Jim Cormier" },
+                    { 23, 19, true, "Shaun Doyne" },
+                    { 24, 19, true, "John Eadie" },
+                    { 25, 19, true, "Orman Hall" },
+                    { 26, 19, true, "David Hamby" },
+                    { 27, 19, true, "Christopher Jakim" },
+                    { 28, 19, true, "Emma Kempton" },
+                    { 29, 19, true, "Rob Roggeveen" },
+                    { 30, 19, true, "Steve Salas" },
+                    { 31, 19, true, "Mike Snyders" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1010,6 +1022,11 @@ namespace Persistence.Migrations
                 column: "updated_by");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tblDisbLineItem_vendor_id",
+                table: "tblDisbLineItem",
+                column: "vendor_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tblReport_category_id",
                 schema: "Report",
                 table: "tblReport",
@@ -1114,9 +1131,6 @@ namespace Persistence.Migrations
                 name: "tblReproLineItem");
 
             migrationBuilder.DropTable(
-                name: "tblVendor");
-
-            migrationBuilder.DropTable(
                 name: "Auth.tblRoles");
 
             migrationBuilder.DropTable(
@@ -1124,6 +1138,9 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "tblDisb");
+
+            migrationBuilder.DropTable(
+                name: "tblVendor");
 
             migrationBuilder.DropTable(
                 name: "tblReport",

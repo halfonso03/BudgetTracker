@@ -1,5 +1,6 @@
 using System;
 using Domain;
+using Domain.Views;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -24,8 +25,11 @@ namespace Persistence
         public required DbSet<ReportParameter> ReportParameters { get; set; }
         public required DbSet<ReportCategory> ReportCategories { get; set; }
         public required DbSet<BudgetItemType> BudgetItemTypes { get; set; }
-        public required DbSet<Vendor> Vendors { get; set; }
+        public required DbSet<Vendor> Payees { get; set; }
         public required DbSet<Contrator> Contrators { get; set; }
+
+        public required DbSet<PayeeSummary> PayeeSummaries { get; set; }
+
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -188,7 +192,7 @@ namespace Persistence
                 new Category { Id = 3, Name = "Fringe", SortOrder = 3 },
                 new Category { Id = 4, Name = "Equipment", SortOrder = 4 },
                 new Category { Id = 5, Name = "Services Contractors", SortOrder = 5 },
-                new Category { Id = 6, Name = "Services Vendors", SortOrder = 6 },
+                new Category { Id = 6, Name = "Services Payees", SortOrder = 6 },
                 new Category { Id = 7, Name = "Supplies", SortOrder = 7 },
                 new Category { Id = 8, Name = "Travel Contractor", SortOrder = 8 },
                 new Category { Id = 9, Name = "Travel Agency", SortOrder = 9 }
@@ -225,7 +229,7 @@ namespace Persistence
               new Account { Id = 11, Name = "Contractors", CategoryId = 5, Number = "1" }
             );
 
-            // Services Vendors
+            // Services Payees
             builder.Entity<Account>().HasData(
                 new Account { Id = 12, Name = "Insurance Other", CategoryId = 6, Number = "1" },
                 new Account { Id = 13, Name = "Freight and Postage Services", CategoryId = 6, Number = "1" },
@@ -255,7 +259,7 @@ namespace Persistence
             // Expenditure Center
             // //////////////////////////////
 
-            //  25 - Services Vendors - Freight and Postage Services
+            //  25 - Services  - Freight and Postage Services
             builder.Entity<Vendor>().HasData(
                 new Vendor() { Id = 1, Name = "Kinkos", AccountId = 13, IsActive = true },
                 new Vendor() { Id = 2, Name = "FedEx", AccountId = 13, IsActive = true },
@@ -268,37 +272,55 @@ namespace Persistence
             );
 
 
-            //  26 -Services Vendors -  Communication Services
+            //  26 -Services -  Communication Services
             builder.Entity<Vendor>().HasData(
                 new Vendor() { Id = 9, Name = "AT & T", AccountId = 14, IsActive = true },
                 new Vendor() { Id = 10, Name = "Comcast", AccountId = 14, IsActive = true },
                 new Vendor() { Id = 11, Name = "Sunshine", AccountId = 14, IsActive = true },
                 new Vendor() { Id = 12, Name = "Motorola", AccountId = 14, IsActive = true },
-                new Vendor() { Id = 13, Name = "Voip Comm", AccountId = 14, IsActive = true }
+                new Vendor() { Id = 13, Name = "Voip Comm", AccountId = 14, IsActive = true },
+                new Vendor() { Id = 14, Name = "Tom Sanchez", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 15, Name = "Marc Greenstien", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 16, Name = "Troy Bankert", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 17, Name = "Charles Bengston", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 18, Name = "Ethan Steigerwald", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 19, Name = "Steve Sales", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 20, Name = "Tim Cardwell", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 21, Name = "Tafoya Martina", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 22, Name = "Jim Cormier", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 23, Name = "Shaun Doyne", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 24, Name = "John Eadie", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 25, Name = "Orman Hall", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 26, Name = "David Hamby", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 27, Name = "Christopher Jakim", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 28, Name = "Emma Kempton", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 29, Name = "Rob Roggeveen", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 30, Name = "Steve Salas", AccountId = 19, IsActive = true },
+                new Vendor() { Id = 31, Name = "Mike Snyders", AccountId = 19, IsActive = true }
             );
 
 
-            // 31 -  Travel Contractor - Contractor
-            builder.Entity<Contrator>().HasData(
-                new Contrator() { Id = 1, FirstName = "Tom", LastName = "Sanchez", Email = "tsanchez@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 2, FirstName = "Marc", LastName = "Greenstien", Email = "mreenstien@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 3, FirstName = "Troy", LastName = "Bankert", Email = "tankert@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 4, FirstName = "Charles", LastName = "Bengston", Email = "cengston@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 5, FirstName = "Ethan", LastName = "Steigerwald", Email = "esteigerwald@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 6, FirstName = "Steve", LastName = "Sales", Email = "ssales@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 7, FirstName = "Tim", LastName = "Cardwell", Email = "tcardwell@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 8, FirstName = "Tafoya", LastName = "Martina", Email = "tmartine@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 9, FirstName = "Jim", LastName = "Cormier", Email = "jcormier@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 10, FirstName = "Shaun", LastName = "Doyne", Email = "sdoyne@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 11, FirstName = "John", LastName = "Eadie", Email = "jeadie@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 12, FirstName = "Orman", LastName = "Hall", Email = "ohall@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 13, FirstName = "David", LastName = "Hamby", Email = "dhamby@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 14, FirstName = "Christopher", LastName = "Jakim", Email = "cjakim@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 15, FirstName = "Emma", LastName = "Kempton", Email = "ekempton@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 16, FirstName = "Rob", LastName = "Roggeveen", Email = "rroggeveen@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 17, FirstName = "Steve", LastName = "Salas", Email = "ssales@nhac.org", AccountId = 19, IsActive = true },
-                new Contrator() { Id = 18, FirstName = "Mike", LastName = "Snyders", Email = "msnyders@nhac.org", AccountId = 19, IsActive = true }
-            );
+            // // 31 -  Travel Contractor - Contractor
+            // builder.Entity<Contrator>().HasData(
+            //     new Contrator() { Id = 1, FirstName = "Tom", LastName = "Sanchez", Email = "tsanchez@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 2, FirstName = "Marc", LastName = "Greenstien", Email = "mreenstien@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 3, FirstName = "Troy", LastName = "Bankert", Email = "tankert@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 4, FirstName = "Charles", LastName = "Bengston", Email = "cengston@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 5, FirstName = "Ethan", LastName = "Steigerwald", Email = "esteigerwald@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 6, FirstName = "Steve", LastName = "Sales", Email = "ssales@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 7, FirstName = "Tim", LastName = "Cardwell", Email = "tcardwell@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 8, FirstName = "Tafoya", LastName = "Martina", Email = "tmartine@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 9, FirstName = "Jim", LastName = "Cormier", Email = "jcormier@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 10, FirstName = "Shaun", LastName = "Doyne", Email = "sdoyne@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 11, FirstName = "John", LastName = "Eadie", Email = "jeadie@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 12, FirstName = "Orman", LastName = "Hall", Email = "ohall@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 13, FirstName = "David", LastName = "Hamby", Email = "dhamby@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 14, FirstName = "Christopher", LastName = "Jakim", Email = "cjakim@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 15, FirstName = "Emma", LastName = "Kempton", Email = "ekempton@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 16, FirstName = "Rob", LastName = "Roggeveen", Email = "rroggeveen@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 17, FirstName = "Steve", LastName = "Salas", Email = "ssales@nhac.org", AccountId = 19, IsActive = true },
+            //     new Contrator() { Id = 18, FirstName = "Mike", LastName = "Snyders", Email = "msnyders@nhac.org", AccountId = 19, IsActive = true }
+            // );
 
 
 
@@ -596,6 +618,7 @@ namespace Persistence
             builder.Entity<DisbLineItem>()
                         .HasIndex(a => new { a.DisbId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
                         .IsUnique();
+            builder.Entity<DisbLineItem>().Property(x => x.PayeeId).HasColumnName("vendor_id");
 
 
             builder.Entity<Report>().Property(x => x.Name).HasColumnType("VARCHAR(200)");
@@ -620,6 +643,17 @@ namespace Persistence
             builder.Entity<Contrator>().Property(x => x.Email).HasColumnName("email").HasColumnType("VARCHAR(250)");
             builder.Entity<Contrator>().Property(x => x.AccountId).HasColumnName("account_id");
             builder.Entity<Contrator>().Property(x => x.IsActive).HasColumnName("is_active").HasColumnType("bit");
+
+            builder.Entity<DisbLineItem>()
+                       .HasOne(x => x.Payee)
+                       .WithMany(x => x.DisbLineItems)
+                       .HasForeignKey(x => x.PayeeId)
+                       .OnDelete(DeleteBehavior.NoAction);
+
+
+            builder.Entity<PayeeSummary>()
+                  .ToView("vwPayeeSummary") // Name of your SQL view
+                  .HasNoKey();
         }
     }
 }

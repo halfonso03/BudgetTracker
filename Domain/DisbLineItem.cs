@@ -21,6 +21,7 @@ namespace Domain
         public required int AccountId { get; set; }
         public decimal Amount { get; set; }
         public required int Year { get; set; }
+        public int PayeeId { get; set; }
         public required DateTime EntryDate { get; set; }
         public DateTime? UpdateDate { get; set; }
         public int? UpdatedById { get; set; }
@@ -37,5 +38,7 @@ namespace Domain
         public string? Comment { get; set; }
         public int? BudgetLineItemId { get; set; }
         public BudgetLineItem? BudgetLineItem { get; set; }
+        public Vendor? Payee { get; set; }
+
     }
 }

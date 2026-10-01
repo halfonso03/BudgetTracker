@@ -14,6 +14,7 @@ namespace Domain
         public int AccountId { get; set; }
         public Account? Account { get; set; }
         public bool IsActive { get; set; }
+        public IList<DisbLineItem>? DisbLineItems { get; set; }
 
     }
 }

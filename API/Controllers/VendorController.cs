@@ -1,27 +1,38 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using API.Extensions;
+using Application.DTOs.Payees;
 using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using Application.PaginationHelpers;
 
 namespace API.Controllers
 {
     [Authorize]
-    public class VendorController(VendorService vendorService) : BaseApiController
+    public class PayeesController(PayeeService vendorService) : BaseApiController
     {
-
-        [HttpGet]
-        public async Task<IActionResult> GetAllVendors()
+        [HttpPost("list")]
+        public async Task<IActionResult> List([FromQuery] PaginationParams paginationParams, string sortBy = "NAME")
         {
-            return HandleResult(await vendorService.GetAllVendors());
+            try
+            {
+                var vendorsFromDb = await vendorService.GetPayees(paginationParams, sortBy);
+
+                Response.AddPaginationHeader(vendorsFromDb.Value!.MetaData);
+
+                return HandleResult(vendorsFromDb);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
-        [HttpGet("vendorsForAccount")]
-        public async Task<IActionResult> GetVendorsForAccount(int accountId)
-        {
-            return HandleResult(await vendorService.GetVendorsForAccount(accountId));
-        }
+
+        // [HttpGet("vendorsForAccount")]
+        // public async Task<IActionResult> GetPayeesForAccount(int accountId)
+        // {
+        //     return HandleResult(await vendorService.GetPayeesForAccount(accountId));
+        // }
     }
 }

@@ -1,3 +1,4 @@
+using Application.Core;
 using Application.Interfaces;
 using Application.services;
 using Application.Services;
@@ -87,7 +88,14 @@ builder.Services.AddTransient<IReportRunnerService, ReportRunnerService>((provid
     );
 });
 
-builder.Services.AddTransient<VendorService, VendorService>();
+builder.Services.AddTransient<PayeeService, PayeeService>();
+
+builder.Services.AddAutoMapper((c) =>
+{
+    c.AddProfile<MappingProfiles>();
+});
+
+
 
 var app = builder.Build();
 
