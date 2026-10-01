@@ -20,7 +20,7 @@ namespace Application.Services
         //             .Success(response);
         // }
 
-        public async Task<Result<PayeesSearchResponseDto>> GetPayees(PaginationParams paginationParams, string sortBy)
+        public async Task<Result<PayeesSearchResponseDto>> GetVendors(PaginationParams paginationParams, string sortBy)
         {
 
             var vendorsSummaries = dbContext.PayeeSummaries;

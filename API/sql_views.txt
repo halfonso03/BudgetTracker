@@ -1,0 +1,11 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER view [dbo].[vwVendorSummary]
+AS
+SELECT v.id, v.name, v.is_active, a.id accountId, a.name accountName, MAX(d.posted_date) lastPayment, DATEDIFF(d, MAX(d.posted_date), GETDATE()) daysSinceLastPayment
+FROM tblVendor v LEFT OUTER JOIN tblAccount a ON v.account_id = a.id
+    LEFT OUTER JOIN tblDisbLineItem l ON v.id = l.vendor_id
+    LEFT OUTER JOIN tblDisb d ON d.id = l.disb_id
+GROUP BY v.id, v.name, v.is_active, a.name, a.id

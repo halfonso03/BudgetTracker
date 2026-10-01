@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Views
 {
-    public class PayeeSummary
+    public class VendorSummary
     {
         public int Id { get; set; }
         public required string Name { get; set; }

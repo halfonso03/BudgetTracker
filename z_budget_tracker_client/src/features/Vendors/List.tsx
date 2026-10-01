@@ -49,7 +49,7 @@ const List = () => {
         <div className="text-center">Edit</div>
       </div>
       <div className="">
-        {results?.map((v) => (
+        {results?.vendors.map((v) => (
           <div
             className="grid grid-cols-[1fr_1fr_1fr_1fr_.2fr_.2fr] gap-2  p-1 items-center"
             key={v.id}

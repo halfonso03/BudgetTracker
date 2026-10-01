@@ -8,7 +8,7 @@ namespace Application.Core
     {
         public MappingProfiles()
         {
-            CreateMap<PayeeSummary, PayeeSearchPayeeResponseDto>();
+            CreateMap<VendorSummary, PayeeSearchPayeeResponseDto>();
         }
     }
 }

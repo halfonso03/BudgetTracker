@@ -28,7 +28,7 @@ namespace Persistence
         public required DbSet<Vendor> Payees { get; set; }
         public required DbSet<Contrator> Contrators { get; set; }
 
-        public required DbSet<PayeeSummary> PayeeSummaries { get; set; }
+        public required DbSet<VendorSummary> PayeeSummaries { get; set; }
 
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
@@ -651,8 +651,8 @@ namespace Persistence
                        .OnDelete(DeleteBehavior.NoAction);
 
 
-            builder.Entity<PayeeSummary>()
-                  .ToView("vwPayeeSummary") // Name of your SQL view
+            builder.Entity<VendorSummary>()
+                  .ToView("vwVendorSummary") // Name of your SQL view
                   .HasNoKey();
         }
     }
