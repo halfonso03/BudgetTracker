@@ -186,7 +186,7 @@ const NavBar = () => {
       {user && (
         <div className="border-b border-b-neutral-300 flex justify-between align-middle p-3 text-gray-900 dark:text-gray-100 bg-dark-nav ">
           <div className="flex p-2 text-xl pb-0 justify-between w-full">
-            <div className="flex gap-2 ">
+            <div className="flex gap-5 ">
               <NavLink
                 to="/"
                 className="nav-link"
@@ -230,16 +230,7 @@ const NavBar = () => {
                   handleReproNavigation(e, '/vendors');
                 }}
               >
-                Vendors
-              </NavLink>
-              <NavLink
-                to="/contractors"
-                className="nav-link"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleReproNavigation(e, '/contractors');
-                }}
-              >
-                Contractors
+                Payees
               </NavLink>
             </div>
             <Button

@@ -7,4 +7,5 @@ type Vendor = {
     details: string
     daysSinceLastPayment: number | null
     lastPayment: Date | null
+    totalPaid: number | null
 }

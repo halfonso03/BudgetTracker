@@ -1,6 +1,6 @@
 import { Check, DollarSign, Pencil, X } from 'lucide-react';
 import { useVendors } from '../../api/hooks/vendors/useVendors';
-import { formatDate } from '../../app/util';
+import { formatDate, formatNumber } from '../../app/util';
 import { Pagination } from '../../components/Pagination';
 import { usePagination } from '../../contexts/pagination/usePagination';
 import SortBySelector from '../../components/SortBySelector';
@@ -50,7 +50,7 @@ const List = () => {
   if (loadingVendors) return null;
 
   return (
-    <div className="mx-auto w-[70%]">
+    <div className="mx-auto w-[80%]">
       {/* <pre>{JSON.stringify(vendorsState)}</pre> */}
       <div className="flex justify-end w-full mb-4">
         <div className="w-[35%]">
@@ -61,8 +61,8 @@ const List = () => {
       </div>
 
       <input type="text" />
-      <div className="mb-1 grid grid-cols-[1fr_1fr_1fr_1fr_.2fr_.2fr_.2fr] gap-2 font-semibold text-neutral-700 p-1 border-b border-b-neutral-300">
-        <div>
+      <div className="mb-1  grid grid-cols-[1fr_1fr_.7fr_.7fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1  font-semibold text-neutral-700 border-b border-b-neutral-300">
+        <div className="flex justify-start">
           <SortBySelector
             label="Name"
             value="NAME"
@@ -73,6 +73,13 @@ const List = () => {
           <SortBySelector
             label="Charge Account"
             value="ACCOUNT"
+            currentSortValue={sortByValue}
+          ></SortBySelector>
+        </div>
+        <div className="flex justify-center">
+          <SortBySelector
+            label="Total Paid"
+            value="TOTALPAID"
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
@@ -90,27 +97,29 @@ const List = () => {
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
-
-        <div className="flex justify-center">
+        <div className="flex  justify-end">
           <SortBySelector
             label="Active"
             value="ACTIVE"
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
-        <div className="text-center">Edit</div>
-        <div></div>
+        <div className="text-center self-center">Edit</div>
+        <div className="text-center self-center">Pay</div>
       </div>
       <div className="">
         {data?.vendors?.map((v) => (
           <div
-            className="rounded-sm grid grid-cols-[1fr_1fr_1fr_1fr_.2fr_.2fr_.2fr] gap-2  p-1 items-center hover:bg-neutral-200 duration-200 transition-all cursor-pointer"
+            className="rounded-sm grid grid-cols-[1fr_1fr_.7fr_.7fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1 items-center hover:bg-neutral-200 duration-200 transition-all cursor-pointer"
             key={v.id}
           >
             <div>{v.name}</div>
             <div className="text-center">{v.accountName}</div>
             <div className="text-center">
               {v.lastPayment ? formatDate(v.lastPayment) : '-'}
+            </div>
+            <div className="text-center">
+              {v.totalPaid ? formatNumber(v.totalPaid) : '-'}
             </div>
             <div className="text-center ">{v.daysSinceLastPayment || '-'}</div>
             <div className="flex justify-center ">
@@ -128,8 +137,10 @@ const List = () => {
                 }}
               ></Pencil>
             </div>
-            <div>
-              <DollarSign className=" text-blue-500 cursor-pointer"></DollarSign>
+            <div className="flex justify-center ">
+              <DollarSign
+                className={`${!v.isActive ? 'text-neutral-400' : 'text-blue-500'} cursor-pointer`}
+              ></DollarSign>
             </div>
           </div>
         ))}
