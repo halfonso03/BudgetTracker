@@ -1,11 +1,17 @@
 import { PaginationContextProvider } from '../../contexts/pagination/PaginationContextProvider';
+import SortingProvider from '../../contexts/SortingContextProvider';
 import List from './List';
 
 const VendorHome = () => {
+  
+
+
   return (
     <div>
       <PaginationContextProvider>
-        <List></List>
+        <SortingProvider>
+          <List></List>
+        </SortingProvider>
       </PaginationContextProvider>
     </div>
   );

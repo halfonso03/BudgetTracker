@@ -5,16 +5,16 @@ using System.Security;
 using System.Threading.Tasks;
 using Application.PaginationHelpers;
 
-namespace Application.DTOs.Payees
+namespace Application.DTOs.Vendors
 {
-    public class PayeesSearchResponseDto
+    public class VendorSearchResponseDto
     {
-        public required List<PayeeSearchPayeeResponseDto> Items { get; set; } = [];
+        public required List<VendorSearchPayeeResponseDto> Items { get; set; } = [];
         public required int ItemCount { get; set; }
         public required PaginationMetadata MetaData { get; set; }
     }
 
-    public class PayeeSearchPayeeResponseDto
+    public class VendorSearchPayeeResponseDto
     {
         public required int Id { get; set; } = 0;
         public required string Name { get; set; }

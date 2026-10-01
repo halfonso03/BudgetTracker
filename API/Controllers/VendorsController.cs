@@ -9,14 +9,17 @@ using Application.PaginationHelpers;
 namespace API.Controllers
 {
     [Authorize]
-    public class VendorsController(PayeeService vendorService) : BaseApiController
+    public class VendorsController(VendorService vendorService) : BaseApiController
     {
-        [HttpPost("list")]
-        public async Task<IActionResult> List([FromQuery] PaginationParams paginationParams, string sortBy = "NAME")
+        [HttpGet("list")]
+        public async Task<IActionResult> List([FromQuery] PaginationParams paginationParams, string searchTerm = "", string sortBy = "NAME")
         {
             try
             {
-                var vendorsFromDb = await vendorService.GetVendors(paginationParams, sortBy);
+
+                Console.WriteLine(paginationParams.PageNumber);
+
+                var vendorsFromDb = await vendorService.GetVendors(paginationParams, searchTerm, sortBy);
 
                 Response.AddPaginationHeader(vendorsFromDb.Value!.MetaData);
 

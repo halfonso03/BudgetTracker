@@ -10,7 +10,6 @@ export function Pagination({ data, onPageNumberChange }: Props) {
     { length: data.totalPages },
     (_, index) => index + 1,
   );
-
   return (
     <div className="flex gap-1 cursor-pointer ">
       {pageNumbers.map((p) => (

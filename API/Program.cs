@@ -88,7 +88,7 @@ builder.Services.AddTransient<IReportRunnerService, ReportRunnerService>((provid
     );
 });
 
-builder.Services.AddTransient<PayeeService, PayeeService>();
+builder.Services.AddTransient<VendorService, VendorService>();
 
 builder.Services.AddAutoMapper((c) =>
 {

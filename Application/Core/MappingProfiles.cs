@@ -1,4 +1,5 @@
 using Application.DTOs.Payees;
+using Application.DTOs.Vendors;
 using AutoMapper;
 using Domain.Views;
 
@@ -8,7 +9,7 @@ namespace Application.Core
     {
         public MappingProfiles()
         {
-            CreateMap<VendorSummary, PayeeSearchPayeeResponseDto>();
+            CreateMap<VendorSummary, VendorSearchPayeeResponseDto>();
         }
     }
 }

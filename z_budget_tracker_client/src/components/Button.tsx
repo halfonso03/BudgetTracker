@@ -21,7 +21,7 @@ const Button = ({
     'cursor-pointer disabled:cursor-not-allowed rounded-sm shadow-sm flex justify-center items-center ';
 
   if (buttonSize == 'xsmall') {
-    classes += ' w-15 ';
+    classes += ' w-15 p-1';
   } else if (buttonSize == 'small') {
     classes += ' p-2 w-30 ';
   } else if (buttonSize == 'medium') {

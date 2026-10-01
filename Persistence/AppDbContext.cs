@@ -28,7 +28,7 @@ namespace Persistence
         public required DbSet<Vendor> Payees { get; set; }
         public required DbSet<Contrator> Contrators { get; set; }
 
-        public required DbSet<VendorSummary> PayeeSummaries { get; set; }
+        public required DbSet<VendorSummary> VendorSummaries { get; set; }
 
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
