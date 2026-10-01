@@ -212,7 +212,7 @@ const CreateBudget = () => {
 
   let indexRunningTotal = -1;
   return (
-    <div className="w-full mx-auto ">
+    <div className="w-full mx-auto  ">
       <div className="mb-2 font-semibold text-2xl pb-5 text-neutral-700">
         Create New Budget
       </div>

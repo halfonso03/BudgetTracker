@@ -25,8 +25,14 @@ pre {
 }
 
 .nav-link.active {
-  border-bottom: 3px solid var(--color-blue-800);
+  border-bottom: 2px solid var(--color-blue-800);
 }
+
+.nav-link.active::after {
+  border-bottom: 5px solid red;
+  border-radius: 10px;
+}
+
 .entity-label {
   font-weight: bold;
   color: var(--color-neutral-600);

@@ -1,3 +1,24 @@
+type ReproStatus = typeof EDITED | typeof SAVED | typeof POSTED;
+
+type ReproHeader = {
+    id: number;
+    justification: string;
+    status: ReproStatus;
+    createdBy?: string;
+    createdById?: number;
+    createDate?: Date;
+    postedDate?: Date | null;
+    postedBy?: string | null;
+};
+
+type ReproLineItemSelections = {
+    uuid: string;
+    initiativeId?: number;
+    grantId?: number;
+    categoryId?: number;
+    accountId?: number;
+};
+
 type Repro = {
     id: number
     year: number

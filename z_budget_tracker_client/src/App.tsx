@@ -14,7 +14,7 @@ function App() {
       <ReactQueryDevtools></ReactQueryDevtools>
       <AuthProvider>
         <NavBar></NavBar>
-        <div className="p-3 w-[82%] mx-auto">
+        <div className="p-3 pt-10 w-[82%] mx-auto">
           <Outlet></Outlet>
         </div>
         <Toaster

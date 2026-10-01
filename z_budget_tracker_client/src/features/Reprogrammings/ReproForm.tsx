@@ -31,28 +31,23 @@ import EditLineModal from './modals/EditLineModal';
 import ErrorsModal from './modals/ErrorsModal';
 import JustificaModal from './modals/JustificaModal';
 import CheckBox from '../../components/CheckBox';
-
-const EDITED = 1;
-const SAVED = 2;
-const POSTED = 3;
-
-export type ReproStatus = typeof EDITED | typeof SAVED | typeof POSTED;
+import {
+  DUP_LINES,
+  NO_INC_AND_NO_DEC_LINES,
+  HAS_VARIANCE,
+  LINES_WITH_INC_AND_DEC,
+  NEGATIVE_CURRENT_BALANCE,
+  NEGATIVE_REMAINING_BALANCE,
+  NO_JUSTIFICATION,
+  EDITED,
+  POSTED,
+  SAVED,
+} from '../../app/constants';
 
 // export type DirtyState = {
 //   formValuesIsDirty: boolean;
 //   numbersAresDirty: boolean;
 // };
-
-type ReproHeader = {
-  id: number;
-  justification: string;
-  status: ReproStatus;
-  createdBy?: string;
-  createdById?: number;
-  createDate?: Date;
-  postedDate?: Date | null;
-  postedBy?: string | null;
-};
 
 interface Props {
   repro: Repro;
@@ -61,29 +56,8 @@ interface Props {
   onSaved?: () => void;
 }
 
-type Selections = {
-  uuid: string;
-  initiativeId?: number;
-  grantId?: number;
-  categoryId?: number;
-  accountId?: number;
-};
-
 const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   // console.log('ReproForm render');
-
-  const DUP_LINES =
-    'There are duplicate lines (Look for the duplicate selections for an Initiative, Grant, Category and Account)';
-  const NO_INC_AND_NO_DEC_LINES =
-    'There are lines with a $0 increase and a $0 decrease';
-  const HAS_VARIANCE = 'There is a variance in the reprogramming';
-  const LINES_WITH_INC_AND_DEC =
-    'One or more lines has an increase and a decrease amount entered';
-  const NEGATIVE_CURRENT_BALANCE =
-    'There is a negative current balance in one or more lines';
-  const NO_JUSTIFICATION = 'Justification has not been entered';
-  const NEGATIVE_REMAINING_BALANCE =
-    'There is a negative remaining balance in one or more lines';
 
   const { user, loginId } = useAuth();
   const queryClient = useQueryClient();
@@ -91,7 +65,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   const created = location.state?.created ? location.state.created : false;
 
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
-  const [editSelections, setEditSelections] = useState<Selections | null>(null);
+  const [editSelections, setEditSelections] =
+    useState<ReproLineItemSelections | null>(null);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   // fr above useState add back in later 9/13 11:45
 
@@ -103,9 +78,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [confirmPostModalIsOpen, setConfirmPostModal] =
     useState<boolean>(false);
-  // const [isDirtyState, setIsDirtyState] = useState<DirtyState>({
-  //   formValuesIsDirty: false,
-  //   numbersAresDirty: false,
   const [overrideNeg, setOverrideNeg] = useState(
     repro.lineItems.some((x) => x.overrideNegativeBalance === true),
   );
@@ -230,7 +202,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       reproHeader.status !== POSTED
     ) {
       toast.custom(
-        <div className="animate-right-to-in  rounded-sm p-4 shadow-md w-70 font-semibold  bg-red-500 text-neutral-50 flex gap-2">
+        <div className="animate-right-to-in mt-20 rounded-sm p-4 shadow-md w-70 font-semibold bg-red-500 text-neutral-50 flex gap-2">
           <AlertCircle></AlertCircle>
           <div
             className="self-center hover:underline underline-offset-2 cursor-pointer"
@@ -600,7 +572,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     lineItems: ReproLineItemRequest[],
     posted: boolean = false,
   ) {
-    const linesItems2 = lineItems.map((l) => {
+    const lineItems2 = lineItems.map((l) => {
       return {
         ...l,
         overrideNegativeBalance:
@@ -611,7 +583,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       createdById: +user!.id,
       posted: posted,
       justification: reproHeader.justification,
-      lineItems: linesItems2,
+      lineItems: lineItems2,
       overrideNegativeBalance: overrideNeg,
     };
 
@@ -664,12 +636,22 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     lineItems: ReproLineItemRequest[],
     posted: boolean = false,
   ) {
+    const lineItems2 = lineItems.map((l) => {
+      return {
+        ...l,
+        overrideNegativeBalance:
+          overrideNeg === true && l.newRemainingAmount < 0 ? true : null,
+      };
+    });
+
+    console.log('lineItems2', lineItems2)
+
     const reproToSave: UpdateReproRequest = {
       id: reproHeader.id,
       updatedById: +user!.id!,
       posted: posted,
       justification: reproHeader.justification,
-      lineItems: lineItems,
+      lineItems: lineItems2,
       overrideNegativeBalance: overrideNeg,
     };
     await updateRepro.mutateAsync(reproToSave, {
@@ -920,17 +902,17 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         )}
         {reproHeader.status !== POSTED &&
           hasNegativeRemainingBalances(lines) && (
-            <div className="flex justify-end items-start my-9">
+            <div className="flex justify-center items-start my-9">
               <div className="border border-red-300 shrink p-3">
-                <div className="text-end text-red-600 ">
+                <div className=" text-red-600 ">
                   This reprogramming cannot be posted with the propsed Increase
                   and Decrease amounts as one or more accounts will have a
                   negative balance.
                 </div>
-                <div className="flex gap-2 items-center justify-end mt-2 text-red-600">
+                <div className="flex gap-2 items-center justify-center mt-2 text-red-600">
                   <div>
                     Click the check box to override this behavior and allow
-                    posting the reprogramming with the negative balance.
+                    posting the reprogramming with the negative balance line item.
                   </div>
                   <CheckBox
                     onCheck={() => setOverrideNeg((prev) => !prev)}

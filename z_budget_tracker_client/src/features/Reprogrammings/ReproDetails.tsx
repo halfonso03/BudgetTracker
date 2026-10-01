@@ -7,6 +7,7 @@ import ReproControls from './ReproControls';
 import ReproForm from './ReproForm';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import toast from 'react-hot-toast';
+import useAuth from '../../contexts/useAuth';
 
 const ReproDetails = () => {
   console.log('ReproDetails render');
@@ -18,6 +19,7 @@ const ReproDetails = () => {
     useHasUnsavedChangesStore();
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const reproId = id !== undefined ? +id : undefined;
+  const { user } = useAuth();
 
   const {
     data: reproFromDb,
@@ -65,7 +67,7 @@ const ReproDetails = () => {
     setTimeout(async () => {
       try {
         await duplicateRepro.mutateAsync(
-          { id: reproFromDb!.id!, userId: userId! },
+          { id: reproFromDb!.id!, userId: +user!.id! },
           {
             onSuccess: async (repro) => {
               toast.success(
@@ -109,7 +111,7 @@ const ReproDetails = () => {
     return null;
   };
   return (
-    <>
+    <div>
       <ReproControls
         reproId={reproFromDb?.id}
         onYearSelected={handleYearSelected}
@@ -130,7 +132,7 @@ const ReproDetails = () => {
         }}
         message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
       ></ConfirmModal>
-    </>
+    </div>
   );
 };
 

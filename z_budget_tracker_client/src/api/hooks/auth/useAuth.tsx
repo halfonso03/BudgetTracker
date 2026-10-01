@@ -84,9 +84,10 @@ export default function useAccount() {
       if (hasUnsavedChanges) {
         setHasUnsavedChanges(false);
       }
-      logout();
-      // queryClient.removeQueries({ queryKey: ['user'] });
       navigate('login', { replace: true });
+
+      logout();
+      queryClient.removeQueries();
     },
   });
 

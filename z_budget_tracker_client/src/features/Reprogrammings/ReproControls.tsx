@@ -59,7 +59,7 @@ const ReproControls = ({
 
   return (
     <>
-      <div className="flex justify-end gap-3 mt-6">
+      <div className="flex justify-start gap-3 mt-6">
         <Button
           buttonSize="small"
           variation="primary"

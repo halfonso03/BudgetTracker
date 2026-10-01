@@ -244,6 +244,8 @@ namespace Application.Services
                             lineFromDb.Comment = string.IsNullOrEmpty(req.Comment) ? null
                             : req.Comment.Trim();
                         }
+
+                        lineFromDb.AllowNegativeBalance = req.OverrideNegativeBalance;
                     }
                     else
                     {
