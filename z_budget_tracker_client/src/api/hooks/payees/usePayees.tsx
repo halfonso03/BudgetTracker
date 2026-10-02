@@ -3,13 +3,13 @@ import agent from '../../agent';
 import { usePagination } from '../../../contexts/pagination/usePagination';
 import { useSortingContext } from '../../../contexts/useSortingContext';
 
-export const useVendors = () => {
+export const usePayees = () => {
   //searchTerm
   const { pageNumber } = usePagination();
   const { sortByValue } = useSortingContext();
 
-  const { data, isLoading: loadingVendors } = useQuery<{
-    vendors: Vendor[];
+  const { data, isLoading: loadingPayees } = useQuery<{
+    vendors: Payee[];
     pagination: PaginationData | undefined;
   }>({
     queryKey: ['vendors', pageNumber, sortByValue],
@@ -32,5 +32,5 @@ export const useVendors = () => {
     },
   });
 
-  return { data, loadingVendors };
+  return { data, loadingPayees: loadingPayees };
 };

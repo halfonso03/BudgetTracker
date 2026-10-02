@@ -13,9 +13,9 @@ import ReproDetails from '../../features/Reprogrammings/ReproDetails';
 import ReproNew from '../../features/Reprogrammings/ReproNew';
 import Reports from '../../features/Reports/Reports';
 import ProtectedRoute from '../../components/ProtectedRoute';
-import New from '../../features/Vendors/New';
-import VendorHome from '../../features/Vendors/VendorHome';
 import ContractorsHome from '../../features/Contractors/ContractorsHome';
+import PayeeHome from '../../features/Payees/VendorHome';
+import New from '../../features/Payees/New';
 
 export const routes: RouteObject[] = [
   {
@@ -125,10 +125,10 @@ export const routes: RouteObject[] = [
         ),
       },
       {
-        path: '/vendors',
+        path: '/payees',
         element: (
           <ProtectedRoute>
-            <VendorHome />
+            <PayeeHome />
           </ProtectedRoute>
         ),
       },

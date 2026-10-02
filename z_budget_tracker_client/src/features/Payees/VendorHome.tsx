@@ -2,10 +2,7 @@ import { PaginationContextProvider } from '../../contexts/pagination/PaginationC
 import SortingProvider from '../../contexts/SortingContextProvider';
 import List from './List';
 
-const VendorHome = () => {
-  
-
-
+const PayeeHome = () => {
   return (
     <div>
       <PaginationContextProvider>
@@ -16,4 +13,4 @@ const VendorHome = () => {
     </div>
   );
 };
-export default VendorHome;
+export default PayeeHome;

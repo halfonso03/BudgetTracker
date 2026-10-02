@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import agent from '../../agent';
 
-const useGetVendorsByAccount = (accountId: number | null) => {
+const useGetPayeesByAccount = (accountId: number | null) => {
 
-  const { data, isLoading } = useQuery<Vendor[]>({
-    queryFn: async (): Promise<Vendor[]> => {
-      const response = await agent.get<Vendor[]>(
+  const { data, isLoading } = useQuery<Payee[]>({
+    queryFn: async (): Promise<Payee[]> => {
+      const response = await agent.get<Payee[]>(
         `/vendor/vendorsForAccount?accountId=${accountId}`,
       );
       const report = response.data;
@@ -18,12 +18,12 @@ const useGetVendorsByAccount = (accountId: number | null) => {
   return { data, isLoading };
 };
 
-const useGetAllVendors = () => {
+const useGetAllPayees = () => {
 
 
-  const { data, isLoading } = useQuery<Vendor[]>({
-    queryFn: async (): Promise<Vendor[]> => {
-      const response = await agent.get<Vendor[]>(`/vendor`);
+  const { data, isLoading } = useQuery<Payee[]>({
+    queryFn: async (): Promise<Payee[]> => {
+      const response = await agent.get<Payee[]>(`/vendor`);
       const report = response.data;
       return report;
     },
@@ -33,4 +33,4 @@ const useGetAllVendors = () => {
   return { data, isLoading };
 };
 
-export { useGetAllVendors, useGetVendorsByAccount };
+export { useGetAllPayees, useGetPayeesByAccount };

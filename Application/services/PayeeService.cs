@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Drawing;
 using Application.Core;
+using Application.DTOs.Payee;
 using Application.DTOs.Payees;
 using Application.PaginationHelpers;
 using AutoMapper;
@@ -11,6 +12,25 @@ namespace Application.Services
 {
     public class PayeeService(AppDbContext dbContext, IMapper mapper)
     {
+        public async Task<Result<List<PayeePaymentResponseDto>>> GetPayeePayments(int payeeId, PaginationParams paginationParams, string sortBy)
+        {
+
+            var payments = await (from d in dbContext.Disbs
+                                  join l in dbContext.DisbLineItems on d.Id equals l.DisbId
+                                  join u in dbContext.Users on d.PostedById equals u.Id
+                                  where d.Posted == true
+                                  && l.PayeeId == payeeId
+                                  select new PayeePaymentResponseDto
+                                  {
+                                      Id = d.Id,
+                                      Amount = l.Amount,
+                                      PostedBy = u.FirstName + " " + u.LastName,
+                                      PostedDate = Convert.ToDateTime(d.PostedDate),
+                                      Year = l.Year
+                                  }).ToListAsync();
+
+            return Result<List<PayeePaymentResponseDto>>.Success(payments);
+        }
 
         // public async Task<Result<List<PayeeResponseDto>>> GetAllPayees()
         // {

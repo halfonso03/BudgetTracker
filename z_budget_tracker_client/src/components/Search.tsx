@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { usePagination } from '../contexts/pagination/usePagination';
-import { Magnet, SearchX, X } from 'lucide-react';
+import {  X } from 'lucide-react';
 import Button from './Button';
 import Input from '../ui/Input';
 

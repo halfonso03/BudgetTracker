@@ -1,35 +1,34 @@
 import { Check, DollarSign, Pencil, X } from 'lucide-react';
-import { useVendors } from '../../api/hooks/vendors/useVendors';
 import { formatDate, formatNumber } from '../../app/util';
 import { Pagination } from '../../components/Pagination';
 import { usePagination } from '../../contexts/pagination/usePagination';
 import SortBySelector from '../../components/SortBySelector';
 import { useSortingContext } from '../../contexts/useSortingContext';
 import { useEffect, useState } from 'react';
-import VendorDetailsWindow from './VendorDetailsWindow';
+import PayeeDetailsWindow from './PayeeDetailsWindow';
 import Search from '../../components/Search';
 import Button from '../../components/Button';
+import { usePayees } from '../../api/hooks/payees/usePayees';
 
 // type Props = {
-//   vendors: Vendor[];
+//   vendors: Payee[];
 // };
 
 const List = () => {
-  const { data, loadingVendors } = useVendors();
+  const { data, loadingPayees } = usePayees();
   const { setPageNumber, setSearchTerm } = usePagination();
   const { sortByValue, setSortByValue } = useSortingContext();
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
+  const [selectedPayee, setSelectedPayee] = useState<Payee | null>(null);
 
-  const paginationData = data?.pagination;
-  console.log('sortByValue', sortByValue);
-  console.log('paginationData', paginationData);
-  // const [vendorsState, setVendorsState] = useState<Vendor[] | undefined>(
+  // const paginationData = data?.pagination;
+  // console.log('paginationData', paginationData);
+  // const [vendorsState, setPayeesState] = useState<Payee[] | undefined>(
   //   vendors,
   // );
 
-  function openDetails(vendor: Vendor) {
-    setSelectedVendor(vendor);
+  function openDetails(vendor: Payee) {
+    setSelectedPayee(vendor);
     setDetailsOpen(true);
   }
 
@@ -48,7 +47,7 @@ const List = () => {
     setSearchTerm(searchTerm);
     setPageNumber(1);
   }
-  if (loadingVendors) return null;
+  if (loadingPayees) return null;
 
   return (
     <div className="mx-auto w-[85%]">
@@ -106,7 +105,7 @@ const List = () => {
         <div className="flex justify-center">
           <SortBySelector
             label="Last Payment Date"
-            value="LASTPAYMENTAMOUNT"
+            value="LASTPAYMENTDATE"
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
@@ -179,10 +178,10 @@ const List = () => {
         ></Pagination>
       </div>
       {detailsOpen && (
-        <VendorDetailsWindow
-          vendor={selectedVendor!}
+        <PayeeDetailsWindow
+          payee={selectedPayee!}
           onClose={handleDetailsClose}
-        ></VendorDetailsWindow>
+        ></PayeeDetailsWindow>
       )}
     </div>
   );

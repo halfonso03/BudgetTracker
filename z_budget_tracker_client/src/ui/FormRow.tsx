@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import type { FC, ReactNode } from 'react';
 import type { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
+import { FileExclamationPoint } from 'lucide-react';
 
 type FormRowProps = {
   id: string;
@@ -12,7 +13,11 @@ type FormRowProps = {
   className?: string;
 };
 
-const StyledStackedFormRow = styled.div`
+const StyledFormRow = styled.div`
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 1.6fr 0.4fr;
+
   &:first-child {
     padding-top: 0;
   }
@@ -37,7 +42,7 @@ const Error = styled.div`
   color: var(--color-red-500);
 `;
 
-const StackedFormRow: FC<FormRowProps> = ({
+const FormRow: FC<FormRowProps> = ({
   id,
   label,
   error,
@@ -46,34 +51,31 @@ const StackedFormRow: FC<FormRowProps> = ({
   className,
 }: FormRowProps) => {
   return (
-    <StyledStackedFormRow className={className}>
+    <StyledFormRow className={className}>
       {label && (
-        <div>
+        <div className='self-start'>
           <Label
             htmlFor={id}
             style={{
               textWrap: 'wrap',
               overflowWrap: 'break-word',
             }}
-            className='text-gray-800 dark:text-neutral-200 text-lg'
           >
             {label}
           </Label>
         </div>
       )}
-      <div className="flex">
-        <div className='flex-1'>{children}</div>
-        <div className="flex-0 pl-1 mr-2">
-          {error && useMessage && <Error>{error.toString()}</Error>}
-          {error && !useMessage && (
-            <Error>
-              <span className='text-red-600 font-semibold'>!</span>
-            </Error>
-          )}
-        </div>
+      <div>{children}</div>
+      <div className="pl-2">
+        {error && useMessage && <Error>{error.toString()}</Error>}
+        {error && !useMessage && (
+          <Error>
+            <FileExclamationPoint></FileExclamationPoint>
+          </Error>
+        )}
       </div>
-    </StyledStackedFormRow>
+    </StyledFormRow>
   );
 };
 
-export default StackedFormRow;
+export default FormRow;

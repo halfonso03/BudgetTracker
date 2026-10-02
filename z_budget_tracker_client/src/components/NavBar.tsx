@@ -224,10 +224,10 @@ const NavBar = () => {
                 Reports
               </NavLink>
               <NavLink
-                to="/vendors"
+                to="/payees"
                 className="nav-link"
                 onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleReproNavigation(e, '/vendors');
+                  handleReproNavigation(e, '/payees');
                 }}
               >
                 Payees

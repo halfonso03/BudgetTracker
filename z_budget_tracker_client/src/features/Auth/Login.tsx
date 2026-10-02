@@ -66,7 +66,10 @@ const Login = () => {
             >
               <Input
                 type="text"
-                {...register('email', { value:"sdsd", required: 'Email is required' })}
+                {...register('email', {
+                  value: 'sdsd',
+                  required: 'Email is required',
+                })}
               ></Input>
             </StackedFormRow>
 
