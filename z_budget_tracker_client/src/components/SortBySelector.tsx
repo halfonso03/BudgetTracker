@@ -30,9 +30,9 @@ export default function SortBySelector({
         <div className=" text-xl">
           {currentSortValue.indexOf(value) !== -1 ? (
             currentSortValue.includes('desc') ? (
-              <ArrowDown className="ml-2" size={18}></ArrowDown>
+              <ArrowDown className="ml-1" size={18}></ArrowDown>
             ) : (
-              <ArrowUp className="ml-2" size={18}></ArrowUp>
+              <ArrowUp className="ml-1" size={18}></ArrowUp>
             )
           ) : (
             <></>

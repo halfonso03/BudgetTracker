@@ -43,6 +43,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
     options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
 });
+
 // 4. Fine-tune Application Cookies for React Integration
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -76,6 +77,8 @@ builder.Services.AddTransient<IReproService, ReproService>();
 builder.Services.AddTransient<IDisbService, DisbService>();
 builder.Services.AddTransient<IReportParameterValuesService, ReportParameterValuesService>();
 builder.Services.AddTransient<IReportService, ReportService>();
+builder.Services.AddTransient<DisbService, DisbService>();
+
 
 builder.Services.AddTransient<IReportRunnerService, ReportRunnerService>((provider) =>
 {

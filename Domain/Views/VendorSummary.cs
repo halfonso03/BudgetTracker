@@ -17,5 +17,6 @@ namespace Domain.Views
         public int? DaysSinceLastPayment { get; set; }
         public int? AccountId { get; set; }
         public required string? AccountName { get; set; }
+        public decimal? TotalPaid { get; set; }
     }
 }

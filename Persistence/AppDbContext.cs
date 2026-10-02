@@ -192,7 +192,7 @@ namespace Persistence
                 new Category { Id = 3, Name = "Fringe", SortOrder = 3 },
                 new Category { Id = 4, Name = "Equipment", SortOrder = 4 },
                 new Category { Id = 5, Name = "Services Contractors", SortOrder = 5 },
-                new Category { Id = 6, Name = "Services Payees", SortOrder = 6 },
+                new Category { Id = 6, Name = "Services Contractors", SortOrder = 6 },
                 new Category { Id = 7, Name = "Supplies", SortOrder = 7 },
                 new Category { Id = 8, Name = "Travel Contractor", SortOrder = 8 },
                 new Category { Id = 9, Name = "Travel Agency", SortOrder = 9 }

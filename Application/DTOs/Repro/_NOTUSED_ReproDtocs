@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Repro
 {
-    public class ReproDto
+    public class ReproDto_NOTUSED
     {
         public required int Id { get; set; } = 0;
         public required DateTime CreateDate { get; set; }
         public string? PostedBy { get; set; }
         public DateTime? PostedDate { get; set; }
-        public List<ReproLineItemDto> LineItems { get; set; } = [];
+        public List<ReproLineItemDto_NOTUSED> LineItems { get; set; } = [];
     }
 }

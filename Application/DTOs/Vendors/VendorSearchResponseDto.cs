@@ -23,5 +23,6 @@ namespace Application.DTOs.Vendors
         public DateTime? LastPayment { get; set; }
         public int? DaysSinceLastPayment { get; set; }
         public bool IsActive { get; set; }
+        public decimal? TotalPaid { get; set; }
     }
 }

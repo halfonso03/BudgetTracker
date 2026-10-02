@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Repro
 {
-    public class ReproLineItemDto
+    public class ReproLineItemDto_NOTUSED
     {
         public int RowId { get; set; }
 

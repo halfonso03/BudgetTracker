@@ -5,7 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.DTOs.Budgets;
+using Application.DTOs.Disb;
 using Application.Interfaces;
+using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -13,22 +15,14 @@ using static Application.Core.Enums;
 
 namespace API.Controllers
 {
-    public class DisbController(IDisbService _disbService) : BaseApiController
+    public class DisbController(DisbService _disbService) : BaseApiController
     {
-        [HttpGet("GetLineItemsForAccount")]
-        public async Task<IActionResult> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)
+
+        [HttpPost]
+        [HttpPost]
+        public async Task<IActionResult> Post(CreateDisbRequestDto disbRequestDto)
         {
-            var disbs = await _disbService.GetLineItemsForAccount(initiativeId, grantId, accountId);
-
-            return Ok(disbs);
+            return HandleResult(await _disbService.CreateDisb(disbRequestDto));
         }
-
-        // [HttpGet("GetLineItemsForAccount/{transactionType:int}")]
-        // public async Task<IActionResult> GetLineItemsForAccount(TransactionType transactionType, int initiativeId, int grantId, int accountId)
-        // {
-        //     List<TransactionResponseDto> budgets = await _disbService.GetLineItemsForAccount(transactionType, initiativeId, grantId, accountId);
-
-        //     return Ok(budgets);
-        // }
     }
 }

@@ -8,6 +8,7 @@ import { useSortingContext } from '../../contexts/useSortingContext';
 import { useEffect, useState } from 'react';
 import VendorDetailsWindow from './VendorDetailsWindow';
 import Search from '../../components/Search';
+import Button from '../../components/Button';
 
 // type Props = {
 //   vendors: Vendor[];
@@ -50,19 +51,31 @@ const List = () => {
   if (loadingVendors) return null;
 
   return (
-    <div className="mx-auto w-[80%]">
+    <div className="mx-auto w-[85%]">
       {/* <pre>{JSON.stringify(vendorsState)}</pre> */}
       <div className="flex justify-end w-full mb-4">
-        <div className="w-[35%]">
+        <div className="w-[50%] flex gap-6">
           <Search
             onSearch={(searchTerm: string) => handleSearch(searchTerm)}
           ></Search>
+          <Button
+            buttonSize="medium"
+            variation="secondary"
+            additionalclasses="border-neutral-400 text-neutral-700"
+          >
+            Add Payee
+          </Button>
         </div>
       </div>
 
       <input type="text" />
-      <div className="mb-1  grid grid-cols-[1fr_1fr_.7fr_.7fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1  font-semibold text-neutral-700 border-b border-b-neutral-300">
-        <div className="flex justify-start">
+      <div
+        className="mb-2 bg-neutral-100 grid grid-cols-[1fr_1fr_.7fr_.7fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1  font-semibold text-neutral-700 border-b border-b-neutral-300"
+        style={{
+          borderRadius: '5px 5px 0 0',
+        }}
+      >
+        <div className="flex justify-start pl-1">
           <SortBySelector
             label="Name"
             value="NAME"
@@ -107,45 +120,48 @@ const List = () => {
         <div className="text-center self-center">Edit</div>
         <div className="text-center self-center">Pay</div>
       </div>
-      <div className="">
-        {data?.vendors?.map((v) => (
-          <div
-            className="rounded-sm grid grid-cols-[1fr_1fr_.7fr_.7fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1 items-center hover:bg-neutral-200 duration-200 transition-all cursor-pointer"
-            key={v.id}
-          >
-            <div>{v.name}</div>
-            <div className="text-center">{v.accountName}</div>
-            <div className="text-center">
-              {v.lastPayment ? formatDate(v.lastPayment) : '-'}
-            </div>
-            <div className="text-center">
-              {v.totalPaid ? formatNumber(v.totalPaid) : '-'}
-            </div>
-            <div className="text-center ">{v.daysSinceLastPayment || '-'}</div>
-            <div className="flex justify-center ">
-              {v.isActive ? (
-                <Check className="text-green-600"></Check>
-              ) : (
-                <X className="text-red-600"></X>
-              )}
-            </div>
-            <div className="flex justify-center ">
-              <Pencil
-                className=" text-neutral-600 cursor-pointer"
-                onClick={() => {
-                  openDetails(v);
-                }}
-              ></Pencil>
-            </div>
-            <div className="flex justify-center ">
-              <DollarSign
-                className={`${!v.isActive ? 'text-neutral-400' : 'text-blue-500'} cursor-pointer`}
-              ></DollarSign>
-            </div>
+      {data?.vendors?.map((v) => (
+        <div
+          className="rounded-sm grid grid-cols-[1fr_1fr_.7fr_.7fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1 items-center hover:bg-neutral-100 duration-200 transition-all cursor-pointer"
+          key={v.id}
+        >
+          <div>{v.name}</div>
+          <div className="text-center">{v.accountName}</div>
+          <div className="text-center">
+            {v.lastPayment ? formatDate(v.lastPayment) : '-'}
           </div>
-        ))}
-      </div>
-      <div className="flex justify-center mt-8">
+          <div className="text-center">
+            {v.totalPaid ? formatNumber(v.totalPaid) : '-'}
+          </div>
+          <div className="text-center ">{v.daysSinceLastPayment || '-'}</div>
+          <div className="flex justify-center ">
+            {v.isActive ? (
+              <Check className="text-green-600"></Check>
+            ) : (
+              <X className="text-red-600"></X>
+            )}
+          </div>
+          <div className="flex justify-center ">
+            <Pencil
+              className=" text-neutral-600 cursor-pointer"
+              onClick={() => {
+                openDetails(v);
+              }}
+            ></Pencil>
+          </div>
+          <div className="flex justify-center ">
+            <DollarSign
+              className={`${!v.isActive ? 'text-neutral-400' : 'text-blue-500'} cursor-pointer`}
+            ></DollarSign>
+          </div>
+        </div>
+      ))}
+      <div
+        className="flex justify-center mt-8 bg-neutral-100 py-2 rounded-sm border-t border-t-neutral-300"
+        style={{
+          borderRadius: '0 0 5px 5px',
+        }}
+      >
         <Pagination
           data={data?.pagination}
           onPageNumberChange={handlePageNumberChange}
