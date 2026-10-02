@@ -31,7 +31,7 @@ namespace Application.DTOs.Disb
         public string? Comment { get; set; }
 
         [Required]
-        public int VendorId { get; set; }
+        public int PayeeId { get; set; }
 
     }
 }

@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Drawing;
 using Application.Core;
 using Application.DTOs.Payees;
-using Application.DTOs.Vendors;
+using Application.DTOs.Payees;
 using Application.PaginationHelpers;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using Persistence;
 
 namespace Application.Services
 {
-    public class VendorService(AppDbContext dbContext, IMapper mapper)
+    public class PayeeService(AppDbContext dbContext, IMapper mapper)
     {
 
         // public async Task<Result<List<PayeeResponseDto>>> GetAllPayees()
@@ -21,42 +21,42 @@ namespace Application.Services
         //             .Success(response);
         // }
 
-        public async Task<Result<VendorSearchResponseDto>> GetVendors(PaginationParams paginationParams, string searchTerm, string sortBy)
+        public async Task<Result<PayeeSearchResponseDto>> GetPayees(PaginationParams paginationParams, string searchTerm, string sortBy)
         {
 
-            var vendorsSummaries = dbContext.VendorSummaries;
+            var payeeSummaries = dbContext.PayeeSummaries;
 
-            var vendorsSummariesSorted = sortBy switch
+            var payeesSummariesSorted = sortBy switch
             {
-                "NAME" => vendorsSummaries.OrderBy(x => x.Name),
-                "NAMEdesc" => vendorsSummaries.OrderByDescending(x => x.Name),
-                "DAYSSINCELASTPAYMENT" => vendorsSummaries.OrderBy(x => x.DaysSinceLastPayment),
-                "DAYSSINCELASTPAYMENTdesc" => vendorsSummaries.OrderByDescending(x => x.DaysSinceLastPayment),
-                "LASTPAYMENTDATE" => vendorsSummaries.OrderBy(x => x.LastPayment),
-                "LASTPAYMENTDATEdesc" => vendorsSummaries.OrderByDescending(x => x.LastPayment),
-                "ACCOUNT" => vendorsSummaries.OrderBy(x => x.AccountName),
-                "ACCOUNTdesc" => vendorsSummaries.OrderByDescending(x => x.AccountName),
-                "ISACTIVE" => vendorsSummaries.OrderBy(x => x.IsActive),
-                "ISACTIVEdesc" => vendorsSummaries.OrderByDescending(x => x.IsActive),
-                _ => vendorsSummaries.OrderBy(x => x.Id)
+                "NAME" => payeeSummaries.OrderBy(x => x.Name),
+                "NAMEdesc" => payeeSummaries.OrderByDescending(x => x.Name),
+                "DAYSSINCELASTPAYMENT" => payeeSummaries.OrderBy(x => x.DaysSinceLastPayment),
+                "DAYSSINCELASTPAYMENTdesc" => payeeSummaries.OrderByDescending(x => x.DaysSinceLastPayment),
+                "LASTPAYMENTDATE" => payeeSummaries.OrderBy(x => x.LastPayment),
+                "LASTPAYMENTDATEdesc" => payeeSummaries.OrderByDescending(x => x.LastPayment),
+                "ACCOUNT" => payeeSummaries.OrderBy(x => x.AccountName),
+                "ACCOUNTdesc" => payeeSummaries.OrderByDescending(x => x.AccountName),
+                "ISACTIVE" => payeeSummaries.OrderBy(x => x.IsActive),
+                "ISACTIVEdesc" => payeeSummaries.OrderByDescending(x => x.IsActive),
+                _ => payeeSummaries.OrderBy(x => x.Id)
             };
 
-            var vendorsQueryResult = await vendorsSummariesSorted.ToListAsync();
+            var payeesQueryResult = await payeesSummariesSorted.ToListAsync();
 
-            var mapped = mapper.Map<List<VendorSearchPayeeResponseDto>>(vendorsQueryResult);
+            var mapped = mapper.Map<List<PayeeSearchPayeeResponseDto>>(payeesQueryResult);
 
             var pagedItemsList =
-                       PagedList<VendorSearchPayeeResponseDto>.ToPagedList(mapped.AsQueryable(), paginationParams.PageNumber, paginationParams.PageSize);
+                       PagedList<PayeeSearchPayeeResponseDto>.ToPagedList(mapped.AsQueryable(), paginationParams.PageNumber, paginationParams.PageSize);
 
 
-            var result = new VendorSearchResponseDto
+            var result = new PayeeSearchResponseDto
             {
                 Items = pagedItemsList,
                 ItemCount = pagedItemsList.Metadata.TotalCount,
                 MetaData = pagedItemsList.Metadata
             };
 
-            return Result<VendorSearchResponseDto>.Success(result);
+            return Result<PayeeSearchResponseDto>.Success(result);
         }
 
         // public async Task<Result<List<PayeeResponseDto>>> GetPayeesForAccount(int accountId)

@@ -51,6 +51,7 @@ namespace Application.Services
                         Year = grant.Year,
                         Comment = x.Comment,
                         BudgetLineItemId = null,
+                        PayeeId = x.PayeeId
                     })]
                 };
 

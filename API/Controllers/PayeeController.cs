@@ -1,29 +1,24 @@
 using API.Extensions;
-using Application.DTOs.Payees;
 using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using AutoMapper;
 using Application.PaginationHelpers;
 
 namespace API.Controllers
 {
     [Authorize]
-    public class VendorsController(VendorService vendorService) : BaseApiController
+    public class PayeeController(PayeeService payeeService) : BaseApiController
     {
         [HttpGet("list")]
         public async Task<IActionResult> List([FromQuery] PaginationParams paginationParams, string searchTerm = "", string sortBy = "NAME")
         {
             try
             {
+                var payeesFromDb = await payeeService.GetPayees(paginationParams, searchTerm, sortBy);
 
-                Console.WriteLine(paginationParams.PageNumber);
+                Response.AddPaginationHeader(payeesFromDb.Value!.MetaData);
 
-                var vendorsFromDb = await vendorService.GetVendors(paginationParams, searchTerm, sortBy);
-
-                Response.AddPaginationHeader(vendorsFromDb.Value!.MetaData);
-
-                return HandleResult(vendorsFromDb);
+                return HandleResult(payeesFromDb);
             }
             catch (Exception ex)
             {

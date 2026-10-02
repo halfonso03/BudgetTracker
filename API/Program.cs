@@ -74,7 +74,7 @@ builder.Services.AddTransient<IGrantService, GrantService>();
 builder.Services.AddTransient<IInitiativeService, InitiativesService>();
 builder.Services.AddTransient<IBudgetService, BudgetService>();
 builder.Services.AddTransient<IReproService, ReproService>();
-builder.Services.AddTransient<IDisbService, DisbService>();
+builder.Services.AddTransient<DisbService, DisbService>();
 builder.Services.AddTransient<IReportParameterValuesService, ReportParameterValuesService>();
 builder.Services.AddTransient<IReportService, ReportService>();
 builder.Services.AddTransient<DisbService, DisbService>();
@@ -91,7 +91,7 @@ builder.Services.AddTransient<IReportRunnerService, ReportRunnerService>((provid
     );
 });
 
-builder.Services.AddTransient<VendorService, VendorService>();
+builder.Services.AddTransient<PayeeService, PayeeService>();
 
 builder.Services.AddAutoMapper((c) =>
 {

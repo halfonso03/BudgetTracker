@@ -25,11 +25,9 @@ namespace Persistence
         public required DbSet<ReportParameter> ReportParameters { get; set; }
         public required DbSet<ReportCategory> ReportCategories { get; set; }
         public required DbSet<BudgetItemType> BudgetItemTypes { get; set; }
-        public required DbSet<Vendor> Payees { get; set; }
+        public required DbSet<Payee> Payees { get; set; }
         public required DbSet<Contrator> Contrators { get; set; }
-
-        public required DbSet<VendorSummary> VendorSummaries { get; set; }
-
+        public required DbSet<PayeeSummary> PayeeSummaries { get; set; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -260,43 +258,43 @@ namespace Persistence
             // //////////////////////////////
 
             //  25 - Services  - Freight and Postage Services
-            builder.Entity<Vendor>().HasData(
-                new Vendor() { Id = 1, Name = "Kinkos", AccountId = 13, IsActive = true },
-                new Vendor() { Id = 2, Name = "FedEx", AccountId = 13, IsActive = true },
-                new Vendor() { Id = 3, Name = "Shipstation", AccountId = 13, IsActive = true },
-                new Vendor() { Id = 4, Name = "Navis Pack & Ship", AccountId = 13, IsActive = true },
-                new Vendor() { Id = 5, Name = "ShippyPro", AccountId = 13, IsActive = true },
-                new Vendor() { Id = 6, Name = "Mimeo", AccountId = 13, IsActive = true },
-                new Vendor() { Id = 7, Name = "EasySip", AccountId = 13, IsActive = true },
-                new Vendor() { Id = 8, Name = "PackAndShip", AccountId = 13, IsActive = true }
+            builder.Entity<Payee>().HasData(
+                new Payee() { Id = 1, Name = "Kinkos", AccountId = 13, IsActive = true },
+                new Payee() { Id = 2, Name = "FedEx", AccountId = 13, IsActive = true },
+                new Payee() { Id = 3, Name = "Shipstation", AccountId = 13, IsActive = true },
+                new Payee() { Id = 4, Name = "Navis Pack & Ship", AccountId = 13, IsActive = true },
+                new Payee() { Id = 5, Name = "ShippyPro", AccountId = 13, IsActive = true },
+                new Payee() { Id = 6, Name = "Mimeo", AccountId = 13, IsActive = true },
+                new Payee() { Id = 7, Name = "EasySip", AccountId = 13, IsActive = true },
+                new Payee() { Id = 8, Name = "PackAndShip", AccountId = 13, IsActive = true }
             );
 
 
             //  26 -Services -  Communication Services
-            builder.Entity<Vendor>().HasData(
-                new Vendor() { Id = 9, Name = "AT & T", AccountId = 14, IsActive = true },
-                new Vendor() { Id = 10, Name = "Comcast", AccountId = 14, IsActive = true },
-                new Vendor() { Id = 11, Name = "Sunshine", AccountId = 14, IsActive = true },
-                new Vendor() { Id = 12, Name = "Motorola", AccountId = 14, IsActive = true },
-                new Vendor() { Id = 13, Name = "Voip Comm", AccountId = 14, IsActive = true },
-                new Vendor() { Id = 14, Name = "Tom Sanchez", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 15, Name = "Marc Greenstien", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 16, Name = "Troy Bankert", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 17, Name = "Charles Bengston", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 18, Name = "Ethan Steigerwald", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 19, Name = "Steve Sales", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 20, Name = "Tim Cardwell", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 21, Name = "Tafoya Martina", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 22, Name = "Jim Cormier", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 23, Name = "Shaun Doyne", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 24, Name = "John Eadie", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 25, Name = "Orman Hall", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 26, Name = "David Hamby", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 27, Name = "Christopher Jakim", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 28, Name = "Emma Kempton", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 29, Name = "Rob Roggeveen", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 30, Name = "Steve Salas", AccountId = 19, IsActive = true },
-                new Vendor() { Id = 31, Name = "Mike Snyders", AccountId = 19, IsActive = true }
+            builder.Entity<Payee>().HasData(
+                new Payee() { Id = 9, Name = "AT & T", AccountId = 14, IsActive = true },
+                new Payee() { Id = 10, Name = "Comcast", AccountId = 14, IsActive = true },
+                new Payee() { Id = 11, Name = "Sunshine", AccountId = 14, IsActive = true },
+                new Payee() { Id = 12, Name = "Motorola", AccountId = 14, IsActive = true },
+                new Payee() { Id = 13, Name = "Voip Comm", AccountId = 14, IsActive = true },
+                new Payee() { Id = 14, Name = "Tom Sanchez", AccountId = 19, IsActive = true },
+                new Payee() { Id = 15, Name = "Marc Greenstien", AccountId = 19, IsActive = true },
+                new Payee() { Id = 16, Name = "Troy Bankert", AccountId = 19, IsActive = true },
+                new Payee() { Id = 17, Name = "Charles Bengston", AccountId = 19, IsActive = true },
+                new Payee() { Id = 18, Name = "Ethan Steigerwald", AccountId = 19, IsActive = true },
+                new Payee() { Id = 19, Name = "Steve Sales", AccountId = 19, IsActive = true },
+                new Payee() { Id = 20, Name = "Tim Cardwell", AccountId = 19, IsActive = true },
+                new Payee() { Id = 21, Name = "Tafoya Martina", AccountId = 19, IsActive = true },
+                new Payee() { Id = 22, Name = "Jim Cormier", AccountId = 19, IsActive = true },
+                new Payee() { Id = 23, Name = "Shaun Doyne", AccountId = 19, IsActive = true },
+                new Payee() { Id = 24, Name = "John Eadie", AccountId = 19, IsActive = true },
+                new Payee() { Id = 25, Name = "Orman Hall", AccountId = 19, IsActive = true },
+                new Payee() { Id = 26, Name = "David Hamby", AccountId = 19, IsActive = true },
+                new Payee() { Id = 27, Name = "Christopher Jakim", AccountId = 19, IsActive = true },
+                new Payee() { Id = 28, Name = "Emma Kempton", AccountId = 19, IsActive = true },
+                new Payee() { Id = 29, Name = "Rob Roggeveen", AccountId = 19, IsActive = true },
+                new Payee() { Id = 30, Name = "Steve Salas", AccountId = 19, IsActive = true },
+                new Payee() { Id = 31, Name = "Mike Snyders", AccountId = 19, IsActive = true }
             );
 
 
@@ -632,10 +630,10 @@ namespace Persistence
 
             builder.Entity<ReportCategory>().Property(x => x.Name).HasColumnType("VARCHAR(50)");
 
-            builder.Entity<Vendor>().Property(x => x.Id).HasColumnName("id");
-            builder.Entity<Vendor>().Property(x => x.Name).HasColumnType("VARCHAR(250)").HasColumnName("name");
-            builder.Entity<Vendor>().Property(x => x.AccountId).HasColumnName("account_id");
-            builder.Entity<Vendor>().Property(x => x.IsActive).HasColumnName("is_active").HasColumnType("bit");
+            builder.Entity<Payee>().Property(x => x.Id).HasColumnName("id");
+            builder.Entity<Payee>().Property(x => x.Name).HasColumnType("VARCHAR(250)").HasColumnName("name");
+            builder.Entity<Payee>().Property(x => x.AccountId).HasColumnName("account_id");
+            builder.Entity<Payee>().Property(x => x.IsActive).HasColumnName("is_active").HasColumnType("bit");
             builder.Entity<Contrator>().Property(x => x.Id).HasColumnName("id");
 
             builder.Entity<Contrator>().Property(x => x.FirstName).HasColumnName("firstName").HasColumnType("VARCHAR(250)");
@@ -651,7 +649,7 @@ namespace Persistence
                        .OnDelete(DeleteBehavior.NoAction);
 
 
-            builder.Entity<VendorSummary>()
+            builder.Entity<PayeeSummary>()
                   .ToView("vwVendorSummary") // Name of your SQL view
                   .HasNoKey();
         }

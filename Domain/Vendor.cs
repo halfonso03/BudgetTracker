@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Domain
 {
     [Table("tblVendor")]
-    public class Vendor
+    public class Payee
     {
         public int Id { get; set; }
         public required string Name { get; set; }
