@@ -26,7 +26,7 @@ namespace Application.DTOs.Repro
         {
             get
             {
-                var assertId = 0;
+                var assertId = LineItems.Min(x => x.RowId);
                 foreach (var item in LineItems)
                 {
                     if (assertId != item.RowId)
@@ -46,9 +46,6 @@ namespace Application.DTOs.Repro
         {
             get
             {
-
-                if (!Posted) return true;
-
                 if (LineItems.Count == 0) return null;
 
                 var itemCount = LineItems.Count;

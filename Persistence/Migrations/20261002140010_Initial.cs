@@ -317,13 +317,13 @@ namespace Persistence.Migrations
                     create_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     created_by = table.Column<int>(type: "int", nullable: false),
                     updated_by = table.Column<int>(type: "int", nullable: true),
-                    grant_id = table.Column<int>(type: "int", nullable: false),
                     posted = table.Column<bool>(type: "bit", nullable: false),
                     posted_by = table.Column<int>(type: "int", nullable: true),
                     posted_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
                     updated_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
                     amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
-                    justification = table.Column<string>(type: "VARCHAR(MAX)", nullable: false)
+                    justification = table.Column<string>(type: "VARCHAR(MAX)", nullable: false),
+                    GrantId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -345,8 +345,8 @@ namespace Persistence.Migrations
                         principalTable: "tblAuthorizedUsers",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_tblDisb_tblGrant_grant_id",
-                        column: x => x.grant_id,
+                        name: "FK_tblDisb_tblGrant_GrantId",
+                        column: x => x.GrantId,
                         principalTable: "tblGrant",
                         principalColumn: "id");
                 });
@@ -506,7 +506,7 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblVendor",
+                name: "tblPayee",
                 columns: table => new
                 {
                     id = table.Column<int>(type: "int", nullable: false)
@@ -517,9 +517,9 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblVendor", x => x.id);
+                    table.PrimaryKey("PK_tblPayee", x => x.id);
                     table.ForeignKey(
-                        name: "FK_tblVendor_tblAccount_account_id",
+                        name: "FK_tblPayee_tblAccount_account_id",
                         column: x => x.account_id,
                         principalTable: "tblAccount",
                         principalColumn: "id",
@@ -633,7 +633,7 @@ namespace Persistence.Migrations
                     account_id = table.Column<int>(type: "int", nullable: false),
                     amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
                     year = table.Column<int>(type: "int", nullable: false),
-                    vendor_id = table.Column<int>(type: "int", nullable: false),
+                    payee_id = table.Column<int>(type: "int", nullable: false),
                     entry_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
                     updated_by = table.Column<int>(type: "int", nullable: true),
@@ -683,9 +683,9 @@ namespace Persistence.Migrations
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tblDisbLineItem_tblVendor_vendor_id",
-                        column: x => x.vendor_id,
-                        principalTable: "tblVendor",
+                        name: "FK_tblDisbLineItem_tblPayee_payee_id",
+                        column: x => x.payee_id,
+                        principalTable: "tblPayee",
                         principalColumn: "id");
                 });
 
@@ -719,7 +719,7 @@ namespace Persistence.Migrations
                     { 3, "Fringe", 3 },
                     { 4, "Equipment", 4 },
                     { 5, "Services Contractors", 5 },
-                    { 6, "Services Payees", 6 },
+                    { 6, "Services Contractors", 6 },
                     { 7, "Supplies", 7 },
                     { 8, "Travel Contractor", 8 },
                     { 9, "Travel Agency", 9 }
@@ -811,20 +811,7 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
-                schema: "Report",
-                table: "tblReportParamter",
-                columns: new[] { "id", "control_type", "depends_on", "enabled", "label", "name", "report_id", "sort_order" },
-                values: new object[,]
-                {
-                    { 1, "dropdownlist", null, true, "Year", "aiYear", 1, (byte)1 },
-                    { 2, "checkboxlist", null, true, "Initiative", "avcInitiatives", 1, (byte)2 },
-                    { 3, "dropdownlist", null, true, "Year", "aiYear", 2, (byte)1 },
-                    { 4, "checkboxlist", "aiYear", true, "Grant", "avcGrants", 2, (byte)2 },
-                    { 5, "dropdownlist", null, true, "Budget Category", "aiBudgetCat", 2, (byte)3 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "tblVendor",
+                table: "tblPayee",
                 columns: new[] { "id", "account_id", "is_active", "name" },
                 values: new object[,]
                 {
@@ -859,6 +846,19 @@ namespace Persistence.Migrations
                     { 29, 19, true, "Rob Roggeveen" },
                     { 30, 19, true, "Steve Salas" },
                     { 31, 19, true, "Mike Snyders" }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "Report",
+                table: "tblReportParamter",
+                columns: new[] { "id", "control_type", "depends_on", "enabled", "label", "name", "report_id", "sort_order" },
+                values: new object[,]
+                {
+                    { 1, "dropdownlist", null, true, "Year", "aiYear", 1, (byte)1 },
+                    { 2, "checkboxlist", null, true, "Initiative", "avcInitiatives", 1, (byte)2 },
+                    { 3, "dropdownlist", null, true, "Year", "aiYear", 2, (byte)1 },
+                    { 4, "checkboxlist", "aiYear", true, "Grant", "avcGrants", 2, (byte)2 },
+                    { 5, "dropdownlist", null, true, "Budget Category", "aiBudgetCat", 2, (byte)3 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -971,9 +971,9 @@ namespace Persistence.Migrations
                 column: "created_by");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblDisb_grant_id",
+                name: "IX_tblDisb_GrantId",
                 table: "tblDisb",
-                column: "grant_id");
+                column: "GrantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblDisb_posted_by",
@@ -1017,14 +1017,19 @@ namespace Persistence.Migrations
                 column: "initiative_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tblDisbLineItem_payee_id",
+                table: "tblDisbLineItem",
+                column: "payee_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tblDisbLineItem_updated_by",
                 table: "tblDisbLineItem",
                 column: "updated_by");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblDisbLineItem_vendor_id",
-                table: "tblDisbLineItem",
-                column: "vendor_id");
+                name: "IX_tblPayee_account_id",
+                table: "tblPayee",
+                column: "account_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblReport_category_id",
@@ -1089,11 +1094,6 @@ namespace Persistence.Migrations
                 name: "IX_tblReproLineItem_updated_by",
                 table: "tblReproLineItem",
                 column: "updated_by");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tblVendor_account_id",
-                table: "tblVendor",
-                column: "account_id");
         }
 
         /// <inheritdoc />
@@ -1140,7 +1140,7 @@ namespace Persistence.Migrations
                 name: "tblDisb");
 
             migrationBuilder.DropTable(
-                name: "tblVendor");
+                name: "tblPayee");
 
             migrationBuilder.DropTable(
                 name: "tblReport",

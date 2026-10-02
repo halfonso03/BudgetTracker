@@ -9,8 +9,6 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
-
-
 CREATE view [dbo].[vwBudgets]
 as
 select i.id i_id, g.id g_id, a.id a_id, i.name initiative_name, g.name grant_name, a.name account_name, b.amount, item_type, YEAR(g.start_date) grant_year
@@ -20,14 +18,12 @@ join tblGrant g on g.id = b.grant_id
 
 GO
 
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-ALTER view [dbo].[vwVendorSummary]
+CREATE view [dbo].[vwPayeeSummary]
 AS
-SELECT v.id, v.name, v.is_active, a.id accountId, a.name accountName, MAX(d.posted_date) lastPayment, DATEDIFF(d, MAX(d.posted_date), GETDATE()) daysSinceLastPayment
-FROM tblVendor v LEFT OUTER JOIN tblAccount a ON v.account_id = a.id
-    LEFT OUTER JOIN tblDisbLineItem l ON v.id = l.vendor_id
+SELECT v.id, v.name, v.is_active, a.id accountId, c.name + ' - ' + a.name accountName, MAX(d.posted_date) lastPayment, DATEDIFF(d, MAX(d.posted_date), GETDATE()) daysSinceLastPayment, SUM(l.amount) totalPaid
+FROM tblPayee v LEFT OUTER JOIN tblAccount a ON v.account_id = a.id
+LEFT OUTER JOIN tblCategory c ON c.id = a.category_id
+    LEFT OUTER JOIN tblDisbLineItem l ON v.id = l.payee_id
     LEFT OUTER JOIN tblDisb d ON d.id = l.disb_id
-GROUP BY v.id, v.name, v.is_active, a.name, a.id
+GROUP BY v.id, v.name, v.is_active, a.name, a.id, c.name
+

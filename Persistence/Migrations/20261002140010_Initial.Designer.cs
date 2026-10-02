@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261001221243_Initialzzz")]
-    partial class Initialzzz
+    [Migration("20261002140010_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -778,9 +778,8 @@ namespace Persistence.Migrations
                         .HasColumnType("DATETIME2")
                         .HasColumnName("create_date");
 
-                    b.Property<int>("GrantId")
-                        .HasColumnType("int")
-                        .HasColumnName("grant_id");
+                    b.Property<int?>("GrantId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Justification")
                         .IsRequired()
@@ -871,7 +870,7 @@ namespace Persistence.Migrations
 
                     b.Property<int>("PayeeId")
                         .HasColumnType("int")
-                        .HasColumnName("vendor_id");
+                        .HasColumnName("payee_id");
 
                     b.Property<int>("RowId")
                         .HasColumnType("int")
@@ -1032,6 +1031,254 @@ namespace Persistence.Migrations
                         {
                             Id = 6,
                             Name = "DTAG"
+                        });
+                });
+
+            modelBuilder.Entity("Domain.Payee", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int")
+                        .HasColumnName("account_id");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(250)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("tblPayee");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "Kinkos"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "FedEx"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "Shipstation"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "Navis Pack & Ship"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "ShippyPro"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "Mimeo"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "EasySip"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            AccountId = 13,
+                            IsActive = true,
+                            Name = "PackAndShip"
+                        },
+                        new
+                        {
+                            Id = 9,
+                            AccountId = 14,
+                            IsActive = true,
+                            Name = "AT & T"
+                        },
+                        new
+                        {
+                            Id = 10,
+                            AccountId = 14,
+                            IsActive = true,
+                            Name = "Comcast"
+                        },
+                        new
+                        {
+                            Id = 11,
+                            AccountId = 14,
+                            IsActive = true,
+                            Name = "Sunshine"
+                        },
+                        new
+                        {
+                            Id = 12,
+                            AccountId = 14,
+                            IsActive = true,
+                            Name = "Motorola"
+                        },
+                        new
+                        {
+                            Id = 13,
+                            AccountId = 14,
+                            IsActive = true,
+                            Name = "Voip Comm"
+                        },
+                        new
+                        {
+                            Id = 14,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Tom Sanchez"
+                        },
+                        new
+                        {
+                            Id = 15,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Marc Greenstien"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Troy Bankert"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Charles Bengston"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Ethan Steigerwald"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Steve Sales"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Tim Cardwell"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Tafoya Martina"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Jim Cormier"
+                        },
+                        new
+                        {
+                            Id = 23,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Shaun Doyne"
+                        },
+                        new
+                        {
+                            Id = 24,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "John Eadie"
+                        },
+                        new
+                        {
+                            Id = 25,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Orman Hall"
+                        },
+                        new
+                        {
+                            Id = 26,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "David Hamby"
+                        },
+                        new
+                        {
+                            Id = 27,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Christopher Jakim"
+                        },
+                        new
+                        {
+                            Id = 28,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Emma Kempton"
+                        },
+                        new
+                        {
+                            Id = 29,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Rob Roggeveen"
+                        },
+                        new
+                        {
+                            Id = 30,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Steve Salas"
+                        },
+                        new
+                        {
+                            Id = 31,
+                            AccountId = 19,
+                            IsActive = true,
+                            Name = "Mike Snyders"
                         });
                 });
 
@@ -1373,255 +1620,7 @@ namespace Persistence.Migrations
                     b.ToTable("tblReproLineItem");
                 });
 
-            modelBuilder.Entity("Domain.Vendor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AccountId")
-                        .HasColumnType("int")
-                        .HasColumnName("account_id");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasColumnName("is_active");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(250)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("tblVendor");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccountId = 13,
-                            IsActive = true,
-                            Name = "Kinkos"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AccountId = 13,
-                            IsActive = true,
-                            Name = "FedEx"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AccountId = 13,
-                            IsActive = true,
-                            Name = "Shipstation"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AccountId = 13,
-                            IsActive = true,
-                            Name = "Navis Pack & Ship"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AccountId = 13,
-                            IsActive = true,
-                            Name = "ShippyPro"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            AccountId = 13,
-                            IsActive = true,
-                            Name = "Mimeo"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            AccountId = 13,
-                            IsActive = true,
-                            Name = "EasySip"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            AccountId = 13,
-                            IsActive = true,
-                            Name = "PackAndShip"
-                        },
-                        new
-                        {
-                            Id = 9,
-                            AccountId = 14,
-                            IsActive = true,
-                            Name = "AT & T"
-                        },
-                        new
-                        {
-                            Id = 10,
-                            AccountId = 14,
-                            IsActive = true,
-                            Name = "Comcast"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            AccountId = 14,
-                            IsActive = true,
-                            Name = "Sunshine"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            AccountId = 14,
-                            IsActive = true,
-                            Name = "Motorola"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            AccountId = 14,
-                            IsActive = true,
-                            Name = "Voip Comm"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Tom Sanchez"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Marc Greenstien"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Troy Bankert"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Charles Bengston"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Ethan Steigerwald"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Steve Sales"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Tim Cardwell"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Tafoya Martina"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Jim Cormier"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Shaun Doyne"
-                        },
-                        new
-                        {
-                            Id = 24,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "John Eadie"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Orman Hall"
-                        },
-                        new
-                        {
-                            Id = 26,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "David Hamby"
-                        },
-                        new
-                        {
-                            Id = 27,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Christopher Jakim"
-                        },
-                        new
-                        {
-                            Id = 28,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Emma Kempton"
-                        },
-                        new
-                        {
-                            Id = 29,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Rob Roggeveen"
-                        },
-                        new
-                        {
-                            Id = 30,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Steve Salas"
-                        },
-                        new
-                        {
-                            Id = 31,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Mike Snyders"
-                        });
-                });
-
-            modelBuilder.Entity("Domain.Views.VendorSummary", b =>
+            modelBuilder.Entity("Domain.Views.PayeeSummary", b =>
                 {
                     b.Property<int?>("AccountId")
                         .HasColumnType("int");
@@ -1877,11 +1876,9 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Grant", "Grant")
+                    b.HasOne("Domain.Grant", null)
                         .WithMany("Disbs")
-                        .HasForeignKey("GrantId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .HasForeignKey("GrantId");
 
                     b.HasOne("Domain.AuthorizedUser", "PostedBy")
                         .WithMany()
@@ -1892,8 +1889,6 @@ namespace Persistence.Migrations
                         .HasForeignKey("UpdatedById");
 
                     b.Navigation("CreatedBy");
-
-                    b.Navigation("Grant");
 
                     b.Navigation("PostedBy");
 
@@ -1936,7 +1931,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Vendor", "Payee")
+                    b.HasOne("Domain.Payee", "Payee")
                         .WithMany("DisbLineItems")
                         .HasForeignKey("PayeeId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1961,6 +1956,17 @@ namespace Persistence.Migrations
                     b.Navigation("Payee");
 
                     b.Navigation("UpdatedBy");
+                });
+
+            modelBuilder.Entity("Domain.Payee", b =>
+                {
+                    b.HasOne("Domain.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("Domain.Report", b =>
@@ -2063,17 +2069,6 @@ namespace Persistence.Migrations
                     b.Navigation("UpdatedBy");
                 });
 
-            modelBuilder.Entity("Domain.Vendor", b =>
-                {
-                    b.HasOne("Domain.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Domain.ApplicationRole", null)
@@ -2149,6 +2144,11 @@ namespace Persistence.Migrations
                     b.Navigation("Disbs");
                 });
 
+            modelBuilder.Entity("Domain.Payee", b =>
+                {
+                    b.Navigation("DisbLineItems");
+                });
+
             modelBuilder.Entity("Domain.Report", b =>
                 {
                     b.Navigation("Parameters");
@@ -2162,11 +2162,6 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Repro", b =>
                 {
                     b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("Domain.Vendor", b =>
-                {
-                    b.Navigation("DisbLineItems");
                 });
 #pragma warning restore 612, 618
         }

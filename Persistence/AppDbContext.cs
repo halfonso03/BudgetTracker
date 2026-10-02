@@ -579,11 +579,11 @@ namespace Persistence
                             .HasForeignKey(x => x.CategoryId)
                             .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Entity<Disb>()
-                    .HasOne(x => x.Grant)
-                    .WithMany(x => x.Disbs)
-                    .HasForeignKey(x => x.GrantId)
-                    .OnDelete(DeleteBehavior.NoAction);
+            // builder.Entity<Disb>()
+            //         .HasOne(x => x.Grant)
+            //         .WithMany(x => x.Disbs)
+            //         .HasForeignKey(x => x.GrantId)
+            //         .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Disb>().Property(x => x.Id).HasColumnName("id");
             builder.Entity<Disb>().Property(x => x.CreatedDate).HasColumnName("create_date").HasColumnType("DATETIME2");
@@ -596,7 +596,7 @@ namespace Persistence
             builder.Entity<Disb>().Property(x => x.PostedDate).HasColumnName("posted_date").HasColumnType("DATETIME2");
             builder.Entity<Disb>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
             builder.Entity<Disb>().Property(x => x.Justification).HasColumnName("justification").HasColumnType("VARCHAR(MAX)");
-            builder.Entity<Disb>().Property(x => x.GrantId).HasColumnName("grant_id");
+            // builder.Entity<Disb>().Property(x => x.GrantId).HasColumnName("grant_id");
 
 
             builder.Entity<DisbLineItem>().Property(x => x.Id).HasColumnName("id");
@@ -614,9 +614,9 @@ namespace Persistence
             builder.Entity<DisbLineItem>().Property(x => x.Comment).HasColumnName("comment").HasColumnType("VARCHAR(MAX)");
             builder.Entity<DisbLineItem>().Property(x => x.BudgetLineItemId).HasColumnName("budget_line_id");
             builder.Entity<DisbLineItem>()
-                        .HasIndex(a => new { a.DisbId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId })
+                        .HasIndex(a => new { a.DisbId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId, a.PayeeId })
                         .IsUnique();
-            builder.Entity<DisbLineItem>().Property(x => x.PayeeId).HasColumnName("vendor_id");
+            builder.Entity<DisbLineItem>().Property(x => x.PayeeId).HasColumnName("payee_id");
 
 
             builder.Entity<Report>().Property(x => x.Name).HasColumnType("VARCHAR(200)");

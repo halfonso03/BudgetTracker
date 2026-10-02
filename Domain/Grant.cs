@@ -18,6 +18,6 @@ namespace Domain
         public required DateTime EndDate { get; set; }
         public int Year { get; set; }
         public required string Fiduciary { get; set; }
-        public IList<Disb>? Disbs { get; set; }
+        // public IList<Disb>? Disbs { get; set; }
     }
 }

@@ -12,15 +12,15 @@ namespace Application.DTOs.Disb
         [Required]
         public required bool Posted { get; set; }
 
-        public List<DisbLineItem> LineItems { get; set; } = [];
+        public List<DisbRequestLineItemDto> LineItems { get; set; } = [];
 
         [ValueMustBeTrueValidator(ErrorMessage = "Row Ids are not sequential")]
         public bool? SequentialRowIds
         {
             get
             {
-                var assertId = 0;
-                foreach (var item in LineItems)
+                var assertId = LineItems.Min(x => x.RowId);
+                foreach (var item in LineItems.OrderBy(x => x.RowId))
                 {
                     if (assertId != item.RowId)
                         return false;
@@ -37,9 +37,6 @@ namespace Application.DTOs.Disb
         {
             get
             {
-
-                if (!Posted) return true;
-
                 if (LineItems.Count == 0) return null;
 
                 var itemCount = LineItems.Count;
@@ -47,7 +44,9 @@ namespace Application.DTOs.Disb
                 {
                     x.InitiativeId,
                     x.GrantId,
-                    x.AccountId
+                    x.CategoryId,
+                    x.AccountId,
+                    x.PayeeId
                 }).Distinct().Count();
 
                 if (itemCount == distintItemCount) return true;
