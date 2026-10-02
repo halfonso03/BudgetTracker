@@ -524,6 +524,8 @@ namespace Persistence
             builder.Entity<BudgetLineItem>().Property(x => x.CreatedBy).HasColumnName("created_by");
             builder.Entity<BudgetLineItem>().Property(x => x.UpdateDate).HasColumnName("update_date").HasColumnType("DATETIME2");
             builder.Entity<BudgetLineItem>().Property(x => x.UpdatedBy).HasColumnName("updated_by");
+            builder.Entity<BudgetLineItem>().Property(x => x.AdditionalInformation).HasColumnName("additional_information").HasColumnType("VARCHAR(1000)");
+
 
             builder.Entity<BudgetComment>().Property(x => x.Text).HasColumnName("comment_text").HasColumnType("VARCHAR(MAX)"); ;
             builder.Entity<BudgetComment>().Property(x => x.EntryDate).HasColumnName("entry_date").HasColumnType("DATETIME2").HasDefaultValueSql("GETDATE()");

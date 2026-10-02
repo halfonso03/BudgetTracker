@@ -9,6 +9,7 @@ using Application.Core;
 using Application.DTOs.Budgets;
 using Application.DTOs.Disb;
 using Application.Interfaces;
+using Application.services;
 using Azure.Core.GeoJson;
 using Domain;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +18,95 @@ using Persistence;
 
 namespace Application.Services
 {
-    public class DisbService(AppDbContext _dbContext)
+    public class DisbService(AppDbContext _dbContext, IBudgetService _budgetService)
     {
+        public async Task<Result<DisbResponseDto>> GetDisb(int id)
+        {
+            var reproFromDb = await _dbContext.Disbs
+                                        .Include(x => x.CreatedBy)
+                                        .Include(x => x.UpdatedBy)
+                                        .Include(x => x.PostedBy)
+                                        .FirstOrDefaultAsync(x => x.Id == id);
+
+            if (reproFromDb is null)
+            {
+                return Result<DisbResponseDto>.Failure($"Reprogramming not found", 400);
+            }
+
+            try
+            {
+                var lineItems = await _dbContext.DisbLineItems
+                                        .Include(x => x.UpdatedBy)
+                                        .Include(x => x.Initiative)
+                                        .Include(x => x.Grant)
+                                        .Include(x => x.Category)
+                                        .Include(x => x.Account)
+                                        .Where(x => x.DisbId == id).ToListAsync();
+
+
+                var keys = lineItems.Select(x => new { x.InitiativeId, x.GrantId, x.CategoryId }).Distinct();
+
+                var rowBalances = new List<DisbBalanceResponseDto>();
+
+                foreach (var key in keys)
+                {
+                    var balances = await _budgetService.GetBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
+
+                    rowBalances.Add(new DisbBalanceResponseDto()
+                    {
+                        Key = new()
+                        {
+                            InitiativeId = key.InitiativeId,
+                            GrantId = key.GrantId,
+                            CategoryId = key.CategoryId
+                        },
+                        Balances = [.. balances.Select(x => Balance.Create(x.AccountId, x.CurrentAmount, x.RemainingAmount, x.AccountName))]
+                    });
+                }
+
+
+                var response = new DisbResponseDto
+                {
+                    RowBalances = rowBalances,
+                    Id = reproFromDb.Id,
+                    Year = lineItems.First().Year,
+                    Justification = reproFromDb.Justification,
+                    CreatedBy = reproFromDb.CreatedBy!.WindowsLogin,
+                    CreateDate = reproFromDb.CreatedDate,
+                    CreatedById = reproFromDb.CreatedById,
+                    UpdateDate = reproFromDb.UpdateDate,
+                    UpdatedById = reproFromDb.UpdatedById,
+                    Posted = reproFromDb.Posted,
+                    PostedBy = reproFromDb.PostedBy != null ? reproFromDb.PostedBy.WindowsLogin : "",
+                    PostedDate = reproFromDb.PostedDate,
+                    PostedById = reproFromDb.PostedById,
+                    LineItems = [.. lineItems.Select(x =>
+                        new DisbLineItemResponseDto
+                        {
+                            Comment = x.Comment,
+                            RowId = x.RowId,
+                            InitiativeId = x.InitiativeId,
+                            GrantId = x.GrantId,
+                            AccountId = x.AccountId,
+                            CategoryId = x.CategoryId,
+                            Amount = x.Amount,
+                            PayeeName = x.Payee!.Name,
+                            InitiativeName = x.Initiative!.Name,
+                            GrantName = x.Grant!.Name,
+                            CategoryName = x.Category!.Name,
+                            AccountName = x.Account!.Name,
+                            Year = x.Year,
+                        })]
+                };
+
+                return Result<DisbResponseDto>.Success(response);
+            }
+            catch (Exception ex)
+            {
+                return Result<DisbResponseDto>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+            }
+        }
+
         public async Task<Result<int>> CreateDisb(CreateDisbRequestDto disbRequestDto)
         {
             var newId = 0;
@@ -94,7 +182,12 @@ namespace Application.Services
 
                 if (disbFromDb is null)
                 {
-                    return Result<Unit>.Failure($"Repro not found", 400);
+                    return Result<Unit>.Failure($"Disb not found", 400);
+                }
+
+                if (disbRequestDto.Posted && disbFromDb.Posted)
+                {
+                    throw new Exception($"Disb has already been posted");
                 }
 
                 decimal? totalRequested = await ValidateLineItems(disbRequestDto.LineItems);
@@ -295,7 +388,8 @@ namespace Application.Services
                     ItemType = Globals.ITEM_TYPE_DISB,
                     CreateDate = DateTime.Now,
                     CreatedBy = userId,
-                    Year = line.Year
+                    Year = line.Year,
+                    AdditionalInformation = $"Payment to Payee Id {line.PayeeId}"
                 };
 
                 postedBudgetLineItems.Add(budgetLineItem);
@@ -305,19 +399,22 @@ namespace Application.Services
 
             await _dbContext.SaveChangesAsync();
 
-            foreach (var item in postedBudgetLineItems)
-            {
-                var disbLine = _dbContext.DisbLineItems.Single(x => x.DisbId == disbId
-                                        && x.InitiativeId == item.InitiativeId
-                                        && x.GrantId == item.GrantId
-                                        && x.AccountId == item.AccountId);
 
-                disbLine.BudgetLineItemId = item.Id;
+
+            var disbLines = await _dbContext.DisbLineItems.Where(x => x.DisbId == disbId).Select(x => x).ToListAsync();
+
+            var counter = 0;
+
+            foreach (var item in postedBudgetLineItems.OrderBy(x => x.Id))
+            {
+                disbLines[counter].BudgetLineItemId = item.Id;
+                counter += 1;
             }
 
             await _dbContext.SaveChangesAsync();
 
-            var checkDisbLines = _dbContext.DisbLineItems.Where(x => x.DisbId == disbId);
+
+            var checkDisbLines = await _dbContext.DisbLineItems.Where(x => x.DisbId == disbId).Select(x => x).ToListAsync();
 
             foreach (var line in checkDisbLines)
             {
@@ -330,6 +427,115 @@ namespace Application.Services
             return true;
         }
 
+        public async Task<Result<DisbResponseDto>> DuplicateRepro(int id, int userId)
+        {
+            var repro = await _dbContext.Disbs.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (repro == null) return Result<DisbResponseDto>.Failure("", 404);
+
+            var disbLineItems = await _dbContext.DisbLineItems
+                                                .Include(x => x.Initiative)
+                                                .Include(x => x.Grant)
+                                                .Include(x => x.Account)
+                                                .Include(x => x.Category)
+                                                .Include(x => x.Payee)
+                                                .Where(x => x.DisbId == id)
+                                                .ToListAsync();
+            try
+            {
+                var grant = await _dbContext.Grants.FirstAsync(x => x.Id == disbLineItems.First().GrantId);
+                var loginid = await _dbContext.AuthorizedUsers.FirstAsync(x => x.Id == userId);
+
+                var newDisb = new Disb()
+                {
+                    Id = 0,
+                    Amount = Convert.ToDecimal(disbLineItems.Sum(x => x.Amount)),
+                    CreatedById = userId,
+                    Year = grant.Year,
+                    CreatedDate = DateTime.Now,
+                    Justification = repro.Justification,
+                    Posted = false,
+                    Items = [.. disbLineItems.Select(x => new DisbLineItem
+                    {
+                        DisbId = 0,
+                        EntryDate = DateTime.Now,
+                        InitiativeId = x.InitiativeId,
+                        GrantId = x.GrantId,
+                        AccountId = x.AccountId,
+                        Amount = x.Amount,
+                        CategoryId = x.CategoryId,
+                        RowId = x.RowId,
+                        Year = grant.Year,
+                        PayeeId = x.PayeeId,
+                        Comment = x.Comment,
+                        BudgetLineItemId = null
+                    })]
+                };
+
+                _dbContext.Disbs.Add(newDisb);
+
+                await _dbContext.SaveChangesAsync();
+
+                var keys = disbLineItems.Select(x => new { x.InitiativeId, x.GrantId, x.CategoryId }).Distinct();
+
+                var rowBalances = new List<DisbBalanceResponseDto>();
+
+                foreach (var key in keys)
+                {
+                    var balances = await _budgetService.GetBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
+
+                    rowBalances.Add(new DisbBalanceResponseDto()
+                    {
+                        Key = new()
+                        {
+                            InitiativeId = key.InitiativeId,
+                            GrantId = key.GrantId,
+                            CategoryId = key.CategoryId
+                        },
+                        Balances = [.. balances.Select(x => Balance.Create(x.AccountId, x.CurrentAmount, x.RemainingAmount, x.AccountName))]
+                    });
+                }
+
+                var response = new DisbResponseDto
+                {
+                    Id = newDisb.Id,
+                    Justification = newDisb.Justification,
+                    CreateDate = newDisb.CreatedDate,
+                    CreatedById = newDisb.CreatedById,
+                    CreatedBy = loginid.WindowsLogin,
+                    Year = newDisb.Year,
+                    Posted = false,
+                    RowBalances = rowBalances,
+                    LineItems = [.. disbLineItems.Select(x => new DisbLineItemResponseDto
+                    {
+                        RowId = x.RowId,
+                        Year = x.Year,
+                        InitiativeId = x.InitiativeId,
+                        GrantId = x.GrantId,
+                        AccountId = x.AccountId,
+                        CategoryId = x.CategoryId,
+                        Amount = x.Amount,
+                        InitiativeName = x.Initiative!.Name,
+                        GrantName = x.Grant!.Name,
+                        AccountName = x.Account!.Name,
+                        CategoryName = x.Category!.Name,
+                        PayeeName = x.Payee!.Name,
+                        Comment = x.Comment
+                    })]
+                };
+
+                return Result<DisbResponseDto>.Success(response);
+
+            }
+            catch (DbException ex)
+            {
+                return Result<DisbResponseDto>.Failure($"DB Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 500);
+            }
+            catch (Exception ex)
+            {
+                return Result<DisbResponseDto>.Failure(ex.Message, 500);
+            }
+        }
 
         // public async Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)
         // {

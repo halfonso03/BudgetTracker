@@ -52,7 +52,9 @@ namespace Domain
         [ForeignKey(nameof(UpdatedBy))]
         public AuthorizedUser? UpdatedByUser { get; set; }
 
-        public  BudgetItemType? BudgetItemType { get; set; }
+        public BudgetItemType? BudgetItemType { get; set; }
+        
+        public string? AdditionalInformation { get; set; }
 
     }
 }

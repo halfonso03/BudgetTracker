@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.Repro
+namespace Application.DTOs.Disb
 {
-    public class ReproBalanceResponseDto
+    public class DisbBalanceResponseDto
     {
         public required Key1 Key { get; set; }
         public required List<Balance> Balances { get; set; }
@@ -21,15 +21,15 @@ namespace Application.DTOs.Repro
     public class Balance
     {
         public required int AccountId { get; set; }
-        public required decimal CurrentAmount { get; set; }
+        public required decimal AvailableAmount { get; set; }
         public required decimal RemainingAmount { get; set; }
         public required string AccountName { get; set; }
-        public static Balance Create(int accountId, decimal cAmount, decimal rAmount, string name)
+        public static Balance Create(int accountId, decimal aAmount, decimal rAmount, string name)
         {
             return new Balance
             {
                 AccountId = accountId,
-                CurrentAmount = cAmount,
+                AvailableAmount = aAmount,
                 RemainingAmount = rAmount,
                 AccountName = name
             };
