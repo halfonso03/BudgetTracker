@@ -13,10 +13,18 @@ namespace Domain.Views
 
         [Column("is_active")]
         public required bool IsActive { get; set; }
-        public DateTime? LastPayment { get; set; }
+
+        [Column("lastPaymentDate")]
+        public DateTime? LastPaymentDate { get; set; }
+
+        [Column("lastPaymentAmount")]
+        public decimal? LastPaymentAmount { get; set; }
+
+        [Column("daysSinceLastPayment")]
         public int? DaysSinceLastPayment { get; set; }
+
         public int? AccountId { get; set; }
-        public required string? AccountName { get; set; }
+        public string? AccountName { get; set; }
         public decimal? TotalPaid { get; set; }
     }
 }

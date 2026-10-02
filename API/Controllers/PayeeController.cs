@@ -6,7 +6,6 @@ using Application.PaginationHelpers;
 
 namespace API.Controllers
 {
-    [Authorize]
     public class PayeeController(PayeeService payeeService) : BaseApiController
     {
         [HttpGet("list")]

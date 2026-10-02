@@ -70,7 +70,7 @@ const List = () => {
 
       <input type="text" />
       <div
-        className="mb-2 bg-neutral-100 grid grid-cols-[1fr_1fr_.7fr_.7fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1  font-semibold text-neutral-700 border-b border-b-neutral-300"
+        className="mb-2 bg-neutral-100 grid grid-cols-[.9fr_1fr_.6fr_.5fr_.5fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1  font-semibold text-neutral-700 border-b border-b-neutral-300"
         style={{
           borderRadius: '5px 5px 0 0',
         }}
@@ -98,8 +98,15 @@ const List = () => {
         </div>
         <div className="flex justify-center">
           <SortBySelector
-            label="Last Payment"
-            value="LASTPAYMENTDATE"
+            label="Last Payment Amount"
+            value="LASTPAYMENTAMOUNT"
+            currentSortValue={sortByValue}
+          ></SortBySelector>
+        </div>
+        <div className="flex justify-center">
+          <SortBySelector
+            label="Last Payment Date"
+            value="LASTPAYMENTAMOUNT"
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
@@ -122,17 +129,21 @@ const List = () => {
       </div>
       {data?.vendors?.map((v) => (
         <div
-          className="rounded-sm grid grid-cols-[1fr_1fr_.7fr_.7fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1 items-center hover:bg-neutral-100 duration-200 transition-all cursor-pointer"
+          className="rounded-sm grid grid-cols-[.9fr_1fr_.6fr_.5fr_.5fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1 items-center hover:bg-neutral-100 duration-200 transition-all cursor-pointer"
           key={v.id}
         >
           <div>{v.name}</div>
           <div className="text-center">{v.accountName}</div>
           <div className="text-center">
-            {v.lastPayment ? formatDate(v.lastPayment) : '-'}
-          </div>
-          <div className="text-center">
             {v.totalPaid ? formatNumber(v.totalPaid) : '-'}
           </div>
+          <div className="text-center">
+            {v.lastPaymentAmount ? formatNumber(v.lastPaymentAmount) : '-'}
+          </div>
+          <div className="text-center">
+            {v.lastPaymentDate ? formatDate(v.lastPaymentDate) : '-'}
+          </div>
+
           <div className="text-center ">{v.daysSinceLastPayment || '-'}</div>
           <div className="flex justify-center ">
             {v.isActive ? (

@@ -282,7 +282,7 @@ namespace Persistence
                 new Payee() { Id = 16, Name = "Troy Bankert", AccountId = 19, IsActive = true },
                 new Payee() { Id = 17, Name = "Charles Bengston", AccountId = 19, IsActive = true },
                 new Payee() { Id = 18, Name = "Ethan Steigerwald", AccountId = 19, IsActive = true },
-                new Payee() { Id = 19, Name = "Steve Sales", AccountId = 19, IsActive = true },
+                new Payee() { Id = 19, Name = "Steve Salas", AccountId = 19, IsActive = true },
                 new Payee() { Id = 20, Name = "Tim Cardwell", AccountId = 19, IsActive = true },
                 new Payee() { Id = 21, Name = "Tafoya Martina", AccountId = 19, IsActive = true },
                 new Payee() { Id = 22, Name = "Jim Cormier", AccountId = 19, IsActive = true },
@@ -293,7 +293,6 @@ namespace Persistence
                 new Payee() { Id = 27, Name = "Christopher Jakim", AccountId = 19, IsActive = true },
                 new Payee() { Id = 28, Name = "Emma Kempton", AccountId = 19, IsActive = true },
                 new Payee() { Id = 29, Name = "Rob Roggeveen", AccountId = 19, IsActive = true },
-                new Payee() { Id = 30, Name = "Steve Salas", AccountId = 19, IsActive = true },
                 new Payee() { Id = 31, Name = "Mike Snyders", AccountId = 19, IsActive = true }
             );
 
@@ -652,7 +651,7 @@ namespace Persistence
 
 
             builder.Entity<PayeeSummary>()
-                  .ToView("vwVendorSummary") // Name of your SQL view
+                  .ToView("vwPayeeSummary") // Name of your SQL view
                   .HasNoKey();
         }
     }

@@ -20,9 +20,22 @@ namespace Application.DTOs.Payees
         public required string Name { get; set; }
         public string? AccountName { get; set; }
         public int? AccountId { get; set; }
-        public DateTime? LastPayment { get; set; }
+        public DateTime? LastPaymentDate { get; set; }
+        public decimal? LastPaymentAmount { get; set; }
         public int? DaysSinceLastPayment { get; set; }
         public bool IsActive { get; set; }
         public decimal? TotalPaid { get; set; }
+
+
+
+
+        // [Column("lastPaymentDate")]
+        // public DateTime? LastPaymentDate { get; set; }
+
+        // [Column("lastPaymentAmount")]
+        // public decimal? LastPaymentAmount { get; set; }
+
+
+
     }
 }

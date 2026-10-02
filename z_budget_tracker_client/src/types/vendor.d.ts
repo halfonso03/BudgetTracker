@@ -6,6 +6,7 @@ type Vendor = {
     isActive: boolean
     details: string
     daysSinceLastPayment: number | null
-    lastPayment: Date | null
+    lastPaymentAmount: number | null
+    lastPaymentDate: Date | null
     totalPaid: number | null
 }

@@ -17,7 +17,7 @@ export const useVendors = () => {
     queryFn: async () => {
       console.log('pageNumber', pageNumber);
       const response = await agent.get(
-        `/vendors/list?pageNumber=${pageNumber}&sortBy=${sortByValue}`,
+        `/payee/list?pageNumber=${pageNumber}&sortBy=${sortByValue}`,
         {},
       );
 
