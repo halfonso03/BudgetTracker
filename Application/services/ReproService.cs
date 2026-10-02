@@ -393,7 +393,7 @@ namespace Application.Services
                     GrantId = line.GrantId,
                     AccountId = line.AccountId,
                     Amount = lineAmount,
-                    ItemType = "R",
+                    ItemType = Globals.ITEM_TYPE_REPRO,
                     CreateDate = DateTime.Now,
                     CreatedBy = userId,
                     Year = line.Year
