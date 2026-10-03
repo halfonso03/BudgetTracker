@@ -6,6 +6,7 @@ import Select from '../../components/Select';
 import TextArea from '../../components/TextArea';
 import FormRow from '../../ui/FormRow';
 import { useForm } from 'react-hook-form';
+import Switch from '../../components/Switch';
 
 type Props = {
   payee: Payee;
@@ -52,18 +53,21 @@ const PayeeDetailsForm = ({ payee }: Props) => {
 
   function onSubmit() {}
 
+  function handleToggle() {}
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)} className="self-center w-full">
-        <div className="flex flex-col gap-4 w-full">
-          <div className="font-semibold text-neutral-700 text-xl border-b border-b-neutral-300 pl-0 p-1 ">
+        {/* {errors && <div>FORM ERROR!</div>} */}
+        <div className="flex flex-col gap-2 w-full">
+          <div className="font-semibold text-neutral-600 mb-2 text-xl border-b border-b-neutral-300 pl-0 p-1 ">
             Details
           </div>
           <FormRow id="name" label="Name">
             <Input type="text" {...register('name')} />
           </FormRow>
           <FormRow id="details" label="Additional Information">
-            <TextArea {...register('details')} rows={4} />
+            <TextArea {...register('details')} rows={3} />
           </FormRow>
           <FormRow id="typeId" label="Type">
             <Select>
@@ -71,6 +75,13 @@ const PayeeDetailsForm = ({ payee }: Props) => {
               <option>Contractor</option>
             </Select>
           </FormRow>
+          <FormRow id="accountId" label="Active">
+            <Switch isOn={true} handleToggle={handleToggle}></Switch>
+          </FormRow>
+
+          <div className="font-semibold text-neutral-600 text-xl border-b border-b-neutral-300 pl-0 p-1 mt-6 ">
+            Budget Account
+          </div>
           <FormRow id="categoryId" label="Category">
             <Select onChange={onCategoryChange}>
               {categoryOptions?.map((x) => (

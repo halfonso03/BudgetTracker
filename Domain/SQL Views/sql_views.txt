@@ -17,22 +17,36 @@ join tblAccount a on a.id = b.account_id
 join tblGrant g on g.id = b.grant_id
 
 GO
-
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER view [dbo].[vwPayeeSummary]
+create view [dbo].[vwPayeeSummary]
 AS
+WITH max_p (payee_id, last_amount_paid) 
+AS (
+    SELECT p.id payee_id, l.amount last_amount_paid
+    FROM tblPayee p  
+        JOIN tblDisbLineItem l ON p.id = l.payee_id
+        JOIN (
+            SELECT p.id payee_id, MAX(d.id) max_d_id
+            FROM tblPayee p
+                JOIN tblDisbLineItem l ON p.id = l.payee_id
+                JOIN tblDisb d ON d.id = l.disb_id
+            WHERE d.posted = 1
+            GROUP BY p.id
+    ) AS max_p ON
+   max_p.payee_id = p.id AND max_p.max_d_id = l.disb_id
+)
 SELECT v.id, v.name, v.is_active, a.id accountId, c.name + ' - ' + a.name accountName,
     CAST(MAX(d.posted_date) AS DATETIME) lastPaymentDate, 
-    CAST(100 as NUMERIC(10,2)) lastPaymentAmount,
-     DATEDIFF(d, MAX(d.posted_date), GETDATE()) daysSinceLastPayment, 
+    max_p.last_amount_paid lastPaymentAmount,
+    DATEDIFF(d, MAX(d.posted_date), GETDATE()) daysSinceLastPayment, 
     CAST(SUM(l.amount) AS NUMERIC(15,2)) totalPaid
 FROM tblPayee v LEFT OUTER JOIN tblAccount a ON v.account_id = a.id
-LEFT OUTER JOIN tblCategory c ON c.id = a.category_id
-    LEFT OUTER JOIN tblDisbLineItem l ON v.id = l.payee_id
-    LEFT OUTER JOIN tblDisb d ON d.id = l.disb_id
-GROUP BY v.id, v.name, v.is_active, a.name, a.id, c.name
-
+    LEFT OUTER JOIN tblCategory c ON c.id = a.category_id
+    LEFT OUTER JOIN (SELECT l2.amount, l2.disb_id, l2.payee_id FROM tblDisb d2 JOIN tblDisbLineItem l2 ON d2.id = l2.disb_id  WHERE posted  = 1) l ON v.id = l.payee_id
+    LEFT OUTER JOIN (SELECT * FROM tblDisb WHERE posted  = 1) d ON d.id = l.disb_id
+    LEFT OUTER JOIN max_p ON max_p.payee_id = v.id
+GROUP BY v.id, v.name, v.is_active, a.name, a.id, c.name, max_p.last_amount_paid
 GO

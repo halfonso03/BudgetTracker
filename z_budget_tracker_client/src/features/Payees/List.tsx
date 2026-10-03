@@ -50,7 +50,7 @@ const List = () => {
   if (loadingPayees) return null;
 
   return (
-    <div className="mx-auto w-[85%]">
+    <div className="mx-auto w-[95%]">
       {/* <pre>{JSON.stringify(vendorsState)}</pre> */}
       <div className="flex justify-end w-full mb-4">
         <div className="w-[50%] flex gap-6">

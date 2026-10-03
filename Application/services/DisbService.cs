@@ -77,7 +77,7 @@ namespace Application.Services
                     UpdateDate = reproFromDb.UpdateDate,
                     UpdatedById = reproFromDb.UpdatedById,
                     Posted = reproFromDb.Posted,
-                    PostedBy = reproFromDb.PostedBy != null ? reproFromDb.PostedBy.WindowsLogin : "",
+                    PostedBy = reproFromDb.PostedBy != null ? reproFromDb.PostedBy.FirstName[0].ToString() + reproFromDb.PostedBy.LastName : "",
                     PostedDate = reproFromDb.PostedDate,
                     PostedById = reproFromDb.PostedById,
                     LineItems = [.. lineItems.Select(x =>

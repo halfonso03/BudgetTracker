@@ -11,27 +11,34 @@ const PaymentsList = ({ payeeId }: Props) => {
 
   return (
     <div>
-      <div className=" ">
+      <div>
         <div className="font-semibold text-neutral-700 text-xl border-b border-b-neutral-300 pl-0 p-1 mb-4">
           Payments
         </div>
       </div>
       {payments && (
         <>
-          <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr]">
+          <div className="grid grid-cols-[.2fr_.25fr_1fr_.5fr_.7fr_.5fr_1fr] gap-4">
             <div className="font-semibold">ID</div>
             <div className="font-semibold">Year</div>
+            <div className="font-semibold">Initiative</div>
+            <div className="font-semibold text-center">Award</div>
             <div className="font-semibold text-center">Posted Date</div>
             <div className="font-semibold text-center">Amount</div>
             <div className="font-semibold text-center">Posted By</div>
           </div>
           {payments.map((p) => (
-            <div key={p.id} className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr]">
+            <div
+              key={p.id}
+              className="grid grid-cols-[.2fr_.25fr_1fr_.5fr_.7fr_.5fr_1fr] gap-4 mb-2"
+            >
               <div>{p.id}</div>
               <div>{p.year}</div>
-              <div className='text-center'>{formatDate(p.postedDate)}</div>
-              <div className='text-center'>{formatCurrency(p.amount)}</div>
-              <div className='text-center'>{p.postedBy}</div>
+              <div>{p.year}</div>
+              <div className='text-center'>{p.year}</div>
+              <div className="text-center">{formatDate(p.postedDate)}</div>
+              <div className="text-center">{formatCurrency(p.amount)}</div>
+              <div className="text-center">{p.postedBy}</div>
             </div>
           ))}
         </>

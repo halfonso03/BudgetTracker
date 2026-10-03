@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261002140102_Initial2")]
-    partial class Initial2
+    [Migration("20261003024533_Initialsdsd")]
+    partial class Initialsdsd
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -442,6 +442,10 @@ namespace Persistence.Migrations
                         .HasColumnName("account_id")
                         .HasColumnOrder(3);
 
+                    b.Property<string>("AdditionalInformation")
+                        .HasColumnType("VARCHAR(1000)")
+                        .HasColumnName("additional_information");
+
                     b.Property<decimal>("Amount")
                         .HasColumnType("NUMERIC(15,2)")
                         .HasColumnName("amount")
@@ -695,7 +699,7 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 6,
-                            Name = "Services Contractors",
+                            Name = "Services Vendors",
                             SortOrder = 6
                         },
                         new
@@ -899,7 +903,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UpdatedById");
 
-                    b.HasIndex("DisbId", "InitiativeId", "GrantId", "CategoryId", "AccountId")
+                    b.HasIndex("DisbId", "InitiativeId", "GrantId", "CategoryId", "AccountId", "PayeeId")
                         .IsUnique();
 
                     b.ToTable("tblDisbLineItem");
@@ -1189,7 +1193,7 @@ namespace Persistence.Migrations
                             Id = 19,
                             AccountId = 19,
                             IsActive = true,
-                            Name = "Steve Sales"
+                            Name = "Steve Salas"
                         },
                         new
                         {
@@ -1260,13 +1264,6 @@ namespace Persistence.Migrations
                             AccountId = 19,
                             IsActive = true,
                             Name = "Rob Roggeveen"
-                        },
-                        new
-                        {
-                            Id = 30,
-                            AccountId = 19,
-                            IsActive = true,
-                            Name = "Steve Salas"
                         },
                         new
                         {
@@ -1624,7 +1621,8 @@ namespace Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("DaysSinceLastPayment")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("daysSinceLastPayment");
 
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -1633,8 +1631,13 @@ namespace Persistence.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("is_active");
 
-                    b.Property<DateTime?>("LastPayment")
-                        .HasColumnType("datetime2");
+                    b.Property<decimal?>("LastPaymentAmount")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("lastPaymentAmount");
+
+                    b.Property<DateTime?>("LastPaymentDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("lastPaymentDate");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1645,7 +1648,7 @@ namespace Persistence.Migrations
 
                     b.ToTable((string)null);
 
-                    b.ToView("vwVendorSummary", (string)null);
+                    b.ToView("vwPayeeSummary", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -1871,7 +1874,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.AuthorizedUser", "PostedBy")
+                    b.HasOne("Domain.ApplicationUser", "PostedBy")
                         .WithMany()
                         .HasForeignKey("PostedById");
 

@@ -10,21 +10,21 @@ type Props = {
 
 const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
   return createPortal(
-    <div className="w-full min-h-10/11 absolute top-17 z-1000 bg-neutral-50 border-t border-t-neutral-300 ">
-      <div className="relative p-4">
-        <div className="w-full flex justify-end">
+    <div className="absolute inset-0 z-10000 h-dvh w-full top-17 bg-neutral-50 border-t border-t-neutral-300 ">
+      <div className="relative px-4">
+        <div className="w-full flex justify-end pt-1">
           <X
-            className="text-neutral-500 cursor-pointer hover:text-neutral-800"
+            className="text-neutral-500 m-0 p-0 cursor-pointer hover:text-neutral-800"
             size={36}
             onClick={onClose}
           ></X>
         </div>
-        <div className="w-[80%] mx-auto ">
-          <div className="flex gap-14 w-full">
+        <div className="w-[90%] mx-auto ">
+          <div className="flex gap-14  w-full">
             <div className="flex-5">
               <PayeeDetailsForm payee={payee}></PayeeDetailsForm>
             </div>
-            <div className="flex-7">
+            <div className="flex-8">
               <PaymentsList payeeId={payee.id}></PaymentsList>
             </div>
           </div>

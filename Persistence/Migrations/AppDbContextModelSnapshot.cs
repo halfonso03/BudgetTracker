@@ -696,7 +696,7 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 6,
-                            Name = "Services Contractors",
+                            Name = "Services Vendors",
                             SortOrder = 6
                         },
                         new
@@ -1871,7 +1871,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.AuthorizedUser", "PostedBy")
+                    b.HasOne("Domain.ApplicationUser", "PostedBy")
                         .WithMany()
                         .HasForeignKey("PostedById");
 

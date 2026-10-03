@@ -32,7 +32,7 @@ namespace Domain
         public AuthorizedUser? UpdatedBy { get; set; }
 
         [ForeignKey("PostedById")]
-        public AuthorizedUser? PostedBy { get; set; }
+        public ApplicationUser? PostedBy { get; set; }
 
     }
 
