@@ -33,7 +33,7 @@ namespace API.Controllers
             {
                 var payments = await payeeService.GetPayeePayments(payeeId, paginationParams, sortBy);
 
-                // Response.AddPaginationHeader(payments.Value!.MetaData);
+                Response.AddPaginationHeader(payments.Value!.MetaData);
 
                 return HandleResult(payments);
             }

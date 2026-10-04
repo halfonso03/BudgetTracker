@@ -10,6 +10,8 @@ namespace Application.DTOs.Payee
         public int Id { get; set; }
         public int Year { get; set; }
         public DateTime PostedDate { get; set; }
+        public required string Initiative { get; set; }
+        public required string Grant { get; set; }
         public decimal Amount { get; set; }
         public required string PostedBy { get; set; }
     }

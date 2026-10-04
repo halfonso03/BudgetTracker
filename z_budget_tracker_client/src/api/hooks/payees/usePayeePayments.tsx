@@ -8,32 +8,29 @@ export const usePayeePayments = (payeeId: number) => {
   const { pageNumber } = usePagination();
   const { sortByValue } = useSortingContext();
 
-  // {
-  //   payments: Payment[];
-  //   pagination: PaginationData | undefined;
-  // }
-
-  const { data, isLoading } = useQuery<Payment[]>({
+  const { data, isLoading } = useQuery<{
+    payments: Payment[];
+    pagination: PaginationData | undefined;
+  }>({
     queryKey: ['payee', 'payments', payeeId, pageNumber, sortByValue],
     staleTime: 1 * 60 * 1000,
     queryFn: async () => {
-      console.log('pageNumber', pageNumber);
       const response = await agent.get(
         `/payee/payments?payeeId=${payeeId}&pageNumber=${pageNumber}&sortBy=${sortByValue}`,
         {},
       );
 
       // console.log('response', response.data)
-      // const payments = response.data.items;
-      const payments = response.data;
-      // const paginationHeader = response.headers['pagination'];
+      const payments = response.data.items;
+      // const payments = response.data;
+      const paginationHeader = response.headers['pagination'];
 
-      // const pagination: PaginationData = paginationHeader
-      //   ? JSON.parse(paginationHeader)
-      //   : null;
+      const pagination: PaginationData = paginationHeader
+        ? JSON.parse(paginationHeader)
+        : null;
 
-        return payments;
-      // return { payments, pagination };
+      // return payments;
+      return { payments, pagination };
     },
   });
 

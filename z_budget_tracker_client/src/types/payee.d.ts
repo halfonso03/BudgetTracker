@@ -17,4 +17,6 @@ type Payment = {
     amount: number;
     year: number
     postedBy: string
+    initiative: string
+    grant: string
 }

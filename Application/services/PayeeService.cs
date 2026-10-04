@@ -12,33 +12,42 @@ namespace Application.Services
 {
     public class PayeeService(AppDbContext dbContext, IMapper mapper)
     {
-        public async Task<Result<List<PayeePaymentResponseDto>>> GetPayeePayments(int payeeId, PaginationParams paginationParams, string sortBy)
+        public async Task<Result<PaymentSearchResponseDto>> GetPayeePayments(int payeeId, PaginationParams paginationParams, string sortBy)
         {
 
-            var payments = await (from d in dbContext.Disbs
-                                  join l in dbContext.DisbLineItems on d.Id equals l.DisbId
-                                  join u in dbContext.Users on d.PostedById equals u.Id
-                                  where d.Posted == true
-                                  && l.PayeeId == payeeId
-                                  select new PayeePaymentResponseDto
-                                  {
-                                      Id = d.Id,
-                                      Amount = l.Amount,
-                                      PostedBy = u.FirstName + " " + u.LastName,
-                                      PostedDate = Convert.ToDateTime(d.PostedDate),
-                                      Year = l.Year
-                                  }).ToListAsync();
+            var paymentsQuery = await (from d in dbContext.Disbs
+                                       join l in dbContext.DisbLineItems on d.Id equals l.DisbId
+                                       join u in dbContext.Users on d.PostedById equals u.Id
+                                       join i in dbContext.Initiatives on l.InitiativeId equals i.Id
+                                       join g in dbContext.Grants on l.GrantId equals g.Id
+                                       where d.Posted == true
+                                       && l.PayeeId == payeeId
+                                       select new PayeePaymentResponseDto
+                                       {
+                                           Id = d.Id,
+                                           Amount = l.Amount,
+                                           PostedBy = u.FirstName[0].ToString().ToLower() + u.LastName.ToLower(),
+                                           PostedDate = Convert.ToDateTime(d.PostedDate),
+                                           Year = l.Year,
+                                           Initiative = i.Name,
+                                           Grant = g.Name
+                                       }).ToListAsync();
 
-            return Result<List<PayeePaymentResponseDto>>.Success(payments);
+
+            var pagedItemsList =
+                       PagedList<PayeePaymentResponseDto>.ToPagedList(paymentsQuery.AsQueryable(), paginationParams.PageNumber, paginationParams.PageSize);
+
+
+
+            var response = new PaymentSearchResponseDto
+            {
+                Items = pagedItemsList,
+                MetaData = pagedItemsList.Metadata,
+                ItemCount = pagedItemsList.Metadata.TotalCount
+            };
+
+            return Result<PaymentSearchResponseDto>.Success(response);
         }
-
-        // public async Task<Result<List<PayeeResponseDto>>> GetAllPayees()
-        // {
-        //     var vendors = await dbContext.Payees.OrderBy(x => x.Name).ToListAsync();
-        //     var response = vendors.Select(x => PayeeResponseDto.Create(x.Id, x.Name, x.AccountId, x.IsActive)).ToList();
-        //     return Result<List<PayeeResponseDto>>
-        //             .Success(response);
-        // }
 
         public async Task<Result<PayeeSearchResponseDto>> GetPayees(PaginationParams paginationParams, string searchTerm, string sortBy)
         {

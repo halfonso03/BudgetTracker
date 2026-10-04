@@ -2,6 +2,7 @@ import { X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import PayeeDetailsForm from './PayeeDetailsForm';
 import PaymentsList from './PaymentsList';
+import NavBar from '../../components/NavBar';
 
 type Props = {
   onClose: () => void;
@@ -10,17 +11,18 @@ type Props = {
 
 const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
   return createPortal(
-    <div className="absolute inset-0 z-10000 h-dvh w-full top-17 bg-neutral-50 border-t border-t-neutral-300 ">
-      <div className="relative px-4">
-        <div className="w-full flex justify-end pt-1">
+    <div className="fixed inset-0 z-10000 h-auto w-full  bg-neutral-50 border-t border-t-neutral-300 ">
+      <div className="relative ">
+        <NavBar></NavBar>
+        <div className="w-full flex justify-end pt-2 pr-2">
           <X
             className="text-neutral-500 m-0 p-0 cursor-pointer hover:text-neutral-800"
             size={36}
             onClick={onClose}
           ></X>
         </div>
-        <div className="w-[90%] mx-auto ">
-          <div className="flex gap-14  w-full">
+        <div className="w-[93%] mx-auto">
+          <div className="flex gap-14 w-full">
             <div className="flex-5">
               <PayeeDetailsForm payee={payee}></PayeeDetailsForm>
             </div>

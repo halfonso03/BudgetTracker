@@ -53,7 +53,7 @@ const FormRow: FC<FormRowProps> = ({
   return (
     <StyledFormRow className={className}>
       {label && (
-        <div className='self-start pr-2 text-neutral-600'>
+        <div className='self-start pr-3 text-neutral-600'>
           <Label
             htmlFor={id}
             style={{

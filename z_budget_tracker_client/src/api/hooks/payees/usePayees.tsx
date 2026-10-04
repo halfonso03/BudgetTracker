@@ -9,7 +9,7 @@ export const usePayees = () => {
   const { sortByValue } = useSortingContext();
 
   const { data, isLoading: loadingPayees } = useQuery<{
-    vendors: Payee[];
+    payees: Payee[];
     pagination: PaginationData | undefined;
   }>({
     queryKey: ['vendors', pageNumber, sortByValue],
@@ -28,7 +28,7 @@ export const usePayees = () => {
         ? JSON.parse(paginationHeader)
         : null;
 
-      return { vendors, pagination };
+      return { payees: vendors, pagination };
     },
   });
 
