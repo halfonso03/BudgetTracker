@@ -20,11 +20,14 @@ namespace Application.DTOs.Payees
         public required string Name { get; set; }
         public string? AccountName { get; set; }
         public int? AccountId { get; set; }
+        public int? CategoryId { get; set; }
         public DateTime? LastPaymentDate { get; set; }
         public decimal? LastPaymentAmount { get; set; }
         public int? DaysSinceLastPayment { get; set; }
         public bool IsActive { get; set; }
         public decimal? TotalPaid { get; set; }
+        public int PayeeTypeId { get; set; }
+        public string? AdditionalInformation { get; set; }
 
 
 

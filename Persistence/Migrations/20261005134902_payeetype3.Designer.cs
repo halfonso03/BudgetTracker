@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
@@ -11,9 +12,11 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261005134902_payeetype3")]
+    partial class payeetype3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1005,7 +1008,7 @@ namespace Persistence.Migrations
                         .HasColumnName("account_id");
 
                     b.Property<string>("AdditionalInformation")
-                        .HasColumnType("VARCHAR(MAX)")
+                        .HasColumnType("nvarchar(max)")
                         .HasColumnName("additional_information");
 
                     b.Property<bool>("IsActive")

@@ -43,27 +43,31 @@ const List = () => {
   function handleDetailsClose() {
     setDetailsOpen(false);
   }
+
   function handleSearch(searchTerm: string) {
     setSearchTerm(searchTerm);
     setPageNumber(1);
   }
+  
   if (loadingPayees) return null;
 
   return (
     <div className="mx-auto w-[95%]">
       {/* <pre>{JSON.stringify(vendorsState)}</pre> */}
-      <div className="flex justify-end w-full">
-        <div className="w-[50%] flex gap-6">
-          <Search
-            onSearch={(searchTerm: string) => handleSearch(searchTerm)}
-          ></Search>
+      <div className="flex justify-between w-full">
+        <div className="w-full justify-between flex ">
           <Button
             buttonSize="medium"
             variation="secondary"
-            additionalclasses="border-neutral-400 text-neutral-700"
+            additionalclasses=""
           >
             Add Payee
           </Button>
+          <div>
+            <Search
+              onSearch={(searchTerm: string) => handleSearch(searchTerm)}
+            ></Search>
+          </div>
         </div>
       </div>
 
@@ -74,8 +78,8 @@ const List = () => {
           <div>
             <div
               className="mb-2 bg-neutral-100 grid 
-        grid-cols-[.9fr_1fr_.6fr_.6fr_.6fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1 
-        font-semibold text-neutral-700 border-b border-b-neutral-300"
+                          grid-cols-[.9fr_1fr_.6fr_.6fr_.6fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1 
+                          font-semibold text-neutral-700 border-b border-b-neutral-300"
               style={{
                 borderRadius: '5px 5px 0 0',
               }}

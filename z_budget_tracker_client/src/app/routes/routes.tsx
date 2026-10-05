@@ -14,7 +14,7 @@ import ReproNew from '../../features/Reprogrammings/ReproNew';
 import Reports from '../../features/Reports/Reports';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import ContractorsHome from '../../features/Contractors/ContractorsHome';
-import PayeeHome from '../../features/Payees/VendorHome';
+import PayeeHome from '../../features/Payees/PayeeHome';
 import New from '../../features/Payees/New';
 
 export const routes: RouteObject[] = [

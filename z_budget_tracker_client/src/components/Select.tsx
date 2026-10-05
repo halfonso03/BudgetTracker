@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-interface SelectProps extends React.InputHTMLAttributes<HTMLSelectElement> {
+interface SelectProps extends React.ComponentPropsWithoutRef<'select'> {
   children: ReactNode;
   additionalclasses?: string;
   widthClass?: string;

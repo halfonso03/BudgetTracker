@@ -2,13 +2,15 @@ type Payee = {
     id: number,
     name: string
     accountName: string
+    categoryId: number
     accountId: number
     isActive: boolean
-    details: string
+    additionalInformation?: string
     daysSinceLastPayment: number | null
     lastPaymentAmount: number | null
     lastPaymentDate: Date | null
     totalPaid: number | null
+    payeeTypeId: number
 }
 
 type Payment = {
@@ -20,3 +22,5 @@ type Payment = {
     initiative: string
     grant: string
 }
+
+

@@ -6,18 +6,22 @@ import { useSortingContext } from '../../../contexts/useSortingContext';
 export const usePayees = () => {
   //searchTerm
   const { pageNumber } = usePagination();
-  const { sortByValue } = useSortingContext();
+  const { sortByValue, sortById } = useSortingContext();
 
+  const sortBy =
+    sortById !== undefined && sortById !== '' ? sortByValue.replace(sortById!, '') : sortByValue;
+console.log('sortById', sortById)
+console.log('sortByValue', sortByValue)
   const { data, isLoading: loadingPayees } = useQuery<{
     payees: Payee[];
     pagination: PaginationData | undefined;
   }>({
-    queryKey: ['vendors', pageNumber, sortByValue],
+    queryKey: ['vendors', pageNumber, sortBy],
     staleTime: 1 * 60 * 1000,
     queryFn: async () => {
       console.log('pageNumber', pageNumber);
       const response = await agent.get(
-        `/payee/list?pageNumber=${pageNumber}&sortBy=${sortByValue}`,
+        `/payee/list?pageNumber=${pageNumber}&sortBy=${sortBy}`,
         {},
       );
 

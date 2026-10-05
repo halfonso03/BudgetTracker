@@ -13,18 +13,18 @@ namespace Domain.Views
 
         [Column("is_active")]
         public required bool IsActive { get; set; }
-
-        [Column("lastPaymentDate")]
         public DateTime? LastPaymentDate { get; set; }
-
-        [Column("lastPaymentAmount")]
         public decimal? LastPaymentAmount { get; set; }
-
-        [Column("daysSinceLastPayment")]
         public int? DaysSinceLastPayment { get; set; }
-
+        public int? CategoryId { get; set; }
         public int? AccountId { get; set; }
         public string? AccountName { get; set; }
         public decimal? TotalPaid { get; set; }
+
+        [Column("additional_information")]
+        public string? AdditionalInformation { get; set; }
+
+        [Column("payee_type_id")]
+        public required int PayeeTypeId { get; set; }
     }
 }

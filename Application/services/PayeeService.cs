@@ -16,26 +16,47 @@ namespace Application.Services
         {
 
             var paymentsQuery = await (from d in dbContext.Disbs
-                                       join l in dbContext.DisbLineItems on d.Id equals l.DisbId
-                                       join u in dbContext.Users on d.PostedById equals u.Id
-                                       join i in dbContext.Initiatives on l.InitiativeId equals i.Id
-                                       join g in dbContext.Grants on l.GrantId equals g.Id
-                                       where d.Posted == true
-                                       && l.PayeeId == payeeId
-                                       select new PayeePaymentResponseDto
-                                       {
-                                           Id = d.Id,
-                                           Amount = l.Amount,
-                                           PostedBy = u.FirstName[0].ToString().ToLower() + u.LastName.ToLower(),
-                                           PostedDate = Convert.ToDateTime(d.PostedDate),
-                                           Year = l.Year,
-                                           Initiative = i.Name,
-                                           Grant = g.Name
-                                       }).ToListAsync();
+                                 join l in dbContext.DisbLineItems on d.Id equals l.DisbId
+                                 join u in dbContext.Users on d.PostedById equals u.Id
+                                 join i in dbContext.Initiatives on l.InitiativeId equals i.Id
+                                 join g in dbContext.Grants on l.GrantId equals g.Id
+                                 where d.Posted == true
+                                 && l.PayeeId == payeeId
+                                 select new PayeePaymentResponseDto
+                                 {
+                                     Id = d.Id,
+                                     Amount = l.Amount,
+                                     PostedBy = u.FirstName[0].ToString().ToLower() + u.LastName.ToLower(),
+                                     PostedDate = Convert.ToDateTime(d.PostedDate),
+                                     Year = l.Year,
+                                     Initiative = i.Name,
+                                     Grant = g.Name
+                                 }).ToListAsync();
+
+
+
+            var paymentsQuerySorted = sortBy switch
+            {
+                "ID" => paymentsQuery.OrderBy(x => x.Id),
+                "IDdesc" => paymentsQuery.OrderByDescending(x => x.Id),
+                "YEAR" => paymentsQuery.OrderBy(x => x.Year),
+                "YEARdesc" => paymentsQuery.OrderByDescending(x => x.Year),
+                "INITIATIVE" => paymentsQuery.OrderBy(x => x.Initiative),
+                "INITIATIVEdesc" => paymentsQuery.OrderByDescending(x => x.Initiative),
+                "GRANT" => paymentsQuery.OrderBy(x => x.Grant),
+                "GRANTdesc" => paymentsQuery.OrderByDescending(x => x.Grant),
+                "AMOUNT" => paymentsQuery.OrderBy(x => x.Amount),
+                "AMOUNTdesc" => paymentsQuery.OrderByDescending(x => x.Amount),
+                "POSTEDDATE" => paymentsQuery.OrderBy(x => x.PostedDate),
+                "POSTEDDATEdesc" => paymentsQuery.OrderByDescending(x => x.PostedDate),
+                "POSTEDBY" => paymentsQuery.OrderBy(x => x.PostedBy),
+                "POSTEDBYdesc" => paymentsQuery.OrderByDescending(x => x.PostedBy),
+                _ => paymentsQuery.OrderBy(x => x.Id)
+            };
 
 
             var pagedItemsList =
-                       PagedList<PayeePaymentResponseDto>.ToPagedList(paymentsQuery.AsQueryable(), paginationParams.PageNumber, paginationParams.PageSize);
+                       PagedList<PayeePaymentResponseDto>.ToPagedList(paymentsQuerySorted.AsQueryable(), paginationParams.PageNumber, paginationParams.PageSize);
 
 
 

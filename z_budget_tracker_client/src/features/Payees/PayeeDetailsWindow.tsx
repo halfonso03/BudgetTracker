@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import PayeeDetailsForm from './PayeeDetailsForm';
 import PaymentsList from './PaymentsList';
 import NavBar from '../../components/NavBar';
+import SortingProvider from '../../contexts/SortingContextProvider';
 
 type Props = {
   onClose: () => void;
@@ -27,7 +28,9 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
               <PayeeDetailsForm payee={payee}></PayeeDetailsForm>
             </div>
             <div className="flex-8">
-              <PaymentsList payeeId={payee.id}></PaymentsList>
+              <SortingProvider>
+                <PaymentsList payeeId={payee.id}></PaymentsList>
+              </SortingProvider>
             </div>
           </div>
         </div>

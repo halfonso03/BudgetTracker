@@ -5,23 +5,39 @@ import Input from '../../components/Input';
 import Select from '../../components/Select';
 import TextArea from '../../components/TextArea';
 import FormRow from '../../ui/FormRow';
-import { useForm } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import Switch from '../../components/Switch';
+import * as Yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { PayeeFormSchema } from '../../form_schemas/PayeeFormSchema';
 
 type Props = {
   payee: Payee;
 };
+
+type FormValues = Yup.InferType<typeof PayeeFormSchema>;
+
 const PayeeDetailsForm = ({ payee }: Props) => {
   const {
-    register,
-    handleSubmit,
+    register, // Function to register input fields and connect them to validation
+    handleSubmit, // Function that wraps your submit handler to handle validation
+    reset,
+    setValues,
+    getValues,
     formState: { errors },
-  } = useForm({
+  } = useForm<FormValues>({
+    resolver: yupResolver(PayeeFormSchema) as Resolver<FormValues>,
     defaultValues: {
       name: payee.name,
-      details: payee.details,
+      additionalInformation: payee.additionalInformation,
+      categoryId: payee.categoryId,
+      accountId: payee.accountId,
+      isActive: payee.isActive,
+      payeeTypeId: payee.payeeTypeId,
     },
   });
+
+
   const { categories } = useCategories();
 
   const categoryOptions =
@@ -51,61 +67,73 @@ const PayeeDetailsForm = ({ payee }: Props) => {
     );
   }
 
-  function onSubmit() {}
+  function onSubmit(data: FormValues) {
+    console.log('data', data);
+  }
 
-  function handleToggle() {}
+  const [isActive, setIsActive] = useState(payee.isActive);
+
+  function handleToggle() {
+    const currentIsActive = isActive;
+    setIsActive(!currentIsActive);
+    setValues({ isActive: !currentIsActive });
+  }
+
+  function onError() {}
 
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)} className="self-center w-full">
+      <form
+        onSubmit={handleSubmit(onSubmit, onError)}
+        className="self-center w-full"
+      >
+        {/* <pre>{JSON.stringify(getValues())}</pre> */}
+
         {/* {errors && <div>FORM ERROR!</div>} */}
         <div className="flex flex-col gap-2 w-full">
-          <div className="font-semibold text-neutral-600 mb-2 text-xl border-b border-b-neutral-300 pl-0 p-1 ">
+          <div className="font-semibold text-neutral-700 mb-2 text-xl border-b border-b-neutral-300 pl-0 p-1 ">
             Details
           </div>
           <FormRow id="name" label="Name">
             <Input type="text" {...register('name')} />
           </FormRow>
-          <FormRow id="details" label="Additional Information">
-            <TextArea {...register('details')} rows={3} />
+          <FormRow
+            id="details"
+            label="Additional Information"
+            error={errors?.additionalInformation?.message}
+          >
+            <TextArea {...register('additionalInformation')} rows={3} />
           </FormRow>
-          <FormRow id="typeId" label="Type">
-            <Select>
-              <option>Vendor</option>
-              <option>Contractor</option>
+          <FormRow id="payeeTypeId" label="Type">
+            <Select  {...register('payeeTypeId')}>
+              <option value={1}>Vendor</option>
+              <option value={2}>Contractor</option>
             </Select>
           </FormRow>
           <FormRow id="accountId" label="Active">
-            <Switch isOn={true} handleToggle={handleToggle}></Switch>
+            <Switch isOn={isActive} handleToggle={handleToggle}></Switch>
           </FormRow>
 
-          <div className="font-semibold text-neutral-600 text-xl border-b border-b-neutral-300 pl-0 p-1 mt-6 ">
+          <div className="font-semibold text-neutral-700 text-xl border-b border-b-neutral-300 pl-0 p-1 mt-6 ">
             Budget Account
           </div>
           <FormRow id="categoryId" label="Category">
-            <Select onChange={onCategoryChange}>
+            <Select {...register('categoryId')} onChange={onCategoryChange}>
               {categoryOptions?.map((x) => (
                 <option value={x.id}>{x.name}</option>
               ))}
             </Select>
           </FormRow>
-
           <FormRow id="accountId" label="Account">
-            <Select>
+            <Select {...register('accountId')}>
               {accountOptions?.map((x) => (
                 <option value={x.id}>{x.name}</option>
               ))}
             </Select>
           </FormRow>
-
           <div className="grid grid-cols-[1fr_1.6fr_0.4fr] mt-10">
             <div></div>
-            <Button
-              type="submit"
-              variation="primary"
-              buttonSize="small"
-              additionalclasses=" p-1"
-            >
+            <Button type="submit" variation="primary" buttonSize="medium">
               {/* {isLoginSuccess ? (
                 <Check></Check>
               ) : isLoginPending ? (

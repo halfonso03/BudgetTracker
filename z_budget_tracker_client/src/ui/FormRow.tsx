@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import type { FC, ReactNode } from 'react';
 import type { FieldError, FieldErrorsImpl, Merge } from 'react-hook-form';
-import { FileExclamationPoint } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 
 type FormRowProps = {
   id: string;
@@ -65,12 +65,12 @@ const FormRow: FC<FormRowProps> = ({
           </Label>
         </div>
       )}
-      <div>{children}</div>
+      <div >{children}</div>
       <div className="pl-2">
         {error && useMessage && <Error>{error.toString()}</Error>}
         {error && !useMessage && (
           <Error>
-            <FileExclamationPoint></FileExclamationPoint>
+            <AlertCircle></AlertCircle>
           </Error>
         )}
       </div>
