@@ -5,6 +5,7 @@ using Application.DTOs.Payee;
 using Application.DTOs.Payees;
 using Application.PaginationHelpers;
 using AutoMapper;
+using Domain;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -12,26 +13,78 @@ namespace Application.Services
 {
     public class PayeeService(AppDbContext dbContext, IMapper mapper)
     {
+        public async Task<Result<Unit>> CreatePayee(CreatePayeeRequestDto createPayeeRequestDto)
+        {
+            try
+            {
+                var payee = new Payee()
+                {
+                    Id = 0,
+                    PayeeTypeId = (PayeeType)createPayeeRequestDto.PayeeTypeId,
+                    AdditionalInformation = createPayeeRequestDto.AdditionalInformation?.Trim(),
+                    IsActive = createPayeeRequestDto.IsActive,
+                    AccountId = createPayeeRequestDto.AccountId,
+                    Name = createPayeeRequestDto.Name
+                };
+
+                dbContext.Payees.Add(payee);
+                await dbContext.SaveChangesAsync();
+
+                return Result<Unit>.Success(Unit.Value);
+            }
+            catch (Exception ex)
+            {
+
+                return Result<Unit>.Failure(ex.Message, 500);
+            }
+        }
+
+        public async Task<Result<Unit>> UpdatePayee(UpdatePayeeRequestDto updatePayeeRequestDto)
+        {
+
+            try
+            {
+                var payee = await dbContext.Payees.SingleOrDefaultAsync(x => x.Id == updatePayeeRequestDto.Id);
+
+                if (payee == null) return Result<Unit>.Failure("", 404);
+
+                payee.AdditionalInformation = updatePayeeRequestDto.AdditionalInformation?.Trim();
+                payee.PayeeTypeId = (PayeeType)updatePayeeRequestDto.PayeeTypeId;
+                payee.IsActive = updatePayeeRequestDto.IsActive;
+                payee.AccountId = updatePayeeRequestDto.AccountId;
+                payee.Name = updatePayeeRequestDto.Name;
+
+                await dbContext.SaveChangesAsync();
+
+                return Result<Unit>.Success(Unit.Value);
+            }
+            catch (Exception ex)
+            {
+
+                return Result<Unit>.Failure(ex.Message, 500);
+            }
+        }
+
         public async Task<Result<PaymentSearchResponseDto>> GetPayeePayments(int payeeId, PaginationParams paginationParams, string sortBy)
         {
 
             var paymentsQuery = await (from d in dbContext.Disbs
-                                 join l in dbContext.DisbLineItems on d.Id equals l.DisbId
-                                 join u in dbContext.Users on d.PostedById equals u.Id
-                                 join i in dbContext.Initiatives on l.InitiativeId equals i.Id
-                                 join g in dbContext.Grants on l.GrantId equals g.Id
-                                 where d.Posted == true
-                                 && l.PayeeId == payeeId
-                                 select new PayeePaymentResponseDto
-                                 {
-                                     Id = d.Id,
-                                     Amount = l.Amount,
-                                     PostedBy = u.FirstName[0].ToString().ToLower() + u.LastName.ToLower(),
-                                     PostedDate = Convert.ToDateTime(d.PostedDate),
-                                     Year = l.Year,
-                                     Initiative = i.Name,
-                                     Grant = g.Name
-                                 }).ToListAsync();
+                                       join l in dbContext.DisbLineItems on d.Id equals l.DisbId
+                                       join u in dbContext.Users on d.PostedById equals u.Id
+                                       join i in dbContext.Initiatives on l.InitiativeId equals i.Id
+                                       join g in dbContext.Grants on l.GrantId equals g.Id
+                                       where d.Posted == true
+                                       && l.PayeeId == payeeId
+                                       select new PayeePaymentResponseDto
+                                       {
+                                           Id = d.Id,
+                                           Amount = l.Amount,
+                                           PostedBy = u.FirstName[0].ToString().ToLower() + u.LastName.ToLower(),
+                                           PostedDate = Convert.ToDateTime(d.PostedDate),
+                                           Year = l.Year,
+                                           Initiative = i.Name,
+                                           Grant = g.Name
+                                       }).ToListAsync();
 
 
 
@@ -68,6 +121,26 @@ namespace Application.Services
             };
 
             return Result<PaymentSearchResponseDto>.Success(response);
+        }
+
+        public async Task<Result<PayeePaymentStatsDto?>> GetPayeePaymentSummary(int payeeId)
+        {
+            var paymentsQuery = await (from d in dbContext.Disbs
+                                       join l in dbContext.DisbLineItems on d.Id equals l.DisbId
+                                       where d.Posted == true
+                                       && l.PayeeId == payeeId
+                                       group new { l.Amount, d.PostedDate } by l.PayeeId into grp
+                                       select new PayeePaymentStatsDto
+                                       {
+                                           AveragePayment = grp.Average(x => x.Amount),
+                                           LastPaymentDate = grp.Max(x => x.PostedDate),
+                                           HighestPayment = grp.Max(x => x.Amount),
+                                           LowestPayment = grp.Min(x => x.Amount),
+                                           LastPaymentAmount = grp.First(x => x.PostedDate == grp.Max(x => x.PostedDate)).Amount
+
+                                       }).SingleOrDefaultAsync();
+
+            return Result<PayeePaymentStatsDto?>.Success(paymentsQuery ?? new PayeePaymentStatsDto());
         }
 
         public async Task<Result<PayeeSearchResponseDto>> GetPayees(PaginationParams paginationParams, string searchTerm, string sortBy)
@@ -111,6 +184,8 @@ namespace Application.Services
 
             return Result<PayeeSearchResponseDto>.Success(result);
         }
+
+
 
         // public async Task<Result<List<PayeeResponseDto>>> GetPayeesForAccount(int accountId)
         // {

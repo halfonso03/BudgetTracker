@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Application.PaginationHelpers;
 using Application.DTOs.Payee;
+using Application.Core;
 
 namespace API.Controllers
 {
@@ -42,6 +43,47 @@ namespace API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("payment_stats")]
+        public async Task<IActionResult> Payments(int payeeId)
+        {
+            try
+            {
+                return HandleResult(await payeeService.GetPayeePaymentSummary(payeeId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePayee([FromBody] CreatePayeeRequestDto createPayeeRequestDto)
+        {
+            try
+            {
+                return HandleResult(await payeeService.CreatePayee(createPayeeRequestDto));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> UpdatePayee([FromBody] UpdatePayeeRequestDto updatePayeeRequestDto)
+        {
+            try
+            {
+                return HandleResult(await payeeService.UpdatePayee(updatePayeeRequestDto));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
 
 
 

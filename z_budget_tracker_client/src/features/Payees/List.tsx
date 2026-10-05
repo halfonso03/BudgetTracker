@@ -9,6 +9,7 @@ import PayeeDetailsWindow from './PayeeDetailsWindow';
 import Search from '../../components/Search';
 import Button from '../../components/Button';
 import { usePayees } from '../../api/hooks/payees/usePayees';
+import AddPayeeModal from './modals/AddPayeeModal';
 
 // type Props = {
 //   vendors: Payee[];
@@ -20,6 +21,8 @@ const List = () => {
   const { sortByValue, setSortByValue } = useSortingContext();
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedPayee, setSelectedPayee] = useState<Payee | null>(null);
+  const [addPayeeIsOpen, setAddPayeeIsOpen] = useState(false);
+  const [animateOut, setAnimateOut] = useState<boolean>(false);
 
   // const paginationData = data?.pagination;
   // console.log('paginationData', paginationData);
@@ -48,7 +51,13 @@ const List = () => {
     setSearchTerm(searchTerm);
     setPageNumber(1);
   }
-  
+
+  function handleCloseAddPayeeModal() {
+    setTimeout(() => {
+      setAddPayeeIsOpen(false);
+    }, 450);
+  }
+
   if (loadingPayees) return null;
 
   return (
@@ -59,15 +68,13 @@ const List = () => {
           <Button
             buttonSize="medium"
             variation="secondary"
-            additionalclasses=""
+            onClick={() => setAddPayeeIsOpen(true)}
           >
             Add Payee
           </Button>
-          <div>
-            <Search
-              onSearch={(searchTerm: string) => handleSearch(searchTerm)}
-            ></Search>
-          </div>
+          <Search
+            onSearch={(searchTerm: string) => handleSearch(searchTerm)}
+          ></Search>
         </div>
       </div>
 
@@ -78,7 +85,7 @@ const List = () => {
           <div>
             <div
               className="mb-2 bg-neutral-100 grid 
-                          grid-cols-[.9fr_1fr_.6fr_.6fr_.6fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1 
+                          grid-cols-[.9fr_1fr_.6fr_.5fr_.5fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1 
                           font-semibold text-neutral-700 border-b border-b-neutral-300"
               style={{
                 borderRadius: '5px 5px 0 0',
@@ -139,7 +146,7 @@ const List = () => {
             <div>
               {data?.payees?.map((v) => (
                 <div
-                  className="rounded-sm grid grid-cols-[.9fr_1fr_.6fr_.6fr_.6fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1 items-center hover:bg-neutral-100 duration-200 transition-all cursor-pointer"
+                  className="rounded-sm grid grid-cols-[.9fr_1fr_.6fr_.5fr_.5fr_.6fr_.2fr_.2fr_.2fr] gap-2 p-1 items-center hover:bg-neutral-100 duration-200 transition-all cursor-pointer"
                   key={v.id}
                 >
                   <div>{v.name}</div>
@@ -201,6 +208,14 @@ const List = () => {
             payee={selectedPayee!}
             onClose={handleDetailsClose}
           ></PayeeDetailsWindow>
+        )}
+
+        {addPayeeIsOpen && (
+          <AddPayeeModal
+            isOpen={addPayeeIsOpen}
+            size="md"
+            onCancelForm={handleCloseAddPayeeModal}
+          ></AddPayeeModal>
         )}
       </div>
     </div>

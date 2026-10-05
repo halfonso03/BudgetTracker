@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 import { createPortal } from 'react-dom';
-import PayeeDetailsForm from './PayeeDetailsForm';
+import PayeeForm from './PayeeForm';
 import PaymentsList from './PaymentsList';
 import NavBar from '../../components/NavBar';
 import SortingProvider from '../../contexts/SortingContextProvider';
@@ -12,7 +12,7 @@ type Props = {
 
 const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
   return createPortal(
-    <div className="fixed inset-0 z-10000 h-auto w-full  bg-neutral-50 border-t border-t-neutral-300 ">
+    <div className="fixed inset-0 z-5 h-auto w-full  bg-neutral-50 border-t border-t-neutral-300 ">
       <div className="relative ">
         <NavBar></NavBar>
         <div className="w-full flex justify-end pt-2 pr-2">
@@ -25,7 +25,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
         <div className="w-[93%] mx-auto">
           <div className="flex gap-14 w-full">
             <div className="flex-5">
-              <PayeeDetailsForm payee={payee}></PayeeDetailsForm>
+              <PayeeForm  payee={payee}></PayeeForm>
             </div>
             <div className="flex-8">
               <SortingProvider>

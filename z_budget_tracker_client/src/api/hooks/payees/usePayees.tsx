@@ -10,16 +10,13 @@ export const usePayees = () => {
 
   const sortBy =
     sortById !== undefined && sortById !== '' ? sortByValue.replace(sortById!, '') : sortByValue;
-console.log('sortById', sortById)
-console.log('sortByValue', sortByValue)
   const { data, isLoading: loadingPayees } = useQuery<{
     payees: Payee[];
     pagination: PaginationData | undefined;
   }>({
-    queryKey: ['vendors', pageNumber, sortBy],
+    queryKey: ['payees', pageNumber, sortBy],
     staleTime: 1 * 60 * 1000,
     queryFn: async () => {
-      console.log('pageNumber', pageNumber);
       const response = await agent.get(
         `/payee/list?pageNumber=${pageNumber}&sortBy=${sortBy}`,
         {},

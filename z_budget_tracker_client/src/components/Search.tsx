@@ -32,7 +32,7 @@ const Search = ({ onSearch }: Props) => {
   }
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-[25%]">
       <Input
         ref={searchInputRef}
         onKeyUp={onKeyUp}

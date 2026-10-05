@@ -5,12 +5,12 @@ type Payee = {
     categoryId: number
     accountId: number
     isActive: boolean
-    additionalInformation?: string
-    daysSinceLastPayment: number | null
-    lastPaymentAmount: number | null
-    lastPaymentDate: Date | null
-    totalPaid: number | null
     payeeTypeId: number
+    additionalInformation?: string
+    daysSinceLastPayment?: number | null
+    lastPaymentAmount?: number | null
+    lastPaymentDate?: Date | null
+    totalPaid?: number | null
 }
 
 type Payment = {
@@ -21,6 +21,35 @@ type Payment = {
     postedBy: string
     initiative: string
     grant: string
+}
+
+type PayeePaymentStats = {
+    lowestPayment: number | null,
+    highestPayment: number | null,
+    averagePayment: number | null,
+    lastPaymentDate: Date | null
+    lastPaymentAmount: number | null
+}
+
+
+type CreatePayeeRequest = {
+    name: string
+    additionalInformation: string | null
+    isActive: boolean
+    payeeTypeId: number
+    categoryId: number
+    accountId: number
+}
+
+
+type UpdatePayeeRequest = {
+    id:number
+    name: string
+    additionalInformation?: string | null | undefined
+    isActive: boolean
+    payeeTypeId: number
+    categoryId: number
+    accountId: number
 }
 
 
