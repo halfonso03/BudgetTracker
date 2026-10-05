@@ -135,10 +135,10 @@ namespace Persistence
             builder.Entity<Initiative>().HasData(
                 new Initiative() { Id = 1, Name = "Management & Coordination" },
                 new Initiative() { Id = 2, Name = "Training" },
-                new Initiative() { Id = 3, Name = "ORS" },
+                new Initiative() { Id = 3, Name = "SOR" },
                 new Initiative() { Id = 4, Name = "Multimedia & Technology Unit" },
-                new Initiative() { Id = 5, Name = "DHE" },
-                new Initiative() { Id = 6, Name = "DTAG" }
+                new Initiative() { Id = 5, Name = "HED" },
+                new Initiative() { Id = 6, Name = "TAG" }
             );
 
             builder.Entity<Grant>().HasData(
@@ -148,7 +148,7 @@ namespace Persistence
                     StartDate = new DateTime(2025, 1, 1),
                     EndDate = new DateTime(2026, 12, 31),
                     Name = "G25001",
-                    Fiduciary = "MSCO",
+                    Fiduciary = "COMS",
                     Year = 2025
                 },
                 new Grant()
