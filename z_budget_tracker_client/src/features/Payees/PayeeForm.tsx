@@ -18,13 +18,20 @@ type Props = {
   payee: Payee;
   mode?: string;
   onCancel?: () => void;
+  onCreatePayeeCreated: (detals: NewPayeeInfo) => void;
 };
 
 type FormValues = Yup.InferType<typeof PayeeFormSchema>;
 
-const PayeeForm = ({ payee, onCancel, mode = '' }: Props) => {
+const PayeeForm = ({
+  payee,
+  onCancel,
+  onCreatePayeeCreated,
+  mode = '',
+}: Props) => {
   const queryClient = useQueryClient();
-
+  const [isActive, setIsActive] = useState(payee.isActive);
+  const [payeeId, setPayeeId] = useState(payee.id);
   const {
     register, // Function to register input fields and connect them to validation
     handleSubmit, // Function that wraps your submit handler to handle validation
@@ -43,30 +50,69 @@ const PayeeForm = ({ payee, onCancel, mode = '' }: Props) => {
     },
   });
 
-  const { updatePayee } = usePayeeMutations();
-
+  const { createPayee, updatePayee } = usePayeeMutations();
   const { categories } = useCategories();
 
-  const categoryOptions =
+  const [categoryIsSelected, setCategoryIsSelected] = useState(
+    payee.id === 0 ? false : true,
+  );
+  const [accountOptions, setAccountOptions] = useState<Account[] | null>(null);
+
+  let categoryOptions =
     categories !== null && categories!.length > 0
       ? categories!.map((x: Category) => {
           return { id: x.id, name: x.name };
         })
       : [];
 
-  const [accountOptions, setAccountOptions] = useState<Account[] | null>(null);
+  let payeeTypeOptions = [
+    { id: 1, name: 'Vendor' },
+    { id: 2, name: 'Contractor' },
+  ];
+
+  if (payee.id === 0) {
+    const oldC = [...categoryOptions];
+    categoryOptions.splice(0, categoryOptions.length);
+    categoryOptions = [{ id: 0, name: '-- Select a Category--' }, ...oldC];
+
+    const oldT = [...payeeTypeOptions];
+    payeeTypeOptions.splice(0, payeeTypeOptions.length);
+    payeeTypeOptions = [{ id: 0, name: '-- Select a Payee Type--' }, ...oldT];
+  }
 
   useEffect(() => {
     if (categories !== null && categories!.length > 0) {
-      const t2 = categories!
-        .filter((c) => c.id === categories![0].id)[0]
-        .accounts!.map((a: Account) => ({ ...a }));
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setAccountOptions(t2);
+      if (payee.id === 0) {
+        const initialOption: Account = {
+          id: 0,
+          name: '-- Select an Account --',
+          number: '',
+          category_id: 0,
+        };
+
+        const t2 = categories!
+          .filter((c) => c.id === categories![0].id)[0]
+          .accounts!.map((a: Account) => ({ ...a }));
+
+        const finalOptions = [initialOption, ...t2];
+
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setAccountOptions(finalOptions);
+      } else {
+        const t2 = categories!
+          .filter((c) => c.id === payee.categoryId)[0]
+          .accounts!.map((a: Account) => ({ ...a }));
+        setAccountOptions(t2);
+      }
     }
-  }, [categories]);
+  }, [categories, payee.categoryId, payee.id]);
+
+  // function getCurrentCategory() {
+  //   return getValues('categoryId');
+  // }
 
   function onCategoryChange(e: ChangeEvent<HTMLSelectElement>) {
+    setCategoryIsSelected(true);
     setAccountOptions(
       categories!
         .filter((c) => c.id === +e.target.value)[0]
@@ -76,9 +122,25 @@ const PayeeForm = ({ payee, onCancel, mode = '' }: Props) => {
 
   async function onSubmit(data: FormValues) {
     try {
-      if (data.id === 0) {
-        // onCreatePayee;
-        console.log('data', data);
+      if (payeeId === 0) {
+        await createPayee.mutateAsync(data, {
+          onSuccess: (newId: number) => {
+            setValues({ id: newId });
+            setPayeeId(newId);
+            queryClient.invalidateQueries({
+              queryKey: ['payees'],
+            });
+            toast.success('Payee created.');
+            onCreatePayeeCreated({
+              id: newId,
+              accountId: data.accountId,
+              categoryId: data.categoryId,
+            });
+          },
+          onError: (e) => {
+            console.log('e', e);
+          },
+        });
       } else {
         await updatePayee.mutateAsync(data, {
           onSuccess: () => {
@@ -98,8 +160,6 @@ const PayeeForm = ({ payee, onCancel, mode = '' }: Props) => {
     }
   }
 
-  const [isActive, setIsActive] = useState(payee.isActive);
-
   function handleToggle() {
     const currentIsActive = isActive;
     setIsActive(!currentIsActive);
@@ -115,13 +175,17 @@ const PayeeForm = ({ payee, onCancel, mode = '' }: Props) => {
         className="self-center w-full"
       >
         <input type="hidden" {...register('id')} />
-        {/* <pre>{JSON.stringify(getValues())}</pre> */}
-        {/* {errors && <div>FORM ERROR!</div>} */}
+        {/* {errors.additionalInformation && <div>FORM ERROR!</div>} */}
         <div className="flex flex-col gap-2 w-full">
-          <div className="font-semibold text-neutral-700 mb-2  border-b border-b-neutral-300 pl-0 p-1 ">
+          <div className="font-semibold text-neutral-500 mb-2  border-b border-b-neutral-200 pl-0 p-1 ">
             Details
           </div>
-          <FormRow id="name" label="Name" error={errors?.name?.message}>
+          <FormRow
+            id="name"
+            label="Name"
+            error={errors?.name?.message}
+            useMessage={true}
+          >
             <Input type="text" {...register('name')} />
           </FormRow>
           <FormRow
@@ -131,20 +195,31 @@ const PayeeForm = ({ payee, onCancel, mode = '' }: Props) => {
           >
             <TextArea {...register('additionalInformation')} rows={3} />
           </FormRow>
-          <FormRow id="payeeTypeId" label="Type">
+          <FormRow
+            id="payeeTypeId"
+            label="Payee Type"
+            useMessage={true}
+            error={errors?.payeeTypeId?.message}
+          >
             <Select {...register('payeeTypeId')}>
-              <option value={1}>Vendor</option>
-              <option value={2}>Contractor</option>
+              {payeeTypeOptions.map((x) => (
+                <option value={x.id}>{x.name}</option>
+              ))}
             </Select>
           </FormRow>
-          <FormRow id="accountId" label="Active">
+          <FormRow id="isActive" label="Active">
             <Switch isOn={isActive} handleToggle={handleToggle}></Switch>
           </FormRow>
 
-          <div className="font-semibold text-neutral-700 border-b border-b-neutral-300 pl-0 p-1 mt-6 ">
+          <div className="font-semibold text-neutral-500 border-b border-b-neutral-300 pl-0 p-1 mt-6 ">
             Charge Account
           </div>
-          <FormRow id="categoryId" label="Category">
+          <FormRow
+            id="categoryId"
+            label="Category"
+            error={errors?.categoryId?.message}
+            useMessage={true}
+          >
             <Select {...register('categoryId')} onChange={onCategoryChange}>
               {categoryOptions?.map((x) => (
                 <option value={x.id}>{x.name}</option>
@@ -152,7 +227,7 @@ const PayeeForm = ({ payee, onCancel, mode = '' }: Props) => {
             </Select>
           </FormRow>
           <FormRow id="accountId" label="Account">
-            <Select {...register('accountId')}>
+            <Select {...register('accountId')} disabled={!categoryIsSelected}>
               {accountOptions?.map((x) => (
                 <option value={x.id}>{x.name}</option>
               ))}
@@ -160,7 +235,7 @@ const PayeeForm = ({ payee, onCancel, mode = '' }: Props) => {
           </FormRow>
           <div className="grid grid-cols-[1fr_1.6fr_0.17fr] mt-10">
             <div></div>
-            <div className="flex gap-2 justify-end">
+            <div className="flex gap-2 justify-start">
               <Button type="submit" variation="primary" buttonSize="medium">
                 {/* {isLoginSuccess ? (
                 <Check></Check>

@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePayeePayments } from '../../api/hooks/payees/usePayeePayments';
 import { usePayeesPaymentsStats } from '../../api/hooks/payees/usePayeesPaymentsStats';
 import { formatCurrency, formatDate } from '../../app/util';
@@ -35,7 +36,7 @@ const PaymentsList = ({ payeeId }: Props) => {
   return (
     <div>
       <div>
-        <div className="font-semibold text-neutral-700  border-b border-b-neutral-300 pl-0 p-1 mb-9">
+        <div className="font-semibold text-neutral-500  border-b border-b-neutral-300 pl-0 p-1 mb-9">
           Payments
         </div>
       </div>
@@ -45,7 +46,7 @@ const PaymentsList = ({ payeeId }: Props) => {
         </div>
       )}
 
-      <div className="mb-9  gap-4 w-full ">
+      <div className="mb-9 gap-4 w-full ">
         {loadingPaymentStats && (
           <div className="mb-1">
             <Spinner></Spinner>
@@ -53,35 +54,33 @@ const PaymentsList = ({ payeeId }: Props) => {
         )}
         {paymentStats && paymentStats.lastPaymentDate && (
           <div className="border-b border-b-neutral-200 grid grid-cols-[1.3fr_1fr_.5fr_1fr_.5fr_1fr_.5fr_1fr]">
-            <div className="text-neutral-600 opacity-95">Last Payment Date</div>
-            <div className=" text-neutral-800">
+            <div className="text-neutral-400 ">Last Payment Date</div>
+            <div className=" text-neutral-900 font-medium">
               {paymentStats.lastPaymentDate
                 ? formatDate(paymentStats!.lastPaymentDate!)
                 : '-'}
             </div>
 
-            <div className="text-neutral-600 opacity-95">Average</div>
-            <div className="text-neutral-900 text-center">
+            <div className="text-neutral-400 ">Average</div>
+            <div className="text-neutral-900 text-center font-medium">
               {paymentStats.averagePayment
                 ? formatCurrency(paymentStats!.averagePayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-600 opacity-95">Smallest</div>
-            <div className=" text-neutral-800 text-center">
+            <div className="text-neutral-400 ">Smallest</div>
+            <div className=" text-neutral-900 text-center font-medium">
               {paymentStats.lowestPayment
                 ? formatCurrency(paymentStats!.lowestPayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-600 opacity-95">Largest</div>
-            <div className="text-neutral-800 text-center">
+            <div className="text-neutral-400 ">Largest</div>
+            <div className="text-neutral-900 text-center font-medium">
               {paymentStats.highestPayment
                 ? formatCurrency(paymentStats!.highestPayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-600 opacity-95">
-              Last Payment Amount
-            </div>
-            <div className="text-neutral-800">
+            <div className="text-neutral-400 ">Last Payment Amount</div>
+            <div className="text-neutral-900 font-medium">
               {paymentStats.lastPaymentAmount
                 ? formatCurrency(paymentStats!.lastPaymentAmount!)
                 : '-'}
@@ -91,45 +90,46 @@ const PaymentsList = ({ payeeId }: Props) => {
       </div>
 
       {payments && payments.payments.length > 0 && (
-        <div className="flex flex-col justify-between min-h-[50dvh]">
+        <div className="flex flex-col justify-between min-h-[50dvh] border border-neutral-200 rounded-lg">
           <div>
-            <div className="grid grid-cols-[.15fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr] gap-4 mb-2 border-b border-b-neutral-300 ">
-              <div className="font-semibold">
+            <div className="bg-neutral-50/50 text-neutral-500 border-b border-neutral-200  
+            grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr] gap-4 mb-2 ">
+              <div className="px-4 py-1">
                 <SortBySelector
                   label="ID"
                   value="ID"
                   currentSortValue={sortByValue}
                 ></SortBySelector>
               </div>
-              <div className="font-semibold">
+              <div className=" py-1">
                 <SortBySelector
                   label="Year"
                   value="YEAR"
                   currentSortValue={sortByValue}
                 ></SortBySelector>
               </div>
-              <div className="font-semibold">
+              <div className=" py-1">
                 <SortBySelector
                   label="Initiative"
                   value="INITIATIVE"
                   currentSortValue={sortByValue}
                 ></SortBySelector>
               </div>
-              <div className="font-semibold flex justify-center">
+              <div className=" flex justify-center">
                 <SortBySelector
                   label="Award"
                   value="GRANT"
                   currentSortValue={sortByValue}
                 ></SortBySelector>
               </div>
-              <div className="font-semibold flex justify-center">
+              <div className=" flex justify-center">
                 <SortBySelector
                   label="Amount"
                   value="AMOUNT"
                   currentSortValue={sortByValue}
                 ></SortBySelector>
               </div>
-              <div className="font-semibold flex justify-center">
+              <div className=" flex justify-center">
                 <SortBySelector
                   label="Posted Date"
                   value="POSTEDDATE"
@@ -137,7 +137,7 @@ const PaymentsList = ({ payeeId }: Props) => {
                 ></SortBySelector>
               </div>
 
-              <div className="font-semibold flex justify-center">
+              <div className=" flex justify-center">
                 <SortBySelector
                   label="Posted By"
                   value="POSTEDBY"
@@ -145,34 +145,80 @@ const PaymentsList = ({ payeeId }: Props) => {
                 ></SortBySelector>
               </div>
             </div>
-            {payments.payments.map((p) => (
-              <div
-                key={p.id}
-                className="grid grid-cols-[.15fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr] gap-4 mb-2"
-              >
-                <div>{p.id}</div>
-                <div>{p.year}</div>
-                <div>{p.initiative}</div>
-                <div className="text-center">{p.grant}</div>
-                <div className="text-center">{formatCurrency(p.amount)}</div>
-                <div className="text-center">{formatDate(p.postedDate)}</div>
-                <div className="text-center">{p.postedBy}</div>
-              </div>
-            ))}
-          </div>
 
-          {payments &&
-            payments?.pagination &&
-            payments?.pagination?.totalCount > 1 && (
-              <div className="flex justify-center mt-8">
-                <Pagination
-                  data={payments?.pagination}
-                  onPageNumberChange={handlePageNumberChange}
-                ></Pagination>
-              </div>
-            )}
+            <div >
+              {payments.payments.map((p) => (
+                <div
+                  key={p.id}
+                  className="grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr]  gap-4 mb-2 hover:bg-neutral-100 duration-200 transition-all cursor-pointer border-b border-b-neutral-200 last:border-0"
+                >
+                  <div className="px-4 py-1">{p.id}</div>
+                  <div>{p.year}</div>
+                  <div>{p.initiative}</div>
+                  <div className="text-center">{p.grant}</div>
+                  <div className="text-center">{formatCurrency(p.amount)}</div>
+                  <div className="text-center">{formatDate(p.postedDate)}</div>
+                  <div className="text-center">{p.postedBy}</div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
+
+      {payments && payments.payments.length > 0 && (
+        <div className="flex items-center justify-between mt-6 px-2 text-sm text-neutral-500">
+          <span>
+            Showing page{' '}
+            <span className="font-medium text-neutral-900">
+              {payments?.pagination?.currentPage}
+            </span>{' '}
+            of {payments?.pagination?.totalPages}
+          </span>
+
+          <div className="flex">
+            <button
+              onClick={() =>
+                setPageNumber(
+                  Math.max(payments!.pagination!.currentPage - 1, 1),
+                )
+              }
+              disabled={payments?.pagination?.currentPage === 1}
+              className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            >
+              <ChevronLeft size={20} className="cursor-pointer" />
+            </button>
+
+            <Pagination
+              data={payments?.pagination}
+              onPageNumberChange={handlePageNumberChange}
+            ></Pagination>
+            <button
+              onClick={() =>
+                setPageNumber(payments!.pagination!.currentPage + 1)
+              }
+              disabled={
+                payments?.pagination?.currentPage ===
+                payments?.pagination?.totalPages
+              }
+              className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            >
+              <ChevronRight size={20} className="cursor-pointer" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* {payments &&
+        payments?.pagination &&
+        payments?.pagination?.totalCount > 1 && (
+          <div className="flex justify-center mt-8">
+            <Pagination
+              data={payments?.pagination}
+              onPageNumberChange={handlePageNumberChange}
+            ></Pagination>
+          </div>
+        )} */}
     </div>
   );
 };

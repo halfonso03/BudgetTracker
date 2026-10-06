@@ -233,6 +233,9 @@ const NavBar = () => {
               >
                 Reports
               </NavLink>
+              <NavLink to="/proto" className="nav-link">
+                Proto
+              </NavLink>
             </div>
             <Button
               key={loggedOut.toString()}

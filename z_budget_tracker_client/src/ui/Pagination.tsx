@@ -1,3 +1,5 @@
+import Button from "../components/Button";
+
 type Props = {
   data?: PaginationData;
   setPageNumber: (pageNumber: number) => void;
@@ -21,13 +23,13 @@ export function Pagination({ data, setPageNumber }: Props) {
             'page-link' + (p == data.currentPage ? ' page-link-active' : '')
           }
         >
-          <div
+          <Button
             onClick={() => setPageNumber(p)}
             key={p}
             className="p-1 px-3 transition-all duration-200"
           >
             {p}
-          </div>
+          </Button>
         </div>
       ))}
     </div>

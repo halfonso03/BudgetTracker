@@ -308,7 +308,9 @@ function CategorySummary({
                       className="my-0 p-1 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 mb-1 last:mb-0 transition-all duration-200 hover:bg-neutral-200"
                       key={i.account_id}
                     >
-                      <div className="italic pl-8 col-span-2">{i.account_name}</div>
+                      <div className="italic pl-8 col-span-2">
+                        {i.account_name}
+                      </div>
                       <div className="text-end italic text-neutral-700">
                         {i.amount > 0 ? (
                           formatCurrency(i.amount)

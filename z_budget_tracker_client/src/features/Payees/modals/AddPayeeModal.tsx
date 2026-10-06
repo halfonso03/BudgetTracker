@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Modal, { type ModalSize } from '../../../../misc/Modal';
 import PayeeForm from '../PayeeForm';
+import Modal2 from '../../../components/Modal2';
 
 interface Props {
   size: ModalSize;
@@ -22,7 +23,7 @@ const AddPayeeModal = ({ onCancelForm, isOpen, size }: Props) => {
     categoryId: 1,
   };
   return (
-    <Modal
+    <Modal2
       isOpen={isOpen}
       animateOut={animateOut}
       onCancel={onCancelForm}
@@ -38,8 +39,9 @@ const AddPayeeModal = ({ onCancelForm, isOpen, size }: Props) => {
             onCancelForm();
           }}
         ></PayeeForm>
+        
       </div>
-    </Modal>
+    </Modal2>
   );
 };
 export default AddPayeeModal;

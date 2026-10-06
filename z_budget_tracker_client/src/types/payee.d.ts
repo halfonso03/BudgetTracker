@@ -34,7 +34,7 @@ type PayeePaymentStats = {
 
 type CreatePayeeRequest = {
     name: string
-    additionalInformation: string | null
+    additionalInformation?: string | null | undefined
     isActive: boolean
     payeeTypeId: number
     categoryId: number
@@ -43,7 +43,7 @@ type CreatePayeeRequest = {
 
 
 type UpdatePayeeRequest = {
-    id:number
+    id: number
     name: string
     additionalInformation?: string | null | undefined
     isActive: boolean
@@ -52,4 +52,10 @@ type UpdatePayeeRequest = {
     accountId: number
 }
 
+
+type NewPayeeInfo = {
+    id: number;
+    accountId: number;
+    categoryId: number;
+}
 

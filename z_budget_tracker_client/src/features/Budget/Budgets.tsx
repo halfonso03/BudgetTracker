@@ -3,6 +3,7 @@ import Summary from './Summary';
 import Button from '../../components/Button';
 import toast from 'react-hot-toast';
 import CreateBudgetModal from './modals/CreateBudgetModal';
+import Select from '../../components/Select';
 
 const Budgets = () => {
   const [year, setYear] = useState<number>(2025);
@@ -26,14 +27,13 @@ const Budgets = () => {
       <div className="flex mb-4 justify-between items-center">
         <div>
           <div className="p-2 font-bold entity-label">Year:</div>
-          <select
+          <Select
             value={year}
-            className="p-2 border border-neutral-300 rounded-sm "
             onChange={handleYearChange}
           >
             <option value="2026">2026</option>
             <option value="2025">2025</option>
-          </select>
+          </Select>
         </div>
         <div>
           <Button

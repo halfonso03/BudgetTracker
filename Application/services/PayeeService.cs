@@ -13,7 +13,7 @@ namespace Application.Services
 {
     public class PayeeService(AppDbContext dbContext, IMapper mapper)
     {
-        public async Task<Result<Unit>> CreatePayee(CreatePayeeRequestDto createPayeeRequestDto)
+        public async Task<Result<int>> CreatePayee(CreatePayeeRequestDto createPayeeRequestDto)
         {
             try
             {
@@ -30,12 +30,12 @@ namespace Application.Services
                 dbContext.Payees.Add(payee);
                 await dbContext.SaveChangesAsync();
 
-                return Result<Unit>.Success(Unit.Value);
+                return Result<int>.Success(payee.Id);
             }
             catch (Exception ex)
             {
 
-                return Result<Unit>.Failure(ex.Message, 500);
+                return Result<int>.Failure(ex.Message, 500);
             }
         }
 

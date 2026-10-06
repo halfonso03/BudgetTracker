@@ -6,10 +6,9 @@ import { useSortingContext } from '../../../contexts/useSortingContext';
 export const usePayees = () => {
   //searchTerm
   const { pageNumber } = usePagination();
-  const { sortByValue, sortById } = useSortingContext();
+  const { sortByValue } = useSortingContext();
 
-  const sortBy =
-    sortById !== undefined && sortById !== '' ? sortByValue.replace(sortById!, '') : sortByValue;
+  const sortBy = sortByValue;
   const { data, isLoading: loadingPayees } = useQuery<{
     payees: Payee[];
     pagination: PaginationData | undefined;

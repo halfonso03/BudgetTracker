@@ -16,6 +16,7 @@ import ProtectedRoute from '../../components/ProtectedRoute';
 import ContractorsHome from '../../features/Contractors/ContractorsHome';
 import PayeeHome from '../../features/Payees/PayeeHome';
 import New from '../../features/Payees/New';
+import MinimalistTable from '../../features/proto/ProtoList';
 
 export const routes: RouteObject[] = [
   {
@@ -39,6 +40,14 @@ export const routes: RouteObject[] = [
         element: (
           <ProtectedRoute>
             <Budgets />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/proto',
+        element: (
+          <ProtectedRoute>
+            <MinimalistTable />
           </ProtectedRoute>
         ),
       },

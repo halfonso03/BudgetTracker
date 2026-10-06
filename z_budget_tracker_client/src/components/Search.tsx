@@ -1,8 +1,7 @@
 import React, { useRef } from 'react';
 import { usePagination } from '../contexts/pagination/usePagination';
-import {  X } from 'lucide-react';
+import { X } from 'lucide-react';
 import Button from './Button';
-import Input from '../ui/Input';
 
 type Props = {
   onSearch: (searchTerm: string) => void;
@@ -21,7 +20,6 @@ const Search = ({ onSearch }: Props) => {
       searchInputRef.current!.value = '';
       onSearch('');
     }
-
   };
 
   function clearSearch() {
@@ -33,20 +31,17 @@ const Search = ({ onSearch }: Props) => {
 
   return (
     <div className="flex w-[25%]">
-      <Input
+      <input
         ref={searchInputRef}
         onKeyUp={onKeyUp}
         defaultValue={searchTerm}
-        style={{
-          padding: '.35rem',
-          paddingLeft: '.5rem',
-          borderRadius: '5px 0 0 5px',
-          borderTop: '1px solid var(--color-gray-300)',
-          borderLeft: '1px solid var(--color-gray-300)',
-          borderBottom: '1px solid var(--color-gray-300)',
-        }}
+        className="px-4 w-full text-sm bg-neutral-50 border border-neutral-200/80 rounded-lg text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-neutral-400 focus:bg-white transition-all"
         placeholder="Enter a search term and presss enter..."
-      ></Input>
+        style={{
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0,
+        }}
+      ></input>
       <Button
         variation="secondary"
         buttonSize="xsmall"
@@ -54,10 +49,9 @@ const Search = ({ onSearch }: Props) => {
         onClick={clearSearch}
         style={{
           borderRadius: '0 5px 5px 0',
-          border: '1px solid var(--color-gray-400)',
         }}
       >
-        <X className="text-neutral-500" size={20}></X>
+        <X className="text-neutral-100" size={20}></X>
       </Button>
     </div>
   );

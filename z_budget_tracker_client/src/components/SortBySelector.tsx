@@ -15,10 +15,10 @@ export default function SortBySelector({
   const { setSortByValue } = useSortingContext();
 
   return (
-    <div className="flex items-center">
-      <div className="flex">
+    <div className="flex items-center hover:text-neutral-900 transition-colors duration-150">
+      <div className="flex  py-1">
         <button
-          className="hover:underline cursor-pointer w-full"
+          className=" cursor-pointer font-semibold  capitalize select-none"
           onClick={() => {
             const sortDir =
               currentSortValue.indexOf('desc') === -1 ? 'desc' : '';
