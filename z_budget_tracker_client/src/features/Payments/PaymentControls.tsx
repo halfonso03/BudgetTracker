@@ -1,38 +1,36 @@
 import { useState } from 'react';
 import Button from '../../components/Button';
 import { Search } from 'lucide-react';
-import ConfirmModal from '../../components/ConfirmModal';
-import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ChooseYearModal from '../Common/modals/ChooseYearModal';
 
 // const NEW_REPRO
 // type Actions:number
 type Props = {
-  reproId?: number | undefined;
+  // reproId?: number | undefined;
   onYearSelected: (year: number, justification: string) => void;
-  onSearchClick: () => void;
-  onDuplicateReprogramming?: () => void;
+  // onSearchClick: () => void;
+  // onDuplicateReprogramming?: () => void;
 };
 
-const ReproControls = ({
+const PaymentControls = ({
   onYearSelected,
-  onSearchClick,
-  onDuplicateReprogramming,
-  reproId = 0,
+  // onSearchClick,
+  // onDuplicateReprogramming,
+  // reproId = 0,
 }: Props) => {
   // console.log('ReproControls render');
 
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
-  const [confirmLooseChangesModalIsOpen, setConfirmLooseChangesModalIsOpen] =
-    useState(false);
-  const [confirmDuplicateModalIsOpen, setConfirmDuplicateModalIsOpen] =
-    useState(false);
-  const hasUnsavedChanges = useHasUnsavedChangesStore(
-    (x) => x.hasUnsavedChanges,
-  );
+  // const [confirmLooseChangesModalIsOpen, setConfirmLooseChangesModalIsOpen] =
+  //   useState(false);
+  // const [confirmDuplicateModalIsOpen, setConfirmDuplicateModalIsOpen] =
+  //   useState(false);
+  // const hasUnsavedChanges = useHasUnsavedChangesStore(
+  //   (x) => x.hasUnsavedChanges,
+  // );
 
-  const [duplicating, setDuplicating] = useState(false);
+  // const [duplicating, setDuplicating] = useState(false);
 
   const handleYearSelected = (e: { year: number; justification: string }) => {
     onYearSelected(e.year, e.justification);
@@ -43,17 +41,17 @@ const ReproControls = ({
   };
 
   function handleSearchClick() {
-    onSearchClick();
+    // onSearchClick();
   }
 
-  function handleDuplicateClick() {
-    if (hasUnsavedChanges) {
-      setDuplicating(true);
-      setConfirmLooseChangesModalIsOpen(true);
-    } else {
-      setConfirmDuplicateModalIsOpen(true);
-    }
-  }
+  // function handleDuplicateClick() {
+  //   if (hasUnsavedChanges) {
+  //     setDuplicating(true);
+  //     setConfirmLooseChangesModalIsOpen(true);
+  //   } else {
+  //     setConfirmDuplicateModalIsOpen(true);
+  //   }
+  // }
 
   return (
     <>
@@ -62,12 +60,14 @@ const ReproControls = ({
           buttonSize="small"
           variation="primary"
           onClick={() => {
-            if (hasUnsavedChanges) {
-              setConfirmLooseChangesModalIsOpen(true);
-            } else {
-              setChoosingYear(true);
-              setNewReproJustification('');
-            }
+            setChoosingYear(true);
+            setNewReproJustification('');
+            // if (hasUnsavedChanges) {
+            //   setConfirmLooseChangesModalIsOpen(true);
+            // } else {
+            //   setChoosingYear(true);
+            //   setNewReproJustification('');
+            // }
           }}
         >
           Start New...
@@ -79,7 +79,7 @@ const ReproControls = ({
         >
           <Search></Search>
         </Button>
-        {reproId && (
+        {/* {reproId && (
           <Button
             buttonSize="small"
             variation="secondary"
@@ -87,11 +87,11 @@ const ReproControls = ({
           >
             Duplicate
           </Button>
-        )}
+        )} */}
       </div>
       <ChooseYearModal
         isOpen={choosingYear}
-        title="New Reprogramming"
+        title="New Payment"
         newReproJustification={newReproJustification}
         onYearSelected={handleYearSelected}
         onCancel={() => {
@@ -100,7 +100,7 @@ const ReproControls = ({
           }, 500);
         }}
       ></ChooseYearModal>
-      <ConfirmModal
+      {/* <ConfirmModal
         isOpen={confirmLooseChangesModalIsOpen}
         onCancel={() => {
           setTimeout(() => {
@@ -120,8 +120,8 @@ const ReproControls = ({
           }, 500);
         }}
         message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
-      ></ConfirmModal>
-      <ConfirmModal
+      ></ConfirmModal> */}
+      {/* <ConfirmModal
         isOpen={confirmDuplicateModalIsOpen}
         onCancel={() => {
           setTimeout(() => {
@@ -136,8 +136,8 @@ const ReproControls = ({
           onDuplicateReprogramming?.();
         }}
         message="Duplicate the current reprogramming? Click OK to continue."
-      ></ConfirmModal>
+      ></ConfirmModal> */}
     </>
   );
 };
-export default ReproControls;
+export default PaymentControls;

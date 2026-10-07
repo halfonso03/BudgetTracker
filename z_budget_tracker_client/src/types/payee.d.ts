@@ -13,7 +13,7 @@ type Payee = {
     totalPaid?: number | null
 }
 
-type Payment = {
+type PayeePayment = {
     id: number,
     postedDate: Date
     amount: number;

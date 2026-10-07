@@ -1,0 +1,253 @@
+import { useCallback, useState } from 'react';
+import { DUP_LINES, NO_JUSTIFICATION, POSTED, SAVED } from '../../app/constants';
+import { useForm } from 'react-hook-form';
+import { formatNumber } from '../../app/util';
+import MenuIdProvider from '../../contexts/MenuIdContext';
+import PaymentTransactionRow from './PaymentTransactionRow';
+import {
+  AlertTriangle,
+  BookOpenText,
+  CheckCircle2,
+  Plus,
+  Save,
+} from 'lucide-react';
+import Button from '../../components/Button';
+import useAuth from '../../contexts/useAuth';
+
+interface Props {
+  payment: Payment;
+  // onInitialSave?: (newId: number) => void;
+  // onIsDirty: (dirty: boolean) => void;
+  // onSaved?: () => void;
+}
+
+const PaymentForm = ({ payment }: Props) => {
+  const { user, loginId } = useAuth();
+
+  const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
+  const [confirmPostModalIsOpen, setConfirmPostModal] =
+    useState<boolean>(false);
+  const [justModalIsOpen, setJustModalIsOpen] = useState(false);
+
+  if (payment.year === 0) throw new Error('no year');
+
+  const [paymentHeader, setPaymentHeader] = useState<PaymentHeader>({
+    id: payment.id,
+    justification: payment.justification,
+    status: payment.posted ? POSTED : SAVED,
+    postedDate: payment.postedDate,
+    postedBy: payment.postedBy,
+  });
+
+  const [lines, setLines] = useState<PaymentLineItem[]>(
+    payment.lineItems.map((l) => {
+      // const remainingAmount =
+      //   payment.rowBalances
+      //     ?.filter(
+      //       (x) =>
+      //         x.key.initiativeId == l.initiativeId &&
+      //         x.key.grantId == l.grantId &&
+      //         x.key.categoryId == l.categoryId,
+      //     )[0]
+      //     .balances.filter((x) => x.accountId == l.accountId)[0]
+      //     .remainingAmount ?? 0;
+
+      const line: PaymentLineItem = {
+        ...l,
+        availableAmount: l.availableAmount,
+        newAvailableAmount: l.availableAmount - +(l.amount ?? 0),
+      };
+      return line;
+    }),
+  );
+
+  const { register, getValues, setValue } = useForm<PaymentInputRows>({
+    values: {
+      rows: lines.map((l) => {
+        return {
+          ...l,
+          amount: formatNumber(+(l?.amount ?? 0.0)),
+          newAvailableAmount: +(l?.availableAmount ?? 0) - l.amount,
+        };
+      }),
+    },
+  });
+
+  const getErrors = useCallback(() => {
+    const errors: string[] = [];
+
+    if (!noDupLines(lines)) {
+      errors.push(DUP_LINES);
+    }
+
+    // if (!noZeroOnlyLines(lines)) {
+    //   errors.push(NO_INC_AND_NO_DEC_LINES);
+    // }
+
+    // const { inc: totalInc, dec: totalDec } = getTotalAmounts();
+    // if (+totalInc - +totalDec !== 0) {
+    //   errors.push(HAS_VARIANCE);
+    // }
+
+    // if (!noLinesWithIncAndDecInValues(lines)) {
+    //   errors.push(LINES_WITH_INC_AND_DEC);
+    // }
+
+    // if (!noNegativeBalances(lines)) {
+    //   errors.push(NEGATIVE_CURRENT_BALANCE);
+    // }
+
+    // if (hasNegativeRemainingBalances(lines) && !overrideNeg) {
+    //   errors.push(NEGATIVE_REMAINING_BALANCE);
+    // }
+
+    if (
+      !paymentHeader.justification ||
+      paymentHeader.justification.trim().length === 0
+    ) {
+      errors.push(NO_JUSTIFICATION);
+    }
+
+    return errors;
+  }, [lines, paymentHeader.justification]);
+
+  async function saveReproButtonClick() {}
+  function canPost() {
+    return true;
+  }
+
+  function canSave() {
+    return true;
+  }
+
+  return (
+    <MenuIdProvider>
+      <div>
+        <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
+          <div
+            className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
+          >
+            {payment !== undefined && (
+              <Button
+                buttonSize="small"
+                onClick={() => {
+                  setAddLineModalIsOpen(true);
+                }}
+              >
+                <Plus></Plus>
+                Add Line
+              </Button>
+            )}
+            <Button
+              buttonSize="small"
+              disabled={!canSave() || !user}
+              onClick={saveReproButtonClick}
+            >
+              <Save className="mr-1"></Save>
+              Save
+            </Button>
+            <Button
+              buttonSize="small"
+              disabled={
+                !canPost() ||
+                getErrors().length > 0 ||
+                paymentHeader.status === Number(POSTED) ||
+                !user
+              }
+              onClick={() => setConfirmPostModal(true)}
+            >
+              <BookOpenText className="mr-1"></BookOpenText>
+              Post
+            </Button>
+          </div>
+          <Button
+            className="flex gap-1 cursor-pointer hover:text-neutral-600 "
+            onClick={() => setJustModalIsOpen(true)}
+          >
+            {paymentHeader.status === Number(POSTED) ? (
+              <div className="self-center">View Justification</div>
+            ) : (
+              <div className="self-center">Justification</div>
+            )}
+            {paymentHeader.justification?.trim() === '' ? (
+              <AlertTriangle
+                className="self-center text-orange-300"
+                size={17}
+              ></AlertTriangle>
+            ) : (
+              <CheckCircle2
+                className="self-center text-green-500"
+                size={19}
+              ></CheckCircle2>
+            )}
+          </Button>
+        </div>
+        {/* {lines.length > 0 && (
+          <div>
+            <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-semibold text-neutral-600">
+              <div className="self-end">Initiative</div>
+              <div className="self-end">Grant</div>
+              <div className="self-end">Category</div>
+              <div className="self-end ">Account</div>
+              <div className="flex justify-between ">
+                <div
+                  className={`text-center flex-2 self-end ${paymentHeader.status === POSTED ? 'opacity-0' : ''}`}
+                >
+                  Current Balance
+                </div>
+                <div className="self-end  text-end flex-[1.5] pr-2">
+                  Increase
+                </div>
+                <div className="self-end text-end flex-[1.5] pr-2">
+                  Decrease
+                </div>
+                <div
+                  className={`text-center flex-2 self-end ${paymentHeader.status === POSTED ? 'opacity-0' : ''}`}
+                >
+                  New Balance
+                </div>
+                <div
+                  className={`text-center flex-2  ${paymentHeader.status === POSTED ? 'opacity-0' : ''}`}
+                >
+                  Remaining Balance
+                </div>
+              </div>
+              <div></div>
+            </div>
+          </div>
+        )} */}
+        <div className="pb-10">
+          {lines.map((item, index) => {
+            return (
+              <PaymentTransactionRow>{item.accountId}</PaymentTransactionRow>
+            );
+          })}
+        </div>
+      </div>
+    </MenuIdProvider>
+  );
+};
+
+function noDupLines(lines: PaymentLineItem[]): boolean {
+  const counts: { name: string; count: number }[] = [];
+
+  lines.map((l) => {
+    const entity =
+      l.initiativeName +
+      '--' +
+      l.grantName +
+      '--' +
+      l.categoryName +
+      '--' +
+      l.accountId.toString();
+    if (counts.some((x) => x.name === entity)) {
+      const currCount = counts.filter((x) => x.name === entity)[0];
+      currCount.count += 1;
+    } else {
+      counts.push({ name: entity, count: 1 });
+    }
+  });
+  return !counts.some((x) => x.count > 1);
+}
+
+export default PaymentForm;

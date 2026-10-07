@@ -9,7 +9,7 @@ import ReproForm from './ReproForm';
 const ReproNew = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { userId } = useAuth();
+  const { user } = useAuth();
   const preloadState = location.state;
   const rowBalances: ReproRowBalance[] = [];
   const lineItems: ReproLineItem[] = [];
@@ -53,7 +53,6 @@ const ReproNew = () => {
         (x: ReproLineItem) => x.accountId === preloadState.ids.accountId,
       )[0].remainingAmount;
 
-      console.log('preloadState.ids.accountName', preloadState.ids.accountName);
       const lineItem: ReproLineItem = {
         ...preloadState.ids,
         rowId: 0,
@@ -73,7 +72,7 @@ const ReproNew = () => {
     year: initialYear,
     justification: justification,
     createdBy: '',
-    createdById: userId!,
+    createdById: +user!.id!,
     posted: false,
     createDate: new Date(),
     rowBalances: rowBalances,

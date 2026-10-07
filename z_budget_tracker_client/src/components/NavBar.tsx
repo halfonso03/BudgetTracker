@@ -225,6 +225,15 @@ const NavBar = () => {
                 Payees
               </NavLink>
               <NavLink
+                to="/payments"
+                className="nav-link"
+                onClick={(e: React.MouseEvent<HTMLElement>) => {
+                  handleReproNavigation(e, '/payments');
+                }}
+              >
+                Payments
+              </NavLink>
+              <NavLink
                 to="/reports"
                 className="nav-link"
                 onClick={(e: React.MouseEvent<HTMLElement>) => {

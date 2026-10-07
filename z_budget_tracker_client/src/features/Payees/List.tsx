@@ -1,11 +1,4 @@
-import {
-  Check,
-  ChevronLeft,
-  ChevronRight,
-  DollarSign,
-  Pencil,
-  X,
-} from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, DollarSign,  X } from 'lucide-react';
 import { formatDate, formatNumber } from '../../app/util';
 import { Pagination } from '../../components/Pagination';
 import { usePagination } from '../../contexts/pagination/usePagination';
@@ -16,6 +9,7 @@ import PayeeDetailsWindow from './PayeeDetailsWindow';
 import Search from '../../components/Search';
 import Button from '../../components/Button';
 import { usePayees } from '../../api/hooks/payees/usePayees';
+import { Link } from 'react-router-dom';
 
 // type Props = {
 //   vendors: Payee[];
@@ -85,11 +79,7 @@ const List = () => {
       {/* <pre>{JSON.stringify(vendorsState)}</pre> */}
       <div className="flex justify-between w-full">
         <div className="w-full justify-between flex ">
-          <Button
-            buttonSize="medium"
-            variation="primary"
-            onClick={onAddPayee}
-          >
+          <Button buttonSize="medium" variation="primary" onClick={onAddPayee}>
             Add Payee
           </Button>
           <Search
@@ -119,7 +109,7 @@ const List = () => {
         <div className="flex flex-col justify-between border border-neutral-200 rounded-lg">
           <div
             className="grid grid-cols-[.7fr_1fr_.6fr_.4fr_.4fr_.5fr_.2fr_.2fr] gap-2 
-                        bg-neutral-50/50 text-neutral-500 border-b border-neutral-200"
+                        bg-neutral-50 text-neutral-500 border-b border-neutral-200"
           >
             <div className="flex justify-start pl-6">
               <SortBySelector
@@ -206,14 +196,19 @@ const List = () => {
                   {v.isActive ? (
                     <Check className="text-green-600"></Check>
                   ) : (
-                    <X className="text-red-600"></X>
+                    <X className="text-neutral-400"></X>
                   )}
                 </div>
-              
+
                 <div className="flex justify-center font-semibold">
-                  <DollarSign
-                    className={`${!v.isActive ? 'text-neutral-400' : 'text-blue-500'} cursor-pointer`}
-                  ></DollarSign>
+                  <Link to="/test">
+                    <DollarSign
+                      className={`${!v.isActive ? 'text-neutral-400' : 'text-blue-500'} cursor-pointer`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    ></DollarSign>
+                  </Link>
                 </div>
               </div>
             ))}

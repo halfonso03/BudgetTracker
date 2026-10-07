@@ -70,7 +70,7 @@ const BudgetInputFields = ({
   const [error, setError] = useState<boolean>(false);
   const [remaining, setRemaining] = useState<string>(() =>
     formatNumber(
-      parseFormattedNumber(currentAmount) + parseFormattedNumber(spentAmount),
+      parseFormattedNumber(currentAmount) - parseFormattedNumber(spentAmount),
     ),
   );
 
@@ -134,7 +134,7 @@ const BudgetInputFields = ({
               } else setCurrent('-');
 
               const newRemaining = formatNumber(
-                budgeted + reprogrammed + spentParsed,
+                budgeted + reprogrammed - spentParsed,
               );
               setRemaining(newRemaining);
               setError(budgeted + reprogrammed - spentParsed < 0);
@@ -207,7 +207,7 @@ const BudgetInputFields = ({
       <div
         className={`flex justify-end self-center py-1 ${isLastRow ? ' py-2 bg-neutral-100 font-bold text-neutral-600' : ''} `}
       >
-        {error && (
+        {!isLastRow && (error || parseFormattedNumber(remaining) < 0) && (
           <div className="mr-2 relative">
             <AlertTriangle className="absolute ml-1 text-red-500 bottom-0 right-1"></AlertTriangle>
           </div>
@@ -223,13 +223,15 @@ const BudgetInputFields = ({
             </div>
           )
         ) : (
-          <input
-            {...remainingAmountRegister}
-            readOnly={true}
-            tabIndex={-1}
-            disabled={true}
-            className="text-end w-full"
-          ></input>
+          <>
+            <input
+              {...remainingAmountRegister}
+              readOnly={true}
+              tabIndex={-1}
+              disabled={true}
+              className="text-end w-full"
+            ></input>
+          </>
         )}
       </div>
       <div

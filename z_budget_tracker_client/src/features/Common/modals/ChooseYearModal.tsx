@@ -9,6 +9,7 @@ type Props = {
   newReproJustification: string;
   onYearSelected: (e: { year: number; justification: string }) => void;
   onCancel: () => void;
+  title: string;
 };
 
 const ChooseYearModal = ({ ...props }: Props) => {
@@ -25,19 +26,11 @@ const ChooseYearModal = ({ ...props }: Props) => {
   }
 
   return (
-    <Modal2
-      size="lg"
-      title="New Reprogamming"
-      animateOut={animateOut}
-      {...props}
-    >
+    <Modal2 size="lg" animateOut={animateOut} {...props}>
       <div>
         <div className="mb-3">
           <div className="entity-label mb-1">Year</div>
-          <Select
-            value={year}
-            onChange={handleYearChange}
-          >
+          <Select value={year} onChange={handleYearChange}>
             <option value="0" className="text-neutral-600">
               Select
             </option>
@@ -45,10 +38,11 @@ const ChooseYearModal = ({ ...props }: Props) => {
             <option value="2025">2025</option>
           </Select>
         </div>
-        <div className="entity-label">
-          Enter a Justification
+        <div className="">
+          <div className="entity-label">Enter a Justification</div>
           <TextArea
             value={justification}
+            additionalclasses=""
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
               setJustification(e.target.value)
             }

@@ -1,7 +1,7 @@
 import { ArrowRight, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import PayeeForm from './PayeeForm';
-import PaymentsList from './PaymentsList';
+import PayeePaymentsList from './PayeePaymentsList';
 import NavBar from '../../components/NavBar';
 import SortingProvider from '../../contexts/SortingContextProvider';
 import { useState } from 'react';
@@ -25,7 +25,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
       <div className="relative ">
         <NavBar></NavBar>
         <div className="w-full flex justify-between pt-2 pr-4 mt-4 mb-4">
-          <div className="font-bold text-xl text-neutral-800 pl-17">
+          <div className="font-bold text-xl text-neutral-800 pl-18">
             {payee.id === 0 ? (
               <div className="">Add Payee</div>
             ) : (
@@ -51,7 +51,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
             <div className="flex-8">
               {payee.id !== 0 && newPayeeInfo === null && (
                 <SortingProvider>
-                  <PaymentsList payeeId={payee.id}></PaymentsList>
+                  <PayeePaymentsList payeeId={payee.id}></PayeePaymentsList>
                 </SortingProvider>
               )}
               {showNewPaymentLink && (
@@ -59,7 +59,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
                   className="text-blue-500"
                   to={`/payees/payment/new?payeeid=${newPayeeInfo?.id}&accountId=${newPayeeInfo?.accountId}&categoryId=${newPayeeInfo?.categoryId}`}
                 >
-                  <div className='flex gap-1 items-center'>
+                  <div className="flex gap-1 items-center">
                     Create new payment <ArrowRight></ArrowRight>
                   </div>
                 </Link>

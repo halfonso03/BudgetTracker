@@ -11,7 +11,7 @@ import { useSortingContext } from '../../contexts/useSortingContext';
 type Props = {
   payeeId: number;
 };
-const PaymentsList = ({ payeeId }: Props) => {
+const PayeePaymentsList = ({ payeeId }: Props) => {
   const { payments, loadingPayments } = usePayeePayments(payeeId);
   const { paymentStats, loadingPaymentStats } = usePayeesPaymentsStats(payeeId);
 
@@ -45,7 +45,6 @@ const PaymentsList = ({ payeeId }: Props) => {
           There are no payments to this payee.
         </div>
       )}
-
       <div className="mb-9 gap-4 w-full ">
         {loadingPaymentStats && (
           <div className="mb-1">
@@ -53,34 +52,34 @@ const PaymentsList = ({ payeeId }: Props) => {
           </div>
         )}
         {paymentStats && paymentStats.lastPaymentDate && (
-          <div className="border-b border-b-neutral-200 grid grid-cols-[1.3fr_1fr_.5fr_1fr_.5fr_1fr_.5fr_1fr]">
-            <div className="text-neutral-400 ">Last Payment Date</div>
-            <div className=" text-neutral-900 font-medium">
+          <div className="border-b border-b-neutral-200 grid grid-cols-[1.3fr_1fr_.5fr_1fr_.5fr_1fr_.5fr_1fr] gap-2">
+            <div className="text-neutral-400 font-medium ">Last Payment Date</div>
+            <div className="text-neutral-800 font-medium">
               {paymentStats.lastPaymentDate
                 ? formatDate(paymentStats!.lastPaymentDate!)
                 : '-'}
             </div>
 
-            <div className="text-neutral-400 ">Average</div>
-            <div className="text-neutral-900 text-center font-medium">
+            <div className="text-neutral-400 font-medium">Average</div>
+            <div className="text-neutral-800 text-center font-medium">
               {paymentStats.averagePayment
                 ? formatCurrency(paymentStats!.averagePayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-400 ">Smallest</div>
-            <div className=" text-neutral-900 text-center font-medium">
+            <div className="text-neutral-400 font-medium">Smallest</div>
+            <div className=" text-neutral-800 text-center font-medium">
               {paymentStats.lowestPayment
                 ? formatCurrency(paymentStats!.lowestPayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-400 ">Largest</div>
-            <div className="text-neutral-900 text-center font-medium">
+            <div className="text-neutral-400 font-medium">Largest</div>
+            <div className="text-neutral-800 text-center font-medium">
               {paymentStats.highestPayment
                 ? formatCurrency(paymentStats!.highestPayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-400 ">Last Payment Amount</div>
-            <div className="text-neutral-900 font-medium">
+            <div className="text-neutral-400 font-medium">Last Payment Amount</div>
+            <div className="text-neutral-800 font-medium">
               {paymentStats.lastPaymentAmount
                 ? formatCurrency(paymentStats!.lastPaymentAmount!)
                 : '-'}
@@ -90,10 +89,12 @@ const PaymentsList = ({ payeeId }: Props) => {
       </div>
 
       {payments && payments.payments.length > 0 && (
-        <div className="flex flex-col justify-between min-h-[50dvh] border border-neutral-200 rounded-lg">
+        <div className="flex flex-col justify-between  border border-neutral-200 rounded-lg">
           <div>
-            <div className="bg-neutral-50/50 text-neutral-500 border-b border-neutral-200  
-            grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr] gap-4 mb-2 ">
+            <div
+              className="bg-neutral-100 text-neutral-500 border-b border-neutral-200  
+            grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr] gap-4  "
+            >
               <div className="px-4 py-1">
                 <SortBySelector
                   label="ID"
@@ -146,19 +147,23 @@ const PaymentsList = ({ payeeId }: Props) => {
               </div>
             </div>
 
-            <div >
+            <div>
               {payments.payments.map((p) => (
                 <div
                   key={p.id}
-                  className="grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr]  gap-4 mb-2 hover:bg-neutral-100 duration-200 transition-all cursor-pointer border-b border-b-neutral-200 last:border-0"
+                  className="grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr]  gap-4  hover:bg-neutral-100 duration-200 transition-all cursor-pointer border-b border-b-neutral-200 last:border-0"
                 >
-                  <div className="px-4 py-1">{p.id}</div>
-                  <div>{p.year}</div>
-                  <div>{p.initiative}</div>
-                  <div className="text-center">{p.grant}</div>
-                  <div className="text-center">{formatCurrency(p.amount)}</div>
-                  <div className="text-center">{formatDate(p.postedDate)}</div>
-                  <div className="text-center">{p.postedBy}</div>
+                  <div className="py-2 px-4 ">{p.id}</div>
+                  <div className="py-2 ">{p.year}</div>
+                  <div className="py-2 ">{p.initiative}</div>
+                  <div className="  py-2  text-center">{p.grant}</div>
+                  <div className=" py-2  text-center">
+                    {formatCurrency(p.amount)}
+                  </div>
+                  <div className="py-2  text-center">
+                    {formatDate(p.postedDate)}
+                  </div>
+                  <div className="  py-2  text-center">{p.postedBy}</div>
                 </div>
               ))}
             </div>
@@ -222,4 +227,4 @@ const PaymentsList = ({ payeeId }: Props) => {
     </div>
   );
 };
-export default PaymentsList;
+export default PayeePaymentsList;

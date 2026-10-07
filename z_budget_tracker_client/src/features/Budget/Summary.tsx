@@ -33,7 +33,7 @@ const Summary = ({ year }: Props) => {
         .map((i) => i.spent_amount)
         .reduce((acc, cur) => acc + cur, 0),
       remaining_amount: b.account_balances
-        .map((i) => i.current_amount + i.spent_amount)
+        .map((i) => i.current_amount - i.spent_amount)
         .reduce((acc, cur) => (acc ?? 0) + (cur ?? 0), 0),
     };
   });
@@ -219,7 +219,7 @@ function CategorySummary({
       category,
       amount: budgetTotal,
       current_amount: currentTotal,
-      spent_amount: spentTotal,
+      spent_amount: -1 * spentTotal,
     };
   });
 
@@ -272,7 +272,7 @@ function CategorySummary({
               </div>
               <div className="text-end">
                 {c.current_amount - c.spent_amount > 0 ? (
-                  formatCurrency(c.current_amount + c.spent_amount)
+                  formatCurrency(c.current_amount - c.spent_amount)
                 ) : (
                   <span className="text-neutral-400">-</span>
                 )}

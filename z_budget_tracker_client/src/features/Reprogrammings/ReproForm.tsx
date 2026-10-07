@@ -120,7 +120,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
   // console.log('lines render', lines)
 
-  const [savedBalances, setSavedBalances] = useState<ReproRowBalance[]>(
+  const [savedRowBalances, setSavedRowBalances] = useState<ReproRowBalance[]>(
     repro && repro.rowBalances ? repro.rowBalances! : [],
   );
 
@@ -275,15 +275,15 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     ]);
 
     if (
-      !savedBalances ||
-      !savedBalances.some(
+      !savedRowBalances ||
+      !savedRowBalances.some(
         (b) =>
           b.key.initiativeId == key.initiativeId &&
           b.key.grantId == key.grantId &&
           b.key.categoryId == key.categoryId,
       )
     ) {
-      setSavedBalances((prev) => {
+      setSavedRowBalances((prev) => {
         const newArray = [
           ...prev,
           {
@@ -338,14 +338,14 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     ]);
 
     if (
-      !savedBalances.some(
+      !savedRowBalances.some(
         (b) =>
           b.key.initiativeId == key.initiativeId &&
           b.key.grantId == key.grantId &&
           b.key.categoryId == key.categoryId,
       )
     ) {
-      setSavedBalances((prev) => {
+      setSavedRowBalances((prev) => {
         const newArray = [
           ...prev,
           {
@@ -367,7 +367,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       const lines = prev.map((line: ReproLineItem, index) => {
         if (rowUuid !== line.uuid) return line;
         const { inc, dec } = getRowIncreaseAndDecrease(index);
-        const { currentAmount, remainingAmount, accountName } = savedBalances
+        const { currentAmount, remainingAmount, accountName } = savedRowBalances
           .filter(
             (b) =>
               b.key.initiativeId == line.initiativeId &&
@@ -434,7 +434,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         getValues(`rows.${index}.decrease`) as string,
       );
 
-      const { currentAmount, remainingAmount } = savedBalances
+      const { currentAmount, remainingAmount } = savedRowBalances
         .filter(
           (b) =>
             b.key.initiativeId == line.initiativeId &&
@@ -617,7 +617,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                 l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
             };
           }),
-          rowBalances: savedBalances,
+          rowBalances: savedRowBalances,
         }));
 
         onServerCreateSuccess(
@@ -958,7 +958,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         )}
         <div className="pb-10">
           {lines.map((item, index) => {
-            const balances = savedBalances.filter(
+            const balances = savedRowBalances.filter(
               (b) =>
                 b.key.initiativeId === item.initiativeId &&
                 b.key.grantId == item.grantId &&

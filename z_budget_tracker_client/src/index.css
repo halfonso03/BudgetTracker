@@ -8,7 +8,7 @@ pre {
   -moz-tab-size: 4; /* Code for older Firefox browsers */
 }
 :root {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-family: 'Poppins';
   /* font-family: 'Segoe UI Symbol', 'Noto Color Emoji', 'sans-serif'; */
   transition:

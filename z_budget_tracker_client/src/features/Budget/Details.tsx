@@ -216,7 +216,7 @@ const Details = () => {
 
     setValue(
       `rows.${totalsIndex}.remaining_amount`,
-      formatNumber(categoryTotal + totalSpent),
+      formatNumber(categoryTotal - totalSpent),
     );
     calculateTotals();
   }
@@ -390,7 +390,6 @@ const Details = () => {
                 <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
                   Actions
                 </div>
-
                 {amountFieldsForCategory.map((field) => {
                   indexRunningTotal += 1;
 

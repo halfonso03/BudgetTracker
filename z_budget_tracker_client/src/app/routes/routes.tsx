@@ -13,10 +13,11 @@ import ReproDetails from '../../features/Reprogrammings/ReproDetails';
 import ReproNew from '../../features/Reprogrammings/ReproNew';
 import Reports from '../../features/Reports/Reports';
 import ProtectedRoute from '../../components/ProtectedRoute';
-import ContractorsHome from '../../features/Contractors/ContractorsHome';
 import PayeeHome from '../../features/Payees/PayeeHome';
-import New from '../../features/Payees/New';
 import MinimalistTable from '../../features/proto/ProtoList';
+import PaymentLanding from '../../features/Payments/PaymentLanding';
+import PaymentDetails from '../../features/Payments/PaymentDetails';
+import PaymentNew from '../../features/Payments/PaymentNew';
 
 export const routes: RouteObject[] = [
   {
@@ -134,34 +135,44 @@ export const routes: RouteObject[] = [
         ),
       },
       {
+        path: '/payments',
+        element: (
+          <ProtectedRoute>
+            <PaymentLanding />
+          </ProtectedRoute>
+        ),
+        children: [
+          {
+            path: '',
+            element: (
+              <ProtectedRoute>
+                <PaymentNew />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'new',
+            element: (
+              <ProtectedRoute>
+                <PaymentNew />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: ':id',
+            element: (
+              <ProtectedRoute>
+                <PaymentDetails />
+              </ProtectedRoute>
+            ),
+          },
+        ],
+      },
+      {
         path: '/payees',
         element: (
           <ProtectedRoute>
             <PayeeHome />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: '/vendors/new',
-        element: (
-          <ProtectedRoute>
-            <New />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: '/contractors',
-        element: (
-          <ProtectedRoute>
-            <ContractorsHome />
-          </ProtectedRoute>
-        ),
-      },
-      {
-        path: '/contractors/new',
-        element: (
-          <ProtectedRoute>
-            <New />
           </ProtectedRoute>
         ),
       },
