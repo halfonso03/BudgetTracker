@@ -141,7 +141,7 @@ const Details = () => {
         amount: formattedTotalBudgeted,
         current_amount: formatterTotalCurrent,
         spent_amount: formattedTotalSpent,
-        remaining_amount: formatNumber(totalCurrent + totalSpent),
+        remaining_amount: formatNumber(totalCurrent - totalSpent),
         hasRepro: false,
         name: 'Total',
       };
@@ -339,11 +339,9 @@ const Details = () => {
           const n = budget.account_balances
             .filter((x) => x.category_id == c.id)
 
-            .some((c) => c.current_amount + c.spent_amount < 0);
+            .some((c) => c.current_amount - c.spent_amount < 0);
 
           const categoryRedClass = n === true ? 'text-red-600' : '';
-
-          console.log('categoryRedClass', categoryRedClass)
 
           return (
             <div className="border border-neutral-200 mb-7" key={c.id}>

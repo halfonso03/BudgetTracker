@@ -34,6 +34,7 @@ type Payment = {
 type PaymentLineItem = {
     rowId: number
     year?: number
+    uuid: string
     accountId: number
     accountName: string
     categoryId: number,
@@ -44,9 +45,8 @@ type PaymentLineItem = {
     grantName: string,
     payeeId: number,
     payeeName: string
-    uuid: string
     availableAmount: number
-    amount: number
+    paymentAmount: string | number
     newAvailableAmount: number
     comment?: string
 }
@@ -61,6 +61,18 @@ type PaymentInputRow = {
     categoryId: number;
     payeeId: number;
     availableAmount?: number;
-    amount: string | number;
+    paymentAmount: string | number;
     newAvailableAmount: number
 };
+
+type PaymentAvailableAccountBalance = {
+    accountId: number
+    accountName: string
+    availableAmount: number
+    accountId: number
+    initiativeId: number,
+    grantId: number,
+    initiativeName?: string
+    grantName?: string
+    categoryName?: string
+}

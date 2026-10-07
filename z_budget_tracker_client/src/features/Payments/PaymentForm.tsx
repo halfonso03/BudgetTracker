@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import Button from '../../components/Button';
 import useAuth from '../../contexts/useAuth';
+import AddLineModal from './modals/AddLineModal';
 
 interface Props {
   payment: Payment;
@@ -48,21 +49,10 @@ const PaymentForm = ({ payment }: Props) => {
 
   const [lines, setLines] = useState<PaymentLineItem[]>(
     payment.lineItems.map((l) => {
-      // const remainingAmount =
-      //   payment.rowBalances
-      //     ?.filter(
-      //       (x) =>
-      //         x.key.initiativeId == l.initiativeId &&
-      //         x.key.grantId == l.grantId &&
-      //         x.key.categoryId == l.categoryId,
-      //     )[0]
-      //     .balances.filter((x) => x.accountId == l.accountId)[0]
-      //     .remainingAmount ?? 0;
-
       const line: PaymentLineItem = {
         ...l,
         availableAmount: l.availableAmount,
-        newAvailableAmount: l.availableAmount - +(l.amount ?? 0),
+        newAvailableAmount: l.availableAmount - +(l.paymentAmount ?? 0),
       };
       return line;
     }),
@@ -73,8 +63,8 @@ const PaymentForm = ({ payment }: Props) => {
       rows: lines.map((l) => {
         return {
           ...l,
-          amount: formatNumber(+(l?.amount ?? 0.0)),
-          newAvailableAmount: +(l?.availableAmount ?? 0) - l.amount,
+          amount: formatNumber(+(l?.paymentAmount ?? 0.0)),
+          newAvailableAmount: +(l?.availableAmount ?? 0) - +l.paymentAmount,
         };
       }),
     },
@@ -110,6 +100,75 @@ const PaymentForm = ({ payment }: Props) => {
   }, [lines, paymentHeader.justification]);
 
   async function saveReproButtonClick() {}
+
+  function getPaymentAmount(index: number) {
+    return {
+      paymentAmount: getValues(`rows.${index}.paymentAmount`),
+    };
+  }
+
+  function handleLineAdded(
+    newLine: PaymentLineItem,
+    key: { initiativeId: number; grantId: number; categoryId: number },
+  ) {
+    setTimeout(() => setAddLineModalIsOpen(false), 500);
+
+    const newLines: PaymentLineItem[] = lines.map(
+      (l: PaymentLineItem, i: number) => {
+        const { paymentAmount } = getPaymentAmount(i);
+        const newLine: PaymentLineItem = {
+          ...l,
+          availableAmount: l.availableAmount,
+          paymentAmount: paymentAmount,
+          newAvailableAmount: +l.availableAmount - +paymentAmount,
+        };
+        return newLine;
+      },
+    );
+
+    setLines([...newLines, { ...newLine, rowId: lines.length }]);
+
+    // const balances = queryClient.getQueryData<
+    //   {
+    //     accountId: number;
+    //     accountName: string;
+    //     currentAmount: number;
+    //     remainingAmount: number;
+    //   }[]
+    // >([
+    //   'repro_account_balances',
+    //   key.initiativeId,
+    //   key.grantId,
+    //   key.categoryId,
+    // ]);
+
+    // if (
+    //   !savedRowBalances ||
+    //   !savedRowBalances.some(
+    //     (b) =>
+    //       b.key.initiativeId == key.initiativeId &&
+    //       b.key.grantId == key.grantId &&
+    //       b.key.categoryId == key.categoryId,
+    //   )
+    // ) {
+    //   setSavedRowBalances((prev) => {
+    //     const newArray = [
+    //       ...prev,
+    //       {
+    //         key: {
+    //           ...key,
+    //         },
+    //         balances: balances!,
+    //       },
+    //     ];
+
+    //     return newArray;
+    //   });
+    // }
+
+    // onIsDirty(true);
+  }
+
   function canPost() {
     return true;
   }
@@ -221,6 +280,16 @@ const PaymentForm = ({ payment }: Props) => {
             );
           })}
         </div>
+        <AddLineModal
+          year={payment.year}
+          isOpen={addLineModalIsOpen}
+          onLineAdded={handleLineAdded}
+          onCancel={() => {
+            setTimeout(() => {
+              setAddLineModalIsOpen(false);
+            }, 500);
+          }}
+        ></AddLineModal>
       </div>
     </MenuIdProvider>
   );
@@ -230,7 +299,7 @@ function noNegativeBalances(lines: PaymentLineItem[]): boolean {
   const lines2 = lines
     .map((l) => ({
       availableAmount: l.availableAmount,
-      amount: +(l.amount ?? 0),
+      amount: +(l.paymentAmount ?? 0),
     }))
     .map((l) => l.availableAmount - l.amount);
 
@@ -239,7 +308,7 @@ function noNegativeBalances(lines: PaymentLineItem[]): boolean {
 
 function noZeroOnlyLines(lines: PaymentLineItem[]): boolean {
   const lines2 = lines.map((l) => ({
-    amount: +(l.amount ?? 0),
+    amount: +(l.paymentAmount ?? 0),
   }));
 
   return !lines2.some((x) => x.amount === 0);
