@@ -78,6 +78,7 @@ builder.Services.AddTransient<DisbService, DisbService>();
 builder.Services.AddTransient<IReportParameterValuesService, ReportParameterValuesService>();
 builder.Services.AddTransient<IReportService, ReportService>();
 builder.Services.AddTransient<DisbService, DisbService>();
+builder.Services.AddTransient<PaymentService, PaymentService>();
 
 
 builder.Services.AddTransient<IReportRunnerService, ReportRunnerService>((provider) =>

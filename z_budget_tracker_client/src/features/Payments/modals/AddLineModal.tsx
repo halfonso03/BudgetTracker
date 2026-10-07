@@ -7,6 +7,9 @@ import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
 import Select from '../../../components/Select';
 import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailableAccountBalances';
+import Search from '../../../components/Search';
+import PayeeSearcher from '../PayeeSearcher';
+import TallModal from '../../../components/TallModal';
 
 type Selections = {
   initiativeId?: number;
@@ -87,8 +90,25 @@ const AddLineModal = ({ ...props }: Props) => {
   }
 
   return (
-    <Modal2 size="lg" title="Add a New Line" animateOut={animateOut} {...props}>
-      <div className="grid grid-cols-[.7fr_1fr] mb-4 gap-4">
+    <TallModal
+      size="lg"
+      title="Add a New Line"
+      animateOut={animateOut}
+      {...props}
+    >
+      <div className="flex flex-col justify-between  h-full">
+        <div>
+          <div className="relative flex gap-2 items-center mb-2   ">
+            <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full">
+              <div>Payee</div>
+              <PayeeSearcher></PayeeSearcher>
+            </div>
+          </div>
+          <div>d</div>
+
+          {/* comments */}
+          <div>
+            {/* <div className="grid grid-cols-[.7fr_1fr] mb-4 gap-4">
         <div className="flex flex-col gap-9">
           <div>
             <div className="entity-label">Select an Initiative</div>
@@ -170,11 +190,8 @@ const AddLineModal = ({ ...props }: Props) => {
           {balances && (
             <div className="flex justify-between py-2 px-2 pt-0 ">
               <div className="flex-10 entity-label">Accounts</div>
-              <div className="flex-9 grid grid-cols-[1fr_1fr] ">
-                <div className=" entity-label text-end">Current</div>
-                <div className=" font-semibold text-end text-neutral-500">
-                  Remaining
-                </div>
+              <div className="flex-9 ">
+                <div className=" entity-label text-end">Avaliable Amount</div>
               </div>
             </div>
           )}
@@ -208,7 +225,7 @@ const AddLineModal = ({ ...props }: Props) => {
                     .name}
                 &nbsp;Total
               </div>
-              <div className="flex-9 grid grid-cols-[1fr_1fr]">
+              <div className="flex-9">
                 <div className="font-semibold text-neutral-800 text-end">
                   {balances &&
                     formatCurrency(
@@ -221,24 +238,28 @@ const AddLineModal = ({ ...props }: Props) => {
             </div>
           )}
         </div>
+      </div> */}
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          {/* <Button onClick={() => {}}>Save</Button> */}
+          <Button
+            variation="secondary"
+            onClick={() => {
+              props.onCancel();
+              setAnimateOut(true);
+              setTimeout(() => {
+                setSelections(null);
+                setAnimateOut(false);
+              }, 500);
+            }}
+          >
+            Cancel
+          </Button>
+        </div>
       </div>
-      <div className="flex justify-end gap-3 pb-3">
-        {/* <Button onClick={() => {}}>Save</Button> */}
-        <Button
-          variation="secondary"
-          onClick={() => {
-            props.onCancel();
-            setAnimateOut(true);
-            setTimeout(() => {
-              setSelections(null);
-              setAnimateOut(false);
-            }, 500);
-          }}
-        >
-          Cancel
-        </Button>
-      </div>
-    </Modal2>
+    </TallModal>
   );
 };
 export default AddLineModal;

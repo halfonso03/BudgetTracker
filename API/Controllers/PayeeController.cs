@@ -5,11 +5,25 @@ using Microsoft.AspNetCore.Mvc;
 using Application.PaginationHelpers;
 using Application.DTOs.Payee;
 using Application.Core;
+using Application.DTOs.Payees;
 
 namespace API.Controllers
 {
     public class PayeeController(PayeeService payeeService) : BaseApiController
     {
+        [HttpGet]
+        public async Task<IActionResult> List(int payeeId)
+        {
+            try
+            {
+                return HandleResult(await payeeService.GetPayee(payeeId));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("list")]
         public async Task<IActionResult> List([FromQuery] PaginationParams paginationParams, string searchTerm = "", string sortBy = "NAME")
         {
@@ -77,6 +91,19 @@ namespace API.Controllers
             try
             {
                 return HandleResult(await payeeService.UpdatePayee(updatePayeeRequestDto));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(string filter)
+        {
+            try
+            {
+                return HandleResult(await payeeService.Search(filter));
             }
             catch (Exception ex)
             {

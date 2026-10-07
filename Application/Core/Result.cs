@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using Application.DTOs.Payees;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace Application.Core;
@@ -18,6 +19,11 @@ public class Result<T>
         Error = error,
         Code = code
     };
+
+    public static implicit operator Result<T>(PayeeSearchPayeeResponseDto v)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 public class FileResult<T> : Result<T>

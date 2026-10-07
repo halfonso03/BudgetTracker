@@ -656,6 +656,12 @@ namespace Persistence
             builder.Entity<PayeeSummary>()
                   .ToView("vwPayeeSummary") // Name of your SQL view
                   .HasNoKey();
+
+
+            builder.Entity<PayeeSummary>().Property(x => x.TotalPaid).HasColumnType("NUMERIC(15,2)");
+            builder.Entity<PayeeSummary>().Property(x => x.LastPaymentAmount).HasColumnType("NUMERIC(15,2)");
+
+
         }
     }
 }

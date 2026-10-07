@@ -112,7 +112,7 @@ const PaymentForm = ({ payment }: Props) => {
     key: { initiativeId: number; grantId: number; categoryId: number },
   ) {
     setTimeout(() => setAddLineModalIsOpen(false), 500);
-
+    console.log('PaymentLineItem', newLine);
     const newLines: PaymentLineItem[] = lines.map(
       (l: PaymentLineItem, i: number) => {
         const { paymentAmount } = getPaymentAmount(i);
@@ -275,9 +275,7 @@ const PaymentForm = ({ payment }: Props) => {
         )} */}
         <div className="pb-10">
           {lines.map((item, index) => {
-            return (
-              <PaymentTransactionRow>{item.accountId}</PaymentTransactionRow>
-            );
+            return <div></div>;
           })}
         </div>
         <AddLineModal

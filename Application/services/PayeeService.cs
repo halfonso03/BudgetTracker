@@ -7,6 +7,7 @@ using Application.PaginationHelpers;
 using AutoMapper;
 using Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Persistence;
 
 namespace Application.Services
@@ -183,6 +184,54 @@ namespace Application.Services
             };
 
             return Result<PayeeSearchResponseDto>.Success(result);
+        }
+
+        public async Task<Result<List<PayeeSearchPayeeResponseDto>>> Search(string filter)
+        {
+            if (filter.Length >= 3)
+            {
+                var result = await dbContext.Payees
+                                .Include(x => x.Account)
+                                    .ThenInclude(x => x.Category)
+                                .Where(x => x.Name.StartsWith(filter))
+                                .Select(x => new PayeeSearchPayeeResponseDto
+                                {
+                                    Id = x.Id,
+                                    Name = x.Name,
+                                    AccountId = x.AccountId,
+                                    CategoryId = x.Account!.CategoryId,
+                                    IsActive = x.IsActive
+                                }).ToListAsync();
+
+                return Result<List<PayeeSearchPayeeResponseDto>>.Success(result);
+            }
+
+            return Result<List<PayeeSearchPayeeResponseDto>>.Success([]);
+        }
+
+        public async Task<Result<PayeeSearchPayeeResponseDto?>> GetPayee(int payeeId)
+        {
+            var result = await dbContext.Payees
+                               .Include(x => x.Account)
+                               .Where(x => x.Id == payeeId)
+                               .Select(x => new PayeeSearchPayeeResponseDto
+                               {
+                                   Id = x.Id,
+                                   Name = x.Name,
+                                   AccountId = x.AccountId,
+                                   CategoryId = x.Account!.CategoryId,
+                                   IsActive = x.IsActive
+                               }).SingleOrDefaultAsync();
+
+            if (result == null)
+            {
+                return Result<PayeeSearchPayeeResponseDto?>.Failure("", 404);
+            }
+            else
+            {
+                return Result<PayeeSearchPayeeResponseDto?>.Success(result);
+            }
+
         }
 
 
