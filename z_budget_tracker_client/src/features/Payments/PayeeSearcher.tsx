@@ -18,11 +18,11 @@ const PayeeSearcher = () => {
   const [searching, setSearching] = useState(false);
 
   const { data: suggestions, isFetching } = usePayeeSearch(query);
-  const { data } = useSelectedPayeeInfo(
+  const { data: selectedPayee } = useSelectedPayeeInfo(
     suggestions ? suggestions[sel].id : undefined,
   );
 
-  console.log('data', data);
+  console.log('data', selectedPayee);
   const selectRow = useCallback(
     (amount: number) => {
       if (suggestions && suggestions?.length && suggestions.length > 0) {
@@ -66,9 +66,9 @@ const PayeeSearcher = () => {
   }, [row, selectRow, suggestions]);
 
   return (
-    <div className="">
+    <div>
       <div
-        className={`flex p-1 rounded-sm ${p ? 'border border-blue-500' : 'border border-neutral-400'}`}
+        className={`flex p-1 rounded-sm ${p ? 'border border-blue-500' : 'border border-neutral-300'}`}
       >
         <input
           ref={inputRef}
@@ -90,16 +90,19 @@ const PayeeSearcher = () => {
       </div>
       <div className="w-full rounded-sm pt-1">
         {suggestions && searching && (
-          <ScrollableDiv className="relative border border-neutral-300 rounded-sm w-full">
+          <ScrollableDiv className="relative border border-neutral-300/55 rounded-sm w-full shadow-md ">
             {suggestions?.map((item, index) => (
               // Render each suggestion as a clickable list item
               <div
                 key={index}
                 className={`${row === index ? 'bg-neutral-200' : ''} 
-              px-1 flex py-2 justify-between items-center border-b border-b-neutral-300 last:border-b-0 text-neutral-800 dark:text-neutral-300  `}
+              px-1 flex py-2 justify-between items-center border-b border-b-neutral-300/55 last:border-b-0 text-neutral-800 dark:text-neutral-300  `}
               >
-                <div>{item.name}</div>
-                <div>Is Active: {item.isActive ? 'Yes' : 'No'}</div>
+                <div className="flex p-1">
+                  <div>{item.name}</div>
+                  <div>Is Active: {item.isActive ? 'Yes' : 'No'}</div>
+                </div>
+
                 {/* <button
               type="button"
               disabled={item.added || item.existing}
@@ -117,6 +120,7 @@ const PayeeSearcher = () => {
             ))}
           </ScrollableDiv>
         )}
+        
       </div>
     </div>
   );

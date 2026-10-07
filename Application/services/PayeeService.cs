@@ -220,7 +220,8 @@ namespace Application.Services
                                    Name = x.Name,
                                    AccountId = x.AccountId,
                                    CategoryId = x.Account!.CategoryId,
-                                   IsActive = x.IsActive
+                                   IsActive = x.IsActive,
+                                   PayeeTypeId = (int)x.PayeeTypeId
                                }).SingleOrDefaultAsync();
 
             if (result == null)
