@@ -1,5 +1,12 @@
 import { useCallback, useState } from 'react';
-import { DUP_LINES, NO_JUSTIFICATION, POSTED, SAVED } from '../../app/constants';
+import {
+  DUP_LINES,
+  NEGATIVE_NEW_AVAILABLE_BALANCE,
+  NO_AMOUNT_LINES,
+  NO_JUSTIFICATION,
+  POSTED,
+  SAVED,
+} from '../../app/constants';
 import { useForm } from 'react-hook-form';
 import { formatNumber } from '../../app/util';
 import MenuIdProvider from '../../contexts/MenuIdContext';
@@ -80,22 +87,13 @@ const PaymentForm = ({ payment }: Props) => {
       errors.push(DUP_LINES);
     }
 
-    // if (!noZeroOnlyLines(lines)) {
-    //   errors.push(NO_INC_AND_NO_DEC_LINES);
-    // }
+    if (!noZeroOnlyLines(lines)) {
+      errors.push(NO_AMOUNT_LINES);
+    }
 
-    // const { inc: totalInc, dec: totalDec } = getTotalAmounts();
-    // if (+totalInc - +totalDec !== 0) {
-    //   errors.push(HAS_VARIANCE);
-    // }
-
-    // if (!noLinesWithIncAndDecInValues(lines)) {
-    //   errors.push(LINES_WITH_INC_AND_DEC);
-    // }
-
-    // if (!noNegativeBalances(lines)) {
-    //   errors.push(NEGATIVE_CURRENT_BALANCE);
-    // }
+    if (!noNegativeBalances(lines)) {
+      errors.push(NEGATIVE_NEW_AVAILABLE_BALANCE);
+    }
 
     // if (hasNegativeRemainingBalances(lines) && !overrideNeg) {
     //   errors.push(NEGATIVE_REMAINING_BALANCE);
@@ -227,6 +225,25 @@ const PaymentForm = ({ payment }: Props) => {
     </MenuIdProvider>
   );
 };
+
+function noNegativeBalances(lines: PaymentLineItem[]): boolean {
+  const lines2 = lines
+    .map((l) => ({
+      availableAmount: l.availableAmount,
+      amount: +(l.amount ?? 0),
+    }))
+    .map((l) => l.availableAmount - l.amount);
+
+  return !lines2.some((x) => x < 0);
+}
+
+function noZeroOnlyLines(lines: PaymentLineItem[]): boolean {
+  const lines2 = lines.map((l) => ({
+    amount: +(l.amount ?? 0),
+  }));
+
+  return !lines2.some((x) => x.amount === 0);
+}
 
 function noDupLines(lines: PaymentLineItem[]): boolean {
   const counts: { name: string; count: number }[] = [];

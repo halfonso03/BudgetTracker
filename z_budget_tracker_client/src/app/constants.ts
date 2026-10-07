@@ -1,3 +1,4 @@
+//reprogrammings
 export const DUP_LINES =
     'There are duplicate lines (Look for the duplicate selections for an Initiative, Grant, Category and Account)';
 export const NO_INC_AND_NO_DEC_LINES =
@@ -11,6 +12,10 @@ export const NO_JUSTIFICATION = 'Justification has not been entered';
 export const NEGATIVE_REMAINING_BALANCE =
     'There is a negative remaining balance in one or more lines';
 
+
+// payments
+export const NO_AMOUNT_LINES = "There are lines with a $0 payment amount"
+export const NEGATIVE_NEW_AVAILABLE_BALANCE = "There is a negative available balance in one or more lines"
 
 export const EDITED = 1;
 export const SAVED = 2;

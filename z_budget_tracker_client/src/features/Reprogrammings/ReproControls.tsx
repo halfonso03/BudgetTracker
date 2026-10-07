@@ -79,7 +79,7 @@ const ReproControls = ({
         >
           <Search></Search>
         </Button>
-        {reproId && (
+        {reproId !== undefined && reproId !== 0 && (
           <Button
             buttonSize="small"
             variation="secondary"
