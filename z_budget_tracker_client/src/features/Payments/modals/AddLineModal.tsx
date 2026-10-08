@@ -13,8 +13,7 @@ import { useForm, type Resolver } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { PaymentFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
-import FormRow from '../../../ui/FormRow';
-import { AlertCircle, Asterisk } from 'lucide-react';
+import { Asterisk } from 'lucide-react';
 
 type Selections = {
   initiativeId?: number;
@@ -46,29 +45,6 @@ const AddLineModal = ({ ...props }: Props) => {
   const { categories, catSuccess } = useCategories(props.isOpen);
 
   const [accounts, setAccounts] = useState<Account[]>([]);
-
-  if (
-    accounts.length === 0 &&
-    catSuccess &&
-    categories?.length &&
-    categories[0].accounts
-  ) {
-    setAccounts(
-      categories[0].accounts.map((a) => ({
-        id: a.id,
-        name: a.name,
-        number: '',
-        category_id: 0,
-      })),
-    );
-  }
-
-  const { data: balances } = useAvailableAccountBalances(
-    selections?.initiativeId,
-    selections?.grantId,
-    selections?.categoryId,
-  );
-
   const {
     register, // Function to register input fields and connect them to validation
     handleSubmit, // Function that wraps your submit handler to handle validation
@@ -85,6 +61,34 @@ const AddLineModal = ({ ...props }: Props) => {
       amount: 0,
     },
   });
+
+  if (
+    accounts.length === 0 &&
+    catSuccess &&
+    categories?.length &&
+    categories[0].accounts
+  ) {
+    const accounts = categories[0].accounts.map((a) => ({
+      id: a.id,
+      name: a.name,
+      number: '',
+      category_id: 0,
+    }));
+    setAccounts(accounts);
+    setValue('accountId', accounts[0].id);
+  }
+
+  const { data: balances } = useAvailableAccountBalances(
+    selections?.initiativeId,
+    selections?.grantId,
+    selections?.categoryId,
+  );
+
+  const { data } = useAvailableAccountBalances(
+    getValues('initiativeId'),
+    getValues('grantId'),
+    getValues('categoryId'),
+  );
 
   function onLineAdded(account: PaymentAvailableAccountBalance) {
     setSelections(null);
@@ -132,16 +136,6 @@ const AddLineModal = ({ ...props }: Props) => {
     }
   }
 
-  function canSave() {
-    if (!selections) return false;
-    if (!selections.categoryId) return false;
-    if (!selections.accountId) return false;
-    if (!selections.initiativeId) return false;
-    if (!selections.grantId) return false;
-
-    return true;
-  }
-
   function handlePayeeSelected(payee: Payee) {
     setPayee(payee);
     setValue('payeeId', payee.id);
@@ -159,7 +153,10 @@ const AddLineModal = ({ ...props }: Props) => {
         number: x.number,
         category_id: x.category_id,
       }));
-      if (a2) setAccounts(a2);
+      if (a2) {
+        setAccounts(a2);
+        setValue('accountId', accounts[0].id);
+      }
     }
   }
 
@@ -179,7 +176,13 @@ const AddLineModal = ({ ...props }: Props) => {
           onSubmit={handleSubmit(onSubmit)}
           className="self-center h-full w-full"
         >
-          <div className="flex flex-col justify-between h-full border">
+          <div className="flex flex-col justify-between h-full mt-4">
+            {/* {errors?.payeeId?.message && '1'}
+            {errors?.categoryId?.message && '2'}
+            {errors?.accountId?.message && '3'}
+            {errors?.initiativeId?.message && '4'}
+            {errors?.grantId?.message}
+            {errors?.amount?.message} */}
             <div className="flex flex-col justify-between p-3 px-4 ">
               <div>
                 <div className="relative flex items-center mb-5">
@@ -189,7 +192,7 @@ const AddLineModal = ({ ...props }: Props) => {
                     <PayeeSearcher
                       onPayeeSelected={handlePayeeSelected}
                     ></PayeeSearcher>
-                    <div className='self-center'>
+                    <div className="self-center">
                       {errors.payeeId && (
                         <div className="text-red-500 pl-1">
                           <Asterisk size={18}></Asterisk>
@@ -204,6 +207,8 @@ const AddLineModal = ({ ...props }: Props) => {
                     Category
                   </div>
                   <Select
+                    {...register('categoryId')}
+                    tabIndex={1}
                     additionalclasses={`${selections?.categoryId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
                     value={selections?.categoryId}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
@@ -214,16 +219,16 @@ const AddLineModal = ({ ...props }: Props) => {
                         }));
 
                         if (categories) {
-                          setAccounts(
-                            categories
-                              .filter((x) => x.id === +e.target.value)[0]
-                              .accounts!.map((a) => ({
-                                id: a.id,
-                                name: a.name,
-                                number: '',
-                                category_id: 0,
-                              })),
-                          );
+                          const accounts = categories
+                            .filter((x) => x.id === +e.target.value)[0]
+                            .accounts!.map((a) => ({
+                              id: a.id,
+                              name: a.name,
+                              number: '',
+                              category_id: 0,
+                            }));
+                          setAccounts(accounts);
+                          setValue('accountId', accounts[0].id);
                         }
                       }
                     }}
@@ -242,16 +247,18 @@ const AddLineModal = ({ ...props }: Props) => {
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
                   <div className="text-neutral-600/90 font-medium">Account</div>
                   <Select
+                    {...register('accountId')}
+                    tabIndex={2}
                     additionalclasses={`${selections?.accountId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
-                    value={selections?.accountId}
-                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      if (+e.target.value !== 0) {
-                        setSelections((prev) => ({
-                          ...prev,
-                          accountId: +e.target.value,
-                        }));
-                      }
-                    }}
+                    // value={selections?.accountId}
+                    // onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                    //   if (+e.target.value !== 0) {
+                    //     setSelections((prev) => ({
+                    //       ...prev,
+                    //       accountId: +e.target.value,
+                    //     }));
+                    //   }
+                    // }}
                   >
                     {accounts?.map((i) => (
                       <option
@@ -263,13 +270,18 @@ const AddLineModal = ({ ...props }: Props) => {
                       </option>
                     ))}
                   </Select>
+                  {errors?.accountId && (
+                    <div className="text-red-500 pl-1">
+                      <Asterisk size={18}></Asterisk>
+                    </div>
+                  )}
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
                   <div className="text-neutral-600/90 font-medium">
                     Initiative
                   </div>
 
-                  <Select {...register('initiativeId')}>
+                  <Select {...register('initiativeId')} tabIndex={3}>
                     <option value={0} className="text-neutral-600">
                       Select...
                     </option>
@@ -292,7 +304,7 @@ const AddLineModal = ({ ...props }: Props) => {
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-10">
                   <div className="text-neutral-600/90 font-medium">Grant</div>
-                  <Select {...register('grantId')}>
+                  <Select {...register('grantId')} tabIndex={5}>
                     <option value={0} className="text-neutral-600">
                       Select...
                     </option>

@@ -14,9 +14,10 @@ import SelectedPayeeCard from './SelectedPayeeCard';
 
 type Props = {
   onPayeeSelected: (payee: Payee) => void;
+  onPayeeSelectionRemoved: () => void;
 };
 
-const PayeeSearcher = ({ onPayeeSelected }: Props) => {
+const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionRemoved }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputFocused, stInputFocused] = useState(false);
   const [query, setQuery] = useState<string>(() => '');
@@ -82,23 +83,22 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
     // setSelectedRow(-1);
     setSelectedPayee(null);
     setSearching(false);
+    onPayeeSelectionRemoved();
   }
 
   console.log('selectedPayeeInfo', selectedPayeeInfo);
   return (
     <div>
-      {/* selectedRow: {selectedRow}
-      <br></br>
       highlightedRow{highlightedRow}
       <br></br>
       selectedPayeeInfo name: {selectedPayeeInfo?.name}
       <br></br>
-      selectedPayee name: {selectedPayee?.name} */}
+      selectedPayee name: {selectedPayee?.name}
       <div
         className={`pl-1 pt-1 rounded-sm ${inputFocused ? 'border border-blue-500' : 'border border-neutral-300'}`}
       >
         {selectedPayee && selectedPayeeInfo && (
-          <div className='mb-2'>
+          <div className="mb-2">
             <SelectedPayeeCard
               selectedPayee={selectedPayee}
               selectedPayeeInfo={selectedPayeeInfo}
@@ -110,6 +110,7 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
         <input
           ref={inputRef}
           value={query}
+          tabIndex={0}
           className='p-2 w-full rounded-sm text-neutral-800 placeholder-neutral-400 focus:outline-none  transition-all"
               placeholder="Enter a search term and presss enter..."'
           placeholder="Enter payee name..."
@@ -133,9 +134,16 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
                 // Render each suggestion as a clickable list item
                 <div
                   key={index}
+                  onClick={() => {
+                    setSelectedPayee(suggestions[index]);
+                    setSearching(false);
+                    setHighlightedRow(-1);
+                    setQuery('');
+                    onPayeeSelected?.(suggestions[index]);
+                  }}
                   className={`${highlightedRow === index ? 'bg-neutral-200' : ''} 
-                      px-1 pl-2 flex py-1  justify-between items-center border-b border-b-neutral-300/55 last:border-b-0 
-                       dark:text-neutral-300`}
+                      px-1 pl-2 flex py-1 justify-between items-center border-b border-b-neutral-300/55 last:border-b-0 
+                       dark:text-neutral-300 cursor-pointer hover:bg-neutral-200`}
                 >
                   <div className="p-1 w-full font-medium">
                     <div>{item.name}</div>
@@ -158,7 +166,6 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
           )}
         </div>
       </div>
-
       <InfoModal
         payeeId={selectedPayee?.id}
         isOpen={infoWindowIsOpen}

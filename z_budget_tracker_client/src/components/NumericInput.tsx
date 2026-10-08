@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface Props {
@@ -17,6 +18,8 @@ const NumericInputReactHookForm = ({
   register,
   className,
 }: Props) => {
+  const ref = useRef<HTMLInputElement | null>(null);
+
   function handleOnKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (
       e.key !== 'Backspace' &&
@@ -33,10 +36,18 @@ const NumericInputReactHookForm = ({
 
   const classes = ' ' + className;
 
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.focus();
+    }
+  });
+
   return (
     <input
+      tabIndex={5}
       type="text"
       maxLength={10}
+      ref={ref}
       inputMode="decimal"
       {...register}
       readOnly={readOnly}
