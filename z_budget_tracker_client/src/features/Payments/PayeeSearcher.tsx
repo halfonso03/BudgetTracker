@@ -8,8 +8,9 @@ import {
 import { usePayeeSearch } from '../../api/hooks/payees/usePayeeSearch';
 import ScrollableDiv from '../../components/ScrollableDiv';
 import useSelectedPayeeInfo from '../../api/hooks/payments/useSelectedPayeeInfo';
-import { Info, X } from 'lucide-react';
 import InfoModal from './modals/InfoModal';
+import { usePayeePayments } from '../../api/hooks/payees/usePayeePayments';
+import SelectedPayeeCard from './SelectedPayeeCard';
 
 type Props = {
   onPayeeSelected: (payee: Payee) => void;
@@ -25,13 +26,12 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
   const [highlightedRow, setHighlightedRow] = useState(-1);
   const [selectedPayee, setSelectedPayee] = useState<Payee | null>(null);
   const [searching, setSearching] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(-1);
+
+  usePayeePayments(selectedPayee?.id ?? 0);
 
   const { data: suggestions, isFetching } = usePayeeSearch(query);
   const { data: selectedPayeeInfo } = useSelectedPayeeInfo(
-    suggestions && suggestions.length && selectedRow > -1 && !searching
-      ? suggestions[selectedRow].id
-      : undefined,
+    selectedPayee ? selectedPayee.id : 0,
   );
 
   console.log('data', selectedPayeeInfo);
@@ -60,7 +60,6 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
         selectRow(1);
       } else if (event.key === 'Enter') {
         if (suggestions && suggestions.length) {
-          setSelectedRow(highlightedRow);
           setSelectedPayee(suggestions[highlightedRow]);
           setSearching(false);
           setHighlightedRow(-1);
@@ -80,11 +79,12 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
   }, [highlightedRow, onPayeeSelected, selectRow, suggestions]);
 
   function onRemoveSelection() {
-    setSelectedRow(-1);
+    // setSelectedRow(-1);
     setSelectedPayee(null);
     setSearching(false);
   }
 
+  console.log('selectedPayeeInfo', selectedPayeeInfo);
   return (
     <div>
       {/* selectedRow: {selectedRow}
@@ -97,46 +97,14 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
       <div
         className={` p-1 rounded-sm ${inputFocused ? 'border border-blue-500' : 'border border-neutral-300'}`}
       >
-        {selectedPayee && (
-          <div className="flex items-center shadow-md  gap-1 bg-neutral-200/70 rounded-sm">
-            <div
-              className="cursor-pointer p-2 text-neutral-600 self-stretch hover:text-neutral-900 hover:bg-neutral-100"
-              onClick={onRemoveSelection}
-            >
-              <X size={16}></X>
-            </div>
-            <div className="flex-1 p-1">
-              <div className="text-neutral-700 font-medium">
-                <div className="flex justify-between">
-                  {selectedPayee?.name}
-                  <div
-                    className="text-neutral-500 cursor-pointer"
-                    onClick={() => setInfoWindowIsOpen(true)}
-                  >
-                    <Info size={18}></Info>
-                  </div>
-                </div>
-              </div>
-              <div className="text-neutral-500 text-[.95rem]">
-                [Payee Type:{' '}
-                <span className="text-neutral-700">
-                  {selectedPayee?.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}]
-                </span>
-                <br></br>
-                [Charge Account:{' '}
-                <span className="text-neutral-700">
-                  {selectedPayee.categoryName +
-                    ' - ' +
-                    selectedPayee.accountName}
-                </span>
-                ]<br></br>
-                [Last Payment:{' '}
-                <span className="text-neutral-700">10/10/2026 - $1,234</span>]
-              </div>
-            </div>
-          </div>
+        {selectedPayee && selectedPayeeInfo && (
+          <SelectedPayeeCard
+            selectedPayee={selectedPayee}
+            selectedPayeeInfo={selectedPayeeInfo}
+            onRemoveSelection={onRemoveSelection}
+            onOpenInfoWindow={() => setInfoWindowIsOpen(true)}
+          ></SelectedPayeeCard>
         )}
-
         <input
           ref={inputRef}
           value={query}
@@ -155,7 +123,7 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
           }}
         ></input>
       </div>
-      <div className='relative bg-white opacity-100'>
+      <div className="relative bg-white opacity-100">
         <div className="w-full rounded-sm pt-1 absolute">
           {suggestions && suggestions.length && searching && (
             <ScrollableDiv className="relative bg-white border border-neutral-300/55 rounded-sm w-full shadow-md ">
@@ -164,32 +132,17 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
                 <div
                   key={index}
                   className={`${highlightedRow === index ? 'bg-neutral-200' : ''} 
-                      px-1 pl-2 flex py-2 justify-between items-center border-b border-b-neutral-300/55 last:border-b-0 
-                      text-neutral-800 dark:text-neutral-300`}
+                      px-1 pl-2 flex py-1  justify-between items-center border-b border-b-neutral-300/55 last:border-b-0 
+                       dark:text-neutral-300`}
                 >
-                  <div className="p-1 w-full">
-                    <div className="font-medium">{item.name}</div>
-                    <div className="flex gap-2 items-center w-full  ">
-                      {/* <div className="flex items-center gap-1 text-sm ">
-                        <div className="pl-1 text-neutral-500 font-medium tracking-wider">
-                          Lasy Payment:
-                        </div>
-                        <div className="font-medium text-neutral-600">
-                          12/12/2026
-                        </div>
-                      </div> */}
-
-                      <div className="flex  items-center gap-1 text-sm">
-                        <div className="pl-1 text-neutral-500 font-medium tracking-wider">
-                          Type:
-                        </div>
-                        <div className="font-medium text-neutral-600">
-                          {item.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}
-                        </div>
+                  <div className="p-1 w-full font-medium">
+                    <div>{item.name}</div>
+                    <div className="grid grid-cols-[.4fr_1fr] w-full text-[.9rem]  ">
+                      <div className="pl-1 text-neutral-500  ">Type:</div>
+                      <div className="font-medium text-neutral-700">
+                        {item.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}
                       </div>
-                    </div>
-                    <div className="w-full flex text-sm gap-1">
-                      <div className="pl-1 text-neutral-500 font-medium tracking-wider">
+                      <div className="pl-1 text-neutral-500 ">
                         Charge Account:
                       </div>
                       <div className='font-medium text-neutral-600"'>
@@ -197,20 +150,6 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
                       </div>
                     </div>
                   </div>
-
-                  {/* <button
-              type="button"
-              disabled={item.added || item.existing}
-              className={
-                item.existing && !item.added
-                  ? `bg-neutral-300 dark:bg-neutral-800   text-sm p-1 flex items-center mr-2 opacity-20 `
-                  : `bg-green-500 dark:bg-green-600 ` +
-                    ` p-1 mr-2 text-neutral-50 dark:text-neutral-200 text-sm cursor-pointer flex items-center justify-between rounded-sm  disabled:cursor-not-allowed disabled:opacity-60`
-              }
-              onClick={() => onAddUserToRole(item)}
-            >
-              Add Group
-            </button> */}
                 </div>
               ))}
             </ScrollableDiv>
@@ -219,6 +158,7 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
       </div>
 
       <InfoModal
+        payeeId={selectedPayee?.id}
         isOpen={infoWindowIsOpen}
         onCancel={() => {
           setInfoWindowIsOpen(false);

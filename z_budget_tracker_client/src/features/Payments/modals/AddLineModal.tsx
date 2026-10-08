@@ -1,17 +1,17 @@
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import useCategories from '../../../api/hooks/common/useCategories';
 import useGrants from '../../../api/hooks/common/useGrants';
 import useInitiatives from '../../../api/hooks/common/useInitiatives';
 import { formatCurrency } from '../../../app/util';
 import Button from '../../../components/Button';
-import Modal2 from '../../../components/Modal2';
 import Select from '../../../components/Select';
 import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailableAccountBalances';
-import Search from '../../../components/Search';
 import PayeeSearcher from '../PayeeSearcher';
 import TallModal from '../../../components/TallModal';
 import Input from '../../../components/Input';
 import { Asterisk } from 'lucide-react';
+import { usePayeePayments } from '../../../api/hooks/payees/usePayeePayments';
+import { PaginationContextProvider } from '../../../contexts/pagination/PaginationContextProvider';
 
 type Selections = {
   initiativeId?: number;
@@ -131,154 +131,159 @@ const AddLineModal = ({ ...props }: Props) => {
   }
 
   return (
-    <TallModal
-      size="lg"
-      title="Add a Payment"
-      animateOut={animateOut}
-      {...props}
-    >
-      <div className="flex flex-col justify-between  h-full">
-        <div>
-          <div className="relative flex gap-2 items-center mb-2   ">
-            <div className="grid grid-cols-[.25fr_1fr_.5fr] items-center w-full">
-              <div className="text-neutral-600/90 font-medium">Payee</div>
-              <PayeeSearcher
-                onPayeeSelected={handlePayeeSelected}
-              ></PayeeSearcher>
-              <div></div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-[.25fr_1fr_.5fr] w-full mt-10 items-center  mb-5">
-            <div className="text-neutral-600/90 font-medium">Category</div>
-            <Select
-              additionalclasses={`${selections?.categoryId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
-              value={selections?.categoryId}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                if (+e.target.value !== 0) {
-                  setSelections((prev) => ({
-                    ...prev,
-                    categoryId: +e.target.value,
-                  }));
-
-                  if (categories) {
-                    setAccounts(
-                      categories
-                        .filter((x) => x.id === +e.target.value)[0]
-                        .accounts!.map((a) => ({
-                          id: a.id,
-                          name: a.name,
-                          number: '',
-                          category_id: 0,
-                        })),
-                    );
-                  }
-                }
-              }}
-            >
-              {categories?.map((i) => (
-                <option value={i.id} key={i.id} className="text-neutral-900">
-                  {i.name}
-                </option>
-              ))}
-            </Select>
-          </div>
-          <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full items-center mb-5">
-            <div className="text-neutral-600/90 font-medium">Account</div>
-            <Select
-              additionalclasses={`${selections?.accountId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
-              value={selections?.accountId}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                if (+e.target.value !== 0) {
-                  setSelections((prev) => ({
-                    ...prev,
-                    accountId: +e.target.value,
-                  }));
-                }
-              }}
-            >
-              {accounts?.map((i) => (
-                <option value={i.id} key={i.id} className="text-neutral-900">
-                  {i.name}
-                </option>
-              ))}
-            </Select>
-          </div>
-
-          <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full items-center mb-5">
-            <div className="text-neutral-600/90 font-medium">Initiative</div>
-            <Select
-              value={selections?.initiativeId}
-              additionalclasses={`${selections?.initiativeId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                if (+e.target.value !== 0) {
-                  setSelections((prev) => ({
-                    ...prev,
-                    initiativeId: +e.target.value,
-                  }));
-                }
-              }}
-            >
-              <option value={0} className="text-neutral-600">
-                Select...
-              </option>
-              {initiatives?.map((i) => (
-                <option value={i.id} key={i.id} className="text-neutral-900">
-                  {i.name}
-                </option>
-              ))}
-            </Select>
-          </div>
-
-          <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full items-center mb-10">
-            <div className="text-neutral-600/90 font-medium">Grant</div>
-            <Select
-              additionalclasses={`${selections?.grantId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
-              value={selections?.grantId}
-              disabled={!selections?.initiativeId}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                if (+e.target.value !== 0) {
-                  setSelections((prev) => ({
-                    ...prev,
-                    grantId: +e.target.value,
-                  }));
-                }
-              }}
-            >
-              <option value={0} className="text-neutral-600">
-                Select...
-              </option>
-              {grants?.map((i) => (
-                <option value={i.id} key={i.id} className="text-neutral-900">
-                  {i.name}
-                </option>
-              ))}
-            </Select>
-          </div>
-
-          <div className="grid grid-cols-[.40fr_.85fr_.5fr]  w-full items-center mb-5">
-            <div className="text-neutral-600/90 font-medium">Available</div>
-            <div className="font-semibold pl-1">{formatCurrency(10998.09)}</div>
-          </div>
-
-          <div className="grid grid-cols-[.40fr_.85fr_.5fr]  w-full items-center mb-5">
-            <div className="text-neutral-600/90 font-medium">
-              <div className="flex items-baseline gap-2">
-                Payment Amount
-                <Asterisk className="text-red-500" size={14}></Asterisk>
+    <PaginationContextProvider>
+      <TallModal
+        size="lg"
+        title="Add a Payment"
+        animateOut={animateOut}
+        {...props}
+      >
+        <div className="flex flex-col justify-between h-full">
+          <div>
+            <div className="relative flex gap-2 items-center mb-2   ">
+              <div className="grid grid-cols-[.25fr_1fr_.5fr] items-center w-full">
+                <div className="text-neutral-600/90 font-medium">Payee</div>
+                <PayeeSearcher
+                  onPayeeSelected={handlePayeeSelected}
+                ></PayeeSearcher>
+                <div></div>
               </div>
             </div>
-            <Input></Input>
-          </div>
 
-          <div className="grid grid-cols-[.40fr_.85fr_.5fr] w-full items-center mb-5">
-            <div className="text-neutral-600/90 font-medium">Remaining</div>
+            <div className="grid grid-cols-[.25fr_1fr_.5fr] w-full mt-10 items-center  mb-5">
+              <div className="text-neutral-600/90 font-medium">Category</div>
+              <Select
+                additionalclasses={`${selections?.categoryId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
+                value={selections?.categoryId}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                  if (+e.target.value !== 0) {
+                    setSelections((prev) => ({
+                      ...prev,
+                      categoryId: +e.target.value,
+                    }));
 
-            <div className="font-semibold pl-1">{formatCurrency(10998.09)}</div>
-          </div>
+                    if (categories) {
+                      setAccounts(
+                        categories
+                          .filter((x) => x.id === +e.target.value)[0]
+                          .accounts!.map((a) => ({
+                            id: a.id,
+                            name: a.name,
+                            number: '',
+                            category_id: 0,
+                          })),
+                      );
+                    }
+                  }
+                }}
+              >
+                {categories?.map((i) => (
+                  <option value={i.id} key={i.id} className="text-neutral-900">
+                    {i.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+            <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full items-center mb-5">
+              <div className="text-neutral-600/90 font-medium">Account</div>
+              <Select
+                additionalclasses={`${selections?.accountId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
+                value={selections?.accountId}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                  if (+e.target.value !== 0) {
+                    setSelections((prev) => ({
+                      ...prev,
+                      accountId: +e.target.value,
+                    }));
+                  }
+                }}
+              >
+                {accounts?.map((i) => (
+                  <option value={i.id} key={i.id} className="text-neutral-900">
+                    {i.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
 
-          <div>
-            {/* <div className="grid grid-cols-[.7fr_1fr] mb-4 gap-4">
+            <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full items-center mb-5">
+              <div className="text-neutral-600/90 font-medium">Initiative</div>
+              <Select
+                value={selections?.initiativeId}
+                additionalclasses={`${selections?.initiativeId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                  if (+e.target.value !== 0) {
+                    setSelections((prev) => ({
+                      ...prev,
+                      initiativeId: +e.target.value,
+                    }));
+                  }
+                }}
+              >
+                <option value={0} className="text-neutral-600">
+                  Select...
+                </option>
+                {initiatives?.map((i) => (
+                  <option value={i.id} key={i.id} className="text-neutral-900">
+                    {i.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full items-center mb-10">
+              <div className="text-neutral-600/90 font-medium">Grant</div>
+              <Select
+                additionalclasses={`${selections?.grantId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
+                value={selections?.grantId}
+                disabled={!selections?.initiativeId}
+                onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                  if (+e.target.value !== 0) {
+                    setSelections((prev) => ({
+                      ...prev,
+                      grantId: +e.target.value,
+                    }));
+                  }
+                }}
+              >
+                <option value={0} className="text-neutral-600">
+                  Select...
+                </option>
+                {grants?.map((i) => (
+                  <option value={i.id} key={i.id} className="text-neutral-900">
+                    {i.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-[.40fr_.85fr_.5fr]  w-full items-center mb-5">
+              <div className="text-neutral-600/90 font-medium">Available</div>
+              <div className="font-semibold pl-1">
+                {formatCurrency(10998.09)}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-[.40fr_.85fr_.5fr]  w-full items-center mb-5">
+              <div className="text-neutral-600/90 font-medium">
+                <div className="flex items-baseline gap-2">
+                  Payment Amount
+                  <Asterisk className="text-red-500" size={14}></Asterisk>
+                </div>
+              </div>
+              <Input></Input>
+            </div>
+
+            <div className="grid grid-cols-[.40fr_.85fr_.5fr] w-full items-center mb-5">
+              <div className="text-neutral-600/90 font-medium">Remaining</div>
+
+              <div className="font-semibold pl-1">
+                {formatCurrency(10998.09)}
+              </div>
+            </div>
+
+            <div>
+              {/* <div className="grid grid-cols-[.7fr_1fr] mb-4 gap-4">
 
         <div>
           {balances && (
@@ -333,27 +338,28 @@ const AddLineModal = ({ ...props }: Props) => {
           )}
         </div>
       </div> */}
+            </div>
+          </div>
+
+          <div className="flex justify-end">
+            {/* <Button onClick={() => {}}>Save</Button> */}
+            <Button
+              variation="secondary"
+              onClick={() => {
+                props.onCancel();
+                setAnimateOut(true);
+                setTimeout(() => {
+                  setSelections(null);
+                  setAnimateOut(false);
+                }, 500);
+              }}
+            >
+              Cancel
+            </Button>
           </div>
         </div>
-
-        <div className="flex justify-end">
-          {/* <Button onClick={() => {}}>Save</Button> */}
-          <Button
-            variation="secondary"
-            onClick={() => {
-              props.onCancel();
-              setAnimateOut(true);
-              setTimeout(() => {
-                setSelections(null);
-                setAnimateOut(false);
-              }, 500);
-            }}
-          >
-            Cancel
-          </Button>
-        </div>
-      </div>
-    </TallModal>
+      </TallModal>
+    </PaginationContextProvider>
   );
 };
 export default AddLineModal;

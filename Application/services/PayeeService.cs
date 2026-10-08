@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Drawing;
+using System.Runtime.InteropServices.Marshalling;
 using Application.Core;
 using Application.DTOs.Payee;
 using Application.DTOs.Payees;
@@ -192,7 +193,7 @@ namespace Application.Services
             {
                 var result = await dbContext.Payees
                                 .Include(x => x.Account)
-                                    .ThenInclude(x => x.Category)
+                                    .ThenInclude(x => x!.Category)
                                 .Where(x => x.Name.StartsWith(filter.Trim()))
                                 .Select(x => new PayeeSearchPayeeResponseDto
                                 {
@@ -215,6 +216,19 @@ namespace Application.Services
 
         public async Task<Result<PayeeSearchPayeeResponseDto?>> GetPayee(int payeeId)
         {
+
+            DateTime? lastPaymentDate = null;
+            decimal? totalPaid = null;
+            decimal? lastPaymentAmount = null;
+
+
+            if (await dbContext.DisbLineItems.AnyAsync(x => x.PayeeId == payeeId))
+            {
+                lastPaymentDate = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).MaxAsync(x => x.EntryDate);
+                totalPaid = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).SumAsync(x => x.Amount);
+                lastPaymentAmount = (await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).OrderBy(x => x.EntryDate).LastOrDefaultAsync())?.Amount ;
+            }
+
             var result = await dbContext.Payees
                                .Include(x => x.Account)
                                .Where(x => x.Id == payeeId)
@@ -225,7 +239,10 @@ namespace Application.Services
                                    AccountId = x.AccountId,
                                    CategoryId = x.Account!.CategoryId,
                                    IsActive = x.IsActive,
-                                   PayeeTypeId = (int)x.PayeeTypeId
+                                   PayeeTypeId = (int)x.PayeeTypeId,
+                                   LastPaymentAmount = lastPaymentAmount,
+                                   LastPaymentDate = lastPaymentDate,
+                                   TotalPaid = totalPaid
                                }).SingleOrDefaultAsync();
 
             if (result == null)
