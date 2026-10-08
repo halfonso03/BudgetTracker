@@ -28,6 +28,7 @@ namespace Application.DTOs.Payees
         public decimal? TotalPaid { get; set; }
         public int PayeeTypeId { get; set; }
         public string? AdditionalInformation { get; set; }
+        public string? CategoryName { get; set; }
 
 
 

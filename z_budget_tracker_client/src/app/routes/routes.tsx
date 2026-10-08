@@ -28,7 +28,7 @@ export const routes: RouteObject[] = [
         path: '/',
         element: (
           <ProtectedRoute>
-            <Home></Home>
+            <PaymentLanding></PaymentLanding>
           </ProtectedRoute>
         ),
       },

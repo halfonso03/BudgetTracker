@@ -193,14 +193,18 @@ namespace Application.Services
                 var result = await dbContext.Payees
                                 .Include(x => x.Account)
                                     .ThenInclude(x => x.Category)
-                                .Where(x => x.Name.StartsWith(filter))
+                                .Where(x => x.Name.StartsWith(filter.Trim()))
                                 .Select(x => new PayeeSearchPayeeResponseDto
                                 {
                                     Id = x.Id,
                                     Name = x.Name,
                                     AccountId = x.AccountId,
                                     CategoryId = x.Account!.CategoryId,
-                                    IsActive = x.IsActive
+                                    IsActive = x.IsActive,
+                                    AccountName = x.Account.Name,
+                                    PayeeTypeId = (int)x.PayeeTypeId,
+                                    AdditionalInformation = x.AdditionalInformation,
+                                    CategoryName = x.Account.Category != null ? x.Account.Category.Name : ""
                                 }).ToListAsync();
 
                 return Result<List<PayeeSearchPayeeResponseDto>>.Success(result);

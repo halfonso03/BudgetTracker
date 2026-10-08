@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from 'react';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import useCategories from '../../../api/hooks/common/useCategories';
 import useGrants from '../../../api/hooks/common/useGrants';
 import useInitiatives from '../../../api/hooks/common/useInitiatives';
@@ -10,6 +10,8 @@ import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailabl
 import Search from '../../../components/Search';
 import PayeeSearcher from '../PayeeSearcher';
 import TallModal from '../../../components/TallModal';
+import Input from '../../../components/Input';
+import { Asterisk } from 'lucide-react';
 
 type Selections = {
   initiativeId?: number;
@@ -33,9 +35,28 @@ type Props = {
 const AddLineModal = ({ ...props }: Props) => {
   const [selections, setSelections] = useState<Selections | null>(null);
   const [animateOut, setAnimateOut] = useState(false);
+  const [payee, setPayee] = useState<Payee | null>(null);
   const { grants } = useGrants(props.year, props.isOpen);
   const { initiatives } = useInitiatives(props.isOpen);
-  const { categories } = useCategories(props.isOpen);
+  const { categories, catSuccess } = useCategories(props.isOpen);
+
+  const [accounts, setAccounts] = useState<Account[]>([]);
+
+  if (accounts.length === 0) {
+    setAccounts(
+      catSuccess && categories?.length && categories[0].accounts
+        ? categories[0].accounts.map((a) => ({
+            id: a.id,
+            name: a.name,
+            number: '',
+            category_id: 0,
+          }))
+        : [],
+    );
+  }
+
+  console.log('categories', categories);
+  console.log('accounts', accounts);
 
   const { data: balances } = useAvailableAccountBalances(
     selections?.initiativeId,
@@ -89,29 +110,82 @@ const AddLineModal = ({ ...props }: Props) => {
     }
   }
 
+  function handlePayeeSelected(payee: Payee) {
+    setPayee(payee);
+    setSelections((prev) => ({
+      ...prev,
+      categoryId: payee.categoryId,
+    }));
+    setAccounts((prev) => {
+      return categories?.filter((x) => x.id === payee.categoryId)[0].accounts;
+    });
+  }
+
   return (
     <TallModal
       size="lg"
-      title="Add a New Line"
+      title="Add a Payment"
       animateOut={animateOut}
       {...props}
     >
       <div className="flex flex-col justify-between  h-full">
         <div>
           <div className="relative flex gap-2 items-center mb-2   ">
-            <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full">
-              <div>Payee</div>
-              <PayeeSearcher></PayeeSearcher>
+            <div className="grid grid-cols-[.25fr_1fr_.5fr] items-center w-full">
+              <div className="text-neutral-600/90 font-medium">Payee</div>
+              <PayeeSearcher
+                onPayeeSelected={handlePayeeSelected}
+              ></PayeeSearcher>
+              <div></div>
             </div>
           </div>
-          <div>d</div>
 
-          {/* comments */}
-          <div>
-            {/* <div className="grid grid-cols-[.7fr_1fr] mb-4 gap-4">
-        <div className="flex flex-col gap-9">
-          <div>
-            <div className="entity-label">Select an Initiative</div>
+          <div className="grid grid-cols-[.25fr_1fr_.5fr] w-full mt-10 items-center  mb-5">
+            <div className="text-neutral-600/90 font-medium">Category</div>
+            <Select
+              additionalclasses={`${selections?.categoryId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
+              value={selections?.categoryId}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                if (+e.target.value !== 0) {
+                  setSelections((prev) => ({
+                    ...prev,
+                    categoryId: +e.target.value,
+                  }));
+                }
+              }}
+            >
+              {categories?.map((i) => (
+                <option value={i.id} key={i.id} className="text-neutral-900">
+                  {i.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full items-center mb-5">
+            <pre>{JSON.stringify(accounts)}</pre>
+            <div className="text-neutral-600/90 font-medium">Account</div>
+            <Select
+              additionalclasses={`${selections?.accountId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
+              value={selections?.accountId}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                if (+e.target.value !== 0) {
+                  setSelections((prev) => ({
+                    ...prev,
+                    accountId: +e.target.value,
+                  }));
+                }
+              }}
+            >
+              {accounts?.map((i) => (
+                <option value={i.id} key={i.id} className="text-neutral-900">
+                  {i.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+
+          <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full items-center mb-5">
+            <div className="text-neutral-600/90 font-medium">Initiative</div>
             <Select
               value={selections?.initiativeId}
               additionalclasses={`${selections?.initiativeId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
@@ -134,8 +208,9 @@ const AddLineModal = ({ ...props }: Props) => {
               ))}
             </Select>
           </div>
-          <div>
-            <div className="entity-label">Select a Grant</div>
+
+          <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full items-center mb-10">
+            <div className="text-neutral-600/90 font-medium">Grant</div>
             <Select
               additionalclasses={`${selections?.grantId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
               value={selections?.grantId}
@@ -159,32 +234,30 @@ const AddLineModal = ({ ...props }: Props) => {
               ))}
             </Select>
           </div>
-          <div>
-            <div className="entity-label">Select a Category</div>
-            <Select
-              additionalclasses={`${selections?.categoryId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
-              value={selections?.categoryId}
-              disabled={!selections?.grantId}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                if (+e.target.value !== 0) {
-                  setSelections((prev) => ({
-                    ...prev,
-                    categoryId: +e.target.value,
-                  }));
-                }
-              }}
-            >
-              <option value={0} className="text-neutral-600">
-                Select...
-              </option>
-              {categories?.map((i) => (
-                <option value={i.id} key={i.id} className="text-neutral-900">
-                  {i.name}
-                </option>
-              ))}
-            </Select>
+
+          <div className="grid grid-cols-[.40fr_.85fr_.5fr]  w-full items-center mb-5">
+            <div className="text-neutral-600/90 font-medium">Available</div>
+            <div className="font-semibold pl-1">{formatCurrency(10998.09)}</div>
           </div>
-        </div>
+
+          <div className="grid grid-cols-[.40fr_.85fr_.5fr]  w-full items-center mb-5">
+            <div className="text-neutral-600/90 font-medium">
+              <div className="flex items-baseline gap-2">
+                Payment Amount
+                <Asterisk className="text-red-500" size={14}></Asterisk>
+              </div>
+            </div>
+            <Input></Input>
+          </div>
+
+          <div className="grid grid-cols-[.40fr_.85fr_.5fr] w-full items-center mb-5">
+            <div className="text-neutral-600/90 font-medium">Remaining</div>
+
+            <div className="font-semibold pl-1">{formatCurrency(10998.09)}</div>
+          </div>
+
+          <div>
+            {/* <div className="grid grid-cols-[.7fr_1fr] mb-4 gap-4">
 
         <div>
           {balances && (

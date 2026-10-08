@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '../../components/Button';
 import { Search } from 'lucide-react';
 import ChooseYearModal from '../Common/modals/ChooseYearModal';
@@ -20,7 +20,7 @@ const PaymentControls = ({
 }: Props) => {
   // console.log('ReproControls render');
 
-  const [choosingYear, setChoosingYear] = useState(false);
+  const [choosingYear, setChoosingYear] = useState(true);
   const [newReproJustification, setNewReproJustification] = useState('');
   // const [confirmLooseChangesModalIsOpen, setConfirmLooseChangesModalIsOpen] =
   //   useState(false);
@@ -52,6 +52,7 @@ const PaymentControls = ({
   //     setConfirmDuplicateModalIsOpen(true);
   //   }
   // }
+
 
   return (
     <>

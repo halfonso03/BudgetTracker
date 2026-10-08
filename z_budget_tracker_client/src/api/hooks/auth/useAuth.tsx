@@ -58,7 +58,7 @@ export default function useAccount() {
         queryKey: ['user'],
       });
       login(response);
-      navigate('/', { replace: true });
+      navigate('/payments', { replace: true });
     },
     onError: (error: AxiosError) => {
       if (error.response) {
