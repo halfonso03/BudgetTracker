@@ -145,7 +145,7 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
                   <div className="p-1 w-full font-medium">
                     <div>{item.name}</div>
                     <div className="grid grid-cols-[.5fr_1fr] w-full text-[.9rem]  ">
-                      <div className="pl-1 text-neutral-600  ">[Payee Type:</div>
+                      <div className="pl-1 text-neutral-500  ">[Payee Type:</div>
                       <div className="font-medium text-neutral-900">
                         {item.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}]
                       </div>

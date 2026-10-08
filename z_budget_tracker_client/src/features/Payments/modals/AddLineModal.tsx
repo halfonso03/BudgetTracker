@@ -44,6 +44,7 @@ const AddLineModal = ({ ...props }: Props) => {
   const { grants } = useGrants(props.year, props.isOpen);
   const { initiatives } = useInitiatives(props.isOpen);
   const { categories, catSuccess } = useCategories(props.isOpen);
+  let availableAmount = 0;
 
   const [accounts, setAccounts] = useState<Account[]>([]);
   const {
@@ -79,12 +80,18 @@ const AddLineModal = ({ ...props }: Props) => {
     setAccounts(accounts);
   }
   const { data } = useAvailableAccountBalances(
-    getValues('initiativeId'),
-    getValues('grantId'),
-    getValues('categoryId'),
+    selections?.initiativeId ?? 0,
+    selections?.grantId ?? 0,
+    selections?.categoryId ?? 0,
   );
 
-  console.log(getValues('grantId'));
+  console.log('balances', data);
+
+  if (data) {
+    console.log(getValues('accountId'));
+  }
+  console.log('payee', payee);
+
   useEffect(() => {
     if (accounts && accounts.length) {
       if (payee && accounts.some((x) => x.id === payee.accountId)) {
@@ -94,20 +101,19 @@ const AddLineModal = ({ ...props }: Props) => {
         );
       }
     }
-
+    console.log(+getValues('amount'));
     if (!payee) {
       reset();
-      setValue('amount', '0.00')
+      setValue('amount', '0.00');
+      setValue('initiativeId', 0);
     }
-  }, [accounts, payee, reset, setValue]);
+  }, [accounts, getValues, payee, reset, setValue]);
 
   // const { data: balances } = useAvailableAccountBalances(
   //   selections?.initiativeId,
   //   selections?.grantId,
   //   selections?.categoryId,
   // );
-
-  console.log('balances', data);
   // function onLineAdded(account: PaymentAvailableAccountBalance) {
   //   setSelections(null);
   //   setAnimateOut(true);
@@ -191,7 +197,6 @@ const AddLineModal = ({ ...props }: Props) => {
     console.log(+getValues('amount'));
     const formatted = formatNumber(+getValues('amount'));
     setValue('amount', formatted);
-    console.log('13');
   }
 
   return (
@@ -259,7 +264,7 @@ const AddLineModal = ({ ...props }: Props) => {
                               category_id: 0,
                             }));
                           setAccounts(accounts);
-                          setValue('accountId', accounts[0].id);
+                          setValue('accountId', 0);
                         }
                       }
                     }}
@@ -318,7 +323,18 @@ const AddLineModal = ({ ...props }: Props) => {
                     Initiative
                   </div>
 
-                  <Select {...register('initiativeId')} tabIndex={3}>
+                  <Select
+                    {...register('initiativeId')}
+                    tabIndex={3}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      if (+e.target.value !== 0) {
+                        setSelections((prev) => ({
+                          ...prev,
+                          initiativeId: +e.target.value,
+                        }));
+                      }
+                    }}
+                  >
                     <option value={0} className="text-neutral-600">
                       Select...
                     </option>
@@ -341,7 +357,18 @@ const AddLineModal = ({ ...props }: Props) => {
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-10">
                   <div className="text-neutral-600/90 font-medium">Grant</div>
-                  <Select {...register('grantId')} tabIndex={5}>
+                  <Select
+                    {...register('grantId')}
+                    tabIndex={5}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      if (+e.target.value !== 0) {
+                        setSelections((prev) => ({
+                          ...prev,
+                          grantId: +e.target.value,
+                        }));
+                      }
+                    }}
+                  >
                     <option value={0} className="text-neutral-600">
                       Select...
                     </option>
@@ -364,7 +391,7 @@ const AddLineModal = ({ ...props }: Props) => {
                 <PaymentEntryInput
                   error={errors?.amount}
                   register={register('amount')}
-                  available={0}
+                  available={availableAmount}
                   onBlur={handleInputEntryOnBlur}
                 ></PaymentEntryInput>
               </div>
@@ -376,10 +403,17 @@ const AddLineModal = ({ ...props }: Props) => {
                 variation="secondary"
                 onClick={() => {
                   props.onCancel();
+
                   setAnimateOut(true);
                   setTimeout(() => {
                     setSelections(null);
                     setAnimateOut(false);
+                    setSelections({
+                      initiativeId: 0,
+                      categoryId: 0,
+                      grantId: 0,
+                    });
+                    reset();
                   }, 500);
                 }}
               >
