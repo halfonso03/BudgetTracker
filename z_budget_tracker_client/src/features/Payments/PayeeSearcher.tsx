@@ -95,20 +95,22 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
       <br></br>
       selectedPayee name: {selectedPayee?.name} */}
       <div
-        className={` p-1 rounded-sm ${inputFocused ? 'border border-blue-500' : 'border border-neutral-300'}`}
+        className={`pl-1 pt-1 rounded-sm ${inputFocused ? 'border border-blue-500' : 'border border-neutral-300'}`}
       >
         {selectedPayee && selectedPayeeInfo && (
-          <SelectedPayeeCard
-            selectedPayee={selectedPayee}
-            selectedPayeeInfo={selectedPayeeInfo}
-            onRemoveSelection={onRemoveSelection}
-            onOpenInfoWindow={() => setInfoWindowIsOpen(true)}
-          ></SelectedPayeeCard>
+          <div className='mb-2'>
+            <SelectedPayeeCard
+              selectedPayee={selectedPayee}
+              selectedPayeeInfo={selectedPayeeInfo}
+              onRemoveSelection={onRemoveSelection}
+              onOpenInfoWindow={() => setInfoWindowIsOpen(true)}
+            ></SelectedPayeeCard>
+          </div>
         )}
         <input
           ref={inputRef}
           value={query}
-          className=' py-2 px-2 w-full rounded-sm text-neutral-800 placeholder-neutral-400 focus:outline-none  transition-all"
+          className='p-2 w-full rounded-sm text-neutral-800 placeholder-neutral-400 focus:outline-none  transition-all"
               placeholder="Enter a search term and presss enter..."'
           placeholder="Enter payee name..."
           onFocus={() => {

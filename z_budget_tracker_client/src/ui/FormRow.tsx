@@ -53,7 +53,7 @@ const FormRow: FC<FormRowProps> = ({
   return (
     <StyledFormRow className={className}>
       {label && (
-        <div className='self-start pr-3 text-neutral-700'>
+        <div className="self-start pr-3 text-neutral-700">
           <Label
             htmlFor={id}
             style={{
@@ -65,7 +65,7 @@ const FormRow: FC<FormRowProps> = ({
           </Label>
         </div>
       )}
-      <div >{children}</div>
+      <div>{children}</div>
       <div className="pl-2">
         {error && useMessage && <Error>{error.toString()}</Error>}
         {error && !useMessage && (

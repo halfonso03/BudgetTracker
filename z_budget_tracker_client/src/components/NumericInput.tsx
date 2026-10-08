@@ -2,17 +2,15 @@ import type { UseFormRegisterReturn } from 'react-hook-form';
 
 interface Props {
   readOnly?: boolean;
-  disabled?: boolean;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
-  register?: UseFormRegisterReturn<`rows.${number}.amount`>;
+  register?: UseFormRegisterReturn<string>;
   className?: string;
 }
 
-const NumericInput = ({
+const NumericInputReactHookForm = ({
   readOnly = true,
-  disabled = true,
   onBlur = () => {},
   onFocus = () => {},
   onClick = () => {},
@@ -33,7 +31,7 @@ const NumericInput = ({
     }
   }
 
-  const classes = ' w-35 border text-end  ' + className;
+  const classes = ' ' + className;
 
   return (
     <input
@@ -42,7 +40,6 @@ const NumericInput = ({
       inputMode="decimal"
       {...register}
       readOnly={readOnly}
-      disabled={disabled}
       className={classes}
       onFocus={onFocus}
       onBlur={onBlur}
@@ -51,4 +48,4 @@ const NumericInput = ({
     />
   );
 };
-export default NumericInput;
+export default NumericInputReactHookForm;

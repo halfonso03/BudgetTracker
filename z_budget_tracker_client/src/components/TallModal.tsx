@@ -38,15 +38,18 @@ const TallModal = ({
 
   let modalStyles = '';
 
-  if (size === 'sm') {
-    modalStyles += 'min-w-xl max-w-xl ';
-  } else if (size === 'md') {
+  // if (size === 'sm') {
+  //   modalStyles += 'min-w-xl max-w-xl ';
+  // } else if (size === 'md') {
+  //   modalStyles += 'min-w-2xl max-w-2xl ';
+  // } else
+
+  if (size === 'lg') {
     modalStyles += 'min-w-2xl max-w-2xl ';
-  } else if (size === 'lg') {
-    modalStyles += 'min-w-4xl max-w-4xl ';
-  } else if (size === 'xl') {
-    modalStyles += 'min-w-5xl max-w-5xl  ';
   }
+  // else if (size === 'xl') {
+  //   modalStyles += 'min-w-5xl max-w-5xl  ';
+  // }
 
   return createPortal(
     // body
@@ -68,7 +71,7 @@ const TallModal = ({
             <X className="text-gray-500 hover:text-gray-700 dark:text-neutral-300 dark:hover:text-neutral-100 transition-all duration-200"></X>
           </button>
         </div>
-        <div className="p-2 px-4 h-[80dvh]">{children}</div>
+        <div className=" h-[80dvh]">{children}</div>
       </div>
     </div>,
     document.body, // The target DOM container
