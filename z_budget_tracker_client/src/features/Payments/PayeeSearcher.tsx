@@ -14,10 +14,10 @@ import SelectedPayeeCard from './SelectedPayeeCard';
 
 type Props = {
   onPayeeSelected: (payee: Payee) => void;
-  onPayeeSelectionRemoved: () => void;
+  onPayeeSelectionCleared: () => void;
 };
 
-const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionRemoved }: Props) => {
+const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputFocused, stInputFocused] = useState(false);
   const [query, setQuery] = useState<string>(() => '');
@@ -34,8 +34,6 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionRemoved }: Props) => {
   const { data: selectedPayeeInfo } = useSelectedPayeeInfo(
     selectedPayee ? selectedPayee.id : 0,
   );
-
-  console.log('data', selectedPayeeInfo);
 
   const selectRow = useCallback(
     (amount: number) => {
@@ -83,22 +81,21 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionRemoved }: Props) => {
     // setSelectedRow(-1);
     setSelectedPayee(null);
     setSearching(false);
-    onPayeeSelectionRemoved();
+    onPayeeSelectionCleared();
   }
 
-  console.log('selectedPayeeInfo', selectedPayeeInfo);
   return (
     <div>
-      highlightedRow{highlightedRow}
+      {/* highlightedRow{highlightedRow}
       <br></br>
       selectedPayeeInfo name: {selectedPayeeInfo?.name}
       <br></br>
-      selectedPayee name: {selectedPayee?.name}
+      selectedPayee name: {selectedPayee?.name} */}
       <div
         className={`pl-1 pt-1 rounded-sm ${inputFocused ? 'border border-blue-500' : 'border border-neutral-300'}`}
       >
         {selectedPayee && selectedPayeeInfo && (
-          <div className="mb-2">
+          <div className="mb-2 pr-1">
             <SelectedPayeeCard
               selectedPayee={selectedPayee}
               selectedPayeeInfo={selectedPayeeInfo}
@@ -147,16 +144,16 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionRemoved }: Props) => {
                 >
                   <div className="p-1 w-full font-medium">
                     <div>{item.name}</div>
-                    <div className="grid grid-cols-[.4fr_1fr] w-full text-[.9rem]  ">
-                      <div className="pl-1 text-neutral-500  ">Type:</div>
-                      <div className="font-medium text-neutral-700">
-                        {item.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}
+                    <div className="grid grid-cols-[.5fr_1fr] w-full text-[.9rem]  ">
+                      <div className="pl-1 text-neutral-600  ">[Payee Type:</div>
+                      <div className="font-medium text-neutral-900">
+                        {item.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}]
                       </div>
                       <div className="pl-1 text-neutral-500 ">
-                        Charge Account:
+                        [Charge Account:
                       </div>
                       <div className='font-medium text-neutral-600"'>
-                        {item.categoryName} / {item.accountName}
+                        {item.categoryName} / {item.accountName}]
                       </div>
                     </div>
                   </div>

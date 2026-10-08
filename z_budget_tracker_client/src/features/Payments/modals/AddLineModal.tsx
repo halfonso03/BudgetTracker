@@ -1,10 +1,9 @@
-import { useState, type ChangeEvent } from 'react';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import useCategories from '../../../api/hooks/common/useCategories';
 import useGrants from '../../../api/hooks/common/useGrants';
 import useInitiatives from '../../../api/hooks/common/useInitiatives';
 import Button from '../../../components/Button';
 import Select from '../../../components/Select';
-import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailableAccountBalances';
 import PayeeSearcher from '../PayeeSearcher';
 import TallModal from '../../../components/TallModal';
 import { PaginationContextProvider } from '../../../contexts/pagination/PaginationContextProvider';
@@ -14,6 +13,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { PaymentFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
 import { Asterisk } from 'lucide-react';
+import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailableAccountBalances';
 
 type Selections = {
   initiativeId?: number;
@@ -48,8 +48,8 @@ const AddLineModal = ({ ...props }: Props) => {
   const {
     register, // Function to register input fields and connect them to validation
     handleSubmit, // Function that wraps your submit handler to handle validation
-    getValues,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(PaymentFormSchema) as Resolver<FormValues>,
@@ -75,66 +75,77 @@ const AddLineModal = ({ ...props }: Props) => {
       category_id: 0,
     }));
     setAccounts(accounts);
-    setValue('accountId', accounts[0].id);
   }
-
-  const { data: balances } = useAvailableAccountBalances(
-    selections?.initiativeId,
-    selections?.grantId,
-    selections?.categoryId,
-  );
-
   const { data } = useAvailableAccountBalances(
     getValues('initiativeId'),
     getValues('grantId'),
     getValues('categoryId'),
   );
 
-  function onLineAdded(account: PaymentAvailableAccountBalance) {
-    setSelections(null);
-    setAnimateOut(true);
-    setTimeout(() => {
-      setAnimateOut(false);
-    }, 500);
-
-    if (initiatives && grants && categories && balances) {
-      const { availableAmount } = balances.filter(
-        (x) =>
-          x.initiativeId === account.initiativeId &&
-          x.grantId === account.grantId &&
-          x.accountId === account.accountId,
-      )[0];
-
-      const newLine: PaymentLineItem = {
-        rowId: -1,
-        uuid: window.crypto.randomUUID(),
-        accountId: account.accountId,
-        accountName: account.accountName,
-        categoryId: selections!.categoryId!,
-        categoryName: categories.filter(
-          (x) => x.id == selections?.categoryId,
-        )[0].name,
-        initiativeId: selections!.initiativeId!,
-        initiativeName: initiatives.filter(
-          (x) => x.id == selections?.initiativeId,
-        )[0].name,
-        grantId: selections!.grantId!,
-        grantName: grants.filter((x) => x.id == selections?.grantId)[0].name,
-        payeeId: 0,
-        payeeName: '',
-        availableAmount: availableAmount,
-        paymentAmount: 0,
-        newAvailableAmount: availableAmount,
-        comment: '',
-      };
-
-      props.onLineAdded(newLine, {
-        initiativeId: newLine.initiativeId,
-        grantId: newLine.grantId,
-        categoryId: selections!.categoryId!,
-      });
+  console.log(getValues('grantId'))
+  useEffect(() => {
+    if (accounts && accounts.length) {
+      if (payee && accounts.some((x) => x.id === payee.accountId)) {
+        setValue(
+          'accountId',
+          accounts.filter((x) => x.id === payee.accountId)[0].id,
+        );
+      }
     }
-  }
+  }, [accounts, payee, setValue]);
+
+  // const { data: balances } = useAvailableAccountBalances(
+  //   selections?.initiativeId,
+  //   selections?.grantId,
+  //   selections?.categoryId,
+  // );
+
+  console.log('balances', data);
+  // function onLineAdded(account: PaymentAvailableAccountBalance) {
+  //   setSelections(null);
+  //   setAnimateOut(true);
+  //   setTimeout(() => {
+  //     setAnimateOut(false);
+  //   }, 500);
+
+  //   if (initiatives && grants && categories && balances) {
+  //     const { availableAmount } = balances.filter(
+  //       (x) =>
+  //         x.initiativeId === account.initiativeId &&
+  //         x.grantId === account.grantId &&
+  //         x.accountId === account.accountId,
+  //     )[0];
+
+  //     const newLine: PaymentLineItem = {
+  //       rowId: -1,
+  //       uuid: window.crypto.randomUUID(),
+  //       accountId: account.accountId,
+  //       accountName: account.accountName,
+  //       categoryId: selections!.categoryId!,
+  //       categoryName: categories.filter(
+  //         (x) => x.id == selections?.categoryId,
+  //       )[0].name,
+  //       initiativeId: selections!.initiativeId!,
+  //       initiativeName: initiatives.filter(
+  //         (x) => x.id == selections?.initiativeId,
+  //       )[0].name,
+  //       grantId: selections!.grantId!,
+  //       grantName: grants.filter((x) => x.id == selections?.grantId)[0].name,
+  //       payeeId: 0,
+  //       payeeName: '',
+  //       availableAmount: availableAmount,
+  //       paymentAmount: 0,
+  //       newAvailableAmount: availableAmount,
+  //       comment: '',
+  //     };
+
+  //     props.onLineAdded(newLine, {
+  //       initiativeId: newLine.initiativeId,
+  //       grantId: newLine.grantId,
+  //       categoryId: selections!.categoryId!,
+  //     });
+  //   }
+  // }
 
   function handlePayeeSelected(payee: Payee) {
     setPayee(payee);
@@ -155,13 +166,18 @@ const AddLineModal = ({ ...props }: Props) => {
       }));
       if (a2) {
         setAccounts(a2);
-        setValue('accountId', accounts[0].id);
+        // setValue('accountId', payee.accountId);
       }
     }
   }
 
   async function onSubmit(data: FormValues) {
-    console.log('data', data);
+    console.log('onSubmit', data);
+  }
+
+  function handlePayeeSelectionCleared() {
+    setValue('payeeId', 0);
+    setPayee(null);
   }
 
   return (
@@ -191,6 +207,7 @@ const AddLineModal = ({ ...props }: Props) => {
 
                     <PayeeSearcher
                       onPayeeSelected={handlePayeeSelected}
+                      onPayeeSelectionCleared={handlePayeeSelectionCleared}
                     ></PayeeSearcher>
                     <div className="self-center">
                       {errors.payeeId && (

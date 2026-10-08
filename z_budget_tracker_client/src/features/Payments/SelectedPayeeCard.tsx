@@ -18,7 +18,7 @@ const SelectedPayeeCard = ({
   return (
     <div>
       {selectedPayee && (
-        <div className="flex items-center shadow-md  gap-1 bg-neutral-200/70 rounded-sm">
+        <div className="flex items-center shadow-md gap-1 bg-neutral-200/70 rounded-sm border border-neutral-200/90">
           <div
             className="cursor-pointer p-2 text-neutral-600 self-stretch hover:text-neutral-900 hover:bg-neutral-100"
             onClick={onRemoveSelection}
@@ -30,7 +30,7 @@ const SelectedPayeeCard = ({
               <div className="flex justify-between">
                 {selectedPayee?.name}
                 <div
-                  className="text-neutral-500 cursor-pointer"
+                  className="text-neutral-500 cursor-pointer "
                   onClick={onOpenInfoWindow}
                 >
                   <Info size={18}></Info>

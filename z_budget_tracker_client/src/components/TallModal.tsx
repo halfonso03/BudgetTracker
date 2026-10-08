@@ -71,7 +71,7 @@ const TallModal = ({
             <X className="text-gray-500 hover:text-gray-700 dark:text-neutral-300 dark:hover:text-neutral-100 transition-all duration-200"></X>
           </button>
         </div>
-        <div className=" h-[80dvh]">{children}</div>
+        <div className=" ">{children}</div>
       </div>
     </div>,
     document.body, // The target DOM container
