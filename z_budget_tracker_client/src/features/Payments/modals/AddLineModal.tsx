@@ -42,21 +42,21 @@ const AddLineModal = ({ ...props }: Props) => {
 
   const [accounts, setAccounts] = useState<Account[]>([]);
 
-  if (accounts.length === 0) {
+  if (
+    accounts.length === 0 &&
+    catSuccess &&
+    categories?.length &&
+    categories[0].accounts
+  ) {
     setAccounts(
-      catSuccess && categories?.length && categories[0].accounts
-        ? categories[0].accounts.map((a) => ({
-            id: a.id,
-            name: a.name,
-            number: '',
-            category_id: 0,
-          }))
-        : [],
+      categories[0].accounts.map((a) => ({
+        id: a.id,
+        name: a.name,
+        number: '',
+        category_id: 0,
+      })),
     );
   }
-
-  console.log('categories', categories);
-  console.log('accounts', accounts);
 
   const { data: balances } = useAvailableAccountBalances(
     selections?.initiativeId,
@@ -115,10 +115,19 @@ const AddLineModal = ({ ...props }: Props) => {
     setSelections((prev) => ({
       ...prev,
       categoryId: payee.categoryId,
+      accountId: payee.accountId,
     }));
-    setAccounts((prev) => {
-      return categories?.filter((x) => x.id === payee.categoryId)[0].accounts;
-    });
+
+    if (categories && categories.length) {
+      const a = categories.filter((x) => x.id === payee.categoryId)[0].accounts;
+      const a2: Account[] | undefined = a?.map((x) => ({
+        id: x.id,
+        name: x.name,
+        number: x.number,
+        category_id: x.category_id,
+      }));
+      if (a2) setAccounts(a2);
+    }
   }
 
   return (
@@ -151,6 +160,19 @@ const AddLineModal = ({ ...props }: Props) => {
                     ...prev,
                     categoryId: +e.target.value,
                   }));
+
+                  if (categories) {
+                    setAccounts(
+                      categories
+                        .filter((x) => x.id === +e.target.value)[0]
+                        .accounts!.map((a) => ({
+                          id: a.id,
+                          name: a.name,
+                          number: '',
+                          category_id: 0,
+                        })),
+                    );
+                  }
                 }
               }}
             >
@@ -162,7 +184,6 @@ const AddLineModal = ({ ...props }: Props) => {
             </Select>
           </div>
           <div className="grid grid-cols-[.25fr_1fr_.5fr]  w-full items-center mb-5">
-            <pre>{JSON.stringify(accounts)}</pre>
             <div className="text-neutral-600/90 font-medium">Account</div>
             <Select
               additionalclasses={`${selections?.accountId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}

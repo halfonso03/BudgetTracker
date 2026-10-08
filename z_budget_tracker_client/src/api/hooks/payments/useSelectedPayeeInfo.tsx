@@ -10,7 +10,7 @@ const useSelectedPayeeInfo = (payeeId: number | undefined | null) => {
   const { data, isLoading, status, isFetching, isSuccess } = useQuery<Payee>({
     queryFn: () => fetchPayee(payeeId ?? 0),
     queryKey: ['payee', payeeId],
-    enabled: payeeId !== null && payeeId !== undefined,
+    enabled: payeeId !== null && payeeId !== undefined,    
   });
 
   return { data, isLoading, status, isFetching, isSuccess };

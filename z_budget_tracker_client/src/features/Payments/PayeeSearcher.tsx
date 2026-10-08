@@ -170,14 +170,14 @@ const PayeeSearcher = ({ onPayeeSelected }: Props) => {
                   <div className="p-1 w-full">
                     <div className="font-medium">{item.name}</div>
                     <div className="flex gap-2 items-center w-full  ">
-                      <div className="flex items-center gap-1 text-sm ">
+                      {/* <div className="flex items-center gap-1 text-sm ">
                         <div className="pl-1 text-neutral-500 font-medium tracking-wider">
                           Lasy Payment:
                         </div>
                         <div className="font-medium text-neutral-600">
                           12/12/2026
                         </div>
-                      </div>
+                      </div> */}
 
                       <div className="flex  items-center gap-1 text-sm">
                         <div className="pl-1 text-neutral-500 font-medium tracking-wider">
