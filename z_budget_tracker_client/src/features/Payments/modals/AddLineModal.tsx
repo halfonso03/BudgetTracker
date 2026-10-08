@@ -14,6 +14,7 @@ import { PaymentFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
 import { Asterisk } from 'lucide-react';
 import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailableAccountBalances';
+import { formatNumber } from '../../../app/util';
 
 type Selections = {
   initiativeId?: number;
@@ -49,6 +50,7 @@ const AddLineModal = ({ ...props }: Props) => {
     register, // Function to register input fields and connect them to validation
     handleSubmit, // Function that wraps your submit handler to handle validation
     setValue,
+    reset,
     getValues,
     formState: { errors },
   } = useForm<FormValues>({
@@ -58,7 +60,7 @@ const AddLineModal = ({ ...props }: Props) => {
       grantId: 0,
       categoryId: 0,
       accountId: 0,
-      amount: 0,
+      amount: '0.00',
     },
   });
 
@@ -82,7 +84,7 @@ const AddLineModal = ({ ...props }: Props) => {
     getValues('categoryId'),
   );
 
-  console.log(getValues('grantId'))
+  console.log(getValues('grantId'));
   useEffect(() => {
     if (accounts && accounts.length) {
       if (payee && accounts.some((x) => x.id === payee.accountId)) {
@@ -92,7 +94,12 @@ const AddLineModal = ({ ...props }: Props) => {
         );
       }
     }
-  }, [accounts, payee, setValue]);
+
+    if (!payee) {
+      reset();
+      setValue('amount', '0.00')
+    }
+  }, [accounts, payee, reset, setValue]);
 
   // const { data: balances } = useAvailableAccountBalances(
   //   selections?.initiativeId,
@@ -180,6 +187,13 @@ const AddLineModal = ({ ...props }: Props) => {
     setPayee(null);
   }
 
+  function handleInputEntryOnBlur() {
+    console.log(+getValues('amount'));
+    const formatted = formatNumber(+getValues('amount'));
+    setValue('amount', formatted);
+    console.log('13');
+  }
+
   return (
     <PaginationContextProvider>
       <TallModal
@@ -250,6 +264,9 @@ const AddLineModal = ({ ...props }: Props) => {
                       }
                     }}
                   >
+                    <option value={0} className="text-neutral-600">
+                      Select...
+                    </option>
                     {categories?.map((i) => (
                       <option
                         value={i.id}
@@ -277,6 +294,9 @@ const AddLineModal = ({ ...props }: Props) => {
                     //   }
                     // }}
                   >
+                    <option value={0} className="text-neutral-600">
+                      Select...
+                    </option>
                     {accounts?.map((i) => (
                       <option
                         value={i.id}
@@ -345,6 +365,7 @@ const AddLineModal = ({ ...props }: Props) => {
                   error={errors?.amount}
                   register={register('amount')}
                   available={0}
+                  onBlur={handleInputEntryOnBlur}
                 ></PaymentEntryInput>
               </div>
             </div>

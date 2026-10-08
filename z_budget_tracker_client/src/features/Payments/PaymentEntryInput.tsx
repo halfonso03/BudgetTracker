@@ -7,9 +7,10 @@ type Props = {
   available: number;
   register: UseFormRegisterReturn<string>;
   error?: FieldError;
+  onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
 };
 
-const PaymentEntryInput = ({ available, register, error }: Props) => {
+const PaymentEntryInput = ({ available, register, error, onBlur }: Props) => {
   console.log('errorMessage', error);
   return (
     <div>
@@ -27,6 +28,7 @@ const PaymentEntryInput = ({ available, register, error }: Props) => {
         <NumericInputReactHookForm
           register={register}
           readOnly={false}
+          onBlur={onBlur}
           className="w-full text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-300 
             focus:dark:border-gray-100 dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-neutral-800 dark:border-gray-500"
         ></NumericInputReactHookForm>

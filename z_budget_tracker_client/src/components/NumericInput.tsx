@@ -54,7 +54,11 @@ const NumericInputReactHookForm = ({
       className={classes}
       onFocus={onFocus}
       onBlur={onBlur}
-      onClick={onClick}
+      onClick={(e: React.MouseEvent<HTMLInputElement>) => {
+        const input = e.target as HTMLInputElement;
+        input.select();
+        onClick?.(e);
+      }}
       onKeyDown={handleOnKeyDown}
     />
   );
