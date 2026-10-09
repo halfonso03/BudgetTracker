@@ -455,7 +455,7 @@ const AddLineModal = ({ ...props }: Props) => {
                 ></PaymentEntryInput>
               </div>
             </div>
-            <div className="flex justify-end gap-2 border-t border-t-neutral-200 p-2 py-2 ">
+            <div className="flex justify-end gap-2 border-t border-t-neutral-200 p-4">
               {/* {allSelections() && <span>have all selections</span>}
               <br></br>
               {remIsvalid ? (

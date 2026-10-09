@@ -861,9 +861,9 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             <div className="flex justify-between">
               <div className="flex-1"></div>
 
-              <div className="flex-1 pr-1 text-end ">Increase</div>
-              <div className="flex-1 pr-1 text-end">Decrease</div>
-              <div className="flex-1 pr-1 text-end">Variance</div>
+              <div className="text-neutral-500 flex-1 pr-1 text-end ">Increase</div>
+              <div className="text-neutral-500 flex-1 pr-1 text-end">Decrease</div>
+              <div className="text-neutral-500 flex-1 pr-1 text-end">Variance</div>
             </div>
             <div></div>
             <div></div>
@@ -925,12 +925,12 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           )}
         {lines.length > 0 && (
           <div>
-            <div className="grid grid-cols-[.1fr_.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-semibold text-neutral-600">
+            <div className="grid grid-cols-[.1fr_.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 py-1 border border-transparent font-semibold text-neutral-500">
               <div></div>
-              <div className="self-end">Initiative</div>
-              <div className="self-end">Grant</div>
-              <div className="self-end">Category</div>
-              <div className="self-end ">Account</div>
+              <div className="self-end pl-3">Initiative</div>
+              <div className="self-end pl-3">Grant</div>
+              <div className="self-end pl-3">Category</div>
+              <div className="self-end pl-3">Account</div>
               <div className="flex justify-between ">
                 <div
                   className={`text-center flex-2 self-end ${reproHeader.status === POSTED ? 'opacity-0' : ''}`}
@@ -969,7 +969,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             return (
               <div
                 key={index}
-                className="grid grid-cols-[.1fr_.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2  border border-neutral-300 items-center mb-3 "
+                className="grid grid-cols-[.1fr_.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 border border-neutral-300 items-center mb-3 "
               >
                 <ReproRow
                   key={item.uuid}
