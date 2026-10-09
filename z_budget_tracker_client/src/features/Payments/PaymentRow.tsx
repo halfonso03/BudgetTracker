@@ -38,14 +38,22 @@ const PaymentRow = ({
   }
   return (
     <Fragment>
-      <div className=" flex pl-4  gap-2 p-2 py-4 border border-neutral-200 mb-4 divide-neutral-300/60 divide-x">
+      <div className=" flex pl-4 items-start gap-4 p-2 py-4 border border-neutral-200 mb-4 divide-neutral-300/60 divide-x">
         {/* <div className="self-end font-semibold text-neutral-600 bg-neutral-200 p-1">
           Payee
         </div> */}
-        <div className="flex-2 ">
-          <div className="font-semibold text-neutral-500 ">Payee Name</div>
-          <div className="font-medium text-neutral-900 text-xl tracking-wider">
+        <div className="flex-2 grid grid-cols-[.5fr_1fr] self-stretch ">
+          <div className="font-semibold text-neutral-500 self-center">Payee Name</div>
+          <div className="font-medium text-neutral-900 self-center text-xl tracking-wider mb-2">
             {payeeName}
+          </div>
+          <div className="font-semibold text-neutral-500 ">Total Paid</div>
+          <div className=" text-neutral-800 pr-3 ">
+            $1,233.87
+          </div>
+          <div className="font-semibold text-neutral-500 ">Number of Payments</div>
+          <div className=" text-neutral-800 pr-3 ">
+            $1,233.87
           </div>
         </div>
         <div className="flex flex-col  flex-3">
@@ -86,26 +94,11 @@ const PaymentRow = ({
           </div>
         </div>
 
-        <div className="flex-3">
-          <div className="grid grid-cols-[1fr_1fr_1fr] justify-between gap-2 ">
-            <div
-              className={` font-semibold text-neutral-600 text-center self-end  p-1 ${status === POSTED ? 'opacity-0' : ''}`}
-            >
-              Available
-            </div>
-            <div className="text-center font-semibold text-neutral-600    p-1 px-3">
-              Payment
-            </div>
-            <div className="text-center self-end font-semibold text-neutral-600    p-1 px-3">
-              Remaining
-            </div>
-          </div>
-        </div>
         {/* 
         <div></div>
         <div>{payeeName}</div> */}
-        <div>{render()}</div>
-        <div className="flex justify-around self-center">
+        <div className="flex-3 self-stretch">{render()}</div>
+        <div className="flex  justify-around self-stretch items-center">
           <CommentToggler
             uuid={uuid}
             itemComment={comment}

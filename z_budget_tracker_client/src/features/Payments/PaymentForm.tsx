@@ -21,6 +21,7 @@ import Button from '../../components/Button';
 import useAuth from '../../contexts/useAuth';
 import AddLineModal from './modals/AddLineModal';
 import PaymentRow from './PaymentRow';
+import Input from '../../components/Input';
 
 interface Props {
   payment: Payment;
@@ -252,10 +253,28 @@ const PaymentForm = ({ payment }: Props) => {
                 status={paymentHeader.status}
                 render={() => {
                   return (
-                    <div className="flex gap-0">
-                      <div className="text-center flex-2 text-neutral-600 self-center w-full">
-                        {paymentHeader.status !== POSTED &&
-                          formatCurrency(item.availableAmount)}
+                    <div className="flex-3 px-3 pr-6">
+                      <div className="grid grid-cols-[1fr_1fr_1fr] justify-between gap-2 ">
+                        <div
+                          className={` font-semibold text-neutral-600 text-center self-end  p-1 ${paymentHeader.status === POSTED ? 'opacity-0' : ''}`}
+                        >
+                          Available
+                        </div>
+                        <div className="text-center font-semibold text-neutral-600    p-1 px-3">
+                          Payment
+                        </div>
+                        <div className="text-center self-end font-semibold text-neutral-600    p-1 px-3">
+                          Remaining
+                        </div>
+                        <div>
+                          <Input></Input>
+                        </div>
+                        <div>
+                          <Input></Input>
+                        </div>
+                        <div>
+                          <Input></Input>
+                        </div>
                       </div>
                     </div>
                   );

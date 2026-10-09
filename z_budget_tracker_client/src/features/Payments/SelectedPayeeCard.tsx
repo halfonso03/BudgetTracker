@@ -1,7 +1,6 @@
 import { Info, X } from 'lucide-react';
 import { formatCurrency, formatDate } from '../../app/util';
 
-
 type Props = {
   selectedPayee: Payee | null;
   selectedPayeeInfo: Payee;
@@ -72,6 +71,8 @@ const SelectedPayeeCard = ({
                         </span>
                       )}
                   </span>
+                  ]<br></br>
+                  [No. of Payments: <span className="text-neutral-700">45</span>
                   ]
                 </>
               )}
