@@ -1,5 +1,4 @@
 import * as Yup from 'yup';
-import { parseFormattedNumber } from '../app/util';
 
 
 export const PaymentFormSchema = Yup.object().shape({
@@ -29,12 +28,12 @@ export const PaymentFormSchema = Yup.object().shape({
             const parsed = parseFloat(val);
             return !isNaN(parsed) && parsed > 0;
         }),
-    remainingAmount: Yup.number().required()
-        .transform((_, originalValue) => {
-            // Strip commas to convert "1,234.56" -> "1234.56" for safe parsing if needed
-            return parseFormattedNumber(originalValue.toString());
-        })
-        .test('is-valid-rem-amount', 'rem amount must be greater than 0', (val) => {
-            return val > 0;
-        }),
+    // remainingAmount: Yup.number().required()
+    //     .transform((_, originalValue) => {
+    //         // Strip commas to convert "1,234.56" -> "1234.56" for safe parsing if needed
+    //         return parseFormattedNumber(originalValue.toString());
+    //     })
+    //     .test('is-valid-rem-amount', 'rem amount must be greater than 0', (val) => {
+    //         return val > 0;
+    //     }),
 });

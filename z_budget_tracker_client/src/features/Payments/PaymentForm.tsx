@@ -112,7 +112,9 @@ const PaymentForm = ({ payment }: Props) => {
     key: { initiativeId: number; grantId: number; categoryId: number },
   ) {
     setTimeout(() => setAddLineModalIsOpen(false), 500);
-    console.log('PaymentLineItem', newLine);
+    
+    console.log('handleLineAdded PaymentLineItem', newLine);
+
     const newLines: PaymentLineItem[] = lines.map(
       (l: PaymentLineItem, i: number) => {
         const { paymentAmount } = getPaymentAmount(i);
@@ -180,6 +182,7 @@ const PaymentForm = ({ payment }: Props) => {
   return (
     <MenuIdProvider>
       <div>
+        <pre>{JSON.stringify(lines)}</pre>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           <div
             className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
