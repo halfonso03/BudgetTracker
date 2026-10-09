@@ -96,7 +96,7 @@ const AddLineModal = ({ ...props }: Props) => {
   );
 
   // const [zero, setZero] = useState(false);
-  const [r, setR] = useState(true);
+  const [remIsvalid, setRemIsValid] = useState(true);
 
   useEffect(() => {
     if (payee) {
@@ -159,14 +159,14 @@ const AddLineModal = ({ ...props }: Props) => {
     setValue('amount', formatted);
   }
 
-  function handleLessThanZero(n) {
-    setR(false);
-    setValue('remainingAmount', n)
+  function handleLessThanZero(n: number) {
+    setRemIsValid(false);
+    setValue('remainingAmount', n);
   }
 
-  function handleAmountOk(n) {
-    setR(true);
-    setValue('remainingAmount', n)
+  function handleAmountOk(n: number) {
+    setRemIsValid(true);
+    setValue('remainingAmount', n);
   }
 
   function allSelections() {
@@ -390,7 +390,7 @@ const AddLineModal = ({ ...props }: Props) => {
               </div>
             </div>
             <div className="flex justify-end gap-2 border-t border-t-neutral-200 p-2 py-2 ">
-              <Button type="submit" disabled={!allSelections() || !r}>
+              <Button type="submit" disabled={!allSelections() || !remIsvalid}>
                 Add Payment
               </Button>
               <Button
@@ -400,14 +400,8 @@ const AddLineModal = ({ ...props }: Props) => {
 
                   setAnimateOut(true);
                   setTimeout(() => {
-                    // setSelections(null);
+                    setSelections(null);
                     setAnimateOut(false);
-                    setSelections({
-                      initiativeId: 0,
-                      categoryId: 0,
-                      grantId: 0,
-                      accountId: 0,
-                    });
                     setPayee(null);
                     reset();
                   }, 500);
