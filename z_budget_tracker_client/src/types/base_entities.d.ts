@@ -1,7 +1,7 @@
 type Account = {
     id: number
     name: string
-    number: string
+    number?: string
     category_id: number
     categoryName?: string
 }

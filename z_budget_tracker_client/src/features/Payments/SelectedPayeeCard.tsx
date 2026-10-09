@@ -27,7 +27,7 @@ const SelectedPayeeCard = ({
           </div>
           <div className="flex-1 p-1">
             <div className="text-neutral-700 font-medium">
-              <div className="flex justify-between">
+              <div className="flex justify-between font-semibold tracking-wider">
                 {selectedPayee?.name}
                 <div
                   className="text-neutral-500 cursor-pointer "

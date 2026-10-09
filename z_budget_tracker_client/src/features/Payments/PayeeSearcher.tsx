@@ -49,7 +49,9 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
   );
 
   useEffect(() => {
-    inputRef?.current?.focus();
+  });
+
+  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'ArrowUp') {
         event.preventDefault();
@@ -107,7 +109,6 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
         <input
           ref={inputRef}
           value={query}
-          tabIndex={0}
           className='p-2 w-full rounded-sm text-neutral-800 placeholder-neutral-400 focus:outline-none  transition-all"
               placeholder="Enter a search term and presss enter..."'
           placeholder="Enter payee name..."
@@ -153,7 +154,7 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
                       </div>
                       <div className="text-neutral-500 ">
                         [Charge Account:
-                        <span className='font-medium text-neutral-900 pl-2'>
+                        <span className="font-medium text-neutral-900 pl-2">
                           {item.categoryName} / {item.accountName}]
                         </span>
                       </div>

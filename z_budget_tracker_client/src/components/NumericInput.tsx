@@ -6,6 +6,7 @@ interface Props {
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   register?: UseFormRegisterReturn<string>;
   className?: string;
 }
@@ -15,6 +16,7 @@ const NumericInputReactHookForm = ({
   onBlur = () => {},
   onFocus = () => {},
   onClick = () => {},
+  onChange = () => {},
   register,
   className,
 }: Props) => {
@@ -54,6 +56,7 @@ const NumericInputReactHookForm = ({
       className={classes}
       onFocus={onFocus}
       onBlur={onBlur}
+      onChange={onChange}
       onClick={(e: React.MouseEvent<HTMLInputElement>) => {
         const input = e.target as HTMLInputElement;
         input.select();

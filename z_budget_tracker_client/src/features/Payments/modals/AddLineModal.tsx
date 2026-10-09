@@ -13,15 +13,14 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { PaymentFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
 import { Asterisk } from 'lucide-react';
-import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailableAccountBalances';
 import { formatNumber } from '../../../app/util';
+import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailableAccountBalances';
 
 type Selections = {
   initiativeId?: number;
   grantId?: number;
   categoryId?: number;
   accountId?: number;
-  payeeId?: number;
 };
 
 type Props = {
@@ -44,110 +43,110 @@ const AddLineModal = ({ ...props }: Props) => {
   const { grants } = useGrants(props.year, props.isOpen);
   const { initiatives } = useInitiatives(props.isOpen);
   const { categories, catSuccess } = useCategories(props.isOpen);
+  const [payeeUpdated, setPayeeUpdated] = useState(false);
   let availableAmount = 0;
-  // let remainingAmount = 0;
 
-  const [accounts, setAccounts] = useState<Account[]>([]);
   const {
-    register, // Function to register input fields and connect them to validation
-    handleSubmit, // Function that wraps your submit handler to handle validation
+    register,
+    handleSubmit,
     setValue,
     reset,
     getValues,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(PaymentFormSchema) as Resolver<FormValues>,
     defaultValues: {
       initiativeId: 0,
       grantId: 0,
-      categoryId: 0,
+      categoryId: payee ? payee.categoryId : 0,
       accountId: 0,
       amount: '0.00',
+      remainingAmount: 0,
     },
   });
 
+  const { data: availableAccountBalances, isSuccess: bSuccess } =
+    useAvailableAccountBalances(
+      selections?.initiativeId ?? 0,
+      selections?.grantId ?? 0,
+      selections?.categoryId ?? 0,
+    );
+
   if (
-    accounts.length === 0 &&
-    catSuccess &&
-    categories?.length &&
-    categories[0].accounts
+    selections?.initiativeId &&
+    selections?.grantId &&
+    selections?.categoryId &&
+    selections?.accountId &&
+    bSuccess &&
+    availableAccountBalances?.some((x) => x.accountId === selections.accountId)
   ) {
-    const accounts = categories[0].accounts.map((a) => ({
-      id: a.id,
-      name: a.name,
-      number: '',
-      category_id: 0,
-    }));
-    setAccounts(accounts);
+    availableAmount = availableAccountBalances?.filter(
+      (x) => x.accountId === selections.accountId,
+    )[0].availableAmount;
   }
-  const { data: availableAccountBalances } = useAvailableAccountBalances(
-    selections?.initiativeId ?? 0,
-    selections?.grantId ?? 0,
-    selections?.categoryId ?? 0,
+
+  // const payeeIdWatchValue = watch('payeeId') as number;
+  const categoryIdWatchValue = watch('categoryId') as number;
+
+  const [accounts, setAccounts] = useState(
+    catSuccess && categories
+      ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
+      : [],
   );
 
-  if (availableAccountBalances) {
-    console.log('balances', availableAccountBalances);
-
-    const t = availableAccountBalances.filter(
-      (x) => x.accountId === getValues('accountId'),
-    );
-    if (t.length === 1) {
-      availableAmount = t[0].availableAmount;
-    } else {
-      console.log('availableAccountBalances', availableAccountBalances);
-      alert('error with balance retrieval');
-    }
-  }
+  // const [zero, setZero] = useState(false);
+  const [r, setR] = useState(true);
 
   useEffect(() => {
-    if (accounts && accounts.length) {
-      if (payee && accounts.some((x) => x.id === payee.accountId)) {
-        console.log('123', payee.accountId, accounts);
-        // setValue(
-        //   'accountId',
-        //   accounts.filter((x) => x.id === payee.accountId)[0].id,
-        // );
-
-        setValue('accountId', 8);
+    if (payee) {
+      if (payee.categoryId !== +getValues('categoryId')) {
+        setValue('accountId', 0);
       }
-    }
-    console.log(+getValues('amount'));
 
-    if (!payee) {
-      reset();
-      setValue('amount', '0.00');
-      setValue('initiativeId', 0);
+      if (payeeUpdated) {
+        setValue('accountId', payee.accountId);
+      }
+
+      // if (zero.l === true) {
+      //   setValue('remainingAmount', zero.am);
+      //   setZero({ l: false, am: 0 });
+      // }
     }
-  }, [accounts, getValues, payee, reset, setValue]);
+
+    return () => {
+      setPayeeUpdated(false);
+      // setZero({ l: false, am: 0 });
+    };
+  }, [
+    categories,
+    categoryIdWatchValue,
+    getValues,
+    payee,
+    payeeUpdated,
+    setValue,
+  ]);
 
   function handlePayeeSelected(payee: Payee) {
     setPayee(payee);
     setValue('payeeId', payee.id);
+    setValue('categoryId', payee.categoryId);
+    setPayeeUpdated(true);
+    if (categories) {
+      const accounts = categories.filter((x) => x.id === payee.categoryId)[0]
+        .accounts!;
+      setAccounts(accounts);
+    }
+
     setSelections((prev) => ({
       ...prev,
       categoryId: payee.categoryId,
       accountId: payee.accountId,
     }));
-
-    if (categories && categories.length) {
-      const a = categories.filter((x) => x.id === payee.categoryId)[0].accounts;
-      const a2: Account[] | undefined = a?.map((x) => ({
-        id: x.id,
-        name: x.name,
-        number: x.number,
-        category_id: x.category_id,
-      }));
-      if (a2) {
-        setAccounts(a2);
-        console.log('123', payee.accountId, a2);
-        setValue('accountId', payee.accountId);
-      }
-    }
   }
 
   async function onSubmit(data: FormValues) {
-    console.log('onSubmit', data);
+    console.log(data);
   }
 
   function handlePayeeSelectionCleared() {
@@ -156,19 +155,28 @@ const AddLineModal = ({ ...props }: Props) => {
   }
 
   function handleInputEntryOnBlur() {
-    console.log(+getValues('amount'));
     const formatted = formatNumber(+getValues('amount'));
     setValue('amount', formatted);
   }
 
-  const checkKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
-    const target = e.target as HTMLElement;
-    if (e.key === 'Enter' && target.tagName === 'INPUT') {
-      e.preventDefault();
-    }
-  };
+  function handleLessThanZero(n) {
+    setR(false);
+    setValue('remainingAmount', n)
+  }
 
-  console.log('availableAmount', availableAmount)
+  function handleAmountOk(n) {
+    setR(true);
+    setValue('remainingAmount', n)
+  }
+
+  function allSelections() {
+    return (
+      selections?.initiativeId &&
+      selections.grantId &&
+      selections.categoryId &&
+      selections.accountId
+    );
+  }
 
   return (
     <PaginationContextProvider>
@@ -184,6 +192,22 @@ const AddLineModal = ({ ...props }: Props) => {
           className="self-center h-full w-full"
         >
           <div className="flex flex-col justify-between h-full mt-4">
+            {/* <pre>{JSON.stringify(selections)}</pre> */}
+            {/* remainingAmount: {r} */}
+            {errors?.remainingAmount?.message}
+            <br></br>
+            {/* amount: {getValues('amount')} */}
+            {/* payeeId: {getValues('payeeId')}
+            <br></br>
+            initiativeId: {getValues('initiativeId')}
+            <br></br>
+            grantId: {getValues('grantId')}
+            <br></br>
+            categoryId:{getValues('categoryId')}
+            <br></br>
+            accountId: {getValues('accountId')}
+            <br></br>
+            amount: {getValues('amount')} */}
             {/* {errors?.payeeId?.message && '1'}
             {errors?.categoryId?.message && '2'}
             {errors?.accountId?.message && '3'}
@@ -217,26 +241,19 @@ const AddLineModal = ({ ...props }: Props) => {
                   <Select
                     {...register('categoryId')}
                     tabIndex={1}
-                    additionalclasses={`${selections?.categoryId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
-                    value={selections?.categoryId}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      register('categoryId').onChange(e);
                       if (+e.target.value !== 0) {
                         setSelections((prev) => ({
                           ...prev,
                           categoryId: +e.target.value,
                         }));
-
+                        setValue('accountId', 0);
                         if (categories) {
-                          const accounts = categories
-                            .filter((x) => x.id === +e.target.value)[0]
-                            .accounts!.map((a) => ({
-                              id: a.id,
-                              name: a.name,
-                              number: '',
-                              category_id: 0,
-                            }));
+                          const accounts = categories.filter(
+                            (x) => x.id === +e.target.value,
+                          )[0].accounts!;
                           setAccounts(accounts);
-                          // setValue('accountId', 0);
                         }
                       }
                     }}
@@ -260,17 +277,14 @@ const AddLineModal = ({ ...props }: Props) => {
                   <Select
                     {...register('accountId')}
                     tabIndex={2}
-                    value={selections?.accountId}
-                    additionalclasses={`${selections?.accountId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
-                    // value={selections?.accountId}
-                    // onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                    //   if (+e.target.value !== 0) {
-                    //     setSelections((prev) => ({
-                    //       ...prev,
-                    //       accountId: +e.target.value,
-                    //     }));
-                    //   }
-                    // }}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      setPayeeUpdated(false);
+                      setSelections((prev) => ({
+                        ...prev,
+                        accountId: +e.target.value,
+                      }));
+                      register('accountId').onChange(e);
+                    }}
                   >
                     <option value={0} className="text-neutral-600">
                       Select...
@@ -300,12 +314,13 @@ const AddLineModal = ({ ...props }: Props) => {
                     {...register('initiativeId')}
                     tabIndex={3}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      if (+e.target.value !== 0) {
-                        setSelections((prev) => ({
-                          ...prev,
-                          initiativeId: +e.target.value,
-                        }));
-                      }
+                      register('initiativeId').onChange(e);
+                      // if (+e.target.value !== 0) {
+                      setSelections((prev) => ({
+                        ...prev,
+                        initiativeId: +e.target.value,
+                      }));
+                      // }
                     }}
                   >
                     <option value={0} className="text-neutral-600">
@@ -334,12 +349,14 @@ const AddLineModal = ({ ...props }: Props) => {
                     {...register('grantId')}
                     tabIndex={5}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      if (+e.target.value !== 0) {
-                        setSelections((prev) => ({
-                          ...prev,
-                          grantId: +e.target.value,
-                        }));
-                      }
+                      register('grantId').onChange(e);
+
+                      // if (+e.target.value !== 0) {
+                      setSelections((prev) => ({
+                        ...prev,
+                        grantId: +e.target.value,
+                      }));
+                      // }
                     }}
                   >
                     <option value={0} className="text-neutral-600">
@@ -367,12 +384,15 @@ const AddLineModal = ({ ...props }: Props) => {
                   register={register('amount')}
                   available={availableAmount}
                   onBlur={handleInputEntryOnBlur}
+                  onLessThanZero={handleLessThanZero}
+                  onOK={handleAmountOk}
                 ></PaymentEntryInput>
               </div>
             </div>
-
             <div className="flex justify-end gap-2 border-t border-t-neutral-200 p-2 py-2 ">
-              <Button type="submit">Add Payment</Button>
+              <Button type="submit" disabled={!allSelections() || !r}>
+                Add Payment
+              </Button>
               <Button
                 variation="secondary"
                 onClick={() => {
@@ -380,13 +400,15 @@ const AddLineModal = ({ ...props }: Props) => {
 
                   setAnimateOut(true);
                   setTimeout(() => {
-                    setSelections(null);
+                    // setSelections(null);
                     setAnimateOut(false);
                     setSelections({
                       initiativeId: 0,
                       categoryId: 0,
                       grantId: 0,
+                      accountId: 0,
                     });
+                    setPayee(null);
                     reset();
                   }, 500);
                 }}
@@ -401,6 +423,13 @@ const AddLineModal = ({ ...props }: Props) => {
   );
 };
 export default AddLineModal;
+
+const checkKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+  const target = e.target as HTMLElement;
+  if (e.key === 'Enter' && target.tagName === 'INPUT') {
+    e.preventDefault();
+  }
+};
 // const { data: balances } = useAvailableAccountBalances(
 //   selections?.initiativeId,
 //   selections?.grantId,
