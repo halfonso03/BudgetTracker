@@ -44,6 +44,8 @@ const AddLineModal = ({ ...props }: Props) => {
   const { initiatives } = useInitiatives(props.isOpen);
   const { categories, catSuccess } = useCategories(props.isOpen);
   const [payeeUpdated, setPayeeUpdated] = useState(false);
+  const [remIsvalid, setRemIsValid] = useState(true);
+
   let availableAmount = 0;
 
   const {
@@ -65,6 +67,15 @@ const AddLineModal = ({ ...props }: Props) => {
     },
   });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const categoryIdWatchValue = watch('categoryId') as number;
+
+  const [accounts, setAccounts] = useState(
+    catSuccess && categories
+      ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
+      : [],
+  );
+
   const { data: availableAccountBalances, isSuccess: bSuccess } =
     useAvailableAccountBalances(
       selections?.initiativeId ?? 0,
@@ -85,18 +96,6 @@ const AddLineModal = ({ ...props }: Props) => {
     )[0].availableAmount;
   }
 
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const categoryIdWatchValue = watch('categoryId') as number;
-
-  const [accounts, setAccounts] = useState(
-    catSuccess && categories
-      ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
-      : [],
-  );
-
-  // const [zero, setZero] = useState(false);
-  const [remIsvalid, setRemIsValid] = useState(true);
-
   useEffect(() => {
     if (payee) {
       if (payee.categoryId !== +getValues('categoryId')) {
@@ -111,14 +110,7 @@ const AddLineModal = ({ ...props }: Props) => {
     return () => {
       if (payeeUpdated === true) setPayeeUpdated(false);
     };
-  }, [
-    categories,
-    categoryIdWatchValue,
-    getValues,
-    payee,
-    payeeUpdated,
-    setValue,
-  ]);
+  }, [getValues, payee, payeeUpdated, setValue]);
 
   function handlePayeeSelected(payee: Payee) {
     setPayee(payee);
@@ -139,22 +131,11 @@ const AddLineModal = ({ ...props }: Props) => {
   }
 
   async function onSubmit(data: FormValues) {
-    setSelections(null);
-    setAnimateOut(true);
-    setPayee(null);
-    setTimeout(() => {
-      setAnimateOut(false);
-      reset();
-    }, 500);
+    closeModal();
 
     const newLine: PaymentLineItem = {
       rowId: -1,
       uuid: crypto.randomUUID(),
-      payeeId: data.payeeId,
-      accountId: data.accountId,
-      categoryId: data.categoryId,
-      initiativeId: data.initiativeId,
-      grantId: data.grantId,
       accountName:
         categories!
           .filter((x) => x.id === data.categoryId)[0]
@@ -169,9 +150,8 @@ const AddLineModal = ({ ...props }: Props) => {
       paymentAmount: getValues('amount'),
       newAvailableAmount: availableAmount - +getValues('amount'),
       comment: data.comment,
+      ...data,
     };
-
-    // console.log('newLine', newLine);
 
     props.onLineAdded(newLine, {
       initiativeId: newLine.initiativeId,
@@ -192,12 +172,10 @@ const AddLineModal = ({ ...props }: Props) => {
 
   function handleLessThanZero() {
     setRemIsValid(false);
-    // setValue('remainingAmount', n);
   }
 
   function handleAmountOk() {
     setRemIsValid(true);
-    // setValue('remainingAmount', n);
   }
 
   function allSelections() {
@@ -209,7 +187,7 @@ const AddLineModal = ({ ...props }: Props) => {
     );
   }
 
-  function cancelModal() {
+  function closeModal() {
     props.onCancel();
     setAnimateOut(true);
     setTimeout(() => {
@@ -227,7 +205,7 @@ const AddLineModal = ({ ...props }: Props) => {
         title="Add a Payment"
         animateOut={animateOut}
         {...props}
-        onCancel={cancelModal}
+        onCancel={closeModal}
       >
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -235,34 +213,11 @@ const AddLineModal = ({ ...props }: Props) => {
           className="self-center h-full w-full"
         >
           <div className="flex flex-col justify-between h-full mt-4">
-            {/* <pre>{JSON.stringify(selections)}</pre> */}
-            {/* remainingAmount: {r} */}
-            {/* {errors?.remainingAmount?.message} */}
-            {/* <br></br> */}
-            {/* amount: {getValues('amount')} */}
-            {/* payeeId: {getValues('payeeId')}
-            <br></br>
-            initiativeId: {getValues('initiativeId')}
-            <br></br>
-            grantId: {getValues('grantId')}
-            <br></br>
-            categoryId:{getValues('categoryId')}
-            <br></br>
-            accountId: {getValues('accountId')}
-            <br></br>
-            amount: {getValues('amount')} */}
-            {/* {errors?.payeeId?.message && '1'}
-            {errors?.categoryId?.message && '2'}
-            {errors?.accountId?.message && '3'}
-            {errors?.initiativeId?.message && '4'}
-            {errors?.grantId?.message}
-            {errors?.amount?.message} */}
             <div className="flex flex-col justify-between p-3 px-4 ">
               <div>
                 <div className="relative flex items-center mb-5">
                   <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full">
                     <div className="text-neutral-600/90 font-medium">Payee</div>
-
                     <PayeeSearcher
                       onPayeeSelected={handlePayeeSelected}
                       onPayeeSelectionCleared={handlePayeeSelectionCleared}
@@ -315,6 +270,7 @@ const AddLineModal = ({ ...props }: Props) => {
                     ))}
                   </Select>
                 </div>
+                
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
                   <div className="text-neutral-600/90 font-medium">Account</div>
                   <Select
@@ -348,6 +304,7 @@ const AddLineModal = ({ ...props }: Props) => {
                     </div>
                   )}
                 </div>
+
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
                   <div className="text-neutral-600/90 font-medium">
                     Initiative
@@ -453,7 +410,7 @@ const AddLineModal = ({ ...props }: Props) => {
               >
                 Add Payment
               </Button>
-              <Button variation="secondary" onClick={cancelModal}>
+              <Button variation="secondary" onClick={closeModal}>
                 Cancel
               </Button>
             </div>
