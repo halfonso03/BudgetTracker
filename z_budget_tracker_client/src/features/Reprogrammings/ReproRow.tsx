@@ -27,6 +27,7 @@ const ReproRow = ({
   saveComment,
   canEdit,
   lineItem: {
+    rowId,
     initiativeName,
     grantName,
     categoryName,
@@ -52,10 +53,13 @@ const ReproRow = ({
   }
   return (
     <Fragment>
-      <div className="self-center">{initiativeName}</div>
-      <div className="self-center">{grantName}</div>
-      <div className="self-center">{categoryName}</div>
-      <div className="self-center ">
+      <div className='bg-neutral-200 border-r-neutral-200 text-center p-0 m-0  flex self-stretch items-center justify-center '>
+        <div className='text-neutral-500'>{rowId + 1}</div>
+      </div>
+      <div className="self-center px-3 py-2">{initiativeName}</div>
+      <div className="self-center px-3 py-2">{grantName}</div>
+      <div className="self-center px-3 py-2">{categoryName}</div>
+      <div className="self-center px-3 py-2">
         {canEdit ? (
           <Dropdown
             tabIndex={-1}

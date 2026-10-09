@@ -925,7 +925,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           )}
         {lines.length > 0 && (
           <div>
-            <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-semibold text-neutral-600">
+            <div className="grid grid-cols-[.1fr_.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-semibold text-neutral-600">
+              <div></div>
               <div className="self-end">Initiative</div>
               <div className="self-end">Grant</div>
               <div className="self-end">Category</div>
@@ -968,7 +969,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             return (
               <div
                 key={index}
-                className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-2 border border-neutral-300 items-center mb-3 "
+                className="grid grid-cols-[.1fr_.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2  border border-neutral-300 items-center mb-3 "
               >
                 <ReproRow
                   key={item.uuid}
