@@ -8,6 +8,7 @@ export const PaymentFormSchema = Yup.object().shape({
     accountId: Yup.number().notOneOf([0], '*').required("*"),
     initiativeId: Yup.number().notOneOf([0], '*').required("*"),
     grantId: Yup.number().notOneOf([0], '*').required("*"),
+    comment: Yup.string(),
     // amount: Yup.string().notOneOf([0], '*').required("*"),
     amount: Yup
         .string()

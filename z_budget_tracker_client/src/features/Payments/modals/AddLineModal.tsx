@@ -107,16 +107,10 @@ const AddLineModal = ({ ...props }: Props) => {
       if (payeeUpdated) {
         setValue('accountId', payee.accountId);
       }
-
-      // if (zero.l === true) {
-      //   setValue('remainingAmount', zero.am);
-      //   setZero({ l: false, am: 0 });
-      // }
     }
 
     return () => {
       setPayeeUpdated(false);
-      // setZero({ l: false, am: 0 });
     };
   }, [
     categories,
@@ -147,6 +141,28 @@ const AddLineModal = ({ ...props }: Props) => {
 
   async function onSubmit(data: FormValues) {
     console.log(data);
+
+    const newLine: PaymentLineItem = {
+      rowId: -1,
+      uuid: crypto.randomUUID(),
+      accountId: data.accountId,
+      categoryId: data.categoryId,
+      initiativeId: data.initiativeId,
+      grantId: data.grantId,
+      accountName: '',
+      initiativeName: '',
+      categoryName: '',
+      grantName: '',
+      availableAmount: availableAmount,
+      paymentAmount: getValues('amount'),
+      newAvailableAmount: availableAmount - +getValues('amount'),
+    };
+
+    props.onLineAdded(newLine, {
+      initiativeId: newLine.initiativeId,
+      grantId: newLine.grantId,
+      categoryId: selections!.categoryId!,
+    });
   }
 
   function handlePayeeSelectionCleared() {
@@ -343,7 +359,7 @@ const AddLineModal = ({ ...props }: Props) => {
                   )}
                 </div>
 
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-10">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-5 ">
                   <div className="text-neutral-600/90 font-medium">Grant</div>
                   <Select
                     {...register('grantId')}
@@ -377,6 +393,17 @@ const AddLineModal = ({ ...props }: Props) => {
                       <Asterisk size={18}></Asterisk>
                     </div>
                   )}
+                </div>
+
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-10">
+                  <div className="text-neutral-600/90 font-medium self-start">
+                    Comment
+                  </div>
+                  <textarea
+                    {...register('comment')}
+                    className="p-1 border border-neutral-300 rounded-sm"
+                    rows={3}
+                  ></textarea>
                 </div>
                 <PaymentEntryInput
                   getValues={getValues}
