@@ -1,11 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { CheckCircle } from 'lucide-react';
 import { useState, type ChangeEvent } from 'react';
-import Modal from '../../../../misc/Modal';
 import { useCommentActions } from '../../../api/hooks/budgets/useCommentsActions';
 import Button from '../../../components/Button';
 import type { ModalSize } from '../../../components/Modal2';
 import { formatDate } from '../../../app/util';
+import Modal2 from '../../../components/Modal2';
 
 interface Props {
   initiativeId: number;
@@ -107,7 +107,7 @@ const CommentsModal = ({
   }
 
   return (
-    <Modal
+    <Modal2
       isOpen={isOpen}
       animateOut={animateOut}
       onCancel={onCancelForm}
@@ -213,7 +213,7 @@ const CommentsModal = ({
           </form>
         </div>
       </div>
-    </Modal>
+    </Modal2>
   );
 };
 export default CommentsModal;

@@ -47,7 +47,7 @@ const TransactionsModal = (props: Props) => {
         onCancel={handleCancel}
       >
         <div className="">
-          <div className="font-semibold text-neutral-700">Account</div>
+          <div className="font-semibold text-neutral-500">Account</div>
           <div className="font-semibold self-end mb-3">{props.accountName}</div>
           <div className="grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 my-3 border-b border-b-neutral-200">
             <div></div>
@@ -101,9 +101,9 @@ const TransactionsModal = (props: Props) => {
                     ) : null}
                   </div>
                 </div>
-                <div className="text-center">{formatDate(t.postedDate)}</div>
-                <div className="text-center">{formatCurrency(t.amount)}</div>
-                <div className={`text-end`}>{formatNumber(remaining)}</div>
+                <div className="text-center text-neutral-500">{formatDate(t.postedDate)}</div>
+                <div className="text-center text-neutral-500">{formatCurrency(t.amount)}</div>
+                <div className=' text-neutral-500 text-end'>{formatNumber(remaining)}</div>
               </div>
             );
           })}

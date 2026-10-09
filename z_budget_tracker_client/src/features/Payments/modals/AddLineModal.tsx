@@ -45,6 +45,7 @@ const AddLineModal = ({ ...props }: Props) => {
   const { initiatives } = useInitiatives(props.isOpen);
   const { categories, catSuccess } = useCategories(props.isOpen);
   let availableAmount = 0;
+  // let remainingAmount = 0;
 
   const [accounts, setAccounts] = useState<Account[]>([]);
   const {
@@ -79,86 +80,46 @@ const AddLineModal = ({ ...props }: Props) => {
     }));
     setAccounts(accounts);
   }
-  const { data } = useAvailableAccountBalances(
+  const { data: availableAccountBalances } = useAvailableAccountBalances(
     selections?.initiativeId ?? 0,
     selections?.grantId ?? 0,
     selections?.categoryId ?? 0,
   );
 
-  console.log('balances', data);
+  if (availableAccountBalances) {
+    console.log('balances', availableAccountBalances);
 
-  if (data) {
-    console.log(getValues('accountId'));
+    const t = availableAccountBalances.filter(
+      (x) => x.accountId === getValues('accountId'),
+    );
+    if (t.length === 1) {
+      availableAmount = t[0].availableAmount;
+    } else {
+      console.log('availableAccountBalances', availableAccountBalances);
+      alert('error with balance retrieval');
+    }
   }
-  console.log('payee', payee);
 
   useEffect(() => {
     if (accounts && accounts.length) {
       if (payee && accounts.some((x) => x.id === payee.accountId)) {
-        setValue(
-          'accountId',
-          accounts.filter((x) => x.id === payee.accountId)[0].id,
-        );
+        console.log('123', payee.accountId, accounts);
+        // setValue(
+        //   'accountId',
+        //   accounts.filter((x) => x.id === payee.accountId)[0].id,
+        // );
+
+        setValue('accountId', 8);
       }
     }
     console.log(+getValues('amount'));
+
     if (!payee) {
       reset();
       setValue('amount', '0.00');
       setValue('initiativeId', 0);
     }
   }, [accounts, getValues, payee, reset, setValue]);
-
-  // const { data: balances } = useAvailableAccountBalances(
-  //   selections?.initiativeId,
-  //   selections?.grantId,
-  //   selections?.categoryId,
-  // );
-  // function onLineAdded(account: PaymentAvailableAccountBalance) {
-  //   setSelections(null);
-  //   setAnimateOut(true);
-  //   setTimeout(() => {
-  //     setAnimateOut(false);
-  //   }, 500);
-
-  //   if (initiatives && grants && categories && balances) {
-  //     const { availableAmount } = balances.filter(
-  //       (x) =>
-  //         x.initiativeId === account.initiativeId &&
-  //         x.grantId === account.grantId &&
-  //         x.accountId === account.accountId,
-  //     )[0];
-
-  //     const newLine: PaymentLineItem = {
-  //       rowId: -1,
-  //       uuid: window.crypto.randomUUID(),
-  //       accountId: account.accountId,
-  //       accountName: account.accountName,
-  //       categoryId: selections!.categoryId!,
-  //       categoryName: categories.filter(
-  //         (x) => x.id == selections?.categoryId,
-  //       )[0].name,
-  //       initiativeId: selections!.initiativeId!,
-  //       initiativeName: initiatives.filter(
-  //         (x) => x.id == selections?.initiativeId,
-  //       )[0].name,
-  //       grantId: selections!.grantId!,
-  //       grantName: grants.filter((x) => x.id == selections?.grantId)[0].name,
-  //       payeeId: 0,
-  //       payeeName: '',
-  //       availableAmount: availableAmount,
-  //       paymentAmount: 0,
-  //       newAvailableAmount: availableAmount,
-  //       comment: '',
-  //     };
-
-  //     props.onLineAdded(newLine, {
-  //       initiativeId: newLine.initiativeId,
-  //       grantId: newLine.grantId,
-  //       categoryId: selections!.categoryId!,
-  //     });
-  //   }
-  // }
 
   function handlePayeeSelected(payee: Payee) {
     setPayee(payee);
@@ -179,7 +140,8 @@ const AddLineModal = ({ ...props }: Props) => {
       }));
       if (a2) {
         setAccounts(a2);
-        // setValue('accountId', payee.accountId);
+        console.log('123', payee.accountId, a2);
+        setValue('accountId', payee.accountId);
       }
     }
   }
@@ -199,6 +161,15 @@ const AddLineModal = ({ ...props }: Props) => {
     setValue('amount', formatted);
   }
 
+  const checkKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    const target = e.target as HTMLElement;
+    if (e.key === 'Enter' && target.tagName === 'INPUT') {
+      e.preventDefault();
+    }
+  };
+
+  console.log('availableAmount', availableAmount)
+
   return (
     <PaginationContextProvider>
       <TallModal
@@ -209,6 +180,7 @@ const AddLineModal = ({ ...props }: Props) => {
       >
         <form
           onSubmit={handleSubmit(onSubmit)}
+          onKeyDown={checkKeyDown}
           className="self-center h-full w-full"
         >
           <div className="flex flex-col justify-between h-full mt-4">
@@ -264,7 +236,7 @@ const AddLineModal = ({ ...props }: Props) => {
                               category_id: 0,
                             }));
                           setAccounts(accounts);
-                          setValue('accountId', 0);
+                          // setValue('accountId', 0);
                         }
                       }
                     }}
@@ -288,6 +260,7 @@ const AddLineModal = ({ ...props }: Props) => {
                   <Select
                     {...register('accountId')}
                     tabIndex={2}
+                    value={selections?.accountId}
                     additionalclasses={`${selections?.accountId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
                     // value={selections?.accountId}
                     // onChange={(e: ChangeEvent<HTMLSelectElement>) => {
@@ -389,6 +362,7 @@ const AddLineModal = ({ ...props }: Props) => {
                   )}
                 </div>
                 <PaymentEntryInput
+                  getValues={getValues}
                   error={errors?.amount}
                   register={register('amount')}
                   available={availableAmount}
@@ -427,3 +401,53 @@ const AddLineModal = ({ ...props }: Props) => {
   );
 };
 export default AddLineModal;
+// const { data: balances } = useAvailableAccountBalances(
+//   selections?.initiativeId,
+//   selections?.grantId,
+//   selections?.categoryId,
+// );
+// function onLineAdded(account: PaymentAvailableAccountBalance) {
+//   setSelections(null);
+//   setAnimateOut(true);
+//   setTimeout(() => {
+//     setAnimateOut(false);
+//   }, 500);
+
+//   if (initiatives && grants && categories && balances) {
+//     const { availableAmount } = balances.filter(
+//       (x) =>
+//         x.initiativeId === account.initiativeId &&
+//         x.grantId === account.grantId &&
+//         x.accountId === account.accountId,
+//     )[0];
+
+//     const newLine: PaymentLineItem = {
+//       rowId: -1,
+//       uuid: window.crypto.randomUUID(),
+//       accountId: account.accountId,
+//       accountName: account.accountName,
+//       categoryId: selections!.categoryId!,
+//       categoryName: categories.filter(
+//         (x) => x.id == selections?.categoryId,
+//       )[0].name,
+//       initiativeId: selections!.initiativeId!,
+//       initiativeName: initiatives.filter(
+//         (x) => x.id == selections?.initiativeId,
+//       )[0].name,
+//       grantId: selections!.grantId!,
+//       grantName: grants.filter((x) => x.id == selections?.grantId)[0].name,
+//       payeeId: 0,
+//       payeeName: '',
+//       availableAmount: availableAmount,
+//       paymentAmount: 0,
+//       newAvailableAmount: availableAmount,
+//       comment: '',
+//     };
+
+//     props.onLineAdded(newLine, {
+//       initiativeId: newLine.initiativeId,
+//       grantId: newLine.grantId,
+//       categoryId: selections!.categoryId!,
+//     });
+//   }
+// }

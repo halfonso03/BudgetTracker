@@ -59,8 +59,8 @@ const Modal2 = ({
         className={`${modalStyles} ${animateClass}  max-w-md bg-white bg-dark-nav self-center rounded-sm shadow-lg`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-full h-full mb-2 p-3 flex justify-between align-center border-b border-gray-200 dark:border-b-neutral-800">
-          <h2 className="m-0 p-0 text-2xl text-gray-800 dark:text-gray-200">
+        <div className="bg-neutral-200/30 border rounded-t-sm w-full h-full mb-2 p-3 flex justify-between align-center border-b border-gray-200 dark:border-b-neutral-800">
+          <h2 className="m-0 p-0 text-2xl  text-gray-800 dark:text-gray-200">
             {title}
           </h2>
           <button style={closeButtonStyles} onClick={onCancel}>

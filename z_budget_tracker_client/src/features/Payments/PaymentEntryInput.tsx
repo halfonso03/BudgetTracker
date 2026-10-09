@@ -1,17 +1,32 @@
 import { formatCurrency } from '../../app/util';
-import type { FieldError, UseFormRegisterReturn } from 'react-hook-form';
+import type {
+  FieldError,
+  UseFormGetValues,
+  UseFormRegisterReturn,
+} from 'react-hook-form';
 import NumericInputReactHookForm from '../../components/NumericInput';
 import { Asterisk } from 'lucide-react';
+import type { PaymentFormSchema } from '../../form_schemas/PaymentFormSchema';
+import * as Yup from 'yup';
+
+type FormValues = Yup.InferType<typeof PaymentFormSchema>;
 
 type Props = {
   available: number;
   register: UseFormRegisterReturn<string>;
+  getValues: UseFormGetValues<FormValues>;
   error?: FieldError;
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
 };
 
-const PaymentEntryInput = ({ available, register, error, onBlur }: Props) => {
-  console.log('errorMessage', error);
+const PaymentEntryInput = ({
+  available,
+  register,
+  error,
+  onBlur,
+  getValues,
+}: Props) => {
+  // console.log('errorMessage', error);
   return (
     <div>
       <div className="grid grid-cols-[.5fr_.85fr_.5fr]  w-full items-center mb-5">
@@ -41,7 +56,7 @@ const PaymentEntryInput = ({ available, register, error, onBlur }: Props) => {
 
       <div className="grid grid-cols-[.5fr_.85fr_.5fr] w-full items-center mb-5">
         <div className="text-neutral-600/90 font-medium">Remaining</div>
-        <div className="font-semibold pl-1">{formatCurrency(10998.09)}</div>
+        <div className="font-semibold pl-1">{getValues('amount')}</div>
       </div>
     </div>
   );
