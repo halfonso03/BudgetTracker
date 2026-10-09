@@ -182,7 +182,7 @@ const PaymentForm = ({ payment }: Props) => {
   return (
     <MenuIdProvider>
       <div>
-        <pre>{JSON.stringify(lines)}</pre>
+        {/* <pre>{JSON.stringify(lines)}</pre> */}
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           <div
             className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}

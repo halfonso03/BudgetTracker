@@ -38,50 +38,73 @@ const PaymentRow = ({
   }
   return (
     <Fragment>
-      <div className="grid grid-cols-[.7fr_.5fr_.5fr_.8fr_.5fr_2fr_.3fr]  px-0 py-4 pt-0 border border-neutral-300 mb-4">
-        <div className="self-end font-semibold text-neutral-600 bg-neutral-200 p-1">Payee</div>
+      <div className=" flex pl-4  gap-2 p-2 py-4 border border-neutral-200 mb-4 divide-neutral-300/60 divide-x">
+        {/* <div className="self-end font-semibold text-neutral-600 bg-neutral-200 p-1">
+          Payee
+        </div> */}
+        <div className="flex-2 ">
+          <div className="font-semibold text-neutral-500 ">Payee Name</div>
+          <div className="font-medium text-neutral-900 text-xl tracking-wider">
+            {payeeName}
+          </div>
+        </div>
+        <div className="flex flex-col  flex-3">
+          <div className="flex  ">
+            <div className="flex-1 self-end font-semibold text-neutral-500  p-1">
+              Category
+            </div>
+            <div className=" flex-3 self-center font-medium text-neutral-900 pl-1 ">
+              {categoryName}
+            </div>
+          </div>
 
-        <div className="self-end font-semibold text-neutral-600 bg-neutral-200 p-1">
-          Category
-        </div>
-        <div className="self-end font-semibold text-neutral-600 bg-neutral-200 p-1">
-          Account
-        </div>
-        <div className="self-end font-semibold text-neutral-600 bg-neutral-200 p-1 border-r border-r-neutral-300">
-          Initiative
-        </div>
-        <div className="self-end font-semibold text-neutral-600 bg-neutral-200 p-1">
-          Grant
-        </div>
-        <div className="grid grid-cols-[1fr_1fr_1fr] justify-between gap-2 ">
-          <div
-            className={` font-semibold text-neutral-600 text-center self-end bg-neutral-200 p-1 ${status === POSTED ? 'opacity-0' : ''}`}
-          >
-            Available
+          <div className="flex ">
+            <div className="flex-1  self-end font-semibold text-neutral-500  p-1">
+              Account
+            </div>
+            <div className=" flex-3  self-center font-medium text-neutral-900  pl-1">
+              {accountName}
+            </div>
           </div>
-          <div className="text-center font-semibold text-neutral-600   bg-neutral-200 p-1 px-3">
-            Payment
+          <div className="flex ">
+            <div className="flex-1 self-end font-semibold text-neutral-500  p-1 ">
+              Initiative
+            </div>
+            <div className="flex-3 self-center font-medium text-neutral-900 pl-1 ">
+              {initiativeName}
+            </div>
           </div>
-          <div className="text-center self-end font-semibold text-neutral-600   bg-neutral-200 p-1 px-3">
-            Remaining
+
+          <div className="flex ">
+            <div className="flex-1 self-end font-semibold text-neutral-500  p-1">
+              Grant
+            </div>
+
+            <div className="flex-3 self-center font-medium text-neutral-900  pl-1 ">
+              {grantName}
+            </div>
           </div>
         </div>
+
+        <div className="flex-3">
+          <div className="grid grid-cols-[1fr_1fr_1fr] justify-between gap-2 ">
+            <div
+              className={` font-semibold text-neutral-600 text-center self-end  p-1 ${status === POSTED ? 'opacity-0' : ''}`}
+            >
+              Available
+            </div>
+            <div className="text-center font-semibold text-neutral-600    p-1 px-3">
+              Payment
+            </div>
+            <div className="text-center self-end font-semibold text-neutral-600    p-1 px-3">
+              Remaining
+            </div>
+          </div>
+        </div>
+        {/* 
         <div></div>
-        <div>{payeeName}</div>
-
-        <div className="self-center font-medium text-neutral-900 pl-1 ">
-          {categoryName}
-        </div>
-        <div className="self-center font-medium text-neutral-900  pl-1">
-          {accountName}
-        </div>
-        <div className="self-center font-medium text-neutral-900 pl-1 ">
-          {initiativeName}
-        </div>
-        <div className="self-center font-medium text-neutral-900  pl-1 ">
-          {grantName}
-        </div>
-        {render()}
+        <div>{payeeName}</div> */}
+        <div>{render()}</div>
         <div className="flex justify-around self-center">
           <CommentToggler
             uuid={uuid}
