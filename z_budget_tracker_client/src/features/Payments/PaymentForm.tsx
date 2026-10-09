@@ -8,9 +8,8 @@ import {
   SAVED,
 } from '../../app/constants';
 import { useForm } from 'react-hook-form';
-import { formatNumber } from '../../app/util';
+import { formatCurrency, formatNumber } from '../../app/util';
 import MenuIdProvider from '../../contexts/MenuIdContext';
-import PaymentTransactionRow from './PaymentTransactionRow';
 import {
   AlertTriangle,
   BookOpenText,
@@ -21,6 +20,7 @@ import {
 import Button from '../../components/Button';
 import useAuth from '../../contexts/useAuth';
 import AddLineModal from './modals/AddLineModal';
+import PaymentRow from './PaymentRow';
 
 interface Props {
   payment: Payment;
@@ -112,7 +112,7 @@ const PaymentForm = ({ payment }: Props) => {
     key: { initiativeId: number; grantId: number; categoryId: number },
   ) {
     setTimeout(() => setAddLineModalIsOpen(false), 500);
-    
+
     console.log('handleLineAdded PaymentLineItem', newLine);
 
     const newLines: PaymentLineItem[] = lines.map(
@@ -242,43 +242,26 @@ const PaymentForm = ({ payment }: Props) => {
             )}
           </Button>
         </div>
-        {/* {lines.length > 0 && (
-          <div>
-            <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-4 border border-transparent font-semibold text-neutral-600">
-              <div className="self-end">Initiative</div>
-              <div className="self-end">Grant</div>
-              <div className="self-end">Category</div>
-              <div className="self-end ">Account</div>
-              <div className="flex justify-between ">
-                <div
-                  className={`text-center flex-2 self-end ${paymentHeader.status === POSTED ? 'opacity-0' : ''}`}
-                >
-                  Current Balance
-                </div>
-                <div className="self-end  text-end flex-[1.5] pr-2">
-                  Increase
-                </div>
-                <div className="self-end text-end flex-[1.5] pr-2">
-                  Decrease
-                </div>
-                <div
-                  className={`text-center flex-2 self-end ${paymentHeader.status === POSTED ? 'opacity-0' : ''}`}
-                >
-                  New Balance
-                </div>
-                <div
-                  className={`text-center flex-2  ${paymentHeader.status === POSTED ? 'opacity-0' : ''}`}
-                >
-                  Remaining Balance
-                </div>
-              </div>
-              <div></div>
-            </div>
-          </div>
-        )} */}
         <div className="pb-10">
           {lines.map((item, index) => {
-            return <div></div>;
+            return (
+              <PaymentRow
+                key={index}
+                lineItem={item}
+                canEdit={true}
+                status={paymentHeader.status}
+                render={() => {
+                  return (
+                    <div className="flex gap-0">
+                      <div className="text-center flex-2 text-neutral-600 self-center w-full">
+                        {paymentHeader.status !== POSTED &&
+                          formatCurrency(item.availableAmount)}
+                      </div>
+                    </div>
+                  );
+                }}
+              ></PaymentRow>
+            );
           })}
         </div>
         <AddLineModal

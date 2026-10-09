@@ -52,11 +52,11 @@ const Modal2 = ({
     // body
     <div
       onClick={onCancel}
-      className="fixed inset-0 z-10000 h-dvh w-screen  flex justify-center "
+      className="fixed inset-0 z-10000 h-dvh w-screen bg-black/60 flex justify-center "
     >
       {/* modal */}
       <div
-        className={`${modalStyles} ${animateClass}  max-w-md bg-white bg-dark-nav self-center rounded-sm shadow-lg`}
+        className={`${modalStyles} ${animateClass} opacity-100  max-w-md bg-white bg-dark-nav self-center rounded-sm shadow-lg`}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-neutral-200/30 border rounded-t-sm w-full h-full mb-2 p-3 flex justify-between align-center border-b border-gray-200 dark:border-b-neutral-800">

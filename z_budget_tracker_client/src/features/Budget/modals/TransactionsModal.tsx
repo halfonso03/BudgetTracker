@@ -69,7 +69,7 @@ const TransactionsModal = (props: Props) => {
                 key={i}
               >
                 <div className="flex justify-between gap-2 ">
-                  <div>{t.typeName}</div>
+                  <div className='font-medium'>{t.typeName}</div>
                   <div>
                     {t.typeName == 'Reprogramming' ? (
                       <button
@@ -101,9 +101,9 @@ const TransactionsModal = (props: Props) => {
                     ) : null}
                   </div>
                 </div>
-                <div className="text-center text-neutral-500">{formatDate(t.postedDate)}</div>
-                <div className="text-center text-neutral-500">{formatCurrency(t.amount)}</div>
-                <div className=' text-neutral-500 text-end'>{formatNumber(remaining)}</div>
+                <div className="text-center font-medium text-neutral-700">{formatDate(t.postedDate)}</div>
+                <div className="text-center font-medium text-neutral-700">{formatCurrency(t.amount)}</div>
+                <div className='text-neutral-700 font-medium text-end'>{formatNumber(remaining)}</div>
               </div>
             );
           })}

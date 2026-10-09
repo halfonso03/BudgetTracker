@@ -19,7 +19,7 @@ import {
 import Button from '../../components/Button';
 import NumericArrayInputGeneric from '../../components/NumericArrayInputGeneric';
 import MenuIdProvider from '../../contexts/MenuIdContext';
-import TransactionRow from './TransactionRow';
+import ReproRow from './ReproRow';
 import 'react-dropdown/style.css';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import useAuth from '../../contexts/useAuth';
@@ -644,7 +644,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       };
     });
 
-    console.log('lineItems2', lineItems2)
+    console.log('lineItems2', lineItems2);
 
     const reproToSave: UpdateReproRequest = {
       id: reproHeader.id,
@@ -912,7 +912,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                 <div className="flex gap-2 items-center justify-center mt-2 text-red-600">
                   <div>
                     Click the check box to override this behavior and allow
-                    posting the reprogramming with the negative balance line item.
+                    posting the reprogramming with the negative balance line
+                    item.
                   </div>
                   <CheckBox
                     onCheck={() => setOverrideNeg((prev) => !prev)}
@@ -969,7 +970,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                 key={index}
                 className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 px-3 py-2 border border-neutral-300 items-center mb-3 "
               >
-                <TransactionRow
+                <ReproRow
                   key={item.uuid}
                   lineItem={item}
                   balances={balances}
@@ -1033,7 +1034,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                     </div>
                   )}
                   canEdit={reproHeader.status !== POSTED}
-                ></TransactionRow>
+                ></ReproRow>
               </div>
             );
           })}

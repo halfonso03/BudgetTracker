@@ -17,7 +17,7 @@ type Props = {
   render: () => React.ReactNode;
 };
 
-const PaymentTransactionRow = ({
+const ReproRow = ({
   render,
   accountChange,
   duplicateRow,
@@ -35,10 +35,8 @@ const PaymentTransactionRow = ({
     comment,
   },
 }: Props) => {
-
-  
   // console.log('balances', balances)
-  
+
   const accounts = balances.map((b) => ({
     value: b.accountId,
     label: (
@@ -58,7 +56,6 @@ const PaymentTransactionRow = ({
       <div className="self-center">{grantName}</div>
       <div className="self-center">{categoryName}</div>
       <div className="self-center ">
-        
         {canEdit ? (
           <Dropdown
             tabIndex={-1}
@@ -123,4 +120,4 @@ const PaymentTransactionRow = ({
 //     </div>
 //   );
 // }
-export default PaymentTransactionRow;
+export default ReproRow;
