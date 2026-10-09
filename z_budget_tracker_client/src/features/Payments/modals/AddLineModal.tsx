@@ -198,6 +198,17 @@ const AddLineModal = ({ ...props }: Props) => {
     }, 500);
   }
 
+  function getAvailable(i: number, g: number, c: number, a: number) {
+    const t = availableAccountBalances?.filter(
+      (x) =>
+        x.initiativeId == i &&
+        x.grantId == g &&
+        x.categoryId == c &&
+        x.accountId == a,
+    );
+    const t2 = t!;
+    return t2[0].availableAmount;
+  }
   return (
     <PaginationContextProvider>
       <TallModal
@@ -270,7 +281,7 @@ const AddLineModal = ({ ...props }: Props) => {
                     ))}
                   </Select>
                 </div>
-                
+
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
                   <div className="text-neutral-600/90 font-medium">Account</div>
                   <Select
@@ -278,10 +289,27 @@ const AddLineModal = ({ ...props }: Props) => {
                     tabIndex={2}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                       setPayeeUpdated(false);
-                      setSelections((prev) => ({
-                        ...prev,
+
+                      const newSelections = {
+                        ...selections,
                         accountId: +e.target.value,
-                      }));
+                      };
+
+                      if (!remIsvalid) {
+                        const availableAmount2 = getAvailable(
+                          newSelections.initiativeId!,
+                          newSelections.grantId!,
+                          newSelections.categoryId!,
+                          newSelections.accountId!,
+                        );
+
+                        if (availableAmount2 - +getValues('amount') >= 0) {
+                          setRemIsValid(true);
+                        }
+                      }
+
+                      setSelections(newSelections);
+
                       register('accountId').onChange(e);
                     }}
                   >
@@ -315,10 +343,26 @@ const AddLineModal = ({ ...props }: Props) => {
                     tabIndex={3}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                       register('initiativeId').onChange(e);
-                      setSelections((prev) => ({
-                        ...prev,
+
+                      const newSelections = {
+                        ...selections,
                         initiativeId: +e.target.value,
-                      }));
+                      };
+
+                      if (!remIsvalid) {
+                        const availableAmount2 = getAvailable(
+                          newSelections.initiativeId!,
+                          newSelections.grantId!,
+                          newSelections.categoryId!,
+                          newSelections.accountId!,
+                        );
+
+                        if (availableAmount2 - +getValues('amount') >= 0) {
+                          setRemIsValid(true);
+                        }
+                      }
+
+                      setSelections(newSelections);
                     }}
                   >
                     <option value={0} className="text-neutral-600">
@@ -349,12 +393,25 @@ const AddLineModal = ({ ...props }: Props) => {
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                       register('grantId').onChange(e);
 
-                      // if (+e.target.value !== 0) {
-                      setSelections((prev) => ({
-                        ...prev,
+                      const newSelections = {
+                        ...selections,
                         grantId: +e.target.value,
-                      }));
-                      // }
+                      };
+
+                      if (!remIsvalid) {
+                        const availableAmount2 = getAvailable(
+                          newSelections.initiativeId!,
+                          newSelections.grantId!,
+                          newSelections.categoryId!,
+                          newSelections.accountId!,
+                        );
+
+                        if (availableAmount2 - +getValues('amount') >= 0) {
+                          setRemIsValid(true);
+                        }
+                      }
+
+                      setSelections(newSelections);
                     }}
                   >
                     <option value={0} className="text-neutral-600">
@@ -399,6 +456,20 @@ const AddLineModal = ({ ...props }: Props) => {
               </div>
             </div>
             <div className="flex justify-end gap-2 border-t border-t-neutral-200 p-2 py-2 ">
+              {/* {allSelections() && <span>have all selections</span>}
+              <br></br>
+              {remIsvalid ? (
+                <span>remaingamount is valid</span>
+              ) : (
+                <span>rem amount NOT valid</span>
+              )}
+              <br></br>
+              {availableAmount - parseFormattedNumber(getValues('amount')) <
+              0 ? (
+                <span>too mch requested</span>
+              ) : (
+                <span>ok amount requested</span>
+              )} */}
               <Button
                 type="submit"
                 disabled={

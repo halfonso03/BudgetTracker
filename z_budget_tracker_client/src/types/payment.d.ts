@@ -69,10 +69,12 @@ type PaymentAvailableAccountBalance = {
     accountId: number
     accountName: string
     availableAmount: number
-    accountId: number
     initiativeId: number,
     grantId: number,
+    categoryId:number
+    accountId: number
     initiativeName?: string
     grantName?: string
     categoryName?: string
+    
 }

@@ -25,11 +25,12 @@ namespace Application.Services
                                        b.GrantId == grantId &&
                                        b.AccountId == a.Id &&
                                        a.CategoryId == categoryId
-                                   group b by new { id = a.Id, name = a.Name, itemtype = b.ItemType } into catBal
+                                   group b by new { id = a.Id, name = a.Name, itemtype = b.ItemType, c_id = a.CategoryId } into catBal
                                    select new
                                    {
                                        accountId = catBal.Key.id,
                                        accountName = catBal.Key.name,
+                                       categoryId = catBal.Key.c_id,
                                        catBal.Key.itemtype,
                                        amount = catBal.Sum(x => x.Amount)
                                    }
@@ -52,6 +53,7 @@ namespace Application.Services
                                              {
                                                  accountId = a.Id,
                                                  accountName = a.Name,
+                                                 categoryId = a.CategoryId,
                                                  currentAmount = subItems != null ? subItems.amount : 0,
                                              };
 
@@ -74,11 +76,11 @@ namespace Application.Services
 
             var result = (from q in query
                           select PaymentCategoryBalanceDto.Create(
-                            initiativeId, grantId, q.c.accountId, q.c.accountName, q.c.currentAmount,
+                            initiativeId, grantId, q.c.accountId, q.c.categoryId, q.c.accountName, q.c.currentAmount,
                             initiative.Name, grant.Name, category.Name)
                         ).ToList();
 
-            return Result<List<PaymentCategoryBalanceDto>>.Success(result); ;
+            return Result<List<PaymentCategoryBalanceDto>>.Success(result);
         }
     }
 }

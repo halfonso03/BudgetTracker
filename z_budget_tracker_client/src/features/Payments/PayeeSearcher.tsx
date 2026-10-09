@@ -21,9 +21,7 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputFocused, stInputFocused] = useState(false);
   const [query, setQuery] = useState<string>(() => '');
-
   const [infoWindowIsOpen, setInfoWindowIsOpen] = useState(false);
-  //
   const [highlightedRow, setHighlightedRow] = useState(-1);
   const [selectedPayee, setSelectedPayee] = useState<Payee | null>(null);
   const [searching, setSearching] = useState(false);
@@ -47,9 +45,6 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
     },
     [highlightedRow, suggestions],
   );
-
-  useEffect(() => {
-  });
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -80,7 +75,6 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
   }, [highlightedRow, onPayeeSelected, selectRow, suggestions]);
 
   function onRemoveSelection() {
-    // setSelectedRow(-1);
     setSelectedPayee(null);
     setSearching(false);
     onPayeeSelectionCleared();
@@ -88,11 +82,6 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
 
   return (
     <div>
-      {/* highlightedRow{highlightedRow}
-      <br></br>
-      selectedPayeeInfo name: {selectedPayeeInfo?.name}
-      <br></br>
-      selectedPayee name: {selectedPayee?.name} */}
       <div
         className={`pl-1 pt-1 rounded-sm ${inputFocused ? 'border border-blue-500' : 'border border-neutral-300'}`}
       >
@@ -109,8 +98,7 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
         <input
           ref={inputRef}
           value={query}
-          className='p-2 w-full rounded-sm text-neutral-800 placeholder-neutral-400 focus:outline-none  transition-all"
-              placeholder="Enter a search term and presss enter..."'
+          className='p-2 w-full rounded-sm text-neutral-800 placeholder-neutral-400 focus:outline-none transition-all'
           placeholder="Enter payee name..."
           onFocus={() => {
             stInputFocused(true);

@@ -54,12 +54,12 @@ const PaymentEntryInput = ({
     <div>
       <div className="grid grid-cols-[.5fr_.85fr_.5fr]  w-full items-center mb-5">
         <div className="text-neutral-600/90 font-medium">Available</div>
-        <div className="font-semibold pl-1">{formatCurrency(available)}</div>
+        <div className="font-semibold pl-2">{formatCurrency(available)}</div>
       </div>
 
       <div className="grid grid-cols-[.5fr_.85fr_.5fr]  w-full items-center mb-5">
         <div className="text-neutral-600/90 font-medium">
-          <div className="flex items-baseline gap-2 text-red-600">
+          <div className="flex items-baseline gap-2 ">
             Payment Amount
           </div>
         </div>
@@ -97,7 +97,7 @@ const PaymentEntryInput = ({
       <div className="grid grid-cols-[.5fr_.85fr_.5fr] w-full items-center mb-5">
         <div className="text-neutral-600/90 font-medium">Remaining</div>
         <div
-          className={`font-semibold pl-1 ${remaining < 0 ? 'text-red-500' : ''}`}
+          className={`font-semibold pl-2 ${remaining < 0 ? 'text-red-500' : ''}`}
         >
           {formatCurrency(remaining)}
         </div>

@@ -10,12 +10,13 @@ namespace Application.DTOs.Payment
         public required int InitiativeId { get; set; }
         public required int GrantId { get; set; }
         public required int AccountId { get; set; }
+        public required int CategoryId { get; set; }
         public required string AccountName { get; set; }
         public required decimal AvailableAmount { get; set; } = 0;
         public string? InitiativeName { get; set; }
         public string? GrantName { get; set; }
         public string? CategoryName { get; set; }
-        public static PaymentCategoryBalanceDto Create(int initiativeId, int grantId, int accountId, string name,
+        public static PaymentCategoryBalanceDto Create(int initiativeId, int grantId, int accountId, int categoryId, string name,
                 decimal availableAmount,
                 string iName = "", string gName = "", string cName = "")
         {
@@ -23,6 +24,7 @@ namespace Application.DTOs.Payment
             {
                 InitiativeId = initiativeId,
                 GrantId = grantId,
+                CategoryId = categoryId,
                 AccountId = accountId,
                 AccountName = name,
                 AvailableAmount = availableAmount,

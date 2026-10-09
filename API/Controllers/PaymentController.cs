@@ -9,7 +9,6 @@ namespace API.Controllers
 {
     public class PaymentController(PaymentService paymentService) : BaseApiController
     {
-        
         [HttpGet("balances")]
         public async Task<IActionResult> GetAvailableBalancesForCategory(int initiativeId, int grantId, int categoryId)
         {
