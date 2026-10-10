@@ -1,6 +1,6 @@
 import { createContext, useState, type ReactNode } from 'react';
 
-interface AuthContextType {
+interface ClientAuthContextType {
   user: User | null;
   loginId: string | null;
   login: (user: User) => void;
@@ -12,9 +12,9 @@ interface AuthProps {
   children: ReactNode;
 }
 
-const AuthContext = createContext<AuthContextType | null>(null);
+const ClientAuthContext = createContext<ClientAuthContextType | null>(null);
 
-export const AuthProvider = ({ children }: AuthProps) => {
+export const ClientAuthProvider = ({ children }: AuthProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loginId, setloginId] = useState<string | null>(null);
 
@@ -33,12 +33,14 @@ export const AuthProvider = ({ children }: AuthProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, loginId, login, logout }}>
+    <ClientAuthContext.Provider
+      value={{ isLoggedIn, user, loginId, login, logout }}
+    >
       {children}
-    </AuthContext.Provider>
+    </ClientAuthContext.Provider>
   );
 };
 
-export { AuthContext };
+export { ClientAuthContext };
 
-export { type AuthContextType };
+export { type ClientAuthContextType };

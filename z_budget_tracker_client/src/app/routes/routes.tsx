@@ -18,8 +18,17 @@ import MinimalistTable from '../../features/proto/ProtoList';
 import PaymentLanding from '../../features/Payments/PaymentLanding';
 import PaymentDetails from '../../features/Payments/PaymentDetails';
 import PaymentNew from '../../features/Payments/PaymentNew';
+import Logout from '../../features/Auth/Logout';
 
 export const routes: RouteObject[] = [
+  {
+    path: '/login',
+    element: <Login></Login>,
+  },
+  {
+    path: '/logout',
+    element: <Logout></Logout>,
+  },
   {
     path: '/',
     element: <App></App>,
@@ -32,10 +41,7 @@ export const routes: RouteObject[] = [
           </ProtectedRoute>
         ),
       },
-      {
-        path: '/login',
-        element: <Login></Login>,
-      },
+
       {
         path: '/budget',
         element: (

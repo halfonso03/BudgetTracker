@@ -6,10 +6,6 @@ import {
   type PieLabelRenderProps,
 } from 'recharts';
 import { RechartsDevtools } from '@recharts/devtools';
-import useAccount from '../api/hooks/auth/useAuth';
-import useAuth from '../contexts/useAuth';
-import Switch from '../components/Switch';
-import { useState } from 'react';
 
 const renderCustomizedLabel = ({
   cx,
@@ -46,7 +42,6 @@ const Home = () => {
 
   // if (loadingUserInfo) return 'Loading user...';
   // if (!currentUser) return 'Error loading user';
-
 
   // if (currentUser) {
   //   login(currentUser);

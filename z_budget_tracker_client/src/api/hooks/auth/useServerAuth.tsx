@@ -15,7 +15,7 @@ export type LoginResponse = {
   roles:string[]
 };
 
-export default function useAccount() {
+export default function useServerAuth() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -23,7 +23,7 @@ export default function useAccount() {
   const { hasUnsavedChanges, setHasUnsavedChanges } =
     useHasUnsavedChangesStore();
 
-  const { login, logout } = useAuth();
+  const { login } = useAuth();
 
   // const { data: currentUser, isLoading: loadingUserInfo } = useQuery({
   //   queryKey: ['user'],
@@ -58,7 +58,7 @@ export default function useAccount() {
         queryKey: ['user'],
       });
       login(response);
-      navigate('/payments', { replace: true });
+      navigate('/');
     },
     onError: (error: AxiosError) => {
       if (error.response) {
@@ -75,21 +75,7 @@ export default function useAccount() {
     },
   });
 
-  const { mutate: logoutUser } = useMutation({
-    mutationFn: async () => {
-      agent.post('/account/logout');
-    },
-    onSuccess: async () => {
-      // queryClient.removeQueries();
-      if (hasUnsavedChanges) {
-        setHasUnsavedChanges(false);
-      }
-      navigate('login', { replace: true });
 
-      logout();
-      queryClient.removeQueries();
-    },
-  });
 
   // const registerUser = useMutation({
   // 	mutationFn: async (creds: RegisterSchema) => {
@@ -156,7 +142,6 @@ export default function useAccount() {
     isLoginSuccess,
     errorMessage,
     // registerUser,
-    logoutUser,
     // currentUser,
     // loadingUserInfo,
     // verifyEmail,

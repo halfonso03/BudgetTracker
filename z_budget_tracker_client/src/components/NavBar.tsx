@@ -1,17 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import Button from './Button';
 import ConfirmModal from './ConfirmModal';
 import { useHasUnsavedChangesStore } from '../state/useHasUnsavedChangesStore';
-import useAccount from '../api/hooks/auth/useAuth';
-import axios from 'axios';
 import useAuth from '../contexts/useAuth';
 
 const NavBar = () => {
   const navigate = useNavigate();
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [urltoGoTo, setUrlToGoTo] = useState<string>('');
-  const [loggedOut, setLoggedout] = useState(false);
 
   const location = useLocation();
 
@@ -25,37 +21,36 @@ const NavBar = () => {
     (x) => x.setHasUnsavedChanges,
   );
 
-  const { user: user, login } = useAuth();
-  const { logoutUser } = useAccount();
+  const { user: user  } = useAuth();
   // if (!user) {
   //   reLogin();
   // }
 
-  useEffect(() => {
-    // Check if browser cookie is still valid on page reload
-    if (user) return;
+  // useEffect(() => {
+  //   // Check if browser cookie is still valid on page reload
+  //   if (user) return;
 
-    axios
-      .get('https://localhost:5001/api/account/user-info', {
-        withCredentials: true,
-      })
-      .then((response) => {
-        // .MapIdentityApi returns user info (like email) if the cookie is valid
+  //   axios
+  //     .get('https://localhost:5001/api/account/user-info', {
+  //       withCredentials: true,
+  //     })
+  //     .then((response) => {
+  //       // .MapIdentityApi returns user info (like email) if the cookie is valid
 
-        login(response.data);
-        console.log('location', location.pathname);
-        console.log('user', user);
-        navigate(location.pathname);
-      })
-      .catch((error) => {
-        // 401 Unauthorized means no cookie or expired cookie
-        console.log('error', error);
-        // setUser(null);
-      })
-      .finally(() => {
-        // setLoading(false); // Stop showing a blank/loading screen
-      });
-  }, [location.pathname, login, navigate, user]);
+  //       login(response.data);
+  //       console.log('location', location.pathname);
+  //       console.log('user', user);
+  //       navigate(location.pathname);
+  //     })
+  //     .catch((error) => {
+  //       // 401 Unauthorized means no cookie or expired cookie
+  //       console.log('error', error);
+  //       // setUser(null);
+  //     })
+  //     .finally(() => {
+  //       // setLoading(false); // Stop showing a blank/loading screen
+  //     });
+  // }, [location.pathname, login, navigate, user]);
 
   // function gotoRepro() {
   //   navigate(`/reprogramming/${reproInputRef.current!.value}`, {
@@ -246,16 +241,9 @@ const NavBar = () => {
                 Proto
               </NavLink>
             </div>
-            <Button
-              key={loggedOut.toString()}
-              className="nav-link cursor-pointer self-end"
-              onClick={() => {
-                logoutUser();
-                setLoggedout((prev) => !prev);
-              }}
-            >
+            <NavLink to="/logout" className="nav-link">
               Log Out
-            </Button>
+            </NavLink>
           </div>
           <ConfirmModal
             isOpen={confirmModalIsOpen}

@@ -1,10 +1,11 @@
 import Button from '../../components/Button';
-import useAccount, { type LoginFormValues } from '../../api/hooks/auth/useAuth';
+import { type LoginFormValues } from '../../api/hooks/auth/useServerAuth';
 import toast from 'react-hot-toast';
 import StackedFormRow from '../../ui/StackedFormRow';
 import Input from '../../components/Input';
 import { Check } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import useServerAuth from '../../api/hooks/auth/useServerAuth';
 
 const Login = () => {
   const {
@@ -19,7 +20,7 @@ const Login = () => {
   });
 
   const { loginUser, isLoginPending, isLoginSuccess, errorMessage } =
-    useAccount();
+    useServerAuth();
 
   const onSubmit = (data: LoginFormValues) => {
     // setIsLoggingIn(true);
