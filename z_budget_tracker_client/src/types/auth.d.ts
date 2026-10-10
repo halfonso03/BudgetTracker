@@ -5,3 +5,6 @@ type User = {
     email: string,
     roles: []
 }
+
+
+type LoginResponse = User & {};

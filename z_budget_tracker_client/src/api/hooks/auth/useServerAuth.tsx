@@ -7,13 +7,6 @@ import { useHasUnsavedChangesStore } from '../../../state/useHasUnsavedChangesSt
 import { useState } from 'react';
 import type { AxiosError, AxiosResponse } from 'axios';
 export type LoginFormValues = { email: string; password: string };
-export type LoginResponse = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  roles: string[];
-};
 
 export default function useServerAuth() {
   const queryClient = useQueryClient();
@@ -36,7 +29,6 @@ export default function useServerAuth() {
         creds,
       );
 
-      console.log('response', response);
       const loginResponse = response.data as LoginResponse;
       return loginResponse;
     },
@@ -54,11 +46,11 @@ export default function useServerAuth() {
       if (error.response) {
         // The server responded with a status code outside the 2xx range (e.g., 400)
         const errorData = error.response.data;
-        console.log('Server Error Status:', error.response); // 400
-        console.log('Server Error Data:', errorData); // { message: "Invalid payload", ... }
-        setErrorMessage(error.response.data as string);
+        console.log('loginUser mutation error.response:', error.response); // 400
+        console.log('loginUser mutation error.response.data:', error.response.data); // { message: "Invalid payload", ... }
+        setErrorMessage(errorData as string);
       } else {
-        console.error('Network or Setup Error:', error.message);
+        console.error('loginUser mutation but no error.response:', error.message);
         setErrorMessage(error.message as string);
       }
       toast.error(error.message);
