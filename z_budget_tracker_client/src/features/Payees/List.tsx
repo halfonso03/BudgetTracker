@@ -11,6 +11,7 @@ import Button from '../../components/Button';
 import { usePayees } from '../../api/hooks/payees/usePayees';
 import { Link } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
+import SearchTermMarker from '../../components/SearchTermMarker';
 
 // type Props = {
 //   vendors: Payee[];
@@ -18,7 +19,7 @@ import Spinner from '../../components/Spinner';
 
 const List = () => {
   const { data, loadingPayees } = usePayees();
-  const { setPageNumber, setSearchTerm } = usePagination();
+  const { setPageNumber, setSearchTerm, searchTerm } = usePagination();
   const { sortByValue, setSortByValue } = useSortingContext();
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedPayee, setSelectedPayee] = useState<Payee | null>(null);
@@ -30,6 +31,8 @@ const List = () => {
   // const [vendorsState, setPayeesState] = useState<Payee[] | undefined>(
   //   vendors,
   // );
+
+  console.log('searchTerm', searchTerm);
 
   function openDetails(vendor: Payee) {
     setSelectedPayee(vendor);
@@ -73,14 +76,7 @@ const List = () => {
     });
   }
 
-  if (loadingPayees)
-    return (
-      <div className=''>
-        <div className='flex justify-center  text-center'>
-          <Spinner></Spinner>
-        </div>
-      </div>
-    );
+
 
   return (
     <div className="mx-auto w-[95%]">
@@ -95,185 +91,193 @@ const List = () => {
           ></Search>
         </div>
       </div>
-      {/* Minimalist Search Input */}
-      {/* <div className="relative w-full sm:w-72">
-        <Search
-          size={16}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none"
-        />
-        <input
-          type="text"
-          placeholder="Search records..."
-          className="w-full pl-9 pr-9 py-2 text-sm bg-neutral-50 border border-neutral-200/80 rounded-lg text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-neutral-400 focus:bg-white transition-all"
-        />
-        {
-          <button className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors">
-            <X size={14} />
-          </button>
-        }
-      </div> */}
-      <input type="text" />
-      <div>
-        <div className="flex flex-col justify-between border border-neutral-200 rounded-lg">
-          <div
-            className="grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.4fr_.5fr_.2fr_.2fr] gap-2 
-                        bg-neutral-50 text-neutral-500 border-b border-neutral-200"
-          >
-            <div className="flex justify-start  pl-6">
-              <SortBySelector
-                label="Name"
-                value="NAME"
-                currentSortValue={sortByValue}
-              ></SortBySelector>
-            </div>
-            <div className="flex justify-start pl-6">
-              <SortBySelector
-                label="Type"
-                value="PAYEETYPE"
-                currentSortValue={sortByValue}
-              ></SortBySelector>
-            </div>
-            <div className="flex justify-center">
-              <SortBySelector
-                label="Charge Account"
-                value="ACCOUNT"
-                currentSortValue={sortByValue}
-              ></SortBySelector>
-            </div>
-            <div className="flex justify-center">
-              <SortBySelector
-                label="Total Paid"
-                value="TOTALPAID"
-                currentSortValue={sortByValue}
-              ></SortBySelector>
-            </div>
-            <div className="flex justify-center">
-              <SortBySelector
-                label="Last Payment Amount"
-                value="LASTPAYMENTAMOUNT"
-                currentSortValue={sortByValue}
-              ></SortBySelector>
-            </div>
-            <div className="flex justify-center">
-              <SortBySelector
-                label="Last Payment Date"
-                value="LASTPAYMENTDATE"
-                currentSortValue={sortByValue}
-              ></SortBySelector>
-            </div>
-            <div className="flex justify-center">
-              <SortBySelector
-                label="Days Since Last Payment"
-                value="DAYSSINCELASTPAYMENT"
-                currentSortValue={sortByValue}
-              ></SortBySelector>
-            </div>
-            <div className="flex justify-center">
-              <SortBySelector
-                label="Active"
-                value="ACTIVE"
-                currentSortValue={sortByValue}
-              ></SortBySelector>
-            </div>
-            <div className="text-center self-center font-semibold">Pay</div>
+      {loadingPayees ? (
+        <div className="">
+          <div className="flex justify-center  text-center">
+            <Spinner></Spinner>
           </div>
-          <div className="">
-            {data?.payees?.map((v) => (
+        </div>
+      ) : (
+        <>
+          <input type="text" />
+          <div>
+            <div className="flex flex-col justify-between border border-neutral-200 rounded-lg">
               <div
-                className=" grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.4fr_.5fr_.2fr_.2fr] gap-2 p-1 items-center hover:bg-neutral-100 duration-200 transition-all cursor-pointer border-b border-b-neutral-200 last:border-0 "
-                key={v.id}
-                onClick={() => {
-                  openDetails(v);
-                }}
+                className="grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.4fr_.5fr_.2fr_.2fr] gap-2 
+                        bg-neutral-50 text-neutral-500 border-b border-neutral-200"
               >
-                <div className="px-4 py-1 font-medium text-neutral-900">
-                  {v.name}
+                <div className="flex justify-start  pl-6">
+                  <SortBySelector
+                    label="Name"
+                    value="NAME"
+                    currentSortValue={sortByValue}
+                  ></SortBySelector>
                 </div>
-                <div className="px-4 py-1 font-medium text-neutral-900">
-                  {v.payeeType}
+                <div className="flex justify-start pl-6">
+                  <SortBySelector
+                    label="Type"
+                    value="PAYEETYPE"
+                    currentSortValue={sortByValue}
+                  ></SortBySelector>
                 </div>
-                <div className="px-4 py-1 text-neutral-600 text-center">
-                  {v.accountName}
+                <div className="flex justify-center">
+                  <SortBySelector
+                    label="Charge Account"
+                    value="ACCOUNT"
+                    currentSortValue={sortByValue}
+                  ></SortBySelector>
                 </div>
-                <div className="px-4 py-1 text-neutral-500 text-center">
-                  {v.totalPaid ? formatNumber(v.totalPaid) : '-'}
+                <div className="flex justify-center">
+                  <SortBySelector
+                    label="Total Paid"
+                    value="TOTALPAID"
+                    currentSortValue={sortByValue}
+                  ></SortBySelector>
                 </div>
-                <div className="px-4 py-1 text-neutral-600 text-center">
-                  {v.lastPaymentAmount
-                    ? formatNumber(v.lastPaymentAmount)
-                    : '-'}
+                <div className="flex justify-center">
+                  <SortBySelector
+                    label="Last Payment Amount"
+                    value="LASTPAYMENTAMOUNT"
+                    currentSortValue={sortByValue}
+                  ></SortBySelector>
                 </div>
-                <div className="px-4 py-1 text-neutral-600 text-center">
-                  {v.lastPaymentDate ? formatDate(v.lastPaymentDate) : '-'}
+                <div className="flex justify-center">
+                  <SortBySelector
+                    label="Last Payment Date"
+                    value="LASTPAYMENTDATE"
+                    currentSortValue={sortByValue}
+                  ></SortBySelector>
                 </div>
-
-                <div className="px-4 py-1 text-neutral-600 text-center ">
-                  {v.daysSinceLastPayment || '-'}
+                <div className="flex justify-center">
+                  <SortBySelector
+                    label="Days Since Last Payment"
+                    value="DAYSSINCELASTPAYMENT"
+                    currentSortValue={sortByValue}
+                  ></SortBySelector>
                 </div>
-                <div className="flex justify-center ">
-                  {v.isActive ? (
-                    <Check className="text-green-600"></Check>
-                  ) : (
-                    <X className="text-neutral-400"></X>
-                  )}
+                <div className="flex justify-center">
+                  <SortBySelector
+                    label="Active"
+                    value="ACTIVE"
+                    currentSortValue={sortByValue}
+                  ></SortBySelector>
                 </div>
-
-                <div className="flex justify-center font-semibold">
-                  <Link to="/test">
-                    <DollarSign
-                      className={`${!v.isActive ? 'text-neutral-400' : 'text-blue-500'} cursor-pointer`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    ></DollarSign>
-                  </Link>
-                </div>
+                <div className="text-center self-center font-semibold">Pay</div>
               </div>
-            ))}
-          </div>
-        </div>
-        <div className="flex items-center justify-between mt-6 px-2  text-neutral-500">
-          <span>
-            Showing page{' '}
-            <span className="font-medium text-neutral-900">
-              {data?.pagination?.currentPage}
-            </span>{' '}
-            of {data?.pagination?.totalPages}
-          </span>
-          {data?.pagination && (
-            <div className="flex">
-              <button
-                onClick={() =>
-                  setPageNumber(Math.max(data!.pagination!.currentPage - 1, 1))
-                }
-                disabled={data?.pagination?.currentPage === 1}
-                className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-              >
-                <ChevronLeft size={20} className="cursor-pointer" />
-              </button>
-              <Pagination
-                data={data?.pagination}
-                onPageNumberChange={handlePageNumberChange}
-              ></Pagination>
-              <button
-                onClick={() => setPageNumber(data!.pagination!.currentPage + 1)}
-                disabled={
-                  data?.pagination?.currentPage === data?.pagination?.totalPages
-                }
-                className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-              >
-                <ChevronRight size={20} className="cursor-pointer" />
-              </button>
+              <div className="">
+                {data?.payees?.map((v) => (
+                  <div
+                    className=" grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.4fr_.5fr_.2fr_.2fr] gap-2 p-1 items-center hover:bg-neutral-100 duration-200 transition-all cursor-pointer border-b border-b-neutral-200 last:border-0 "
+                    key={v.id}
+                    onClick={() => {
+                      openDetails(v);
+                    }}
+                  >
+                    <div className="px-4 py-1 font-medium text-neutral-900">
+                      <SearchTermMarker
+                        textToFind={searchTerm || ''}
+                        textToDisplay={v.name}
+                      ></SearchTermMarker>
+                    </div>
+                    <div className="px-4 py-1 font-medium text-neutral-900">
+                      <SearchTermMarker
+                        textToFind={searchTerm || ''}
+                        textToDisplay={v.payeeType}
+                      ></SearchTermMarker>
+                    </div>
+                    <div className="px-4 py-1 text-neutral-600 text-center">
+                      <SearchTermMarker
+                        textToFind={searchTerm || ''}
+                        textToDisplay={v.accountName}
+                      ></SearchTermMarker>
+                    </div>
+                    <div className="px-4 py-1 text-neutral-500 text-center">
+                      {v.totalPaid ? formatNumber(v.totalPaid) : '-'}
+                    </div>
+                    <div className="px-4 py-1 text-neutral-600 text-center">
+                      {v.lastPaymentAmount
+                        ? formatNumber(v.lastPaymentAmount)
+                        : '-'}
+                    </div>
+                    <div className="px-4 py-1 text-neutral-600 text-center">
+                      {v.lastPaymentDate ? formatDate(v.lastPaymentDate) : '-'}
+                    </div>
+
+                    <div className="px-4 py-1 text-neutral-600 text-center ">
+                      {v.daysSinceLastPayment || '-'}
+                    </div>
+                    <div className="flex justify-center ">
+                      {v.isActive ? (
+                        <Check className="text-green-600"></Check>
+                      ) : (
+                        <X className="text-neutral-400"></X>
+                      )}
+                    </div>
+
+                    <div className="flex justify-center font-semibold">
+                      <Link to="/test">
+                        <DollarSign
+                          className={`${!v.isActive ? 'text-neutral-400' : 'text-blue-500'} cursor-pointer`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                        ></DollarSign>
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          )}
-        </div>
-        {detailsOpen && (
-          <PayeeDetailsWindow
-            payee={selectedPayee!}
-            onClose={handleDetailsClose}
-          ></PayeeDetailsWindow>
-        )}
-      </div>
+            <div className="flex items-center justify-between mt-6 px-2  text-neutral-500">
+              <span>
+                Showing page{' '}
+                <span className="font-medium text-neutral-900">
+                  {data?.pagination?.currentPage}
+                </span>{' '}
+                of {data?.pagination?.totalPages}
+              </span>
+              <div>{data?.pagination?.totalCount} results found.</div>
+              {data?.pagination && (
+                <div className="flex">
+                  <button
+                    onClick={() =>
+                      setPageNumber(
+                        Math.max(data!.pagination!.currentPage - 1, 1),
+                      )
+                    }
+                    disabled={data?.pagination?.currentPage === 1}
+                    className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  >
+                    <ChevronLeft size={20} className="cursor-pointer" />
+                  </button>
+                  <Pagination
+                    data={data?.pagination}
+                    onPageNumberChange={handlePageNumberChange}
+                  ></Pagination>
+                  <button
+                    onClick={() =>
+                      setPageNumber(data!.pagination!.currentPage + 1)
+                    }
+                    disabled={
+                      data?.pagination?.currentPage ===
+                      data?.pagination?.totalPages
+                    }
+                    className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                  >
+                    <ChevronRight size={20} className="cursor-pointer" />
+                  </button>
+                </div>
+              )}
+            </div>
+            {detailsOpen && (
+              <PayeeDetailsWindow
+                payee={selectedPayee!}
+                onClose={handleDetailsClose}
+              ></PayeeDetailsWindow>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };

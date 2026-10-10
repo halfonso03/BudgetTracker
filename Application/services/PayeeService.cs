@@ -148,7 +148,17 @@ namespace Application.Services
         public async Task<Result<PayeeSearchResponseDto>> GetPayees(PaginationParams paginationParams, string searchTerm, string sortBy)
         {
 
-            var payeeSummaries = dbContext.PayeeSummaries;
+            var payeeSummaries = dbContext.PayeeSummaries.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                payeeSummaries = payeeSummaries.Where(x =>
+                        (!string.IsNullOrEmpty(x.Name) && x.Name.Contains(searchTerm))
+                        || (!string.IsNullOrEmpty(x.PayeeType) && x.PayeeType.Contains(searchTerm))
+                        || (!string.IsNullOrEmpty(x.AccountName) && x.AccountName.Contains(searchTerm)))
+                        .AsQueryable();
+
+            }
 
             var payeesSummariesSorted = sortBy switch
             {
@@ -244,7 +254,7 @@ namespace Application.Services
                                    PayeeTypeId = (int)x.PayeeTypeId,
                                    LastPaymentAmount = lastPaymentAmount,
                                    LastPaymentDate = lastPaymentDate,
-                                   TotalPaid = totalPaid
+                                   TotalPaid = totalPaid,
                                }).SingleOrDefaultAsync();
 
             if (result == null)
