@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { ClientAuthContext, type ClientAuthContextType } from "./ClientAuthContext";
 
-function useAuth() {
+function useClientAuth() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const context = useContext<ClientAuthContextType>(ClientAuthContext as any);
     if (context === undefined)
@@ -10,4 +10,4 @@ function useAuth() {
 }
 
 
-export default useAuth;
+export default useClientAuth;

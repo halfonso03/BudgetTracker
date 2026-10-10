@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import agent from '../../agent';
 import { useNavigate } from 'react-router-dom';
-import useAuth from '../../../contexts/useAuth';
+import useClientAuth from '../../../contexts/useAuth';
 import toast from 'react-hot-toast';
 import { useHasUnsavedChangesStore } from '../../../state/useHasUnsavedChangesStore';
 import { useState } from 'react';
@@ -12,7 +12,7 @@ export type LoginResponse = {
   firstName: string;
   lastName: string;
   email: string;
-  roles:string[]
+  roles: string[];
 };
 
 export default function useServerAuth() {
@@ -23,17 +23,7 @@ export default function useServerAuth() {
   const { hasUnsavedChanges, setHasUnsavedChanges } =
     useHasUnsavedChangesStore();
 
-  const { login } = useAuth();
-
-  // const { data: currentUser, isLoading: loadingUserInfo } = useQuery({
-  //   queryKey: ['user'],
-  //   queryFn: async () => {
-  //     const response = await agent.get<User>('/account/user-info');
-  //     console.log(response.data);
-  //     return response.data;
-  //   },
-  //   enabled: !queryClient.getQueryData(['user']),
-  // });
+  const { login } = useClientAuth();
 
   const {
     mutate: loginUser,
@@ -74,8 +64,6 @@ export default function useServerAuth() {
       toast.error(error.message);
     },
   });
-
-
 
   // const registerUser = useMutation({
   // 	mutationFn: async (creds: RegisterSchema) => {

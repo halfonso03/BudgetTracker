@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import useAuth from '../contexts/useAuth';
+import useClientAuth from '../contexts/useAuth';
+import useUserInfo from '../api/hooks/auth/useUserInfo';
 
 type Props = {
   children: ReactNode;
@@ -9,9 +10,15 @@ type Props = {
 const ProtectedRoute = ({ children }: Props) => {
   const location = useLocation();
 
-  const auth = useAuth();
+  const clientAuth = useClientAuth();
 
-  return auth.isLoggedIn() ? (
+  const { serverUser } = useUserInfo();
+
+  if (serverUser && !clientAuth.isLoggedIn()) {
+    clientAuth.login(serverUser);
+  }
+
+  return clientAuth.isLoggedIn() ? (
     <>{children}</>
   ) : (
     <>
@@ -20,12 +27,4 @@ const ProtectedRoute = ({ children }: Props) => {
   );
 };
 
-// const ProtectedRoute = ({ children }: Props) => {
-//   const navigate = useNavigate();
-//   const { user } = useAuth();
-//   useEffect(() => {
-//     if (!user) navigate('/login');
-//   }, [navigate, user]);
-//   return <>{children}</>;
-// };
 export default ProtectedRoute;

@@ -22,7 +22,7 @@ import MenuIdProvider from '../../contexts/MenuIdContext';
 import ReproRow from './ReproRow';
 import 'react-dropdown/style.css';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
-import useAuth from '../../contexts/useAuth';
+import useClientAuth from '../../contexts/useAuth';
 import ConfirmModal from '../../components/ConfirmModal';
 import IdHeader from './IdHeader';
 import { useLocation } from 'react-router-dom';
@@ -59,7 +59,7 @@ interface Props {
 const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   // console.log('ReproForm render');
 
-  const { user, loginId } = useAuth();
+  const { user, loginId } = useClientAuth();
   const queryClient = useQueryClient();
   const location = useLocation();
   const created = location.state?.created ? location.state.created : false;
@@ -861,9 +861,15 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             <div className="flex justify-between">
               <div className="flex-1"></div>
 
-              <div className="text-neutral-500 flex-1 pr-1 text-end ">Increase</div>
-              <div className="text-neutral-500 flex-1 pr-1 text-end">Decrease</div>
-              <div className="text-neutral-500 flex-1 pr-1 text-end">Variance</div>
+              <div className="text-neutral-500 flex-1 pr-1 text-end ">
+                Increase
+              </div>
+              <div className="text-neutral-500 flex-1 pr-1 text-end">
+                Decrease
+              </div>
+              <div className="text-neutral-500 flex-1 pr-1 text-end">
+                Variance
+              </div>
             </div>
             <div></div>
             <div></div>

@@ -7,16 +7,7 @@ const Logout = () => {
   useEffect(() => {
     logoutUser();
   }, [logoutUser]);
-  return (
-    <div>
-      {/* <Button
-        key={loggedOut.toString()}
-        className="nav-link cursor-pointer self-end"
-        onClick={() => {}}
-      >
-        Log Out
-      </Button> */}
-    </div>
-  );
+
+  return null;
 };
 export default Logout;

@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import ConfirmModal from '../../components/ConfirmModal';
-import useAuth from '../../contexts/useAuth';
+import useClientAuth from '../../contexts/useAuth';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ReproControls from './ReproControls';
 import ReproForm from './ReproForm';
@@ -9,7 +9,7 @@ import ReproForm from './ReproForm';
 const ReproNew = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user } = useClientAuth();
   const preloadState = location.state;
   const rowBalances: ReproRowBalance[] = [];
   const lineItems: ReproLineItem[] = [];

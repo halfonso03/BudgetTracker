@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import ConfirmModal from './ConfirmModal';
 import { useHasUnsavedChangesStore } from '../state/useHasUnsavedChangesStore';
-import useAuth from '../contexts/useAuth';
+import useClientAuth from '../contexts/useAuth';
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const NavBar = () => {
     (x) => x.setHasUnsavedChanges,
   );
 
-  const { user: user  } = useAuth();
+  const { user: user, isLoggedIn } = useClientAuth();
   // if (!user) {
   //   reLogin();
   // }
@@ -241,9 +241,15 @@ const NavBar = () => {
                 Proto
               </NavLink>
             </div>
-            <NavLink to="/logout" className="nav-link">
-              Log Out
-            </NavLink>
+            <div>
+              {isLoggedIn() && <span>Hello, {user.firstName}</span>}
+              {' '}
+              {isLoggedIn() && (
+                <NavLink to="/logout" className="nav-link">
+                  Log Out
+                </NavLink>
+              )}
+            </div>
           </div>
           <ConfirmModal
             isOpen={confirmModalIsOpen}

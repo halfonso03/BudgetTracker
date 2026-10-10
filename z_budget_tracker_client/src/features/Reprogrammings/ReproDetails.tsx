@@ -7,7 +7,7 @@ import ReproControls from './ReproControls';
 import ReproForm from './ReproForm';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import toast from 'react-hot-toast';
-import useAuth from '../../contexts/useAuth';
+import useClientAuth from '../../contexts/useAuth';
 
 const ReproDetails = () => {
   console.log('ReproDetails render');
@@ -19,7 +19,7 @@ const ReproDetails = () => {
     useHasUnsavedChangesStore();
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const reproId = id !== undefined ? +id : undefined;
-  const { user } = useAuth();
+  const { user } = useClientAuth();
 
   const {
     data: reproFromDb,

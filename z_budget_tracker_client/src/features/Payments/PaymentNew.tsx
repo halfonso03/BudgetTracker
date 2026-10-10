@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import useAuth from '../../contexts/useAuth';
+import useClientAuth from '../../contexts/useAuth';
 import { useEffect, useState } from 'react';
 import PaymentForm from './PaymentForm';
 import PaymentControls from './PaymentControls';
@@ -8,7 +8,7 @@ const PaymentNew = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const preloadState = location.state;
-  const { user } = useAuth();
+  const { user } = useClientAuth();
   const lineItems: PaymentLineItem[] = [];
 
   // const { hasUnsavedChanges, setHasUnsavedChanges } =
@@ -67,8 +67,6 @@ const PaymentNew = () => {
   // function handleIsDirty(isDirty: boolean) {
   //   setHasUnsavedChanges(isDirty);
   // }
-
-
 
   const body = () => {
     if (payment && payment.year !== 0) {

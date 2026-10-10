@@ -18,7 +18,7 @@ import {
   Save,
 } from 'lucide-react';
 import Button from '../../components/Button';
-import useAuth from '../../contexts/useAuth';
+import useClientAuth from '../../contexts/useAuth';
 import AddLineModal from './modals/AddLineModal';
 import PaymentRow from './PaymentRow';
 import Input from '../../components/Input';
@@ -31,7 +31,7 @@ interface Props {
 }
 
 const PaymentForm = ({ payment }: Props) => {
-  const { user, loginId } = useAuth();
+  const { user, loginId } = useClientAuth();
 
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [confirmPostModalIsOpen, setConfirmPostModal] =
