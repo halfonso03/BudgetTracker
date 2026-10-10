@@ -20,10 +20,10 @@ export function Pagination({ data, onPageNumberChange }: Props) {
           <div
             onClick={() => onPageNumberChange(p)}
             key={p}
-            className={`px-3 py-1.5 rounded-md transition-colors font-medium ${
+            className={`px-3 py-1.5 rounded-md transition-colors duration-200 font-medium ${
                 data.currentPage === p
-                  ? 'bg-neutral-900 text-white'
-                  : 'hover:bg-neutral-50 text-neutral-600'
+                  ? 'bg-neutral-500 text-white'
+                  : 'hover:bg-neutral-400 text-neutral-600 hover:text-white'
               }`}
           >
             {p}

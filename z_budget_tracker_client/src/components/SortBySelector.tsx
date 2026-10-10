@@ -16,7 +16,7 @@ export default function SortBySelector({
 
   return (
     <div className="flex items-center hover:text-neutral-900 transition-colors duration-150">
-      <div className="flex  py-1">
+      <div className="flex items-center py-1">
         <button
           className=" cursor-pointer font-semibold  capitalize select-none"
           onClick={() => {

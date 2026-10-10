@@ -3,6 +3,7 @@ import { formatCurrency } from '../../app/util';
 import { ArrowLeftRight, ChevronDownSquare, DollarSign } from 'lucide-react';
 import useBudgetSummary from '../../api/hooks/budgets/useBudgetSummary.tsx';
 import { useState } from 'react';
+import Spinner from '../../components/Spinner.tsx';
 
 // const grid_columns = '1fr_.5fr_1fr_1fr_1fr_1fr_.5fr_.3fr';
 
@@ -13,7 +14,13 @@ const Summary = ({ year }: Props) => {
   const { data, isLoading } = useBudgetSummary(year);
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="mt-4 flex justify-center">
+        <Spinner></Spinner>
+      </div>
+    );
+
   if (!data) return null;
 
   const budgetSummaries: BudgetSummary[] = data.map((b) => {

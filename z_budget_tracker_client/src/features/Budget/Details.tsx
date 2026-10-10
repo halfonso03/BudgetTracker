@@ -22,6 +22,7 @@ import Button from '../../components/Button';
 import TransactionsModal from './modals/TransactionsModal';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ReproMiniDetailsModal from './modals/ReproMiniDetailModal';
+import Spinner from '../../components/Spinner';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
 
@@ -295,7 +296,13 @@ const Details = () => {
     calculateTotals();
   }, [calculateTotals]);
 
-  if (isLoading) return <span>Loading...</span>;
+  if (isLoading)
+    return (
+      <div className="mt-4 flex justify-center">
+        <Spinner></Spinner>
+      </div>
+    );
+
   if (!budget) return <span>Error</span>;
 
   let indexRunningTotal = -1;
@@ -346,7 +353,9 @@ const Details = () => {
           return (
             <div className="border border-neutral-200 mb-7" key={c.id}>
               <div className="flex justify-between bg-neutral-100 ">
-                <div className={`pl-3 py-2 font-bold ${categoryRedClass}`}>{c.name}</div>
+                <div className={`pl-3 py-2 font-bold ${categoryRedClass}`}>
+                  {c.name}
+                </div>
                 <div className="self-center mr-2">
                   <ChevronDownSquare
                     className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}

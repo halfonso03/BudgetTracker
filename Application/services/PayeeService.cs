@@ -166,6 +166,8 @@ namespace Application.Services
                 "ACCOUNTdesc" => payeeSummaries.OrderByDescending(x => x.AccountName),
                 "ISACTIVE" => payeeSummaries.OrderBy(x => x.IsActive),
                 "ISACTIVEdesc" => payeeSummaries.OrderByDescending(x => x.IsActive),
+                "PAYEETYPE" => payeeSummaries.OrderBy(x => x.PayeeType),
+                "PAYEETYPEdesc" => payeeSummaries.OrderByDescending(x => x.PayeeType),
                 _ => payeeSummaries.OrderBy(x => x.Id)
             };
 
@@ -226,7 +228,7 @@ namespace Application.Services
             {
                 lastPaymentDate = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).MaxAsync(x => x.EntryDate);
                 totalPaid = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).SumAsync(x => x.Amount);
-                lastPaymentAmount = (await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).OrderBy(x => x.EntryDate).LastOrDefaultAsync())?.Amount ;
+                lastPaymentAmount = (await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).OrderBy(x => x.EntryDate).LastOrDefaultAsync())?.Amount;
             }
 
             var result = await dbContext.Payees

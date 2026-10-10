@@ -5,7 +5,7 @@ import { useSortingContext } from '../../../contexts/useSortingContext';
 
 export const usePayees = () => {
   //searchTerm
-  const { pageNumber } = usePagination();
+  const { pageNumber, searchTerm } = usePagination();
   const { sortByValue } = useSortingContext();
 
   const sortBy = sortByValue;
@@ -17,7 +17,7 @@ export const usePayees = () => {
     staleTime: 1 * 60 * 1000,
     queryFn: async () => {
       const response = await agent.get(
-        `/payee/list?pageNumber=${pageNumber}&sortBy=${sortBy}`,
+        `/payee/list?pageNumber=${pageNumber}&sortBy=${sortBy}&searchTerm=${searchTerm?.trim() ?? ''}`,
         {},
       );
 

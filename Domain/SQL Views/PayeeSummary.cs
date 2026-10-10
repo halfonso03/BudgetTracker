@@ -26,5 +26,6 @@ namespace Domain.Views
 
         [Column("payee_type_id")]
         public required int PayeeTypeId { get; set; }
+        public required string PayeeType { get; set; }
     }
 }

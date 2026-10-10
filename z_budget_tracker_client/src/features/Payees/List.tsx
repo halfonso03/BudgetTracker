@@ -1,4 +1,4 @@
-import { Check, ChevronLeft, ChevronRight, DollarSign,  X } from 'lucide-react';
+import { Check, ChevronLeft, ChevronRight, DollarSign, X } from 'lucide-react';
 import { formatDate, formatNumber } from '../../app/util';
 import { Pagination } from '../../components/Pagination';
 import { usePagination } from '../../contexts/pagination/usePagination';
@@ -10,6 +10,7 @@ import Search from '../../components/Search';
 import Button from '../../components/Button';
 import { usePayees } from '../../api/hooks/payees/usePayees';
 import { Link } from 'react-router-dom';
+import Spinner from '../../components/Spinner';
 
 // type Props = {
 //   vendors: Payee[];
@@ -72,7 +73,14 @@ const List = () => {
     });
   }
 
-  if (loadingPayees) return null;
+  if (loadingPayees)
+    return (
+      <div className=''>
+        <div className='flex justify-center  text-center'>
+          <Spinner></Spinner>
+        </div>
+      </div>
+    );
 
   return (
     <div className="mx-auto w-[95%]">
@@ -108,13 +116,20 @@ const List = () => {
       <div>
         <div className="flex flex-col justify-between border border-neutral-200 rounded-lg">
           <div
-            className="grid grid-cols-[.7fr_1fr_.6fr_.4fr_.4fr_.5fr_.2fr_.2fr] gap-2 
+            className="grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.4fr_.5fr_.2fr_.2fr] gap-2 
                         bg-neutral-50 text-neutral-500 border-b border-neutral-200"
           >
-            <div className="flex justify-start pl-6">
+            <div className="flex justify-start  pl-6">
               <SortBySelector
                 label="Name"
                 value="NAME"
+                currentSortValue={sortByValue}
+              ></SortBySelector>
+            </div>
+            <div className="flex justify-start pl-6">
+              <SortBySelector
+                label="Type"
+                value="PAYEETYPE"
                 currentSortValue={sortByValue}
               ></SortBySelector>
             </div>
@@ -165,7 +180,7 @@ const List = () => {
           <div className="">
             {data?.payees?.map((v) => (
               <div
-                className=" grid grid-cols-[.7fr_1fr_.6fr_.4fr_.4fr_.5fr_.2fr_.2fr] gap-2 p-1 items-center hover:bg-neutral-100 duration-200 transition-all cursor-pointer border-b border-b-neutral-200 last:border-0 "
+                className=" grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.4fr_.5fr_.2fr_.2fr] gap-2 p-1 items-center hover:bg-neutral-100 duration-200 transition-all cursor-pointer border-b border-b-neutral-200 last:border-0 "
                 key={v.id}
                 onClick={() => {
                   openDetails(v);
@@ -173,6 +188,9 @@ const List = () => {
               >
                 <div className="px-4 py-1 font-medium text-neutral-900">
                   {v.name}
+                </div>
+                <div className="px-4 py-1 font-medium text-neutral-900">
+                  {v.payeeType}
                 </div>
                 <div className="px-4 py-1 text-neutral-600 text-center">
                   {v.accountName}
@@ -214,7 +232,7 @@ const List = () => {
             ))}
           </div>
         </div>
-        <div className="flex items-center justify-between mt-6 px-2 text-sm text-neutral-500">
+        <div className="flex items-center justify-between mt-6 px-2  text-neutral-500">
           <span>
             Showing page{' '}
             <span className="font-medium text-neutral-900">

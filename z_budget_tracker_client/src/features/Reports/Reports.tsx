@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import useReports from '../../api/hooks/reports/useReports';
 import ReportParameters from './ReportParameters';
+import Spinner from '../../components/Spinner';
 
 const Reports = () => {
   const [reportParameters, setReportParameters] = useState<
@@ -12,8 +13,14 @@ const Reports = () => {
   // );
   const { data, isLoading } = useReports();
 
-  if (!data || isLoading) return <div>Loading...</div>;
-
+  if (!data || isLoading)
+    return (
+      <div className="">
+        <div className="flex justify-center  text-center">
+          <Spinner></Spinner>
+        </div>
+      </div>
+    );
   function loadParams(id: number) {
     setSelectedReport(data?.filter((x) => x.id === id)[0] ?? null);
     setReportParameters(data!.filter((r) => r.id === id)[0]!.parameters);

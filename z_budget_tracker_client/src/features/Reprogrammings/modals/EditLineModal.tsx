@@ -8,6 +8,7 @@ import { formatCurrency } from '../../../app/util';
 import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
 import Select from '../../../components/Select';
+import Spinner from '../../../components/Spinner';
 
 type Selections = {
   initiativeId?: number;
@@ -29,7 +30,6 @@ type Props = {
 };
 
 const EditLineModal = ({ ...props }: Props) => {
-
   console.log('EditLineModal render');
   const { initiatives } = useInitiatives(props.isOpen);
   const { categories } = useCategories(props.isOpen);
@@ -51,7 +51,7 @@ const EditLineModal = ({ ...props }: Props) => {
 
   const [animateOut, setAnimateOut] = useState(false);
 
-  const { data: balances } = useCurrentAccountBalances(
+  const { data: balances, loadingBalances } = useCurrentAccountBalances(
     selections?.initiativeId,
     selections?.grantId,
     selections?.categoryId,
@@ -169,15 +169,22 @@ const EditLineModal = ({ ...props }: Props) => {
         </div>
 
         <div className=" ">
-          <div className="flex justify-between py-2 px-2 pt-0 ">
-            <div className="flex-10 entity-label">Accounts</div>
-            <div className="flex-9 grid grid-cols-[1fr_1fr] ">
-              <div className=" entity-label text-end">Current</div>
-              <div className=" font-semibold text-end text-neutral-500">
-                Remaining
+          {loadingBalances && (
+            <div className="mt-4 flex justify-center">
+              <Spinner></Spinner>
+            </div>
+          )}
+          {balances && (
+            <div className="flex justify-between py-2 px-2 pt-0 ">
+              <div className="flex-10 entity-label">Accounts</div>
+              <div className="flex-9 grid grid-cols-[1fr_1fr] ">
+                <div className=" entity-label text-end">Current</div>
+                <div className=" font-semibold text-end text-neutral-500">
+                  Remaining
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {balances?.map((b) => (
             <div
@@ -208,13 +215,16 @@ const EditLineModal = ({ ...props }: Props) => {
             </div>
           ))}
           <div className="flex justify-between py-2 px-2">
-            <div className="flex-10 entity-label">
-              {selections &&
-                categories?.some((c) => c.id == selections?.categoryId) &&
-                categories?.filter((c) => c.id == selections?.categoryId)[0]
-                  .name}
-              &nbsp;Total
-            </div>
+            {balances && (
+              <div className="flex-10 entity-label">
+                {selections &&
+                  categories?.some((c) => c.id == selections?.categoryId) &&
+                  categories?.filter((c) => c.id == selections?.categoryId)[0]
+                    .name}
+                &nbsp;Total
+              </div>
+            )}
+
             <div className="flex-9 grid grid-cols-[1fr_1fr]">
               <div className="font-semibold text-neutral-800 text-end">
                 {balances &&

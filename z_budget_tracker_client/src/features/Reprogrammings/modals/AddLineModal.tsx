@@ -7,6 +7,7 @@ import { formatCurrency } from '../../../app/util';
 import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
 import Select from '../../../components/Select';
+import Spinner from '../../../components/Spinner';
 
 type Selections = {
   initiativeId?: number;
@@ -27,7 +28,6 @@ type Props = {
 };
 
 const AddLineModal = ({ ...props }: Props) => {
-
   console.log('AddLineModal render');
 
   const [selections, setSelections] = useState<Selections | null>(null);
@@ -36,7 +36,7 @@ const AddLineModal = ({ ...props }: Props) => {
   const { initiatives } = useInitiatives(props.isOpen);
   const { categories } = useCategories(props.isOpen);
 
-  const { data: balances } = useCurrentAccountBalances(
+  const { data: balances, loadingBalances } = useCurrentAccountBalances(
     selections?.initiativeId,
     selections?.grantId,
     selections?.categoryId,
@@ -168,6 +168,11 @@ const AddLineModal = ({ ...props }: Props) => {
         </div>
 
         <div>
+          {loadingBalances && (
+            <div className="mt-4 flex justify-center">
+              <Spinner></Spinner>
+            </div>
+          )}
           {balances && (
             <div className="flex justify-between py-2 px-2 pt-0 ">
               <div className="flex-10 entity-label">Accounts</div>
