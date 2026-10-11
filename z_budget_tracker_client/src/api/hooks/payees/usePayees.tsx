@@ -3,18 +3,18 @@ import agent from '../../agent';
 import { usePagination } from '../../../contexts/pagination/usePagination';
 import { useSortingContext } from '../../../contexts/useSortingContext';
 
-export const usePayees = () => {
-  //searchTerm
-  const { pageNumber, searchTerm } = usePagination();
+export const usePayees = (searchTerm: string) => {
+  const { pageNumber } = usePagination();
   const { sortByValue } = useSortingContext();
 
   const sortBy = sortByValue;
+
   const { data, isLoading: loadingPayees } = useQuery<{
     payees: Payee[];
     pagination: PaginationData | undefined;
   }>({
-    queryKey: ['payees', pageNumber, sortBy],
-    staleTime: 1 * 60 * 1000,
+    queryKey: ['payees', searchTerm, pageNumber, sortBy],
+    // staleTime: 1 * 60 * 1000,
     queryFn: async () => {
       const response = await agent.get(
         `/payee/list?pageNumber=${pageNumber}&sortBy=${sortBy}&searchTerm=${searchTerm?.trim() ?? ''}`,

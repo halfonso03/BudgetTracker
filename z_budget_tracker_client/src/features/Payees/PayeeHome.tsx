@@ -4,13 +4,11 @@ import List from './List';
 
 const PayeeHome = () => {
   return (
-    <div>
-      <PaginationContextProvider>
-        <SortingProvider>
-          <List></List>
-        </SortingProvider>
-      </PaginationContextProvider>
-    </div>
+    <PaginationContextProvider>
+      <SortingProvider>
+        <List></List>
+      </SortingProvider>
+    </PaginationContextProvider>
   );
 };
 export default PayeeHome;
