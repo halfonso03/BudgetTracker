@@ -71,10 +71,19 @@ type PaymentAvailableAccountBalance = {
     availableAmount: number
     initiativeId: number,
     grantId: number,
-    categoryId:number
+    categoryId: number
     accountId: number
     initiativeName?: string
     grantName?: string
     categoryName?: string
-    
+
 }
+
+type PaymentLineItemSelections = {
+    uuid: string;
+    initiativeId?: number;
+    grantId?: number;
+    categoryId?: number;
+    accountId?: number;
+    payeeId: number
+};

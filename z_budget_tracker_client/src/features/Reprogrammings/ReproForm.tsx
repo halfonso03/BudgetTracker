@@ -28,8 +28,8 @@ import IdHeader from './IdHeader';
 import { useLocation } from 'react-router-dom';
 import AddLineModal from './modals/AddLineModal';
 import EditLineModal from './modals/EditLineModal';
-import ErrorsModal from './modals/ErrorsModal';
-import JustificaModal from './modals/JustificaModal';
+import ErrorsModal from '../Common/modals/ErrorsModal';
+import JustificaModal from '../Common/modals/JustificaModal';
 import CheckBox from '../../components/CheckBox';
 import {
   DUP_LINES,

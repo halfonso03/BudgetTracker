@@ -1,4 +1,4 @@
-import { useState, useEffect, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import useCategories from '../../api/hooks/common/useCategories';
 import Button from '../../components/Button';
 import Input from '../../components/Input';

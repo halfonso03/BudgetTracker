@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import {
   DUP_LINES,
+  EDITED,
   NEGATIVE_NEW_AVAILABLE_BALANCE,
   NO_AMOUNT_LINES,
   NO_JUSTIFICATION,
@@ -22,6 +23,9 @@ import useClientAuth from '../../contexts/useAuth';
 import AddLineModal from './modals/AddLineModal';
 import PaymentRow from './PaymentRow';
 import Input from '../../components/Input';
+import EditLineModal from './modals/EditLineModal';
+import JustificaModal from '../Common/modals/JustificaModal';
+import ErrorsModal from '../Common/modals/ErrorsModal';
 
 interface Props {
   payment: Payment;
@@ -34,9 +38,12 @@ const PaymentForm = ({ payment }: Props) => {
   const { user, loginId } = useClientAuth();
 
   const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
+  const [justModalIsOpen, setJustModalIsOpen] = useState(false);
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [confirmPostModalIsOpen, setConfirmPostModal] =
     useState<boolean>(false);
-  const [justModalIsOpen, setJustModalIsOpen] = useState(false);
+  const [editSelections, setEditSelections] =
+    useState<PaymentLineItemSelections | null>(null);
 
   if (payment.year === 0) throw new Error('no year');
 
@@ -108,10 +115,7 @@ const PaymentForm = ({ payment }: Props) => {
     };
   }
 
-  function handleLineAdded(
-    newLine: PaymentLineItem,
-    key: { initiativeId: number; grantId: number; categoryId: number },
-  ) {
+  function handleLineAdded(newLine: PaymentLineItem) {
     setTimeout(() => setAddLineModalIsOpen(false), 500);
 
     console.log('handleLineAdded PaymentLineItem', newLine);
@@ -169,6 +173,107 @@ const PaymentForm = ({ payment }: Props) => {
     //   });
     // }
 
+    // onIsDirty(true);
+  }
+
+  function handleDuplicateRow(uuid: string) {
+    const duplicatedLine: PaymentLineItem = {
+      ...lines.filter((x) => x.uuid === uuid)[0],
+      paymentAmount: 0,
+      rowId: lines.length,
+      uuid: crypto.randomUUID(),
+    };
+
+    setLines([...lines, duplicatedLine]);
+    // onIsDirty(true);
+  }
+
+  function handleEditRow(uuid: string) {
+    const lineToEdit = lines.filter((x) => x.uuid == uuid)[0];
+    setEditSelections({
+      uuid: uuid,
+      initiativeId: lineToEdit.initiativeId,
+      grantId: lineToEdit.grantId,
+      categoryId: lineToEdit.categoryId,
+      accountId: lineToEdit.accountId,
+      payeeId: lineToEdit.payeeId,
+    });
+  }
+
+  function handleDeletRow(uuid: string) {
+    setLines((prev) =>
+      prev
+        .filter((x) => x.uuid !== uuid)
+        .map((l: PaymentLineItem, i: number) => ({ ...l, rowId: i })),
+    );
+    // onIsDirty(true);
+  }
+
+  function handleLineUpdated(updatedLine: PaymentLineItem) {
+    setTimeout(() => {
+      setEditSelections(null);
+    }, 500);
+    const newLines = lines.map((l: PaymentLineItem, i: number) => {
+      if (l.uuid !== updatedLine.uuid) return l;
+      const amount = getPaymentAmount(i);
+      const newLine: PaymentLineItem = {
+        ...updatedLine,
+        rowId: l.rowId,
+        availableAmount: updatedLine.availableAmount,
+        paymentAmount: +amount,
+        newAvailableAmount: updatedLine.availableAmount - +amount,
+      };
+      return newLine;
+    });
+
+    setLines(newLines);
+
+    // const balances = queryClient.getQueryData<
+    //   {
+    //     accountId: number;
+    //     accountName: string;
+    //     currentAmount: number;
+    //     remainingAmount: number;
+    //   }[]
+    // >([
+    //   'repro_account_balances',
+    //   key.initiativeId,
+    //   key.grantId,
+    //   key.categoryId,
+    // ]);
+
+    // if (
+    //   !savedRowBalances.some(
+    //     (b) =>
+    //       b.key.initiativeId == key.initiativeId &&
+    //       b.key.grantId == key.grantId &&
+    //       b.key.categoryId == key.categoryId,
+    //   )
+    // ) {
+    //   setSavedRowBalances((prev) => {
+    //     const newArray = [
+    //       ...prev,
+    //       {
+    //         key: {
+    //           ...key,
+    //         },
+    //         balances: balances!,
+    //       },
+    //     ];
+    //     return newArray;
+    //   });
+    // }
+
+    // onIsDirty(true);
+  }
+
+  function handleSaveJust(text: string) {
+    setPaymentHeader((prev) => ({
+      ...prev,
+      justification: text,
+      status: EDITED,
+    }));
+    setTimeout(() => setJustModalIsOpen(false), 500);
     // onIsDirty(true);
   }
 
@@ -251,6 +356,9 @@ const PaymentForm = ({ payment }: Props) => {
                 lineItem={item}
                 canEdit={true}
                 status={paymentHeader.status}
+                deleteRow={handleDeletRow}
+                duplicateRow={handleDuplicateRow}
+                editRow={handleEditRow}
                 render={() => {
                   return (
                     <div className="flex-3 px-3 pr-6">
@@ -293,6 +401,40 @@ const PaymentForm = ({ payment }: Props) => {
             }, 500);
           }}
         ></AddLineModal>
+        {editSelections && (
+          <EditLineModal
+            year={payment.year}
+            uuid={editSelections.uuid}
+            isOpen={editSelections !== null}
+            selections={editSelections}
+            onLineUpdated={handleLineUpdated}
+            onCancel={() => {
+              setTimeout(() => {
+                setEditSelections(null);
+              }, 500);
+            }}
+          ></EditLineModal>
+        )}
+        <JustificaModal
+          canEdit={paymentHeader.status !== POSTED}
+          isOpen={justModalIsOpen}
+          onCommentSaved={handleSaveJust}
+          itemComment={paymentHeader.justification}
+          onCancel={() => {
+            setTimeout(() => {
+              setJustModalIsOpen(false);
+            }, 500);
+          }}
+        ></JustificaModal>
+        <ErrorsModal
+          isOpen={errorModalOpen}
+          errors={getErrors()}
+          onCancel={() => {
+            setTimeout(() => {
+              setErrorModalOpen(false);
+            }, 500);
+          }}
+        ></ErrorsModal>
       </div>
     </MenuIdProvider>
   );
