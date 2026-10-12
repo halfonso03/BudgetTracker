@@ -7,7 +7,7 @@ type Props = {
 };
 const PayeeListHeader = ({ onAddPayee, onSearch }: Props) => {
   return (
-    <div className="flex justify-between w-full mb-4">
+    <div className="flex justify-between w-full mb-6">
       <div className="w-full justify-between flex ">
         <Button buttonSize="medium" variation="primary" onClick={onAddPayee}>
           Add Payee
