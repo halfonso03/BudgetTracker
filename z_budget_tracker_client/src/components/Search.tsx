@@ -40,7 +40,7 @@ const Search = ({ onSearch }: Props) => {
         defaultValue={searchTerm}
         className={`px-4 w-full text-sm bg-neutral-50/20 border border-neutral-200/80 rounded-lg 
               text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-neutral-300 
-              focus:bg-white transition-all`}
+              focus:bg-white transition-all text-[1rem]`}
         placeholder="Enter a search term and presss enter..."
         style={{
           borderTopRightRadius: 0,

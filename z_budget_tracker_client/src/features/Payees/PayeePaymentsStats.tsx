@@ -1,5 +1,4 @@
 import { formatCurrency, formatDate } from '../../app/util';
-import Spinner from '../../components/Spinner';
 import { usePayeesPaymentsStats } from '../../api/hooks/payees/usePayeesPaymentsStats';
 import Skeleton from 'react-loading-skeleton';
 

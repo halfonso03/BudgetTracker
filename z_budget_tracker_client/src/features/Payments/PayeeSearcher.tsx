@@ -56,11 +56,13 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
         selectRow(1);
       } else if (event.key === 'Enter') {
         if (suggestions && suggestions.length) {
-          setSelectedPayee(suggestions[highlightedRow]);
-          setSearching(false);
-          setHighlightedRow(-1);
-          setQuery('');
-          onPayeeSelected?.(suggestions[highlightedRow]);
+          if (highlightedRow > -1) {
+            setSelectedPayee(suggestions[highlightedRow]);
+            setSearching(false);
+            setHighlightedRow(-1);
+            setQuery('');
+            onPayeeSelected?.(suggestions[highlightedRow]);
+          }
         }
       }
     };
