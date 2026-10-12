@@ -32,9 +32,10 @@ const PayeeForm = ({
   const queryClient = useQueryClient();
   const [isActive, setIsActive] = useState(payee.isActive);
   const [payeeId, setPayeeId] = useState(payee.id);
+
   const {
-    register, // Function to register input fields and connect them to validation
-    handleSubmit, // Function that wraps your submit handler to handle validation
+    register, 
+    handleSubmit, 
     setValues,
     formState: { errors },
   } = useForm<FormValues>({
@@ -56,7 +57,6 @@ const PayeeForm = ({
   const [categoryIsSelected, setCategoryIsSelected] = useState(
     payee.id === 0 ? false : true,
   );
-  const [accountOptions, setAccountOptions] = useState<Account[] | null>(null);
 
   let categoryOptions =
     categories !== null && categories!.length > 0
@@ -64,6 +64,7 @@ const PayeeForm = ({
           return { id: x.id, name: x.name };
         })
       : [];
+  let accountOptionSetup: Account[] = [];
 
   let payeeTypeOptions = [
     { id: 1, name: 'Vendor' },
@@ -80,36 +81,32 @@ const PayeeForm = ({
     payeeTypeOptions = [{ id: 0, name: '-- Select a Payee Type--' }, ...oldT];
   }
 
-  useEffect(() => {
-    if (categories !== null && categories!.length > 0) {
-      if (payee.id === 0) {
-        const initialOption: Account = {
+  if (categories !== null && categories!.length > 0) {
+    if (payee.id === 0) {
+      const t2 = categories!
+        .filter((c) => c.id === categories![0].id)[0]
+        .accounts!.map((a: Account) => ({ ...a }));
+
+      accountOptionSetup = [
+        {
           id: 0,
           name: '-- Select an Account --',
           number: '',
           category_id: 0,
-        };
-
-        const t2 = categories!
-          .filter((c) => c.id === categories![0].id)[0]
-          .accounts!.map((a: Account) => ({ ...a }));
-
-        const finalOptions = [initialOption, ...t2];
-
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setAccountOptions(finalOptions);
-      } else {
-        const t2 = categories!
-          .filter((c) => c.id === payee.categoryId)[0]
-          .accounts!.map((a: Account) => ({ ...a }));
-        setAccountOptions(t2);
-      }
+        },
+        ...t2,
+      ];
+    } else {
+      accountOptionSetup = categories!.filter(
+        (c) => c.id === payee.categoryId,
+      )[0].accounts!;
     }
-  }, [categories, payee.categoryId, payee.id]);
+  }
 
-  // function getCurrentCategory() {
-  //   return getValues('categoryId');
-  // }
+  const [accountOptions, setAccountOptions] = useState<Account[] | null>(
+    accountOptionSetup,
+  );
+
 
   function onCategoryChange(e: ChangeEvent<HTMLSelectElement>) {
     setCategoryIsSelected(true);

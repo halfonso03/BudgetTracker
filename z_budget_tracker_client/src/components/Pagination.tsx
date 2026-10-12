@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { usePagination } from '../contexts/pagination/usePagination';
 
 type Props = {
-  data?: PaginationData;
+  data: PaginationData;
   onPageNumberChange: (pageNumber: number) => void;
 };
 

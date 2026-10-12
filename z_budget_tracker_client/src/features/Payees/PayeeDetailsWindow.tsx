@@ -20,6 +20,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
     setShowNewPaymentLInk(true);
     setNewPayeeInfo(i);
   }
+  
   return createPortal(
     <div className="fixed inset-0 z-5 h-auto w-full  bg-neutral-50 border-t border-t-neutral-300 ">
       <div className="relative ">
