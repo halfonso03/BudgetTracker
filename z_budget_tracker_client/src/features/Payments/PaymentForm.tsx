@@ -277,6 +277,17 @@ const PaymentForm = ({ payment }: Props) => {
     // onIsDirty(true);
   }
 
+  function handleSaveComment(uuid: string, comment: string | null | undefined) {
+    setLines((prev) =>
+      prev.map((line) => ({
+        ...line,
+        comment: line.uuid === uuid ? (comment ?? '') : line.comment,
+      })),
+    );
+
+    // onIsDirty(true);
+  }
+
   function canPost() {
     return true;
   }
@@ -359,6 +370,7 @@ const PaymentForm = ({ payment }: Props) => {
                 deleteRow={handleDeletRow}
                 duplicateRow={handleDuplicateRow}
                 editRow={handleEditRow}
+                saveComment={handleSaveComment}
                 render={() => {
                   return (
                     <div className="flex-3 px-3 pr-6">
