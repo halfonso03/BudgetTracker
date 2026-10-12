@@ -33,9 +33,9 @@ const ReproSearch = () => {
   const [year, setYear] = useState<number>(2026);
   const [status, setStatus] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
-  const { initiatives, loadingInit } = useInitiatives();
-  const { grants, loadingGrants } = useGrantsAllYears();
-  const { categories, loadingCat } = useCategories(true, true);
+  const { initiatives } = useInitiatives();
+  const { grants } = useGrantsAllYears();
+  const { categories } = useCategories(true, true);
   const [amountFilter, setAmountFilter] = useState<ReproAmountFilter>({
     debitAmount: 0,
     creditAmount: 0,
@@ -268,7 +268,7 @@ const ReproSearch = () => {
       <div className="flex gap-2 mt-10">
         <div className="p-2 flex-7">
           <div className="mb-4">
-            <ReproParams2
+            <MemoizedReproParams
               initiatives={initiativesList?.map((x) => ({
                 id: x.id,
                 name: x.name,
@@ -289,7 +289,7 @@ const ReproSearch = () => {
               onYearChange={handleYearChange}
               onAmountFilter={handleAmountFilter}
               onAmountFilterCancel={handleAmountFilterCancel}
-            ></ReproParams2>
+            ></MemoizedReproParams>
           </div>
           {loadingSearchResults && (
             <div className="mt-16 ">

@@ -13,6 +13,7 @@ type Payee = {
     totalPaid?: number | null
     categoryName?: string
     payeeType?: string
+    numberOfPayments: number
 }
 
 type PayeePayment = {

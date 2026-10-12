@@ -1,6 +1,7 @@
 import { formatCurrency, formatDate } from '../../app/util';
 import Spinner from '../../components/Spinner';
 import { usePayeesPaymentsStats } from '../../api/hooks/payees/usePayeesPaymentsStats';
+import Skeleton from 'react-loading-skeleton';
 
 type Props = {
   payeeId: number;
@@ -14,7 +15,12 @@ const PayeePaymentsStats = ({ payeeId }: Props) => {
       <div className="mb-9 gap-4 w-full ">
         {loadingPaymentStats && (
           <div className="mb-1">
-            <Spinner></Spinner>
+            <Skeleton
+              height={50}
+              className="mt-0 self-center p-1 flex-1"
+              enableAnimation={true}
+              containerClassName="flex-1"
+            />
           </div>
         )}
 

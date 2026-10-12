@@ -39,9 +39,9 @@ const SelectedPayeeCard = ({
             <div className="text-neutral-500 text-[.95rem]">
               [Payee Type:{' '}
               <span className="text-neutral-700">
-                {selectedPayee?.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}]
+                {selectedPayee?.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}
               </span>
-              <br></br>
+              ]<br></br>
               [Charge Account:{' '}
               <span className="text-neutral-700">
                 {selectedPayee.categoryName + ' - ' + selectedPayee.accountName}
@@ -72,7 +72,7 @@ const SelectedPayeeCard = ({
                       )}
                   </span>
                   ]<br></br>
-                  [No. of Payments: <span className="text-neutral-700">45</span>
+                  [No. of Payments: <span className="text-neutral-700">{selectedPayeeInfo.numberOfPayments}</span>
                   ]
                 </>
               )}

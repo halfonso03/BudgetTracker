@@ -98,7 +98,7 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
         <input
           ref={inputRef}
           value={query}
-          className='p-2 w-full rounded-sm text-neutral-800 placeholder-neutral-400 focus:outline-none transition-all'
+          className="p-2 w-full rounded-sm text-neutral-800 placeholder-neutral-400 focus:outline-none transition-all"
           placeholder="Enter payee name..."
           onFocus={() => {
             stInputFocused(true);
@@ -137,14 +137,16 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
                       <div className="text-neutral-500  ">
                         [Payee Type:
                         <span className="font-medium text-neutral-900 pl-2">
-                          {item.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}]
+                          {item.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}
                         </span>
+                        ]
                       </div>
                       <div className="text-neutral-500 ">
                         [Charge Account:
                         <span className="font-medium text-neutral-900 pl-2">
-                          {item.categoryName} / {item.accountName}]
+                          {item.categoryName} / {item.accountName}
                         </span>
+                        ]
                       </div>
                     </div>
                   </div>
