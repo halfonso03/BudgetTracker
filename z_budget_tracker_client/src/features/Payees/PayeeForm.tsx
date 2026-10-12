@@ -174,7 +174,7 @@ const PayeeForm = ({
         <input type="hidden" {...register('id')} />
         {/* {errors.additionalInformation && <div>FORM ERROR!</div>} */}
         <div className="flex flex-col gap-2 w-full">
-          <div className="font-semibold text-neutral-500 mb-2  border-b border-b-neutral-200 pl-0 p-1 ">
+          <div className="font-semibold text-neutral-500 mb-2  border-b border-b-neutral-200/60 pl-0 p-1 ">
             Details
           </div>
           <FormRow
@@ -208,7 +208,7 @@ const PayeeForm = ({
             <Switch isOn={isActive} handleToggle={handleToggle}></Switch>
           </FormRow>
 
-          <div className="font-semibold text-neutral-500 border-b border-b-neutral-300 pl-0 p-1 mt-6 ">
+          <div className="font-semibold text-neutral-500 border-b border-b-neutral-200/80 pl-0 p-1 mt-6 ">
             Charge Account
           </div>
           <FormRow

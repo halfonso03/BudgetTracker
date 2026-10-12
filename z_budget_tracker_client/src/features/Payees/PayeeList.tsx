@@ -64,6 +64,7 @@ const PayeeList = () => {
       payeeTypeId: 0,
       accountId: 0,
       categoryId: 0,
+      numberOfPayments: 0
     });
   }
 

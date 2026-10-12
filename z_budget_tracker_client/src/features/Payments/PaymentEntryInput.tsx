@@ -52,12 +52,12 @@ const PaymentEntryInput = ({
 
   return (
     <div>
-      <div className="grid grid-cols-[.5fr_.85fr_.5fr]  w-full items-center mb-5">
+      <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
         <div className="text-neutral-600/90 font-medium">Available</div>
         <div className="font-semibold pl-2">{formatCurrency(available)}</div>
       </div>
 
-      <div className="grid grid-cols-[.5fr_.85fr_.5fr]  w-full items-center mb-5">
+      <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
         <div className="text-neutral-600/90 font-medium">
           <div className="flex items-baseline gap-2 ">
             Payment Amount
@@ -84,7 +84,7 @@ const PaymentEntryInput = ({
             register.onChange(e);
             setPaymentAmount(e.target.value);
           }}
-          className="w-full text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-300 
+          className="w-[40%] text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-300 
             focus:dark:border-gray-100 dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-neutral-800 dark:border-gray-500"
         ></NumericInputReactHookForm>
         {error && (
@@ -94,7 +94,7 @@ const PaymentEntryInput = ({
         )}
       </div>
 
-      <div className="grid grid-cols-[.5fr_.85fr_.5fr] w-full items-center mb-5">
+      <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-5">
         <div className="text-neutral-600/90 font-medium">Remaining</div>
         <div
           className={`font-semibold pl-2 ${remaining < 0 ? 'text-red-500' : ''}`}

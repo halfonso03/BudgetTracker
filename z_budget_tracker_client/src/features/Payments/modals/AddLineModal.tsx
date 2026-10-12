@@ -225,235 +225,231 @@ const AddLineModal = ({ ...props }: Props) => {
         >
           <div className="flex flex-col justify-between h-full mt-4">
             <div className="flex flex-col justify-between p-3 px-4 ">
-              <div>
-                <div className="relative flex items-center mb-5">
-                  <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full">
-                    <div className="text-neutral-600/90 font-medium">Payee</div>
-                    <PayeeSearcher
-                      onPayeeSelected={handlePayeeSelected}
-                      onPayeeSelectionCleared={handlePayeeSelectionCleared}
-                    ></PayeeSearcher>
-                    <div className="self-center">
-                      {errors.payeeId && (
-                        <div className="text-red-500 pl-1">
-                          <Asterisk size={18}></Asterisk>
-                        </div>
-                      )}
-                    </div>
+              <div className="relative flex items-center mb-5">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full">
+                  <div className="text-neutral-600/90 font-medium">Payee</div>
+                  <PayeeSearcher
+                    onPayeeSelected={handlePayeeSelected}
+                    onPayeeSelectionCleared={handlePayeeSelectionCleared}
+                  ></PayeeSearcher>
+                  <div className="self-center">
+                    {errors.payeeId && (
+                      <div className="text-red-500 pl-1">
+                        <Asterisk size={18}></Asterisk>
+                      </div>
+                    )}
                   </div>
                 </div>
-
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center  mb-5">
-                  <div className="text-neutral-600/90 font-medium">
-                    Category
-                  </div>
-                  <Select
-                    {...register('categoryId')}
-                    tabIndex={1}
-                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      register('categoryId').onChange(e);
-                      if (+e.target.value !== 0) {
-                        setSelections((prev) => ({
-                          ...prev,
-                          categoryId: +e.target.value,
-                        }));
-                        setValue('accountId', 0);
-                        if (categories) {
-                          const accounts = categories.filter(
-                            (x) => x.id === +e.target.value,
-                          )[0].accounts!;
-                          setAccounts(accounts);
-                        }
-                      }
-                    }}
-                  >
-                    <option value={0} className="text-neutral-600">
-                      Select...
-                    </option>
-                    {categories?.map((i) => (
-                      <option
-                        value={i.id}
-                        key={i.id}
-                        className="text-neutral-900"
-                      >
-                        {i.name}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
-                  <div className="text-neutral-600/90 font-medium">Account</div>
-                  <Select
-                    {...register('accountId')}
-                    tabIndex={2}
-                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      setPayeeUpdated(false);
-
-                      const newSelections = {
-                        ...selections,
-                        accountId: +e.target.value,
-                      };
-
-                      if (!remIsvalid) {
-                        const availableAmount2 = getAvailable(
-                          newSelections.initiativeId!,
-                          newSelections.grantId!,
-                          newSelections.categoryId!,
-                          newSelections.accountId!,
-                        );
-
-                        if (availableAmount2 - +getValues('amount') >= 0) {
-                          setRemIsValid(true);
-                        }
-                      }
-
-                      setSelections(newSelections);
-
-                      register('accountId').onChange(e);
-                    }}
-                  >
-                    <option value={0} className="text-neutral-600">
-                      Select...
-                    </option>
-                    {accounts?.map((i) => (
-                      <option
-                        value={i.id}
-                        key={i.id}
-                        className="text-neutral-900"
-                      >
-                        {i.name}
-                      </option>
-                    ))}
-                  </Select>
-                  {errors?.accountId && (
-                    <div className="text-red-500 pl-1">
-                      <Asterisk size={18}></Asterisk>
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
-                  <div className="text-neutral-600/90 font-medium">
-                    Initiative
-                  </div>
-
-                  <Select
-                    {...register('initiativeId')}
-                    tabIndex={3}
-                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      register('initiativeId').onChange(e);
-
-                      const newSelections = {
-                        ...selections,
-                        initiativeId: +e.target.value,
-                      };
-
-                      if (!remIsvalid) {
-                        const availableAmount2 = getAvailable(
-                          newSelections.initiativeId!,
-                          newSelections.grantId!,
-                          newSelections.categoryId!,
-                          newSelections.accountId!,
-                        );
-
-                        if (availableAmount2 - +getValues('amount') >= 0) {
-                          setRemIsValid(true);
-                        }
-                      }
-
-                      setSelections(newSelections);
-                    }}
-                  >
-                    <option value={0} className="text-neutral-600">
-                      Select...
-                    </option>
-                    {initiatives?.map((i) => (
-                      <option
-                        value={i.id}
-                        key={i.id}
-                        className="text-neutral-900"
-                      >
-                        {i.name}
-                      </option>
-                    ))}
-                  </Select>
-                  {errors?.initiativeId && (
-                    <div className="text-red-500 pl-1">
-                      <Asterisk size={18}></Asterisk>
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-5 ">
-                  <div className="text-neutral-600/90 font-medium">Grant</div>
-                  <Select
-                    {...register('grantId')}
-                    tabIndex={5}
-                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      register('grantId').onChange(e);
-
-                      const newSelections = {
-                        ...selections,
-                        grantId: +e.target.value,
-                      };
-
-                      if (!remIsvalid) {
-                        const availableAmount2 = getAvailable(
-                          newSelections.initiativeId!,
-                          newSelections.grantId!,
-                          newSelections.categoryId!,
-                          newSelections.accountId!,
-                        );
-
-                        if (availableAmount2 - +getValues('amount') >= 0) {
-                          setRemIsValid(true);
-                        }
-                      }
-
-                      setSelections(newSelections);
-                    }}
-                  >
-                    <option value={0} className="text-neutral-600">
-                      Select...
-                    </option>
-                    {grants?.map((i) => (
-                      <option
-                        value={i.id}
-                        key={i.id}
-                        className="text-neutral-900"
-                      >
-                        {i.name}
-                      </option>
-                    ))}
-                  </Select>
-                  {errors?.grantId && (
-                    <div className="text-red-500 pl-1">
-                      <Asterisk size={18}></Asterisk>
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-10">
-                  <div className="text-neutral-600/90 font-medium self-start">
-                    Comment
-                  </div>
-                  <textarea
-                    {...register('comment')}
-                    className="p-2 border border-neutral-300 rounded-sm"
-                    rows={2}
-                  ></textarea>
-                </div>
-                <PaymentEntryInput
-                  getValues={getValues}
-                  error={errors?.amount}
-                  register={register('amount')}
-                  available={availableAmount}
-                  onBlur={handleInputEntryOnBlur}
-                  onLessThanZero={handleLessThanZero}
-                  onOK={handleAmountOk}
-                ></PaymentEntryInput>
               </div>
+
+              <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center  mb-5">
+                <div className="text-neutral-600/90 font-medium">Category</div>
+                <Select
+                  {...register('categoryId')}
+                  tabIndex={1}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                    register('categoryId').onChange(e);
+                    if (+e.target.value !== 0) {
+                      setSelections((prev) => ({
+                        ...prev,
+                        categoryId: +e.target.value,
+                      }));
+                      setValue('accountId', 0);
+                      if (categories) {
+                        const accounts = categories.filter(
+                          (x) => x.id === +e.target.value,
+                        )[0].accounts!;
+                        setAccounts(accounts);
+                      }
+                    }
+                  }}
+                >
+                  <option value={0} className="text-neutral-600">
+                    Select...
+                  </option>
+                  {categories?.map((i) => (
+                    <option
+                      value={i.id}
+                      key={i.id}
+                      className="text-neutral-900"
+                    >
+                      {i.name}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+
+              <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
+                <div className="text-neutral-600/90 font-medium">Account</div>
+                <Select
+                  {...register('accountId')}
+                  tabIndex={2}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                    setPayeeUpdated(false);
+
+                    const newSelections = {
+                      ...selections,
+                      accountId: +e.target.value,
+                    };
+
+                    if (!remIsvalid) {
+                      const availableAmount2 = getAvailable(
+                        newSelections.initiativeId!,
+                        newSelections.grantId!,
+                        newSelections.categoryId!,
+                        newSelections.accountId!,
+                      );
+
+                      if (availableAmount2 - +getValues('amount') >= 0) {
+                        setRemIsValid(true);
+                      }
+                    }
+
+                    setSelections(newSelections);
+
+                    register('accountId').onChange(e);
+                  }}
+                >
+                  <option value={0} className="text-neutral-600">
+                    Select...
+                  </option>
+                  {accounts?.map((i) => (
+                    <option
+                      value={i.id}
+                      key={i.id}
+                      className="text-neutral-900"
+                    >
+                      {i.name}
+                    </option>
+                  ))}
+                </Select>
+                {errors?.accountId && (
+                  <div className="text-red-500 pl-1">
+                    <Asterisk size={18}></Asterisk>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
+                <div className="text-neutral-600/90 font-medium">
+                  Initiative
+                </div>
+
+                <Select
+                  {...register('initiativeId')}
+                  tabIndex={3}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                    register('initiativeId').onChange(e);
+
+                    const newSelections = {
+                      ...selections,
+                      initiativeId: +e.target.value,
+                    };
+
+                    if (!remIsvalid) {
+                      const availableAmount2 = getAvailable(
+                        newSelections.initiativeId!,
+                        newSelections.grantId!,
+                        newSelections.categoryId!,
+                        newSelections.accountId!,
+                      );
+
+                      if (availableAmount2 - +getValues('amount') >= 0) {
+                        setRemIsValid(true);
+                      }
+                    }
+
+                    setSelections(newSelections);
+                  }}
+                >
+                  <option value={0} className="text-neutral-600">
+                    Select...
+                  </option>
+                  {initiatives?.map((i) => (
+                    <option
+                      value={i.id}
+                      key={i.id}
+                      className="text-neutral-900"
+                    >
+                      {i.name}
+                    </option>
+                  ))}
+                </Select>
+                {errors?.initiativeId && (
+                  <div className="text-red-500 pl-1">
+                    <Asterisk size={18}></Asterisk>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-5 ">
+                <div className="text-neutral-600/90 font-medium">Grant</div>
+                <Select
+                  {...register('grantId')}
+                  tabIndex={5}
+                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                    register('grantId').onChange(e);
+
+                    const newSelections = {
+                      ...selections,
+                      grantId: +e.target.value,
+                    };
+
+                    if (!remIsvalid) {
+                      const availableAmount2 = getAvailable(
+                        newSelections.initiativeId!,
+                        newSelections.grantId!,
+                        newSelections.categoryId!,
+                        newSelections.accountId!,
+                      );
+
+                      if (availableAmount2 - +getValues('amount') >= 0) {
+                        setRemIsValid(true);
+                      }
+                    }
+
+                    setSelections(newSelections);
+                  }}
+                >
+                  <option value={0} className="text-neutral-600">
+                    Select...
+                  </option>
+                  {grants?.map((i) => (
+                    <option
+                      value={i.id}
+                      key={i.id}
+                      className="text-neutral-900"
+                    >
+                      {i.name}
+                    </option>
+                  ))}
+                </Select>
+                {errors?.grantId && (
+                  <div className="text-red-500 pl-1">
+                    <Asterisk size={18}></Asterisk>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-10">
+                <div className="text-neutral-600/90 font-medium self-start">
+                  Comment
+                </div>
+                <textarea
+                  {...register('comment')}
+                  className="p-2 border border-neutral-300 rounded-sm"
+                  rows={2}
+                ></textarea>
+              </div>
+              <PaymentEntryInput
+                getValues={getValues}
+                error={errors?.amount}
+                register={register('amount')}
+                available={availableAmount}
+                onBlur={handleInputEntryOnBlur}
+                onLessThanZero={handleLessThanZero}
+                onOK={handleAmountOk}
+              ></PaymentEntryInput>
             </div>
             <div className="flex justify-end gap-2 border-t border-t-neutral-200 p-4">
               {/* {allSelections() && <span>have all selections</span>}

@@ -237,9 +237,9 @@ const NavBar = () => {
               >
                 Reports
               </NavLink>
-              <NavLink to="/proto" className="nav-link">
+              {/* <NavLink to="/proto" className="nav-link">
                 Proto
-              </NavLink>
+              </NavLink> */}
             </div>
             <div>
               {isLoggedIn() && <span>Hello, {user.firstName}</span>}

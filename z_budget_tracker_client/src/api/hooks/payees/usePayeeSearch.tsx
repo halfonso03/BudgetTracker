@@ -13,12 +13,12 @@ const fetchMockUsers = async (filter: string): Promise<Payee[]> => {
 };
 
 export const usePayeeSearch = (searchText: string) => {
-  const { data, isFetching, isSuccess } = useQuery<Payee[]>({
+  const { data, isFetching, isSuccess, isLoading } = useQuery<Payee[]>({
     queryKey: ['payee_search' + searchText],
     queryFn: () => fetchMockUsers(searchText),
     enabled:
       searchText != null && searchText != undefined && searchText.length >= 3,
   });
 
-  return { data, isFetching, isSuccess };
+  return { data, isFetching, isSuccess, isLoading };
 };

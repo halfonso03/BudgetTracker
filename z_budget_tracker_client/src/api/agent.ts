@@ -15,7 +15,7 @@ agent.interceptors.request.use(async (config) => {
 	// store.uiStore.isBusy();
 
 	if (import.meta.env.DEV) {
-		await sleep(500);
+		await sleep(250);
 	}
 	return config;
 });

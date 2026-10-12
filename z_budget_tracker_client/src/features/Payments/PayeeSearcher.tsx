@@ -11,6 +11,8 @@ import useSelectedPayeeInfo from '../../api/hooks/payments/useSelectedPayeeInfo'
 import InfoModal from './modals/InfoModal';
 import { usePayeePayments } from '../../api/hooks/payees/usePayeePayments';
 import SelectedPayeeCard from './SelectedPayeeCard';
+import Skeleton from 'react-loading-skeleton';
+import Spinner from '../../components/Spinner';
 
 type Props = {
   onPayeeSelected: (payee: Payee) => void;
@@ -29,9 +31,8 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
   usePayeePayments(selectedPayee?.id ?? 0);
 
   const { data: suggestions, isFetching } = usePayeeSearch(query);
-  const { data: selectedPayeeInfo } = useSelectedPayeeInfo(
-    selectedPayee ? selectedPayee.id : 0,
-  );
+  const { data: selectedPayeeInfo, isLoading: loadginSelectedPayeeInfo } =
+    useSelectedPayeeInfo(selectedPayee ? selectedPayee.id : 0);
 
   const selectRow = useCallback(
     (amount: number) => {
@@ -85,8 +86,17 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
   return (
     <div>
       <div
-        className={`pl-1 pt-1 rounded-sm ${inputFocused ? 'border border-blue-500' : 'border border-neutral-300'}`}
+        className={` ${isFetching && 'bg-neutral-200'}  pl-1  rounded-sm ${inputFocused ? 'border border-blue-500' : 'border border-neutral-300'}`}
       >
+        {loadginSelectedPayeeInfo && (
+          <Skeleton
+            height={70}
+            width="100%"
+            className=""
+            enableAnimation={true}
+            containerClassName="flex-1 self-stretch"
+          />
+        )}
         {selectedPayee && selectedPayeeInfo && (
           <div className="mb-2 pr-1">
             <SelectedPayeeCard
@@ -97,26 +107,33 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
             ></SelectedPayeeCard>
           </div>
         )}
-        <input
-          ref={inputRef}
-          value={query}
-          className="p-2 w-full rounded-sm text-neutral-800 placeholder-neutral-400 focus:outline-none transition-all"
-          placeholder="Enter payee name..."
-          onFocus={() => {
-            stInputFocused(true);
-          }}
-          onBlur={() => stInputFocused(false)}
-          onChange={(e: ChangeEvent<HTMLInputElement>) => {
-            if (!isFetching) {
-              setQuery(e.target.value);
-              if (!searching) setSearching(true);
-            }
-          }}
-        ></input>
+        <div className="flex items-center">
+          <input
+            ref={inputRef}
+            value={query}
+            className="p-2 w-full rounded-sm text-neutral-800 placeholder-neutral-400 focus:outline-none transition-all "
+            placeholder="Enter payee name..."
+            onFocus={() => {
+              stInputFocused(true);
+            }}
+            onBlur={() => stInputFocused(false)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              if (!isFetching) {
+                setQuery(e.target.value);
+                if (!searching) setSearching(true);
+              }
+            }}
+          ></input>
+          {isFetching && (
+            <div className="mr-2">
+              <Spinner></Spinner>
+            </div>
+          )}
+        </div>
       </div>
       <div className="relative bg-white opacity-100">
         <div className="w-full rounded-sm pt-1 absolute">
-          {suggestions && suggestions.length && searching && (
+          {suggestions && suggestions.length > 0 && searching && (
             <ScrollableDiv className="relative bg-white border border-neutral-300/55 rounded-sm w-full shadow-md ">
               {suggestions?.map((item, index) => (
                 // Render each suggestion as a clickable list item
@@ -129,7 +146,7 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
                     setQuery('');
                     onPayeeSelected?.(suggestions[index]);
                   }}
-                  className={`${highlightedRow === index ? 'bg-neutral-200' : ''} 
+                  className={`${highlightedRow === index ? 'bg-neutral-200/60' : ''} 
                       px-1 pl-2 flex py-1 justify-between items-center border-b border-b-neutral-300/55 last:border-b-0 
                        dark:text-neutral-300 cursor-pointer hover:bg-neutral-200`}
                 >
