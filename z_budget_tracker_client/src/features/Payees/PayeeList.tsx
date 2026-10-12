@@ -5,6 +5,9 @@ import PayeeListColumHeaders from './PayeeListColumHeaders';
 import PayeeListResults from './PayeeListResults';
 import PayeeListHeader from './PayeeListHeader';
 import { usePagination } from '../../contexts/pagination/usePagination';
+import { usePayees } from '../../api/hooks/payees/usePayees';
+import { Pagination } from '../../components/Pagination';
+import Skeleton from 'react-loading-skeleton';
 
 const PayeeList = () => {
   const { setPageNumber, setSearchTerm, searchTerm } = usePagination();
@@ -12,7 +15,15 @@ const PayeeList = () => {
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedPayee, setSelectedPayee] = useState<Payee | null>(null);
+  const { data, loadingPayees } = usePayees(searchTerm);
 
+  useEffect(() => {
+    setSortByValue('NAME');
+  }, [setSortByValue]);
+
+  function handlePageNumberChange(pageNumber: number) {
+    setPageNumber(pageNumber);
+  }
   // const [addPayeeIsOpen, setAddPayeeIsOpen] = useState(false);
   // const [animateOut, setAnimateOut] = useState<boolean>(false);
 
@@ -22,18 +33,13 @@ const PayeeList = () => {
   //   vendors,
   // );
 
+  function handleDetailsClose() {
+    setDetailsOpen(false);
+  }
+
   function handleOpenPayeeDetails(vendor: Payee) {
     setSelectedPayee(vendor);
     setDetailsOpen(true);
-  }
-
-  useEffect(() => {
-    setSortByValue('NAME');
-  }, [setSortByValue]);
-
-
-  function handleDetailsClose() {
-    setDetailsOpen(false);
   }
 
   function handleSearch(searchTerm: string) {
@@ -61,31 +67,49 @@ const PayeeList = () => {
     });
   }
 
+  const skeleton = () => (
+    <div className="mt-2 ">
+      <Skeleton
+        height={30}
+        width="100%"
+        className="mb-1"
+        enableAnimation={true}
+        count={12}
+        containerClassName="flex-1"
+      />
+    </div>
+  );
+
   return (
-    <div className="mx-auto w-[95%]">
-      {searchTerm}
-      {/* <pre>{JSON.stringify(vendorsState)}</pre> */}
+    <div>
       <PayeeListHeader
         onSearch={handleSearch}
         onAddPayee={onAddPayee}
       ></PayeeListHeader>
 
-      <div>
-        {/* <input type="text" /> */}
-        <div className="">
-          <PayeeListColumHeaders></PayeeListColumHeaders>
-          <PayeeListResults
-            openPayeeDetails={handleOpenPayeeDetails}
-          ></PayeeListResults>
-        </div>
+      <PayeeListColumHeaders></PayeeListColumHeaders>
+      {data?.payees ? (
+        <PayeeListResults
+          openPayeeDetails={handleOpenPayeeDetails}
+          data={data?.payees}
+          loadingPayees={loadingPayees}
+        ></PayeeListResults>
+      ) : (
+        skeleton()
+      )}
+      {data?.pagination && (
+        <Pagination
+          data={data?.pagination}
+          onPageNumberChange={handlePageNumberChange}
+        ></Pagination>
+      )}
 
-        {detailsOpen && (
-          <PayeeDetailsWindow
-            payee={selectedPayee!}
-            onClose={handleDetailsClose}
-          ></PayeeDetailsWindow>
-        )}
-      </div>
+      {detailsOpen && (
+        <PayeeDetailsWindow
+          payee={selectedPayee!}
+          onClose={handleDetailsClose}
+        ></PayeeDetailsWindow>
+      )}
     </div>
   );
 };

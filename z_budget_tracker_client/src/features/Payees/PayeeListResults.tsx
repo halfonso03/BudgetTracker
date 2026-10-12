@@ -1,40 +1,43 @@
-import { Check, X, DollarSign, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Check, X, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { formatNumber, formatDate } from '../../app/util';
 import SearchTermMarker from '../../components/SearchTermMarker';
 import { usePagination } from '../../contexts/pagination/usePagination';
-import { usePayees } from '../../api/hooks/payees/usePayees';
-import Spinner from '../../components/Spinner';
 import { Pagination } from '../../components/Pagination';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 type Props = {
   openPayeeDetails: (payee: Payee) => void;
+  data: Payee[];
+  loadingPayees: boolean;
 };
-const PayeeListResults = ({ openPayeeDetails }: Props) => {
-  const { searchTerm, setPageNumber } = usePagination();
-  const { data, loadingPayees } = usePayees(searchTerm);
-
-  function handlePageNumberChange(pageNumber: number) {
-    setPageNumber(pageNumber);
-  }
-
-  if (!data || loadingPayees) return null;
+const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
+  const { searchTerm } = usePagination();
 
   if (loadingPayees)
     return (
-      <div className="flex justify-center  text-center">
-        <Spinner></Spinner>
+      <div className="mt-2 ">
+        <Skeleton
+          height={30}
+          width="100%"
+          className="mb-1"
+          enableAnimation={true}
+          count={12}
+          containerClassName="flex-1"
+        />
       </div>
     );
+  if (!data) return null;
 
   return (
     <div>
-      <div className="border-l border-r border-b border-neutral-200">
-        {data.payees.map((v) => (
+      <div className="border-l border-r border-b border-neutral-300/60">
+        {data.map((v) => (
           <div
-            className=" grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.4fr_.5fr_.2fr_.2fr] 
+            className=" grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.35fr_.4fr_.2fr_.2fr] 
           gap-2 p-1 items-center hover:bg-neutral-100 duration-200 transition-all 
-          cursor-pointer border-b border-b-neutral-200 last:border-0 "
+          cursor-pointer border-b border-b-neutral-300/60 last:border-0 "
             key={v.id}
             onClick={() => {
               openPayeeDetails(v);
@@ -91,42 +94,6 @@ const PayeeListResults = ({ openPayeeDetails }: Props) => {
             </div>
           </div>
         ))}
-      </div>
-      <div className="flex items-center justify-between mt-6 px-2  text-neutral-500">
-        <span>
-          Showing page{' '}
-          <span className="font-medium text-neutral-900">
-            {data?.pagination?.currentPage}
-          </span>{' '}
-          of {data?.pagination?.totalPages}
-        </span>
-        <div>{data?.pagination?.totalCount} results found.</div>
-        {data?.pagination && (
-          <div className="flex">
-            <button
-              onClick={() =>
-                setPageNumber(Math.max(data!.pagination!.currentPage - 1, 1))
-              }
-              disabled={data?.pagination?.currentPage === 1}
-              className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-            >
-              <ChevronLeft size={20} className="cursor-pointer" />
-            </button>
-            <Pagination
-              data={data?.pagination}
-              onPageNumberChange={handlePageNumberChange}
-            ></Pagination>
-            <button
-              onClick={() => setPageNumber(data!.pagination!.currentPage + 1)}
-              disabled={
-                data?.pagination?.currentPage === data?.pagination?.totalPages
-              }
-              className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-            >
-              <ChevronRight size={20} className="cursor-pointer" />
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
