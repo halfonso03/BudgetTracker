@@ -14,7 +14,7 @@ import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../../components/ConfirmModal';
 import ReproParams2 from './ReproParams2';
-import Spinner from '../../components/Spinner';
+import Skeleton from 'react-loading-skeleton';
 
 type SelectedItem = {
   id: number;
@@ -33,9 +33,9 @@ const ReproSearch = () => {
   const [year, setYear] = useState<number>(2026);
   const [status, setStatus] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
-  const { initiatives } = useInitiatives();
-  const { grants } = useGrantsAllYears();
-  const { categories } = useCategories(true, true);
+  const { initiatives, loadingInit } = useInitiatives();
+  const { grants, loadingGrants } = useGrantsAllYears();
+  const { categories, loadingCat } = useCategories(true, true);
   const [amountFilter, setAmountFilter] = useState<ReproAmountFilter>({
     debitAmount: 0,
     creditAmount: 0,
@@ -117,19 +117,20 @@ const ReproSearch = () => {
     setXSelectedIds(itemsList);
   }
 
-  const { searchResults, successLoadingResults, loadingSearchResults } = useReproSearch(
-    {
-      pageNumber: pageNumber,
-      pageSize: import.meta.env.VITE_REPRO_SARCH_PAGE_SIZE,
-    },
-    {
-      selectedIds,
-      xSelectedIds,
-      status,
-      year,
-      ...amountFilter,
-    },
-  );
+  const { searchResults, successLoadingResults, loadingSearchResults } =
+    useReproSearch(
+      {
+        pageNumber: pageNumber,
+        pageSize: import.meta.env.VITE_REPRO_SEARCH_PAGE_SIZE,
+      },
+      {
+        selectedIds,
+        xSelectedIds,
+        status,
+        year,
+        ...amountFilter,
+      },
+    );
 
   const { deleteRepro } = useReproMutations();
 
@@ -265,33 +266,9 @@ const ReproSearch = () => {
   return (
     <div>
       <div className="flex gap-2 mt-10">
-        {/* <div className="flex flex-2">
-          <div></div>
-        </div> */}
-        {/* <MemoizedReproParams
-          initiatives={initiativesList?.map((x) => ({
-            id: x.id,
-            name: x.name,
-          }))}
-          grants={grants
-            ?.filter((x) => x.year === year)
-            .map((x) => ({ id: x.id, name: x.name }))}
-          accounts={accountsList?.map((x) => ({
-            id: x.id,
-            name: x.name,
-          }))}
-          onListCheck={handleListCheck}
-          onListXCheck={handleListXCheck}
-          onDeselectAll={handleDeselectAll}
-          onSelectAll={handleSelectAll}
-          onStatusChange={handleStatusChange}
-          onYearChange={handleYearChange}
-          onAmountBlur={handleAmountBlur}
-          onAmountComparerChange={handleComparerChange}
-        ></MemoizedReproParams> */}
         <div className="p-2 flex-7">
           <div className="mb-4">
-            <MemoizedReproParams
+            <ReproParams2
               initiatives={initiativesList?.map((x) => ({
                 id: x.id,
                 name: x.name,
@@ -312,38 +289,55 @@ const ReproSearch = () => {
               onYearChange={handleYearChange}
               onAmountFilter={handleAmountFilter}
               onAmountFilterCancel={handleAmountFilterCancel}
-            ></MemoizedReproParams>
+            ></ReproParams2>
           </div>
-
-          {successLoadingResults && searchResults && paginationData && (
+          {loadingSearchResults && (
+            <div className="mt-16 ">
+              <Skeleton
+                height={35}
+                width="100%"
+                enableAnimation={true}
+                count={15}
+                containerClassName="flex-1"
+              />
+            </div>
+          )}
+          {successLoadingResults && paginationData && (
             <MenuIdProvider>
               <div className="flex flex-col">
-                <div className="flex justify-between pl-1 items-center ">
-                  <div className="text-md font-semibold text-neutral-500 mb-1 ">
+                <div className="flex justify-between  pl-1 items-center mb-4 ">
+                  <div className="text-md font-semibold text-neutral-500  ">
                     {paginationData.totalCount} Reprogramming
                     {paginationData.totalCount > 1 ? 's' : ''} found.
                   </div>
-                  {searchResults.items.length > 0 && (
-                    <button
-                      className=" text-neutral-500 hover:text-blue-800 cursor-pointer hover:scale-115 transition-all duration-200 mt-4"
-                      onClick={handleRefreshClick}
-                    >
-                      <RefreshCw size={20}></RefreshCw>
-                    </button>
+                  {searchResults && searchResults.items.length > 0 && (
+                    <div>
+                      <button
+                        className="text-neutral-500 hover:text-blue-800 cursor-pointer hover:scale-115 transition-all duration-200 "
+                        onClick={handleRefreshClick}
+                      >
+                        <RefreshCw size={20}></RefreshCw>
+                      </button>
+                    </div>
                   )}
                 </div>
-                <div className="flex flex-col gap-3 items-center justify-between min-h-[63dvh]">
-                  {loadingSearchResults && <Spinner></Spinner>}
+
+                {successLoadingResults && searchResults && (
                   <ReproSearchReults
                     key={searchResults.searchId}
                     results={searchResults.items}
                     onDelete={handleDelete}
                   ></ReproSearchReults>
-                  <Pagination
-                    data={paginationData}
-                    onPageNumberChange={handlePageNumberChange}
-                  ></Pagination>
-                </div>
+                )}
+
+                {searchResults &&
+                  searchResults?.items.length > 0 &&
+                  paginationData && (
+                    <Pagination
+                      data={paginationData}
+                      onPageNumberChange={handlePageNumberChange}
+                    ></Pagination>
+                  )}
               </div>
             </MenuIdProvider>
           )}

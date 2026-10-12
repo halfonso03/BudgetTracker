@@ -31,6 +31,7 @@ type PayeePaymentStats = {
     averagePayment: number | null,
     lastPaymentDate: Date | null
     lastPaymentAmount: number | null
+    numberOfPayments: number
 }
 
 

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { formatNumber, formatDate } from '../../app/util';
 import SearchTermMarker from '../../components/SearchTermMarker';
 import { usePagination } from '../../contexts/pagination/usePagination';
-import { Pagination } from '../../components/Pagination';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 

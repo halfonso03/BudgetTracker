@@ -134,6 +134,7 @@ namespace Application.Services
                                        group new { l.Amount, d.PostedDate } by l.PayeeId into grp
                                        select new PayeePaymentStatsDto
                                        {
+                                           NumberOfPayments = grp.Count(),
                                            AveragePayment = grp.Average(x => x.Amount),
                                            LastPaymentDate = grp.Max(x => x.PostedDate),
                                            HighestPayment = grp.Max(x => x.Amount),
@@ -232,6 +233,7 @@ namespace Application.Services
             DateTime? lastPaymentDate = null;
             decimal? totalPaid = null;
             decimal? lastPaymentAmount = null;
+            int numberOfPayments = 0;
 
 
             if (await dbContext.DisbLineItems.AnyAsync(x => x.PayeeId == payeeId))
@@ -239,6 +241,7 @@ namespace Application.Services
                 lastPaymentDate = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).MaxAsync(x => x.EntryDate);
                 totalPaid = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).SumAsync(x => x.Amount);
                 lastPaymentAmount = (await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).OrderBy(x => x.EntryDate).LastOrDefaultAsync())?.Amount;
+                numberOfPayments = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).CountAsync();
             }
 
             var result = await dbContext.Payees
@@ -255,6 +258,7 @@ namespace Application.Services
                                    LastPaymentAmount = lastPaymentAmount,
                                    LastPaymentDate = lastPaymentDate,
                                    TotalPaid = totalPaid,
+                                   NumberOfPayments = numberOfPayments
                                }).SingleOrDefaultAsync();
 
             if (result == null)

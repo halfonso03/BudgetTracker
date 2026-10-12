@@ -25,6 +25,7 @@ namespace Application.DTOs.Payees
         public DateTime? LastPaymentDate { get; set; }
         public decimal? LastPaymentAmount { get; set; }
         public int? DaysSinceLastPayment { get; set; }
+        public int NumberOfPayments { get; set; }
         public bool IsActive { get; set; }
         public decimal? TotalPaid { get; set; }
         public int PayeeTypeId { get; set; }

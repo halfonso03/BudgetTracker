@@ -11,6 +11,7 @@ namespace Application.DTOs.Payee
         public decimal? HighestPayment { get; set; } = null;
         public decimal? AveragePayment { get; set; } = null;
         public DateTime? LastPaymentDate { get; set; } = null;
-        public decimal? LastPaymentAmount { get; set; } =null;
+        public decimal? LastPaymentAmount { get; set; } = null;
+        public int? NumberOfPayments { get; set; }
     }
 }

@@ -11,6 +11,7 @@ import ReproSearchFilter from './ReproSearchFilter';
 import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
 import { parseFormattedNumber } from '../../app/util';
 import Spinner from '../../components/Spinner';
+import Skeleton from 'react-loading-skeleton';
 
 const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
@@ -48,9 +49,7 @@ const ReproParams2 = memo(
     onAmountFilter,
     onAmountFilterCancel,
   }: Props) => {
-    console.log('ReproParams2 render');
     const statuses = getStatuses();
-
     const debitRef = useRef<HTMLInputElement | null>(null);
     const creditRef = useRef<HTMLInputElement | null>(null);
     const [yearOptions, setYearOptions] = useState<
@@ -248,7 +247,7 @@ const ReproParams2 = memo(
     }
 
     return (
-      <div className="flex justify-center gap-3 z-10">
+      <div className=" flex justify-center items-center gap-3 z-10 w-full">
         <ReproSearchFilter
           selectedItemLabel={amountFilterLabel}
           parentCorntrolled={true}
@@ -391,41 +390,61 @@ const ReproParams2 = memo(
             </button>
           </div>
         </ReproSearchFilter>
+
         {!initiatives && (
-          <div className="py-2 w-45">
-            <Spinner></Spinner>
+          <div className="flex gap-3 w-[30%]">
+            <Skeleton
+              height={40}
+              className="mt-0 self-center p-1 flex-1"
+              enableAnimation={true}
+              containerClassName="flex-1"
+            />
+            <Skeleton
+              height={40}
+              className="mt-0 self-center p-1 flex-1"
+              enableAnimation={true}
+              containerClassName="flex-1"
+            />
+            <Skeleton
+              height={40}
+              className="mt-0 self-center p-1 flex-1"
+              enableAnimation={true}
+              containerClassName="flex-1"
+            />
           </div>
         )}
-        
-        {initiatives !== undefined && initiatives.length > 0 && (
-          <ReproSearchFilter
-            selectedItemLabel={iLabel}
-            parentCorntrolled={false}
-            outsideShowList={false}
-          >
-            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">
-              <CheckBoxListReproSearchParam
-                id={INITIATIVES_LIST_TYPE}
-                onCheck={handleCheck}
-                onXCheck={handleXCheck}
-                maxHeight={400}
-                items={initiatives.map((i) => ({
-                  ...i,
-                  checked: true,
-                  xChecked: false,
-                }))}
-                onDeselectAll={handleDeselectAll}
-                onSelectAll={handleSelectAll}
-                onOptionsUpdated={(o) =>
-                  handleOptionsUpdated(o, INITIATIVES_LIST_TYPE)
-                }
-              ></CheckBoxListReproSearchParam>
-              {/* <button className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer">
+
+        {initiatives !== undefined &&
+          initiatives.length > 0 &&
+           (
+            <ReproSearchFilter
+              selectedItemLabel={iLabel}
+              parentCorntrolled={false}
+              outsideShowList={false}
+            >
+              <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">
+                <CheckBoxListReproSearchParam
+                  id={INITIATIVES_LIST_TYPE}
+                  onCheck={handleCheck}
+                  onXCheck={handleXCheck}
+                  maxHeight={400}
+                  items={initiatives.map((i) => ({
+                    ...i,
+                    checked: true,
+                    xChecked: false,
+                  }))}
+                  onDeselectAll={handleDeselectAll}
+                  onSelectAll={handleSelectAll}
+                  onOptionsUpdated={(o) =>
+                    handleOptionsUpdated(o, INITIATIVES_LIST_TYPE)
+                  }
+                ></CheckBoxListReproSearchParam>
+                {/* <button className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer">
                 Apply
               </button> */}
-            </div>
-          </ReproSearchFilter>
-        )}
+              </div>
+            </ReproSearchFilter>
+          )}
 
         {grants !== undefined && grants.length > 0 && (
           <ReproSearchFilter

@@ -8,7 +8,7 @@ export const usePayeePayments = (payeeId: number) => {
   const { pageNumber } = usePagination();
   const { sortByValue } = useSortingContext();
 
-  const { data, isLoading } = useQuery<{
+  const { data, isLoading, isSuccess } = useQuery<{
     payments: PayeePayment[];
     pagination: PaginationData | undefined;
   }>({
@@ -34,5 +34,9 @@ export const usePayeePayments = (payeeId: number) => {
     },
   });
 
-  return { payments: data, loadingPayments: isLoading };
+  return {
+    payments: data,
+    loadingPayments: isLoading,
+    loadingPaymentsSuccess: isSuccess,
+  };
 };

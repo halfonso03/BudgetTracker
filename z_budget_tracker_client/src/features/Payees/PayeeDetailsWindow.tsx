@@ -1,11 +1,10 @@
 import { ArrowRight, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import PayeeForm from './PayeeForm';
-import PayeePaymentsList from './PayeePaymentsList';
 import NavBar from '../../components/NavBar';
-import SortingProvider from '../../contexts/SortingContextProvider';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import PayeePayments from './PayeePayments';
 
 type Props = {
   onClose: () => void;
@@ -20,7 +19,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
     setShowNewPaymentLInk(true);
     setNewPayeeInfo(i);
   }
-  
+
   return createPortal(
     <div className="fixed inset-0 z-5 h-auto w-full  bg-neutral-50 border-t border-t-neutral-300 ">
       <div className="relative ">
@@ -50,11 +49,10 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
             </div>
 
             <div className="flex-8">
-              {payee.id !== 0 && newPayeeInfo === null && (
-                <SortingProvider>
-                  <PayeePaymentsList payeeId={payee.id}></PayeePaymentsList>
-                </SortingProvider>
+              {payee.id !== 0 && (
+                <PayeePayments payeeId={payee.id}></PayeePayments>
               )}
+
               {showNewPaymentLink && (
                 <Link
                   className="text-blue-500"
