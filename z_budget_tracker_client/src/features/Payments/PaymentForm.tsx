@@ -25,7 +25,6 @@ import {
 import Button from '../../components/Button';
 import useClientAuth from '../../contexts/useAuth';
 import PaymentRow from './PaymentRow';
-import Input from '../../components/Input';
 import JustificaModal from '../Common/modals/JustificaModal';
 import ErrorsModal from '../Common/modals/ErrorsModal';
 import PaymentLineModal from './modals/PaymentLineModal';
@@ -193,8 +192,6 @@ const PaymentForm = ({ payment }: Props) => {
       if (row.uuid === uuid) break;
     }
 
-
-
     const editS = {
       uuid: uuid,
       initiativeId: lineToEdit.initiativeId,
@@ -202,11 +199,12 @@ const PaymentForm = ({ payment }: Props) => {
       categoryId: lineToEdit.categoryId,
       accountId: lineToEdit.accountId,
       payeeId: lineToEdit.payeeId,
-      amount: parseFormattedNumber(getValues(`rows.${index}.paymentAmount`).toString()),
+      amount: parseFormattedNumber(
+        getValues(`rows.${index}.paymentAmount`).toString(),
+      ),
       comment: lineToEdit.comment,
     };
 
-    console.log(editS);
     setEditSelections(editS);
     setPaymentLineModalIsOpen(true);
   }
@@ -277,12 +275,12 @@ const PaymentForm = ({ payment }: Props) => {
   return (
     <MenuIdProvider>
       <div>
-        <pre>{JSON.stringify(lines)}</pre>
+        {/* <pre>{JSON.stringify(lines)}</pre> */}
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           <div
             className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
           >
-            <pre className="w-[20%]">{JSON.stringify(editSelections)}</pre>
+            {/* <pre className="w-[20%]">{JSON.stringify(editSelections)}</pre> */}
             {payment !== undefined && (
               <Button buttonSize="small" onClick={onAddRow}>
                 <Plus></Plus>
@@ -375,7 +373,7 @@ const PaymentForm = ({ payment }: Props) => {
                               readOnly={true}
                               tabIndex={-1}
                               className={
-                                'w-full border border-neutral-200 p-2 text-center bg-transparent focus:outline-none focus:ring-0'
+                                'w-full border border-neutral-200 p-2 text-center text-neutral-600 focus:outline-none focus:ring-0'
                               }
                               value={formatNumber(item.availableAmount)}
                             ></input>
@@ -392,7 +390,7 @@ const PaymentForm = ({ payment }: Props) => {
                             onBlur={() => {
                               paymentAmountOnBlur(item.uuid);
                             }}
-                            classes={`flex-[1.5] w-full  text-center border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
+                            classes={`flex-[1.5] w-full  text-center border-neutral-200 text-neutral-900 font-medium focus:outline-none focus:ring-0 focus:ring-offset-0
                        `}
                           />
                         </div>
@@ -400,7 +398,7 @@ const PaymentForm = ({ payment }: Props) => {
                           <input
                             readOnly={true}
                             tabIndex={-1}
-                            className={` ${alertClass} w-full border border-neutral-200 p-2 text-center bg-transparent focus:outline-none focus:ring-0`}
+                            className={` ${alertClass} w-full border border-neutral-200 p-2 text-neutral-600 text-center focus:outline-none focus:ring-0`}
                             value={formatCurrency(item.newAvailableAmount)}
                           ></input>
                         </div>

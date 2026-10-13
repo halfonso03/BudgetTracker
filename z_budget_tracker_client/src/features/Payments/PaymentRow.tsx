@@ -44,12 +44,12 @@ const PaymentRow = ({
           <div className="font-medium text-neutral-900 self-center text-xl tracking-wider mb-2">
             {payeeName}
           </div>
-          <div className="font-semibold text-neutral-500 ">Total Paid</div>
+          {/* <div className="font-semibold text-neutral-500 ">Total Paid</div>
           <div className=" text-neutral-800 pr-3 ">$1,233.87</div>
           <div className="font-semibold text-neutral-500 ">
             Number of Payments
           </div>
-          <div className=" text-neutral-800 pr-3 ">$1,233.87</div>
+          <div className=" text-neutral-800 pr-3 ">$1,233.87</div> */}
         </div>
         <div className="flex flex-col  flex-3">
           <div className="flex  ">
