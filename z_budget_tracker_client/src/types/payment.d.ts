@@ -85,5 +85,7 @@ type PaymentLineItemSelections = {
     grantId?: number;
     categoryId?: number;
     accountId?: number;
-    payeeId: number
+    payeeId?: number
+    amount?: number
+    comment?:string
 };

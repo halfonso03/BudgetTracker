@@ -2,7 +2,7 @@ import { Fragment } from 'react/jsx-runtime';
 import Menus from '../../components/menus/Menus';
 import { Copy, Edit, EllipsisVertical, Trash } from 'lucide-react';
 import CommentToggler from './CommentToggler';
-import { POSTED } from '../../app/constants';
+
 
 type Props = {
   lineItem: PaymentLineItem;
@@ -22,7 +22,6 @@ const PaymentRow = ({
   editRow,
   saveComment,
   canEdit,
-  status,
   lineItem: {
     payeeName,
     initiativeName,
@@ -113,7 +112,7 @@ const PaymentRow = ({
                   className="text-neutral-500"
                 ></EllipsisVertical>
               </Menus.Toggler>
-              <Menus.List id={uuid}>
+              <Menus.List id={uuid} topPos='translate-y-15'>
                 <Menus.MenuItem onClick={() => editRow?.(uuid)}>
                   <Edit size={18}></Edit>&nbsp;&nbsp;Edit Row
                 </Menus.MenuItem>

@@ -9,7 +9,11 @@ import {
   SAVED,
 } from '../../app/constants';
 import { useForm } from 'react-hook-form';
-import { formatCurrency, formatNumber } from '../../app/util';
+import {
+  formatCurrency,
+  formatNumber,
+  parseFormattedNumber,
+} from '../../app/util';
 import MenuIdProvider from '../../contexts/MenuIdContext';
 import {
   AlertTriangle,
@@ -118,8 +122,6 @@ const PaymentForm = ({ payment }: Props) => {
   function handleLineAdded(newLine: PaymentLineItem) {
     setTimeout(() => setAddLineModalIsOpen(false), 500);
 
-    console.log('handleLineAdded PaymentLineItem', newLine);
-
     const newLines: PaymentLineItem[] = lines.map(
       (l: PaymentLineItem, i: number) => {
         const { paymentAmount } = getPaymentAmount(i);
@@ -190,6 +192,15 @@ const PaymentForm = ({ payment }: Props) => {
 
   function handleEditRow(uuid: string) {
     const lineToEdit = lines.filter((x) => x.uuid == uuid)[0];
+
+    let index = 0;
+    for (const row of lines) {
+      if (row.uuid === uuid) break;
+      index++;
+    }
+
+    const amount = +getValues(`rows.${index}.paymentAmount`);
+
     setEditSelections({
       uuid: uuid,
       initiativeId: lineToEdit.initiativeId,
@@ -197,6 +208,8 @@ const PaymentForm = ({ payment }: Props) => {
       categoryId: lineToEdit.categoryId,
       accountId: lineToEdit.accountId,
       payeeId: lineToEdit.payeeId,
+      amount: amount,
+      comment: lineToEdit.comment
     });
   }
 

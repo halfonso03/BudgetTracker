@@ -17,9 +17,16 @@ import Spinner from '../../components/Spinner';
 type Props = {
   onPayeeSelected: (payee: Payee) => void;
   onPayeeSelectionCleared: () => void;
+  payeeId?: number | null;
 };
 
-const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
+const PayeeSearcher = ({
+  payeeId,
+  onPayeeSelected,
+  onPayeeSelectionCleared,
+}: Props) => {
+  let payeeIdToFind = 0;
+
   const inputRef = useRef<HTMLInputElement>(null);
   const [inputFocused, stInputFocused] = useState(false);
   const [query, setQuery] = useState<string>(() => '');
@@ -30,10 +37,18 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
 
   usePayeePayments(selectedPayee?.id ?? 0);
 
-  const { data: suggestions, isFetching } = usePayeeSearch(query);
-  const { data: selectedPayeeInfo, isLoading: loadginSelectedPayeeInfo } =
-    useSelectedPayeeInfo(selectedPayee ? selectedPayee.id : 0);
+  if (selectedPayee) {
+    payeeIdToFind = selectedPayee.id;
+  } else if (payeeId && payeeId !== 0) {
+    payeeIdToFind = payeeId;
+  }
 
+  const { data: suggestions, isFetching } = usePayeeSearch(query);
+
+  const { data: selectedPayeeInfo, isLoading: loadginSelectedPayeeInfo } =
+    useSelectedPayeeInfo(payeeIdToFind);
+
+  // console.log('selectedPayeeInfo', selectedPayeeInfo);
   const selectRow = useCallback(
     (amount: number) => {
       if (suggestions && suggestions?.length && suggestions.length > 0) {
@@ -97,10 +112,10 @@ const PayeeSearcher = ({ onPayeeSelected, onPayeeSelectionCleared }: Props) => {
             containerClassName="flex-1 self-stretch"
           />
         )}
-        {selectedPayee && selectedPayeeInfo && (
+
+        {selectedPayeeInfo && (
           <div className="mb-2 pr-1">
             <SelectedPayeeCard
-              selectedPayee={selectedPayee}
               selectedPayeeInfo={selectedPayeeInfo}
               onRemoveSelection={onRemoveSelection}
               onOpenInfoWindow={() => setInfoWindowIsOpen(true)}

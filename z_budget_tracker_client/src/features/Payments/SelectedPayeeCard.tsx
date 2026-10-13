@@ -2,7 +2,6 @@ import { Info, X } from 'lucide-react';
 import { formatCurrency, formatDate } from '../../app/util';
 
 type Props = {
-  selectedPayee: Payee | null;
   selectedPayeeInfo: Payee;
   onRemoveSelection: () => void;
   onOpenInfoWindow: () => void;
@@ -11,12 +10,11 @@ type Props = {
 const SelectedPayeeCard = ({
   onOpenInfoWindow,
   onRemoveSelection,
-  selectedPayee,
   selectedPayeeInfo,
 }: Props) => {
   return (
     <div>
-      {selectedPayee && (
+      {selectedPayeeInfo && (
         <div className="flex items-center shadow-md gap-1 bg-neutral-200/70 rounded-sm border border-neutral-200/90">
           <div
             className="cursor-pointer p-2 text-neutral-600 self-stretch hover:text-neutral-900 hover:bg-neutral-100"
@@ -27,7 +25,7 @@ const SelectedPayeeCard = ({
           <div className="flex-1 p-1">
             <div className="text-neutral-700 font-medium">
               <div className="flex justify-between font-semibold tracking-wider">
-                {selectedPayee?.name}
+                {selectedPayeeInfo?.name}
                 <div
                   className="text-neutral-500 cursor-pointer "
                   onClick={onOpenInfoWindow}
@@ -39,12 +37,12 @@ const SelectedPayeeCard = ({
             <div className="text-neutral-500 text-[.95rem]">
               [Payee Type:{' '}
               <span className="text-neutral-700">
-                {selectedPayee?.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}
+                {selectedPayeeInfo?.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}
               </span>
               ]<br></br>
               [Charge Account:{' '}
               <span className="text-neutral-700">
-                {selectedPayee.categoryName + ' - ' + selectedPayee.accountName}
+                {selectedPayeeInfo.categoryName + ' - ' + selectedPayeeInfo.accountName}
               </span>
               ]<br></br>
               {selectedPayeeInfo?.lastPaymentDate && (

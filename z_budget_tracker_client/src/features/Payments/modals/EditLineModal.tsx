@@ -21,12 +21,15 @@ type Selections = {
   grantId?: number;
   categoryId?: number;
   accountId?: number;
+  payeeId?: number;
+  amount?: number;
+  comment?: string;
 };
 
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
-  selections?: Selections;
+  selections: Selections | null;
   year: number;
   uuid: string;
   onLineUpdated: (
@@ -38,7 +41,6 @@ type Props = {
 type FormValues = Yup.InferType<typeof PaymentFormSchema>;
 
 const EditLineModal = ({ ...props }: Props) => {
-  const [selections, setSelections] = useState<Selections | null>(null);
   const [animateOut, setAnimateOut] = useState(false);
   const [payee, setPayee] = useState<Payee | null>(null);
   const [payeeUpdated, setPayeeUpdated] = useState(false);
@@ -47,6 +49,10 @@ const EditLineModal = ({ ...props }: Props) => {
   const { grants } = useGrants(props.year, props.isOpen);
   const { initiatives } = useInitiatives(props.isOpen);
   const { categories, catSuccess } = useCategories(props.isOpen);
+
+  const [selections, setSelections] = useState<Selections | null>(
+    props.selections,
+  );
 
   let availableAmount = 0;
 
@@ -61,13 +67,19 @@ const EditLineModal = ({ ...props }: Props) => {
   } = useForm<FormValues>({
     resolver: yupResolver(PaymentFormSchema) as Resolver<FormValues>,
     defaultValues: {
-      initiativeId: 0,
-      grantId: 0,
-      categoryId: payee ? payee.categoryId : 0,
-      accountId: 0,
-      amount: '0.00',
+      initiativeId: props.selections ? props.selections.initiativeId : 0,
+      grantId: props.selections ? props.selections.grantId : 0,
+      categoryId: props.selections ? props.selections.categoryId : 0,
+      accountId: props.selections ? props.selections.accountId : 0,
+      payeeId: props.selections ? props.selections.payeeId : 0,
+      amount: props?.selections?.amount
+        ? formatNumber(props.selections.amount)
+        : '0.00',
+      comment: props.selections ? props.selections.comment : '',
     },
   });
+
+  // payee ? payee.categoryId : 0,
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const categoryIdWatchValue = watch('categoryId') as number;
@@ -233,6 +245,7 @@ const EditLineModal = ({ ...props }: Props) => {
                   <PayeeSearcher
                     onPayeeSelected={handlePayeeSelected}
                     onPayeeSelectionCleared={handlePayeeSelectionCleared}
+                    payeeId={selections?.payeeId}
                   ></PayeeSearcher>
                   <div className="self-center">
                     {errors.payeeId && (
@@ -477,7 +490,7 @@ const EditLineModal = ({ ...props }: Props) => {
                     0
                 }
               >
-                Add Payment
+                Update Payment
               </Button>
               <Button variation="secondary" onClick={closeModal}>
                 Cancel

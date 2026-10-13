@@ -234,6 +234,7 @@ namespace Application.Services
             decimal? totalPaid = null;
             decimal? lastPaymentAmount = null;
             int numberOfPayments = 0;
+            int? daysSinceLastPayment = null;
 
 
             if (await dbContext.DisbLineItems.AnyAsync(x => x.PayeeId == payeeId))
@@ -242,10 +243,12 @@ namespace Application.Services
                 totalPaid = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).SumAsync(x => x.Amount);
                 lastPaymentAmount = (await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).OrderBy(x => x.EntryDate).LastOrDefaultAsync())?.Amount;
                 numberOfPayments = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).CountAsync();
+                daysSinceLastPayment = ((TimeSpan)(DateTime.Today - lastPaymentDate!)).Days;
             }
 
             var result = await dbContext.Payees
                                .Include(x => x.Account)
+                                .ThenInclude(x => x!.Category)
                                .Where(x => x.Id == payeeId)
                                .Select(x => new PayeeSearchPayeeResponseDto
                                {
@@ -258,7 +261,10 @@ namespace Application.Services
                                    LastPaymentAmount = lastPaymentAmount,
                                    LastPaymentDate = lastPaymentDate,
                                    TotalPaid = totalPaid,
-                                   NumberOfPayments = numberOfPayments
+                                   NumberOfPayments = numberOfPayments,
+                                   AccountName = x.Account.Name,
+                                   CategoryName = x.Account!.Category!.Name,
+                                   DaysSinceLastPayment = daysSinceLastPayment
                                }).SingleOrDefaultAsync();
 
             if (result == null)
