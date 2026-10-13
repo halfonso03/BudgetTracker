@@ -23,11 +23,11 @@ const Button = ({
   if (buttonSize == 'xsmall') {
     classes += ' w-15 p-1';
   } else if (buttonSize == 'small') {
-    classes += ' p-2 w-30 ';
+    classes += ' p-2 w-35 ';
   } else if (buttonSize == 'medium') {
-    classes += 'text-base p-2 w-40 ';
+    classes += 'text-base p-2 w-45 ';
   } else if (buttonSize == 'large') {
-    classes += 'text-lg p-4 w-50 ';
+    classes += 'text-lg p-3 w-60 ';
   }
 
   if (variation == 'primary') {

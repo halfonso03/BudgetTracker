@@ -121,6 +121,7 @@ const PaymentForm = ({ payment }: Props) => {
     const newLines: PaymentLineItem[] = lines.map(
       (l: PaymentLineItem, i: number) => {
         const paymentAmount = getValues(`rows.${i}.paymentAmount`);
+
         const newLine: PaymentLineItem = {
           ...l,
           availableAmount: l.availableAmount,
@@ -133,7 +134,18 @@ const PaymentForm = ({ payment }: Props) => {
       },
     );
 
-    setLines([...newLines, { ...newLine, rowId: lines.length }]);
+    console.log('newLine', newLine);
+
+    setLines([
+      ...newLines,
+      {
+        ...newLine,
+        paymentAmount: formatNumber(
+          parseFormattedNumber(newLine.paymentAmount.toString()),
+        ),
+        rowId: lines.length,
+      },
+    ]);
 
     // onIsDirty(true);
   }
@@ -192,7 +204,7 @@ const PaymentForm = ({ payment }: Props) => {
       if (row.uuid === uuid) break;
     }
 
-    const editS = {
+    setEditSelections({
       uuid: uuid,
       initiativeId: lineToEdit.initiativeId,
       grantId: lineToEdit.grantId,
@@ -203,9 +215,7 @@ const PaymentForm = ({ payment }: Props) => {
         getValues(`rows.${index}.paymentAmount`).toString(),
       ),
       comment: lineToEdit.comment,
-    };
-
-    setEditSelections(editS);
+    });
     setPaymentLineModalIsOpen(true);
   }
 
@@ -373,7 +383,7 @@ const PaymentForm = ({ payment }: Props) => {
                               readOnly={true}
                               tabIndex={-1}
                               className={
-                                'w-full border border-neutral-200 p-2 text-center text-neutral-600 focus:outline-none focus:ring-0'
+                                'w-full  p-2 text-center text-neutral-600 focus:outline-none focus:ring-0'
                               }
                               value={formatNumber(item.availableAmount)}
                             ></input>
@@ -382,15 +392,15 @@ const PaymentForm = ({ payment }: Props) => {
                         <div>
                           <PaymentAmountNumericArrayInput
                             index={index}
-                            setValue={setValue}
+                            setValue={setValue}                            
                             register={register(`rows.${index}.paymentAmount`)}
                             fieldName="paymentAmount"
-                            readOnly={paymentHeader.status === POSTED}
-                            disabled={paymentHeader.status === POSTED}
+                            readOnly={true}
+                            disabled={true}
                             onBlur={() => {
                               paymentAmountOnBlur(item.uuid);
                             }}
-                            classes={`flex-[1.5] w-full  text-center border-neutral-200 text-neutral-900 font-medium focus:outline-none focus:ring-0 focus:ring-offset-0
+                            classes={`flex-[1.5] w-full text-center border-neutral-200 text-neutral-900 font-medium focus:outline-none focus:ring-0 focus:ring-offset-0
                        `}
                           />
                         </div>
@@ -398,7 +408,7 @@ const PaymentForm = ({ payment }: Props) => {
                           <input
                             readOnly={true}
                             tabIndex={-1}
-                            className={` ${alertClass} w-full border border-neutral-200 p-2 text-neutral-600 text-center focus:outline-none focus:ring-0`}
+                            className={` ${alertClass} w-full  p-2 text-neutral-600 text-center focus:outline-none focus:ring-0`}
                             value={formatCurrency(item.newAvailableAmount)}
                           ></input>
                         </div>

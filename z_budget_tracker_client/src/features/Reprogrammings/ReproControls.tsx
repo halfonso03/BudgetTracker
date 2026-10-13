@@ -59,7 +59,8 @@ const ReproControls = ({
     <>
       <div className="flex justify-start gap-3 mt-6">
         <Button
-          buttonSize="small"
+          buttonSize="large"
+          additionalclasses="py-2"
           variation="primary"
           onClick={() => {
             if (hasUnsavedChanges) {
@@ -70,7 +71,7 @@ const ReproControls = ({
             }
           }}
         >
-          Start New...
+          New Reprogramming...
         </Button>
         <Button
           buttonSize="xsmall"
