@@ -9,7 +9,7 @@ export const PaymentFormSchema = Yup.object().shape({
     grantId: Yup.number().notOneOf([0], '*').required("*"),
     comment: Yup.string(),
     // amount: Yup.string().notOneOf([0], '*').required("*"),
-    amount: Yup
+    paymentAmount: Yup
         .string()
         .required('This field is required')
         .matches(

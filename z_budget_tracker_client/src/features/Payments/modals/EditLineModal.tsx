@@ -31,8 +31,7 @@ type Props = {
   onCancel: () => void;
   selections: Selections | null;
   year: number;
-  uuid: string;
-  onLineUpdated: (balance: PaymentLineItem) => void;
+  onLineUpdated: (lineItem: PaymentLineItem) => void;
 };
 
 type FormValues = Yup.InferType<typeof PaymentFormSchema>;
@@ -68,7 +67,7 @@ const EditLineModal = ({ ...props }: Props) => {
       categoryId: props.selections ? props.selections.categoryId : 0,
       accountId: props.selections ? props.selections.accountId : 0,
       payeeId: props.selections ? props.selections.payeeId : 0,
-      amount: props?.selections?.amount
+      paymentAmount: props?.selections?.amount
         ? formatNumber(props.selections.amount)
         : '0.00',
       comment: props.selections ? props.selections.comment : '',
@@ -126,6 +125,8 @@ const EditLineModal = ({ ...props }: Props) => {
     closeModal();
 
     const newLine: PaymentLineItem = {
+      ...data,
+
       rowId: -1,
       uuid: crypto.randomUUID(),
       accountName:
@@ -139,10 +140,9 @@ const EditLineModal = ({ ...props }: Props) => {
       grantName: grants?.filter((x) => x.id === data.grantId)[0].name ?? '',
       payeeName: payee!.name,
       availableAmount: availableAmount,
-      paymentAmount: getValues('amount'),
-      newAvailableAmount: availableAmount - +getValues('amount'),
+      paymentAmount: getValues('paymentAmount'),
+      newAvailableAmount: availableAmount - +getValues('paymentAmount'),
       comment: data.comment,
-      ...data,
     };
 
     props.onLineUpdated(newLine);
@@ -154,8 +154,8 @@ const EditLineModal = ({ ...props }: Props) => {
   }
 
   function handleInputEntryOnBlur() {
-    const formatted = formatNumber(+getValues('amount'));
-    setValue('amount', formatted);
+    const formatted = formatNumber(+getValues('paymentAmount'));
+    setValue('paymentAmount', formatted);
   }
 
   function handleLessThanZero() {
@@ -283,7 +283,7 @@ const EditLineModal = ({ ...props }: Props) => {
                         newSelections.accountId!,
                       );
 
-                      if (availableAmount2 - +getValues('amount') >= 0) {
+                      if (availableAmount2 - +getValues('paymentAmount') >= 0) {
                         setRemIsValid(true);
                       }
                     }
@@ -335,7 +335,7 @@ const EditLineModal = ({ ...props }: Props) => {
                         newSelections.accountId!,
                       );
 
-                      if (availableAmount2 - +getValues('amount') >= 0) {
+                      if (availableAmount2 - +getValues('paymentAmount') >= 0) {
                         setRemIsValid(true);
                       }
                     }
@@ -384,7 +384,7 @@ const EditLineModal = ({ ...props }: Props) => {
                         newSelections.accountId!,
                       );
 
-                      if (availableAmount2 - +getValues('amount') >= 0) {
+                      if (availableAmount2 - +getValues('paymentAmount') >= 0) {
                         setRemIsValid(true);
                       }
                     }
@@ -424,8 +424,8 @@ const EditLineModal = ({ ...props }: Props) => {
               </div>
               <PaymentEntryInput
                 getValues={getValues}
-                error={errors?.amount}
-                register={register('amount')}
+                error={errors?.paymentAmount}
+                register={register('paymentAmount')}
                 available={availableAmount}
                 onBlur={handleInputEntryOnBlur}
                 onLessThanZero={handleLessThanZero}
@@ -441,7 +441,7 @@ const EditLineModal = ({ ...props }: Props) => {
                 <span>rem amount NOT valid</span>
               )}
               <br></br>
-              {availableAmount - parseFormattedNumber(getValues('amount')) <
+              {availableAmount - parseFormattedNumber(getValues('paymentAmount')) <
               0 ? (
                 <span>too mch requested</span>
               ) : (
@@ -452,7 +452,8 @@ const EditLineModal = ({ ...props }: Props) => {
                 disabled={
                   !allSelections() ||
                   !remIsvalid ||
-                  availableAmount - parseFormattedNumber(getValues('amount')) <
+                  availableAmount -
+                    parseFormattedNumber(getValues('paymentAmount')) <
                     0
                 }
               >

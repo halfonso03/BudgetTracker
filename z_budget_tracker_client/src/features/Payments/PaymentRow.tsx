@@ -3,7 +3,6 @@ import Menus from '../../components/menus/Menus';
 import { Copy, Edit, EllipsisVertical, Trash } from 'lucide-react';
 import CommentToggler from './CommentToggler';
 
-
 type Props = {
   lineItem: PaymentLineItem;
   canEdit: boolean;
@@ -38,22 +37,19 @@ const PaymentRow = ({
   return (
     <Fragment>
       <div className=" flex pl-4 items-start gap-4 p-2 py-4 border border-neutral-200 mb-4 divide-neutral-300/60 divide-x">
-        {/* <div className="self-end font-semibold text-neutral-600 bg-neutral-200 p-1">
-          Payee
-        </div> */}
         <div className="flex-2 grid grid-cols-[.5fr_1fr] self-stretch ">
-          <div className="font-semibold text-neutral-500 self-center">Payee Name</div>
+          <div className="font-semibold text-neutral-500 self-center mb-2">
+            Payee Name
+          </div>
           <div className="font-medium text-neutral-900 self-center text-xl tracking-wider mb-2">
             {payeeName}
           </div>
           <div className="font-semibold text-neutral-500 ">Total Paid</div>
-          <div className=" text-neutral-800 pr-3 ">
-            $1,233.87
+          <div className=" text-neutral-800 pr-3 ">$1,233.87</div>
+          <div className="font-semibold text-neutral-500 ">
+            Number of Payments
           </div>
-          <div className="font-semibold text-neutral-500 ">Number of Payments</div>
-          <div className=" text-neutral-800 pr-3 ">
-            $1,233.87
-          </div>
+          <div className=" text-neutral-800 pr-3 ">$1,233.87</div>
         </div>
         <div className="flex flex-col  flex-3">
           <div className="flex  ">
@@ -93,9 +89,6 @@ const PaymentRow = ({
           </div>
         </div>
 
-        {/* 
-        <div></div>
-        <div>{payeeName}</div> */}
         <div className="flex-3 self-stretch">{render()}</div>
         <div className="flex  justify-around self-stretch items-center">
           <CommentToggler
@@ -112,7 +105,7 @@ const PaymentRow = ({
                   className="text-neutral-500"
                 ></EllipsisVertical>
               </Menus.Toggler>
-              <Menus.List id={uuid} topPos='translate-y-15'>
+              <Menus.List id={uuid} topPos="translate-y-15">
                 <Menus.MenuItem onClick={() => editRow?.(uuid)}>
                   <Edit size={18}></Edit>&nbsp;&nbsp;Edit Row
                 </Menus.MenuItem>

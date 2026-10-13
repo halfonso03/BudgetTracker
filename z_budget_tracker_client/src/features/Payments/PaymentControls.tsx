@@ -58,8 +58,9 @@ const PaymentControls = ({
     <>
       <div className="flex justify-start gap-3 mt-6">
         <Button
-          buttonSize="small"
+          buttonSize="large"
           variation="primary"
+          additionalclasses='py-2'
           onClick={() => {
             setChoosingYear(true);
             setNewReproJustification('');
@@ -71,7 +72,7 @@ const PaymentControls = ({
             // }
           }}
         >
-          Start New...
+          New Payment...
         </Button>
         <Button
           buttonSize="xsmall"

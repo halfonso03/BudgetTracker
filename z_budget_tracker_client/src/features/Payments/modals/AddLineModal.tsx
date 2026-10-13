@@ -30,7 +30,6 @@ type Props = {
   isOpen: boolean;
   onCancel: () => void;
   selections: Selections | null;
-
   year: number;
   onLineAdded: (lineItem: PaymentLineItem) => void;
 };
@@ -133,8 +132,8 @@ const AddLineModal = ({ ...props }: Props) => {
       grantName: grants?.filter((x) => x.id === data.grantId)[0].name ?? '',
       payeeName: payee!.name,
       availableAmount: availableAmount,
-      paymentAmount: getValues('amount'),
-      newAvailableAmount: availableAmount - +getValues('amount'),
+      paymentAmount: getValues('paymentAmount'),
+      newAvailableAmount: availableAmount - +getValues('paymentAmount'),
       comment: data.comment,
       ...data,
     };
@@ -148,8 +147,8 @@ const AddLineModal = ({ ...props }: Props) => {
   }
 
   function handleInputEntryOnBlur() {
-    const formatted = formatNumber(+getValues('amount'));
-    setValue('amount', formatted);
+    const formatted = formatNumber(+getValues('paymentAmount'));
+    setValue('paymentAmount', formatted);
   }
 
   function handleLessThanZero() {
@@ -276,7 +275,7 @@ const AddLineModal = ({ ...props }: Props) => {
                         newSelections.accountId!,
                       );
 
-                      if (availableAmount2 - +getValues('amount') >= 0) {
+                      if (availableAmount2 - +getValues('paymentAmount') >= 0) {
                         setRemIsValid(true);
                       }
                     }
@@ -328,7 +327,7 @@ const AddLineModal = ({ ...props }: Props) => {
                         newSelections.accountId!,
                       );
 
-                      if (availableAmount2 - +getValues('amount') >= 0) {
+                      if (availableAmount2 - +getValues('paymentAmount') >= 0) {
                         setRemIsValid(true);
                       }
                     }
@@ -377,7 +376,7 @@ const AddLineModal = ({ ...props }: Props) => {
                         newSelections.accountId!,
                       );
 
-                      if (availableAmount2 - +getValues('amount') >= 0) {
+                      if (availableAmount2 - +getValues('paymentAmount') >= 0) {
                         setRemIsValid(true);
                       }
                     }
@@ -419,7 +418,7 @@ const AddLineModal = ({ ...props }: Props) => {
               <PaymentEntryInput
                 getValues={getValues}
                 error={errors?.amount}
-                register={register('amount')}
+                register={register('paymentAmount')}
                 available={availableAmount}
                 onBlur={handleInputEntryOnBlur}
                 onLessThanZero={handleLessThanZero}
@@ -435,7 +434,7 @@ const AddLineModal = ({ ...props }: Props) => {
                 <span>rem amount NOT valid</span>
               )}
               <br></br>
-              {availableAmount - parseFormattedNumber(getValues('amount')) <
+              {availableAmount - parseFormattedNumber(getValues('paymentAmount')) <
               0 ? (
                 <span>too mch requested</span>
               ) : (
@@ -446,7 +445,7 @@ const AddLineModal = ({ ...props }: Props) => {
                 disabled={
                   !allSelections() ||
                   !remIsvalid ||
-                  availableAmount - parseFormattedNumber(getValues('amount')) <
+                  availableAmount - parseFormattedNumber(getValues('paymentAmount')) <
                     0
                 }
               >

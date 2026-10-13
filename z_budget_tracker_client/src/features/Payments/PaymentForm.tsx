@@ -24,12 +24,12 @@ import {
 } from 'lucide-react';
 import Button from '../../components/Button';
 import useClientAuth from '../../contexts/useAuth';
-import AddLineModal from './modals/AddLineModal';
 import PaymentRow from './PaymentRow';
 import Input from '../../components/Input';
-import EditLineModal from './modals/EditLineModal';
 import JustificaModal from '../Common/modals/JustificaModal';
 import ErrorsModal from '../Common/modals/ErrorsModal';
+import PaymentLineModal from './modals/PaymentLineModal';
+import PaymentAmountNumericArrayInput from './PaymentAmountNumericArrayInput';
 
 interface Props {
   payment: Payment;
@@ -39,13 +39,15 @@ interface Props {
 }
 
 const PaymentForm = ({ payment }: Props) => {
-  const { user, loginId } = useClientAuth();
+  const { user } = useClientAuth();
 
-  const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
+  const [paymentLineModalIsOpen, setPaymentLineModalIsOpen] = useState(false);
+
+  // const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
-  const [confirmPostModalIsOpen, setConfirmPostModal] =
-    useState<boolean>(false);
+  // const [confirmPostModalIsOpen, setConfirmPostModal] =
+  //   useState<boolean>(false);
   const [editSelections, setEditSelections] =
     useState<PaymentLineItemSelections | null>(null);
 
@@ -70,7 +72,7 @@ const PaymentForm = ({ payment }: Props) => {
     }),
   );
 
-  const { register, getValues, setValue } = useForm<PaymentInputRows>({
+  const { setValue, register, getValues } = useForm<PaymentInputRows>({
     values: {
       rows: lines.map((l) => {
         return {
@@ -113,22 +115,19 @@ const PaymentForm = ({ payment }: Props) => {
 
   async function saveReproButtonClick() {}
 
-  function getPaymentAmount(index: number) {
-    return {
-      paymentAmount: getValues(`rows.${index}.paymentAmount`),
-    };
-  }
-
   function handleLineAdded(newLine: PaymentLineItem) {
-    setTimeout(() => setAddLineModalIsOpen(false), 500);
+    // setTimeout(() => setAddLineModalIsOpen(false), 500);
+    setTimeout(() => setPaymentLineModalIsOpen(false), 500);
 
     const newLines: PaymentLineItem[] = lines.map(
       (l: PaymentLineItem, i: number) => {
-        const { paymentAmount } = getPaymentAmount(i);
+        const paymentAmount = getValues(`rows.${i}.paymentAmount`);
         const newLine: PaymentLineItem = {
           ...l,
           availableAmount: l.availableAmount,
-          paymentAmount: paymentAmount,
+          paymentAmount: formatNumber(
+            parseFormattedNumber(paymentAmount.toString()),
+          ),
           newAvailableAmount: +l.availableAmount - +paymentAmount,
         };
         return newLine;
@@ -137,45 +136,35 @@ const PaymentForm = ({ payment }: Props) => {
 
     setLines([...newLines, { ...newLine, rowId: lines.length }]);
 
-    // const balances = queryClient.getQueryData<
-    //   {
-    //     accountId: number;
-    //     accountName: string;
-    //     currentAmount: number;
-    //     remainingAmount: number;
-    //   }[]
-    // >([
-    //   'repro_account_balances',
-    //   key.initiativeId,
-    //   key.grantId,
-    //   key.categoryId,
-    // ]);
-
-    // if (
-    //   !savedRowBalances ||
-    //   !savedRowBalances.some(
-    //     (b) =>
-    //       b.key.initiativeId == key.initiativeId &&
-    //       b.key.grantId == key.grantId &&
-    //       b.key.categoryId == key.categoryId,
-    //   )
-    // ) {
-    //   setSavedRowBalances((prev) => {
-    //     const newArray = [
-    //       ...prev,
-    //       {
-    //         key: {
-    //           ...key,
-    //         },
-    //         balances: balances!,
-    //       },
-    //     ];
-
-    //     return newArray;
-    //   });
-    // }
-
     // onIsDirty(true);
+  }
+
+  function handleLineUpdated(updatedLine: PaymentLineItem) {
+    setTimeout(() => {
+      setEditSelections(null);
+    }, 500);
+    let index = -1;
+
+    const newLines = lines.map((l: PaymentLineItem, i: number) => {
+      if (l.uuid !== updatedLine.uuid) return l;
+      const newLine: PaymentLineItem = {
+        ...updatedLine,
+        rowId: l.rowId,
+        availableAmount: updatedLine.availableAmount,
+        paymentAmount: updatedLine.paymentAmount,
+        newAvailableAmount:
+          updatedLine.availableAmount -
+          parseFormattedNumber(updatedLine.paymentAmount.toString()),
+      };
+      index = i;
+      return newLine;
+    });
+
+    setValue(
+      `rows.${index}.paymentAmount`,
+      formatNumber(+updatedLine.paymentAmount),
+    );
+    setLines(newLines);
   }
 
   function handleDuplicateRow(uuid: string) {
@@ -190,27 +179,36 @@ const PaymentForm = ({ payment }: Props) => {
     // onIsDirty(true);
   }
 
+  function onAddRow() {
+    setEditSelections(null);
+    setPaymentLineModalIsOpen(true);
+  }
+
   function handleEditRow(uuid: string) {
     const lineToEdit = lines.filter((x) => x.uuid == uuid)[0];
-
-    let index = 0;
+    let index = -1;
     for (const row of lines) {
-      if (row.uuid === uuid) break;
       index++;
+
+      if (row.uuid === uuid) break;
     }
 
-    const amount = +getValues(`rows.${index}.paymentAmount`);
 
-    setEditSelections({
+
+    const editS = {
       uuid: uuid,
       initiativeId: lineToEdit.initiativeId,
       grantId: lineToEdit.grantId,
       categoryId: lineToEdit.categoryId,
       accountId: lineToEdit.accountId,
       payeeId: lineToEdit.payeeId,
-      amount: amount,
-      comment: lineToEdit.comment
-    });
+      amount: parseFormattedNumber(getValues(`rows.${index}.paymentAmount`).toString()),
+      comment: lineToEdit.comment,
+    };
+
+    console.log(editS);
+    setEditSelections(editS);
+    setPaymentLineModalIsOpen(true);
   }
 
   function handleDeletRow(uuid: string) {
@@ -219,64 +217,6 @@ const PaymentForm = ({ payment }: Props) => {
         .filter((x) => x.uuid !== uuid)
         .map((l: PaymentLineItem, i: number) => ({ ...l, rowId: i })),
     );
-    // onIsDirty(true);
-  }
-
-  function handleLineUpdated(updatedLine: PaymentLineItem) {
-    setTimeout(() => {
-      setEditSelections(null);
-    }, 500);
-    const newLines = lines.map((l: PaymentLineItem, i: number) => {
-      if (l.uuid !== updatedLine.uuid) return l;
-      const amount = getPaymentAmount(i);
-      const newLine: PaymentLineItem = {
-        ...updatedLine,
-        rowId: l.rowId,
-        availableAmount: updatedLine.availableAmount,
-        paymentAmount: +amount,
-        newAvailableAmount: updatedLine.availableAmount - +amount,
-      };
-      return newLine;
-    });
-
-    setLines(newLines);
-
-    // const balances = queryClient.getQueryData<
-    //   {
-    //     accountId: number;
-    //     accountName: string;
-    //     currentAmount: number;
-    //     remainingAmount: number;
-    //   }[]
-    // >([
-    //   'repro_account_balances',
-    //   key.initiativeId,
-    //   key.grantId,
-    //   key.categoryId,
-    // ]);
-
-    // if (
-    //   !savedRowBalances.some(
-    //     (b) =>
-    //       b.key.initiativeId == key.initiativeId &&
-    //       b.key.grantId == key.grantId &&
-    //       b.key.categoryId == key.categoryId,
-    //   )
-    // ) {
-    //   setSavedRowBalances((prev) => {
-    //     const newArray = [
-    //       ...prev,
-    //       {
-    //         key: {
-    //           ...key,
-    //         },
-    //         balances: balances!,
-    //       },
-    //     ];
-    //     return newArray;
-    //   });
-    // }
-
     // onIsDirty(true);
   }
 
@@ -301,6 +241,31 @@ const PaymentForm = ({ payment }: Props) => {
     // onIsDirty(true);
   }
 
+  function paymentAmountOnBlur(uuid: string) {
+    const newLines = lines.map((line: PaymentLineItem, index: number) => {
+      if (uuid !== line.uuid) return line;
+
+      const paymentAmount = parseFormattedNumber(
+        getValues(`rows.${index}.paymentAmount`) as string,
+      );
+
+      console.log(
+        'paymentAmount - line.availableAmount',
+        paymentAmount - line.availableAmount,
+      );
+      const updatedLine: PaymentLineItem = {
+        ...line,
+        paymentAmount: formatNumber(paymentAmount),
+        newAvailableAmount: line.availableAmount - paymentAmount,
+      };
+
+      return updatedLine;
+    });
+
+    setLines(newLines);
+    // onIsDirty(true);
+  }
+
   function canPost() {
     return true;
   }
@@ -312,18 +277,14 @@ const PaymentForm = ({ payment }: Props) => {
   return (
     <MenuIdProvider>
       <div>
-        {/* <pre>{JSON.stringify(lines)}</pre> */}
+        <pre>{JSON.stringify(lines)}</pre>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           <div
             className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
           >
+            <pre className="w-[20%]">{JSON.stringify(editSelections)}</pre>
             {payment !== undefined && (
-              <Button
-                buttonSize="small"
-                onClick={() => {
-                  setAddLineModalIsOpen(true);
-                }}
-              >
+              <Button buttonSize="small" onClick={onAddRow}>
                 <Plus></Plus>
                 Add Line
               </Button>
@@ -344,12 +305,15 @@ const PaymentForm = ({ payment }: Props) => {
                 paymentHeader.status === Number(POSTED) ||
                 !user
               }
-              onClick={() => setConfirmPostModal(true)}
+              onClick={() => {
+                // setConfirmPostModal(true)
+              }}
             >
               <BookOpenText className="mr-1"></BookOpenText>
               Post
             </Button>
           </div>
+
           <Button
             className="flex gap-1 cursor-pointer hover:text-neutral-600 "
             onClick={() => setJustModalIsOpen(true)}
@@ -385,6 +349,12 @@ const PaymentForm = ({ payment }: Props) => {
                 editRow={handleEditRow}
                 saveComment={handleSaveComment}
                 render={() => {
+                  const alertClass =
+                    item.availableAmount -
+                      parseFormattedNumber(item.paymentAmount.toString()) <
+                    0
+                      ? 'text-red-500'
+                      : '';
                   return (
                     <div className="flex-3 px-3 pr-6">
                       <div className="grid grid-cols-[1fr_1fr_1fr] justify-between gap-2 ">
@@ -400,13 +370,39 @@ const PaymentForm = ({ payment }: Props) => {
                           Remaining
                         </div>
                         <div>
-                          <Input></Input>
+                          <div>
+                            <input
+                              readOnly={true}
+                              tabIndex={-1}
+                              className={
+                                'w-full border border-neutral-200 p-2 text-center bg-transparent focus:outline-none focus:ring-0'
+                              }
+                              value={formatNumber(item.availableAmount)}
+                            ></input>
+                          </div>
                         </div>
                         <div>
-                          <Input></Input>
+                          <PaymentAmountNumericArrayInput
+                            index={index}
+                            setValue={setValue}
+                            register={register(`rows.${index}.paymentAmount`)}
+                            fieldName="paymentAmount"
+                            readOnly={paymentHeader.status === POSTED}
+                            disabled={paymentHeader.status === POSTED}
+                            onBlur={() => {
+                              paymentAmountOnBlur(item.uuid);
+                            }}
+                            classes={`flex-[1.5] w-full  text-center border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
+                       `}
+                          />
                         </div>
                         <div>
-                          <Input></Input>
+                          <input
+                            readOnly={true}
+                            tabIndex={-1}
+                            className={` ${alertClass} w-full border border-neutral-200 p-2 text-center bg-transparent focus:outline-none focus:ring-0`}
+                            value={formatCurrency(item.newAvailableAmount)}
+                          ></input>
                         </div>
                       </div>
                     </div>
@@ -416,17 +412,34 @@ const PaymentForm = ({ payment }: Props) => {
             );
           })}
         </div>
-        <AddLineModal
+        {paymentLineModalIsOpen && (
+          <PaymentLineModal
+            year={payment.year}
+            onLineAdded={handleLineAdded}
+            onLineUpdated={handleLineUpdated}
+            selections={editSelections}
+            uuid={editSelections?.uuid || null}
+            onCancel={() => {
+              setTimeout(() => {
+                setPaymentLineModalIsOpen(false);
+                // setAddLineModalIsOpen(false);
+              }, 500);
+            }}
+          ></PaymentLineModal>
+        )}
+
+        {/* <AddLineModal
           year={payment.year}
           isOpen={addLineModalIsOpen}
           onLineAdded={handleLineAdded}
+          selections={editSelections}
           onCancel={() => {
             setTimeout(() => {
               setAddLineModalIsOpen(false);
             }, 500);
           }}
-        ></AddLineModal>
-        {editSelections && (
+        ></AddLineModal> */}
+        {/* {editSelections && (
           <EditLineModal
             year={payment.year}
             uuid={editSelections.uuid}
@@ -439,7 +452,7 @@ const PaymentForm = ({ payment }: Props) => {
               }, 500);
             }}
           ></EditLineModal>
-        )}
+        )} */}
         <JustificaModal
           canEdit={paymentHeader.status !== POSTED}
           isOpen={justModalIsOpen}

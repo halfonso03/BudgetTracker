@@ -218,7 +218,7 @@ namespace Application.Services
                                     AccountName = x.Account.Name,
                                     PayeeTypeId = (int)x.PayeeTypeId,
                                     AdditionalInformation = x.AdditionalInformation,
-                                    CategoryName = x.Account.Category != null ? x.Account.Category.Name : ""
+                                    CategoryName = x.Account.Category != null ? x.Account.Category.Name : ""                                    
                                 }).ToListAsync();
 
                 return Result<List<PayeeSearchPayeeResponseDto>>.Success(result);

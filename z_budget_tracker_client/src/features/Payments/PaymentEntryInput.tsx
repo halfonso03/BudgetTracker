@@ -34,7 +34,7 @@ const PaymentEntryInput = ({
 }: Props) => {
   // console.log('errorMessage', error);
 
-  const [paymentAmount, setPaymentAmount] = useState(getValues('amount'));
+  const [paymentAmount, setPaymentAmount] = useState(getValues('paymentAmount'));
 
   const remaining = available - parseFormattedNumber(paymentAmount);
 
