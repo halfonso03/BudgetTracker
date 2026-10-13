@@ -74,20 +74,22 @@ const AddLineModal = ({ ...props }: Props) => {
       ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
       : [];
 
-
   const { data: availableAccountBalances } = useAvailableAccountBalances(
     selections?.initiativeId ?? 0,
     selections?.grantId ?? 0,
     selections?.categoryId ?? 0,
   );
 
-  availableAmount =
-    availableAccountBalances?.filter(
-      (x) => x.accountId === selections?.accountId,
-    )[0].availableAmount ?? 0;
+  if (
+    availableAccountBalances?.some((x) => x.accountId === selections?.accountId)
+  ) {
+    availableAmount =
+      availableAccountBalances?.filter(
+        (x) => x.accountId === selections?.accountId,
+      )[0].availableAmount ?? 0;
+  }
 
   function handlePayeeSelected(payee: Payee) {
-
     setPayee(payee);
     setValue('payeeId', payee.id, {
       shouldDirty: true,

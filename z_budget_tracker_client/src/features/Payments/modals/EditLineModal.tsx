@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import useCategories from '../../../api/hooks/common/useCategories';
 import useGrants from '../../../api/hooks/common/useGrants';
 import useInitiatives from '../../../api/hooks/common/useInitiatives';
@@ -43,7 +43,6 @@ type FormValues = Yup.InferType<typeof PaymentFormSchema>;
 const EditLineModal = ({ ...props }: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
   const [payee, setPayee] = useState<Payee | null>(null);
-  const [payeeUpdated, setPayeeUpdated] = useState(false);
   const [remIsvalid, setRemIsValid] = useState(true);
 
   const { grants } = useGrants(props.year, props.isOpen);
@@ -84,63 +83,52 @@ const EditLineModal = ({ ...props }: Props) => {
   // eslint-disable-next-line react-hooks/incompatible-library
   const categoryIdWatchValue = watch('categoryId') as number;
 
-  const [accounts, setAccounts] = useState(
+  const accounts =
     catSuccess && categories
       ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
-      : [],
+      : [];
+
+  const { data: availableAccountBalances } = useAvailableAccountBalances(
+    selections?.initiativeId ?? 0,
+    selections?.grantId ?? 0,
+    selections?.categoryId ?? 0,
   );
 
-  const { data: availableAccountBalances, isSuccess: bSuccess } =
-    useAvailableAccountBalances(
-      selections?.initiativeId ?? 0,
-      selections?.grantId ?? 0,
-      selections?.categoryId ?? 0,
-    );
-
   if (
-    selections?.initiativeId &&
-    selections?.grantId &&
-    selections?.categoryId &&
-    selections?.accountId &&
-    bSuccess &&
-    availableAccountBalances?.some((x) => x.accountId === selections.accountId)
+    availableAccountBalances?.some((x) => x.accountId === selections?.accountId)
   ) {
-    availableAmount = availableAccountBalances?.filter(
-      (x) => x.accountId === selections.accountId,
-    )[0].availableAmount;
+    availableAmount =
+      availableAccountBalances?.filter(
+        (x) => x.accountId === selections?.accountId,
+      )[0].availableAmount ?? 0;
   }
-
-  useEffect(() => {
-    if (payee) {
-      if (payee.categoryId !== +getValues('categoryId')) {
-        setValue('accountId', 0);
-      }
-
-      if (payeeUpdated) {
-        setValue('accountId', payee.accountId);
-      }
-    }
-
-    return () => {
-      if (payeeUpdated === true) setPayeeUpdated(false);
-    };
-  }, [getValues, payee, payeeUpdated, setValue]);
 
   function handlePayeeSelected(payee: Payee) {
     setPayee(payee);
-    setValue('payeeId', payee.id);
-    setValue('categoryId', payee.categoryId);
-    setPayeeUpdated(true);
-    if (categories) {
-      const accounts = categories.filter((x) => x.id === payee.categoryId)[0]
-        .accounts!;
-      setAccounts(accounts);
-    }
+    setValue('payeeId', payee.id, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+    setValue('categoryId', payee.categoryId, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true,
+    });
+
+    setTimeout(() => {
+      setValue('accountId', payee.accountId, {
+        shouldDirty: true,
+        shouldTouch: true,
+        shouldValidate: true,
+      });
+    }, 0);
 
     setSelections((prev) => ({
       ...prev,
       categoryId: payee.categoryId,
       accountId: payee.accountId,
+      payeeId: payee.id,
     }));
   }
 
@@ -261,7 +249,7 @@ const EditLineModal = ({ ...props }: Props) => {
                 <div className="text-neutral-600/90 font-medium">Category</div>
                 <Select
                   {...register('categoryId')}
-                  tabIndex={1}
+                  tabIndex={0}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                     register('categoryId').onChange(e);
                     if (+e.target.value !== 0) {
@@ -270,12 +258,6 @@ const EditLineModal = ({ ...props }: Props) => {
                         categoryId: +e.target.value,
                       }));
                       setValue('accountId', 0);
-                      if (categories) {
-                        const accounts = categories.filter(
-                          (x) => x.id === +e.target.value,
-                        )[0].accounts!;
-                        setAccounts(accounts);
-                      }
                     }
                   }}
                 >
@@ -300,7 +282,7 @@ const EditLineModal = ({ ...props }: Props) => {
                   {...register('accountId')}
                   tabIndex={2}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                    setPayeeUpdated(false);
+                    register('accountId').onChange(e);
 
                     const newSelections = {
                       ...selections,
@@ -321,8 +303,6 @@ const EditLineModal = ({ ...props }: Props) => {
                     }
 
                     setSelections(newSelections);
-
-                    register('accountId').onChange(e);
                   }}
                 >
                   <option value={0} className="text-neutral-600">
