@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 import Button from '../../components/Button';
 import { Search } from 'lucide-react';
 import ChooseYearModal from '../Common/modals/ChooseYearModal';

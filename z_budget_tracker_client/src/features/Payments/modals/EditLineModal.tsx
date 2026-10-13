@@ -32,10 +32,7 @@ type Props = {
   selections: Selections | null;
   year: number;
   uuid: string;
-  onLineUpdated: (
-    balance: PaymentLineItem,
-    key: { initiativeId: number; grantId: number; categoryId: number },
-  ) => void;
+  onLineUpdated: (balance: PaymentLineItem) => void;
 };
 
 type FormValues = Yup.InferType<typeof PaymentFormSchema>;
@@ -104,24 +101,17 @@ const EditLineModal = ({ ...props }: Props) => {
   }
 
   function handlePayeeSelected(payee: Payee) {
-    setPayee(payee);
-    setValue('payeeId', payee.id, {
+    const options = {
       shouldDirty: true,
       shouldTouch: true,
       shouldValidate: true,
-    });
-    setValue('categoryId', payee.categoryId, {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
+    };
 
+    setPayee(payee);
+    setValue('payeeId', payee.id, options);
+    setValue('categoryId', payee.categoryId, options);
     setTimeout(() => {
-      setValue('accountId', payee.accountId, {
-        shouldDirty: true,
-        shouldTouch: true,
-        shouldValidate: true,
-      });
+      setValue('accountId', payee.accountId, options);
     }, 0);
 
     setSelections((prev) => ({
@@ -155,11 +145,7 @@ const EditLineModal = ({ ...props }: Props) => {
       ...data,
     };
 
-    props.onLineUpdated(newLine, {
-      initiativeId: newLine.initiativeId,
-      grantId: newLine.grantId,
-      categoryId: selections!.categoryId!,
-    });
+    props.onLineUpdated(newLine);
   }
 
   function handlePayeeSelectionCleared() {

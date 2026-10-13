@@ -36,65 +36,51 @@ const PaymentEntryInput = ({
 
   const [paymentAmount, setPaymentAmount] = useState(getValues('amount'));
 
-  // const remainingRef = useRef(available - parseFormattedNumber(paymentAmount));
-
   const remaining = available - parseFormattedNumber(paymentAmount);
 
-  // console.log('paymentAmount', paymentAmount);
-
-  // useEffect(() => {
-  //   if (remaining < 0) {
-  //     onLessThanZero(remaining);
-  //   } else {
-  //     onOK(remaining);
-  //   }
-  // }, [onLessThanZero, onOK, remaining]);
-
   return (
-    <div>
-      <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
+    <div className="flex flex-col gap-4">
+      <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center ">
         <div className="text-neutral-600/90 font-medium">Available</div>
         <div className="font-semibold pl-2">{formatCurrency(available)}</div>
       </div>
-
-      <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
+      <div className="grid grid-cols-[.35fr_1.1fr]  w-full items-center ">
         <div className="text-neutral-600/90 font-medium">
-          <div className="flex items-baseline gap-2 ">
-            Payment Amount
-          </div>
+          <div className="flex items-baseline gap-2 ">Payment Amount</div>
         </div>
-        <NumericInputReactHookForm
-          register={register}
-          readOnly={false}
-          onBlur={(e) => {
-            register.onBlur(e);
-            onBlur?.(e);
-            setPaymentAmount(e.target.value);
-            if (e.target.value) {
-              const value = parseFormattedNumber(e.target.value);
+        <div className='flex gap-3 items-center'>
+          <NumericInputReactHookForm
+            register={register}
+            readOnly={false}
+            onBlur={(e) => {
+              register.onBlur(e);
+              onBlur?.(e);
+              setPaymentAmount(e.target.value);
+              if (e.target.value) {
+                const value = parseFormattedNumber(e.target.value);
 
-              if (available - value >= 0) {
-                onOK?.(value);
-              } else {
-                onLessThanZero?.(value);
+                if (available - value >= 0) {
+                  onOK?.(value);
+                } else {
+                  onLessThanZero?.(value);
+                }
               }
-            }
-          }}
-          onChange={(e) => {
-            register.onChange(e);
-            setPaymentAmount(e.target.value);
-          }}
-          className="w-[40%] text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-300 
+            }}
+            onChange={(e) => {
+              register.onChange(e);
+              setPaymentAmount(e.target.value);
+            }}
+            className="w-[40%] text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-300 
             focus:dark:border-gray-100 dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-neutral-800 dark:border-gray-500"
-        ></NumericInputReactHookForm>
-        {error && (
-          <div className="text-red-500 pl-1">
-            <Asterisk size={18}></Asterisk>
-          </div>
-        )}
+          ></NumericInputReactHookForm>
+          {error && (
+            <div className="text-red-500 pl-1">
+              <Asterisk size={18}></Asterisk>
+            </div>
+          )}
+        </div>
       </div>
-
-      <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-5">
+      <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center ">
         <div className="text-neutral-600/90 font-medium">Remaining</div>
         <div
           className={`font-semibold pl-2 ${remaining < 0 ? 'text-red-500' : ''}`}

@@ -114,7 +114,7 @@ const PayeeSearcher = ({
         )}
 
         {selectedPayeeInfo && (
-          <div className="mb-2 pr-1">
+          <div className="mb-2 pr-1 mt-1">
             <SelectedPayeeCard
               selectedPayeeInfo={selectedPayeeInfo}
               onRemoveSelection={onRemoveSelection}

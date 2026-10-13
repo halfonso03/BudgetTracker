@@ -21,29 +21,34 @@ type Selections = {
   grantId?: number;
   categoryId?: number;
   accountId?: number;
+  payeeId?: number;
+  amount?: number;
+  comment?: string;
 };
 
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
-  selections?: Selections;
+  selections: Selections | null;
+
   year: number;
-  onLineAdded: (
-    balance: PaymentLineItem,
-    key: { initiativeId: number; grantId: number; categoryId: number },
-  ) => void;
+  onLineAdded: (lineItem: PaymentLineItem) => void;
 };
 
 type FormValues = Yup.InferType<typeof PaymentFormSchema>;
 
 const AddLineModal = ({ ...props }: Props) => {
-  const [selections, setSelections] = useState<Selections | null>(null);
   const [animateOut, setAnimateOut] = useState(false);
   const [payee, setPayee] = useState<Payee | null>(null);
+  const [remIsvalid, setRemIsValid] = useState(true);
+
   const { grants } = useGrants(props.year, props.isOpen);
   const { initiatives } = useInitiatives(props.isOpen);
   const { categories, catSuccess } = useCategories(props.isOpen);
-  const [remIsvalid, setRemIsValid] = useState(true);
+
+  const [selections, setSelections] = useState<Selections | null>(
+    props.selections,
+  );
 
   let availableAmount = 0;
 
@@ -90,30 +95,24 @@ const AddLineModal = ({ ...props }: Props) => {
   }
 
   function handlePayeeSelected(payee: Payee) {
-    setPayee(payee);
-    setValue('payeeId', payee.id, {
+    const options = {
       shouldDirty: true,
       shouldTouch: true,
       shouldValidate: true,
-    });
-    setValue('categoryId', payee.categoryId, {
-      shouldDirty: true,
-      shouldTouch: true,
-      shouldValidate: true,
-    });
+    };
 
+    setPayee(payee);
+    setValue('payeeId', payee.id, options);
+    setValue('categoryId', payee.categoryId, options);
     setTimeout(() => {
-      setValue('accountId', payee.accountId, {
-        shouldDirty: true,
-        shouldTouch: true,
-        shouldValidate: true,
-      });
+      setValue('accountId', payee.accountId, options);
     }, 0);
 
     setSelections((prev) => ({
       ...prev,
       categoryId: payee.categoryId,
       accountId: payee.accountId,
+      payeeId: payee.id,
     }));
   }
 
@@ -140,11 +139,7 @@ const AddLineModal = ({ ...props }: Props) => {
       ...data,
     };
 
-    props.onLineAdded(newLine, {
-      initiativeId: newLine.initiativeId,
-      grantId: newLine.grantId,
-      categoryId: selections!.categoryId!,
-    });
+    props.onLineAdded(newLine);
   }
 
   function handlePayeeSelectionCleared() {
@@ -211,9 +206,6 @@ const AddLineModal = ({ ...props }: Props) => {
           onKeyDown={checkKeyDown}
           className="self-center h-full w-full"
         >
-          categoryId: <pre>{getValues('categoryId')}</pre>
-          <br></br>
-          accountId: <pre>{getValues('accountId')}</pre>
           <div className="flex flex-col justify-between h-full mt-4">
             <div className="flex flex-col justify-between p-3 px-4 ">
               <div className="relative flex items-center mb-5">
