@@ -211,15 +211,6 @@ const NavBar = () => {
                 Reprogrammings
               </NavLink>
               <NavLink
-                to="/payees"
-                className="nav-link"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleReproNavigation(e, '/payees');
-                }}
-              >
-                Payees
-              </NavLink>
-              <NavLink
                 to="/payments"
                 className="nav-link"
                 onClick={(e: React.MouseEvent<HTMLElement>) => {
@@ -228,6 +219,16 @@ const NavBar = () => {
               >
                 Payments
               </NavLink>
+              <NavLink
+                to="/payees"
+                className="nav-link"
+                onClick={(e: React.MouseEvent<HTMLElement>) => {
+                  handleReproNavigation(e, '/payees');
+                }}
+              >
+                Payees
+              </NavLink>
+
               <NavLink
                 to="/reports"
                 className="nav-link"
@@ -242,8 +243,7 @@ const NavBar = () => {
               </NavLink> */}
             </div>
             <div>
-              {isLoggedIn() && <span>Hello, {user.firstName}</span>}
-              {' '}
+              {isLoggedIn() && <span>Hello, {user.firstName}</span>}{' '}
               {isLoggedIn() && (
                 <NavLink to="/logout" className="nav-link">
                   Log Out

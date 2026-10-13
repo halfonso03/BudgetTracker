@@ -1,4 +1,4 @@
-import { formatCurrency, formatNumber } from '../../app/util';
+import { formatCurrency } from '../../app/util';
 
 type Props = {
   lines: ReproLineItem[];
@@ -48,8 +48,8 @@ const ReproGrantSummary = ({ lines }: Props) => {
   console.log('grantTotals', grantTotals);
 
   return (
-    <div className="w-[40%] mx-auto  p-1">
-      <div className="font-semibold text-neutral-500">Grant Summary</div>
+    <div className="w-[40%] mx-auto  p-1 mb-18">
+      <div className="font-semibold text-neutral-500 text-center text-[1.1rem] mb-1">Grant Summary</div>
       <div className="border border-neutral-200/80 p-2">
         <div className="grid grid-cols-[.5fr_.5fr.5fr] gap-2">
           <div className="font-semibold text-neutral-600 bg-neutral-100 py-2 pl-1 text-center">

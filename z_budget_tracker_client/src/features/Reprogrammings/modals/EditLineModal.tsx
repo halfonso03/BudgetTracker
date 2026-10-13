@@ -1,4 +1,3 @@
-import { Check } from 'lucide-react';
 import { useState, type ChangeEvent } from 'react';
 import useCategories from '../../../api/hooks/common/useCategories';
 import useGrants from '../../../api/hooks/common/useGrants';
@@ -187,7 +186,13 @@ const EditLineModal = ({ ...props }: Props) => {
 
           {balances?.map((b) => (
             <div
-              className="rounded-sm py-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300"
+              className={`rounded-sm inset-1 py-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300
+                ${
+                  b.accountId == originalSlections.accountId &&
+                  b.initiativeId == originalSlections.initiativeId &&
+                  b.grantId == originalSlections.grantId &&
+                  'border-2 border-blue-500 bg-blue-100/30 '
+                }`}
               key={b.accountId}
               onClick={() => {
                 onLineUpdated(b);
@@ -195,12 +200,14 @@ const EditLineModal = ({ ...props }: Props) => {
                 // setTimeout(, 2000)
               }}
             >
-              <div className="flex flex-10 text-neutral-700 items-center gap-1">
-                {b.accountId == originalSlections.accountId &&
+              <div
+                className={`flex flex-10 text-neutral-700 items-center gap-1 `}
+              >
+                {/* {b.accountId == originalSlections.accountId &&
                   b.initiativeId == originalSlections.initiativeId &&
                   b.grantId == originalSlections.grantId && (
                     <Check size={20} className="text-blue-500"></Check>
-                  )}
+                  )} */}
                 {b.accountName}
               </div>
               <div className="flex-9 grid grid-cols-[1fr_1fr] ">

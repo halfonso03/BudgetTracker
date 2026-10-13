@@ -1050,7 +1050,11 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           })}
         </div>
 
-        {lines && <ReproGrantSummary lines={lines}></ReproGrantSummary>}
+        {lines && lines.length > 0 && (
+          <div className="mt-4">
+            <ReproGrantSummary lines={lines}></ReproGrantSummary>
+          </div>
+        )}
 
         <AddLineModal
           year={repro.year}
