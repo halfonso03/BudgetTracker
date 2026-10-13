@@ -25,7 +25,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
       <div className="relative ">
         <NavBar></NavBar>
         <div className="w-full flex justify-between pt-2 pr-4 mt-4 mb-4">
-          <div className="font-bold text-xl text-neutral-800 pl-18">
+          <div className="font-bold text-xl text-neutral-800 pl-16">
             {payee.id === 0 ? (
               <div className="">Add Payee</div>
             ) : (

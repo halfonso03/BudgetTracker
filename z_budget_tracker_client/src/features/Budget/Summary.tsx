@@ -92,7 +92,7 @@ const Summary = ({ year }: Props) => {
         <div></div>
       </div>
       <div
-        className={`entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-2 `}
+        className={`entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-4 `}
       >
         <div>Initiative</div>
         <div>Grant</div>
@@ -106,28 +106,26 @@ const Summary = ({ year }: Props) => {
       {budgetSummaries?.map((budget, index) => (
         <div key={index} className=" border border-neutral-300 mb-5">
           <div
-            className={`grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 p-3 `}
+            className={`grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 py-3 `}
           >
-            <div className="entity-name self-center">
+            <div className="pl-3 entity-name self-center">
               {budget.initiative_name}
             </div>
             <div className="entity-name self-center">{budget.grant_name}</div>
             <div className="text-end self-center">
-              {budget.approved_amount || budget.current_amount > 0 ? (
-                <Link
-                  to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
-                  className="text-blue-500 self-center"
-                >
-                  <span className=" underline-offset-3 font-semibold underline">
-                    {formatCurrency(budget.approved_amount)}
-                  </span>
-                </Link>
-              ) : (
-                <span className="text-neutral-400">-</span>
-              )}
+              <Link
+                to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
+                className="text-blue-500 self-center"
+              >
+                <span className=" underline-offset-3 font-semibold underline">
+                  {formatCurrency(budget.approved_amount)}
+                </span>
+              </Link>
             </div>
             <div className="text-end self-center">
-              {formatCurrency(budget.current_amount)}
+              {budget.current_amount === 0
+                ? '-'
+                : formatCurrency(budget.current_amount)}
             </div>
             <div className="text-end self-center">
               {budget.spent_amount !== 0 ? (
@@ -226,7 +224,7 @@ function CategorySummary({
       category,
       amount: budgetTotal,
       current_amount: currentTotal,
-      spent_amount:  spentTotal,
+      spent_amount: spentTotal,
     };
   });
 
@@ -234,7 +232,7 @@ function CategorySummary({
 
   return (
     <div className=" border-t border-t-neutral-300">
-      <div className="entity-label mb-2 border-b border-b-neutral-300 p-3 pt-3">
+      <div className="entity-label  border-b border-b-neutral-300 p-3 ">
         Category
       </div>
       {categoryTotals.map((c, index) => {
@@ -249,10 +247,13 @@ function CategorySummary({
             key={index}
           >
             <div
-              className={`py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4   items-center`}
+              className={` grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 items-center`}
               key={index}
             >
-              <div className={`py-2  pl-4 font-bold col-span-2 ${cateoryRedClass}`} key={index}>
+              <div
+                className={` py-3 pl-4 font-bold col-span-2 ${cateoryRedClass}`}
+                key={index}
+              >
                 {c.category}
               </div>
               <div className="text-end">
@@ -278,7 +279,7 @@ function CategorySummary({
               </div>
               <div className="text-end">
                 {c.current_amount - c.spent_amount > 0 ? (
-                  formatCurrency(c.current_amount - c.spent_amount)
+                  formatCurrency(c.current_amount + c.spent_amount)
                 ) : (
                   <span className="text-neutral-400">-</span>
                 )}
@@ -343,7 +344,7 @@ function CategorySummary({
                           className={`italic text-end ${i.current_amount + i.spent_amount < 0 ? 'text-red-600' : ''}`}
                         >
                           {i.current_amount - i.spent_amount > 0 ? (
-                            formatCurrency(i.current_amount + i.spent_amount)
+                            formatCurrency(i.current_amount - i.spent_amount)
                           ) : (
                             <span className="text-neutral-400">-</span>
                           )}

@@ -11,6 +11,7 @@ function App() {
       </div>
       <Toaster
         gutter={12}
+        position='bottom-center'
         // containerStyle={{
         //   margin: '8px',
         //   position: 'absolute',
@@ -29,7 +30,8 @@ function App() {
             maxWidth: '500px',
             padding: '20px 20px',
             borderRadius: '3px',
-            border: '2px solid var(--color-neutral-400)',
+            border: '1px solid var(--color-neutral-300)',
+            translate: '0 -50px'
           },
         }}
       >

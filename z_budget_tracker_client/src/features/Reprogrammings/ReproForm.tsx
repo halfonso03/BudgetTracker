@@ -43,6 +43,7 @@ import {
   POSTED,
   SAVED,
 } from '../../app/constants';
+import ReproGrantSummary from './ReproGrantSummary';
 
 // export type DirtyState = {
 //   formValuesIsDirty: boolean;
@@ -1048,6 +1049,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             );
           })}
         </div>
+
+        {lines && <ReproGrantSummary lines={lines}></ReproGrantSummary>}
 
         <AddLineModal
           year={repro.year}
