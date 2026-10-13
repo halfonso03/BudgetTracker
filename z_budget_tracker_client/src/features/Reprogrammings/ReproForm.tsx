@@ -314,6 +314,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       const newLine: ReproLineItem = {
         ...updatedLine,
         rowId: l.rowId,
+        increase: inc,
+        decrease: dec,
         currentAmount: updatedLine.currentAmount,
         newCurrentAmount: updatedLine.currentAmount + +inc - +dec,
         newRemainingAmount: updatedLine.remainingAmount + +inc - +dec,

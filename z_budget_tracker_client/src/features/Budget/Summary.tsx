@@ -131,7 +131,7 @@ const Summary = ({ year }: Props) => {
             </div>
             <div className="text-end self-center">
               {budget.spent_amount !== 0 ? (
-                formatCurrency(budget.spent_amount)
+                formatCurrency(-1 * budget.spent_amount)
               ) : (
                 <span className="text-neutral-400">-</span>
               )}
@@ -220,13 +220,13 @@ function CategorySummary({
       (acc, cur) => acc + cur.current_amount,
       0,
     );
-    const spentTotal = items.reduce((acc, cur) => acc + cur.spent_amount, 0);
+    const spentTotal = items.reduce((acc, cur) => acc - cur.spent_amount, 0);
 
     return {
       category,
       amount: budgetTotal,
       current_amount: currentTotal,
-      spent_amount: -1 * spentTotal,
+      spent_amount:  spentTotal,
     };
   });
 
@@ -240,7 +240,7 @@ function CategorySummary({
       {categoryTotals.map((c, index) => {
         const n = items
           .filter((x) => x.category?.name == c.category)
-          .map((i) => i.current_amount + i.spent_amount)
+          .map((i) => i.current_amount - i.spent_amount)
           .some((x) => x < 0);
         const cateoryRedClass = n === true ? 'text-red-600' : '';
         return (
@@ -249,13 +249,12 @@ function CategorySummary({
             key={index}
           >
             <div
-              className={`py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 px-3 mt-2 items-center`}
+              className={`py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4   items-center`}
               key={index}
             >
-              <div className={`font-bold pl-2 ${cateoryRedClass}`} key={index}>
+              <div className={`py-2  pl-4 font-bold col-span-2 ${cateoryRedClass}`} key={index}>
                 {c.category}
               </div>
-              <div></div>
               <div className="text-end">
                 {c.amount > 0 ? (
                   formatCurrency(c.amount)
@@ -301,18 +300,18 @@ function CategorySummary({
               </div>
             </div>
             <div
-              className={`pb-0  box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}  mt-1  `}
+              className={` box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}   `}
             >
               <div className="pl-5 pb-0 font-semibold entity-label">
                 Account
               </div>
-              <div className="py-1 bg-neutral-50 border-t border-t-neutral-300  ">
+              <div className="bg-neutral-50 border-t border-t-neutral-300  ">
                 {items
                   .filter((x) => x.category?.name == c.category)
                   .sort((a, b) => a.account_name.localeCompare(b.account_name))
                   .map((i) => (
                     <div
-                      className="my-0 p-1 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 mb-1 last:mb-0 transition-all duration-200 hover:bg-neutral-200"
+                      className="py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] items-center gap-4  last:mb-0 transition-all duration-200 hover:bg-neutral-200/50"
                       key={i.account_id}
                     >
                       <div className="italic pl-8 col-span-2">
@@ -334,7 +333,7 @@ function CategorySummary({
                       </div>
                       <div className="text-end italic text-neutral-700">
                         {i.spent_amount !== 0 ? (
-                          formatCurrency(i.spent_amount)
+                          formatCurrency(-1 * i.spent_amount)
                         ) : (
                           <span className="text-neutral-400">-</span>
                         )}
