@@ -35,8 +35,8 @@ const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
         {data.map((v) => (
           <div
             className=" grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.35fr_.4fr_.2fr_.2fr] 
-          gap-2 p-1 items-center hover:bg-neutral-100 duration-200 transition-all 
-          cursor-pointer border-b border-b-neutral-300/60 last:border-0 "
+          gap-2 items-center hover:bg-neutral-100 duration-200 transition-all 
+          cursor-pointer border-b border-b-neutral-300/60 last:border-0 py-2"
             key={v.id}
             onClick={() => {
               openPayeeDetails(v);
@@ -45,7 +45,7 @@ const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
             <div className="px-4 py-1 font-medium text-neutral-900">
               <SearchTermMarker
                 textToFind={searchTerm || ''}
-                textToDisplay={v.name}
+                textToDisplay={v.name + " " + v.id}
               ></SearchTermMarker>
             </div>
             <div className="px-4 py-1 text-center text-neutral-900">

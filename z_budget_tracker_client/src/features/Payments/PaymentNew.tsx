@@ -3,6 +3,8 @@ import useClientAuth from '../../contexts/useAuth';
 import { useEffect, useState } from 'react';
 import PaymentForm from './PaymentForm';
 import PaymentControls from './PaymentControls';
+import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
+import ConfirmModal from '../../components/ConfirmModal';
 
 const PaymentNew = () => {
   const navigate = useNavigate();
@@ -10,9 +12,10 @@ const PaymentNew = () => {
   const preloadState = location.state;
   const { user } = useClientAuth();
   const lineItems: PaymentLineItem[] = [];
+  const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
 
-  // const { hasUnsavedChanges, setHasUnsavedChanges } =
-  //   useHasUnsavedChangesStore();
+  const { hasUnsavedChanges, setHasUnsavedChanges } =
+    useHasUnsavedChangesStore();
 
   let initialYear = 0;
   let justification = '';
@@ -41,13 +44,13 @@ const PaymentNew = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // function handleSearchClick() {
-  //   if (hasUnsavedChanges) {
-  //     setConfirmModalIsOpen(true);
-  //   } else {
-  //     navigate('/payment/search');
-  //   }
-  // }
+  function handleSearchClick() {
+    if (hasUnsavedChanges) {
+      setConfirmModalIsOpen(true);
+    } else {
+      navigate('/payment/search');
+    }
+  }
 
   const handleYearSelected = (year: number, justification: string) => {
     setPayment({
@@ -64,6 +67,20 @@ const PaymentNew = () => {
     });
   };
 
+  function handleInitialSaved(id: number) {
+    setHasUnsavedChanges(false);
+    setTimeout(
+      () =>
+        navigate(`/payment/${id}`, {
+          state: {
+            created: true,
+          },
+        }),
+
+      1600,
+    );
+  }
+
   // function handleIsDirty(isDirty: boolean) {
   //   setHasUnsavedChanges(isDirty);
   // }
@@ -74,7 +91,7 @@ const PaymentNew = () => {
         <PaymentForm
           key={payment.uuid}
           payment={payment}
-          // onInitialSave={handleInitialSaved}
+          onInitialSave={handleInitialSaved}
           // onIsDirty={handleIsDirty}
         ></PaymentForm>
       );
@@ -86,9 +103,22 @@ const PaymentNew = () => {
     <>
       <PaymentControls
         onYearSelected={handleYearSelected}
-        // onSearchClick={handleSearchClick}
+        onSearchClick={handleSearchClick}
       ></PaymentControls>
       {body()}
+      <ConfirmModal
+        isOpen={confirmModalIsOpen}
+        onCancel={() => {
+          setTimeout(() => {
+            setConfirmModalIsOpen(false);
+          }, 500);
+        }}
+        onConfirm={() => {
+          setHasUnsavedChanges(false);
+          navigate('/reprogramming/search');
+        }}
+        message="There are unsaved changes in this reprogramming. Any changes made to this entry will be lost. Click OK to continue."
+      ></ConfirmModal>
     </>
   );
 };

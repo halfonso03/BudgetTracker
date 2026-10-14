@@ -1,36 +1,38 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 import Button from '../../components/Button';
 import { Search } from 'lucide-react';
 import ChooseYearModal from '../Common/modals/ChooseYearModal';
+import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
+import ConfirmModal from '../../components/ConfirmModal';
 
 // const NEW_REPRO
 // type Actions:number
 type Props = {
-  // reproId?: number | undefined;
+  paymentId?: number | undefined;
   onYearSelected: (year: number, justification: string) => void;
-  // onSearchClick: () => void;
-  // onDuplicateReprogramming?: () => void;
+  onSearchClick: () => void;
+  onDuplicatePayment?: () => void;
 };
 
 const PaymentControls = ({
   onYearSelected,
-  // onSearchClick,
-  // onDuplicateReprogramming,
-  // reproId = 0,
+  onSearchClick,
+  onDuplicatePayment,
+  paymentId = 0,
 }: Props) => {
   // console.log('ReproControls render');
 
   const [choosingYear, setChoosingYear] = useState(true);
   const [newReproJustification, setNewReproJustification] = useState('');
-  // const [confirmLooseChangesModalIsOpen, setConfirmLooseChangesModalIsOpen] =
-  //   useState(false);
-  // const [confirmDuplicateModalIsOpen, setConfirmDuplicateModalIsOpen] =
-  //   useState(false);
-  // const hasUnsavedChanges = useHasUnsavedChangesStore(
-  //   (x) => x.hasUnsavedChanges,
-  // );
+  const [confirmLooseChangesModalIsOpen, setConfirmLooseChangesModalIsOpen] =
+    useState(false);
+  const [confirmDuplicateModalIsOpen, setConfirmDuplicateModalIsOpen] =
+    useState(false);
+  const hasUnsavedChanges = useHasUnsavedChangesStore(
+    (x) => x.hasUnsavedChanges,
+  );
 
-  // const [duplicating, setDuplicating] = useState(false);
+  const [duplicating, setDuplicating] = useState(false);
 
   const handleYearSelected = (e: { year: number; justification: string }) => {
     onYearSelected(e.year, e.justification);
@@ -41,18 +43,17 @@ const PaymentControls = ({
   };
 
   function handleSearchClick() {
-    // onSearchClick();
+    onSearchClick();
   }
 
-  // function handleDuplicateClick() {
-  //   if (hasUnsavedChanges) {
-  //     setDuplicating(true);
-  //     setConfirmLooseChangesModalIsOpen(true);
-  //   } else {
-  //     setConfirmDuplicateModalIsOpen(true);
-  //   }
-  // }
-
+  function handleDuplicateClick() {
+    if (hasUnsavedChanges) {
+      setDuplicating(true);
+      setConfirmLooseChangesModalIsOpen(true);
+    } else {
+      setConfirmDuplicateModalIsOpen(true);
+    }
+  }
 
   return (
     <>
@@ -60,16 +61,16 @@ const PaymentControls = ({
         <Button
           buttonSize="large"
           variation="primary"
-          additionalclasses='py-2'
+          additionalclasses="py-2"
           onClick={() => {
             setChoosingYear(true);
             setNewReproJustification('');
-            // if (hasUnsavedChanges) {
-            //   setConfirmLooseChangesModalIsOpen(true);
-            // } else {
-            //   setChoosingYear(true);
-            //   setNewReproJustification('');
-            // }
+            if (hasUnsavedChanges) {
+              setConfirmLooseChangesModalIsOpen(true);
+            } else {
+              setChoosingYear(true);
+              setNewReproJustification('');
+            }
           }}
         >
           New Payment...
@@ -81,7 +82,7 @@ const PaymentControls = ({
         >
           <Search></Search>
         </Button>
-        {/* {reproId && (
+        {paymentId && (
           <Button
             buttonSize="small"
             variation="secondary"
@@ -89,7 +90,7 @@ const PaymentControls = ({
           >
             Duplicate
           </Button>
-        )} */}
+        )}
       </div>
       <ChooseYearModal
         isOpen={choosingYear}
@@ -102,7 +103,7 @@ const PaymentControls = ({
           }, 500);
         }}
       ></ChooseYearModal>
-      {/* <ConfirmModal
+      <ConfirmModal
         isOpen={confirmLooseChangesModalIsOpen}
         onCancel={() => {
           setTimeout(() => {
@@ -115,15 +116,15 @@ const PaymentControls = ({
           }, 500);
           setTimeout(() => {
             if (duplicating) {
-              onDuplicateReprogramming?.();
+              onDuplicatePayment?.();
             } else {
               setChoosingYear(true);
             }
           }, 500);
         }}
         message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
-      ></ConfirmModal> */}
-      {/* <ConfirmModal
+      ></ConfirmModal>
+      <ConfirmModal
         isOpen={confirmDuplicateModalIsOpen}
         onCancel={() => {
           setTimeout(() => {
@@ -135,10 +136,10 @@ const PaymentControls = ({
           setTimeout(() => {
             setConfirmDuplicateModalIsOpen(false);
           }, 500);
-          onDuplicateReprogramming?.();
+          onDuplicatePayment?.();
         }}
         message="Duplicate the current reprogramming? Click OK to continue."
-      ></ConfirmModal> */}
+      ></ConfirmModal>
     </>
   );
 };

@@ -97,7 +97,7 @@ type PaymentLineItemRequest = {
     categoryId: number
     accountId: number
     payeeId: number,
-    paymentAmount: number
+    amount: number
     comment?: string | null
 }
 

@@ -186,6 +186,15 @@ namespace Application.Services
 
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
+
+            decimal? totalRequested = await CheckForOverBudgetRequest(disbRequestDto.LineItems);
+
+            if (totalRequested is not null)
+            {
+                throw new Exception($"Total amount requested ${totalRequested} exceeds the amount available for this initiative/grant/account.");
+            }
+
+
             try
             {
                 var grant = await _dbContext.Grants.FirstAsync(x => x.Id == disbRequestDto.LineItems.First().GrantId);
@@ -258,12 +267,12 @@ namespace Application.Services
                     return Result<Unit>.Failure($"Disb not found", 400);
                 }
 
-                if (disbRequestDto.Posted && disbFromDb.Posted)
+                if (disbFromDb.Posted)
                 {
                     throw new Exception($"Disb has already been posted");
                 }
 
-                decimal? totalRequested = await ValidateLineItems(disbRequestDto.LineItems);
+                decimal? totalRequested = await CheckForOverBudgetRequest(disbRequestDto.LineItems);
 
                 if (totalRequested is not null)
                 {
@@ -399,7 +408,7 @@ namespace Application.Services
             return Result<Unit>.Success(Unit.Value);
         }
 
-        private async Task<decimal?> ValidateLineItems(List<PaymentRequestLineItemDto> lineItems)
+        private async Task<decimal?> CheckForOverBudgetRequest(List<PaymentRequestLineItemDto> lineItems)
         {
             var requested = from x in lineItems
                             group x by new { x.InitiativeId, x.GrantId, x.AccountId } into grp

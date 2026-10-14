@@ -5,7 +5,7 @@ type Props = {
   onAddPayee: () => void;
   onSearch: (searchTerm: string) => void;
 };
-const PayeeListHeader = ({ onAddPayee, onSearch }: Props) => {
+const PayeeListHeaderControls = ({ onAddPayee, onSearch }: Props) => {
   return (
     <div className="flex justify-between w-full mb-6">
       <div className="w-full justify-between flex ">
@@ -17,4 +17,4 @@ const PayeeListHeader = ({ onAddPayee, onSearch }: Props) => {
     </div>
   );
 };
-export default PayeeListHeader;
+export default PayeeListHeaderControls;

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import PayeeDetailsWindow from './PayeeDetailsWindow';
 import PayeeListColumHeaders from './PayeeListColumHeaders';
 import PayeeListResults from './PayeeListResults';
-import PayeeListHeader from './PayeeListHeader';
+import PayeeListHeaderControls from './PayeeListHeaderControls';
 import { usePagination } from '../../contexts/pagination/usePagination';
 import { usePayees } from '../../api/hooks/payees/usePayees';
 import { Pagination } from '../../components/Pagination';
@@ -64,7 +64,7 @@ const PayeeList = () => {
       payeeTypeId: 0,
       accountId: 0,
       categoryId: 0,
-      numberOfPayments: 0
+      numberOfPayments: 0,
     });
   }
 
@@ -83,10 +83,10 @@ const PayeeList = () => {
 
   return (
     <div>
-      <PayeeListHeader
+      <PayeeListHeaderControls
         onSearch={handleSearch}
         onAddPayee={onAddPayee}
-      ></PayeeListHeader>
+      ></PayeeListHeaderControls>
 
       <PayeeListColumHeaders></PayeeListColumHeaders>
       {data?.payees ? (

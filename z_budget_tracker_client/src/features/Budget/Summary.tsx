@@ -277,7 +277,7 @@ function CategorySummary({
                   <span className="text-neutral-400">-</span>
                 )}
               </div>
-              <div className="text-end">
+              <div className={`text-end ${c.current_amount + c.spent_amount < 0 && "text-red-500"}`}>
                 {c.current_amount - c.spent_amount > 0 ? (
                   formatCurrency(c.current_amount + c.spent_amount)
                 ) : (
@@ -341,9 +341,9 @@ function CategorySummary({
                       </div>
                       <div>
                         <div
-                          className={`italic text-end ${i.current_amount + i.spent_amount < 0 ? 'text-red-600' : ''}`}
+                          className={`italic text-end ${i.current_amount - i.spent_amount < 0 ? 'text-red-600' : ''}`}
                         >
-                          {i.current_amount - i.spent_amount > 0 ? (
+                          {i.current_amount - i.spent_amount !== 0 ? (
                             formatCurrency(i.current_amount - i.spent_amount)
                           ) : (
                             <span className="text-neutral-400">-</span>

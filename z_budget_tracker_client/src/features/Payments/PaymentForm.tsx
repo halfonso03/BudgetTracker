@@ -32,29 +32,24 @@ import PaymentAmountNumericArrayInput from './PaymentAmountNumericArrayInput';
 import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { usePaymentMutations } from '../../api/hooks/payments/usePaymentMutations';
+import ConfirmModal from '../../components/ConfirmModal';
 
 interface Props {
   payment: Payment;
   onSaved?: () => void;
   onInitialSave?: (newId: number) => void;
-
-
-  // onInitialSave?: (newId: number) => void;
-  // onIsDirty: (dirty: boolean) => void;
-  // onSaved?: () => void;
+  onIsDirty: (dirty: boolean) => void;
 }
 
-const PaymentForm = ({ payment, onSaved, onInitialSave }: Props) => {
+const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
   const { user, loginId } = useClientAuth();
   const queryClient = useQueryClient();
 
   const [paymentLineModalIsOpen, setPaymentLineModalIsOpen] = useState(false);
-
-  // const [addLineModalIsOpen, setAddLineModalIsOpen] = useState(false);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
-  // const [confirmPostModalIsOpen, setConfirmPostModal] =
-  //   useState<boolean>(false);
+  const [confirmPostModalIsOpen, setConfirmPostModal] =
+    useState<boolean>(false);
   const [editSelections, setEditSelections] =
     useState<PaymentLineItemSelections | null>(null);
 
@@ -120,8 +115,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave }: Props) => {
     return errors;
   }, [lines, paymentHeader.justification]);
 
-    const { createPayment, updatePayment } = usePaymentMutations();
-  
+  const { createPayment, updatePayment } = usePaymentMutations();
 
   function handleLineAdded(newLine: PaymentLineItem) {
     // setTimeout(() => setAddLineModalIsOpen(false), 500);
@@ -138,7 +132,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave }: Props) => {
       },
     ]);
 
-    // onIsDirty(true);
+    onIsDirty(true);
   }
 
   function handleLineUpdated(updatedLine: PaymentLineItem) {
@@ -278,9 +272,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave }: Props) => {
     try {
       const lineItems = lines.map((l) => ({
         ...l,
-        paymentAmount: parseFormattedNumber(
-          l.paymentAmount?.toString() ?? '0.00',
-        ),
+        amount: parseFormattedNumber(l.paymentAmount?.toString() ?? '0.00'),
       }));
 
       if (paymentHeader.id === 0) {
@@ -332,9 +324,9 @@ const PaymentForm = ({ payment, onSaved, onInitialSave }: Props) => {
             return {
               ...l,
               comment: l.comment ?? '',
-              availableAmount: 0,
+              availableAmount: l.availableAmount,
               paymentAmount: l.paymentAmount,
-              newAvailableAmount: l.newAvailableAmount              
+              newAvailableAmount: l.newAvailableAmount,
             };
           }),
         }));
@@ -401,6 +393,25 @@ const PaymentForm = ({ payment, onSaved, onInitialSave }: Props) => {
         onSaved?.();
       },
     });
+  }
+
+  async function onConfirmPost() {
+    const lineItems: PaymentLineItemRequest[] = lines.map((l) => ({
+      rowId: l.rowId,
+      initiativeId: l.initiativeId,
+      grantId: l.grantId,
+      categoryId: l.categoryId,
+      accountId: l.accountId,
+      payeeId: l.payeeId,
+      comment: l.comment,
+      amount: parseFormattedNumber(l.paymentAmount?.toString() ?? '0.00'),
+    }));
+
+    if (paymentHeader.id === 0) {
+      sendCreatePayment(lineItems, true);
+    } else {
+      sendUpdatePayment(lineItems, true);
+    }
   }
 
   function onServerCreateSuccess(
@@ -498,7 +509,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave }: Props) => {
                 !user
               }
               onClick={() => {
-                // setConfirmPostModal(true)
+                setConfirmPostModal(true);
               }}
             >
               <BookOpenText className="mr-1"></BookOpenText>
@@ -665,6 +676,21 @@ const PaymentForm = ({ payment, onSaved, onInitialSave }: Props) => {
             }, 500);
           }}
         ></ErrorsModal>
+        <ConfirmModal
+          isOpen={confirmPostModalIsOpen}
+          onConfirm={() => {
+            setTimeout(() => {
+              setConfirmPostModal(false);
+              onConfirmPost();
+            }, 500);
+          }}
+          onCancel={() => {
+            setTimeout(() => {
+              setConfirmPostModal(false);
+            }, 500);
+          }}
+          message="This reprogramming wil be posted. Click OK to continue."
+        ></ConfirmModal>
       </div>
     </MenuIdProvider>
   );
