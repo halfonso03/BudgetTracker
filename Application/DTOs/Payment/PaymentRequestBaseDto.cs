@@ -2,9 +2,9 @@ using System.ComponentModel.DataAnnotations;
 using Application.Validators;
 using Domain;
 
-namespace Application.DTOs.Disb
+namespace Application.DTOs.Payment
 {
-    public class DisbRequestBaseDto
+    public class PaymentRequestBaseDto
     {
         [Required]
         public required string Justification { get; set; }
@@ -12,7 +12,7 @@ namespace Application.DTOs.Disb
         [Required]
         public required bool Posted { get; set; }
 
-        public List<DisbRequestLineItemDto> LineItems { get; set; } = [];
+        public List<PaymentRequestLineItemDto> LineItems { get; set; } = [];
 
         [ValueMustBeTrueValidator(ErrorMessage = "Row Ids are not sequential")]
         public bool? SequentialRowIds

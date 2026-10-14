@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTOs.Disb
+namespace Application.DTOs.Payment
 {
-    public class DisbRequestLineItemDto
+    public class PaymentRequestLineItemDto
     {
         [Required]
         [Range(0, int.MaxValue)]

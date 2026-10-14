@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.Disb
+namespace Application.DTOs.Payment
 {
-    public class CreateDisbRequestDto : DisbRequestBaseDto
+    public class CreatePaymentRequestDto : PaymentRequestBaseDto
     {
         [Required]
         [DeniedValues(0)]

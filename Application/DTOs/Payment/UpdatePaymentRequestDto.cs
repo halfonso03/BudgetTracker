@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Application.Validators;
 using Microsoft.Identity.Client;
 
-namespace Application.DTOs.Disb
+namespace Application.DTOs.Payment
 {
-    public class UpdateDisbRequestDto : DisbRequestBaseDto
+    public class UpdatePaymentRequestDto : PaymentRequestBaseDto
     {
         [Required]
         public required int Id { get; set; }

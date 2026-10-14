@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Identity.Client;
 
-namespace Application.DTOs.Disb
+namespace Application.DTOs.Payment
 {
-    public class DisbLineItemResponseDto
+    public class PaymentLineItemResponseDto
     {
         public required int RowId { get; set; }
 

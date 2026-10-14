@@ -7,7 +7,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Application.Core;
 using Application.DTOs.Budgets;
-using Application.DTOs.Disb;
+using Application.DTOs.Payment;
+using Application.DTOs.Payment;
 using Application.Interfaces;
 using Application.services;
 using Azure.Core.GeoJson;
@@ -18,9 +19,81 @@ using Persistence;
 
 namespace Application.Services
 {
-    public class DisbService(AppDbContext _dbContext, IBudgetService _budgetService)
+    public class PaymentService(AppDbContext _dbContext, IBudgetService _budgetService)
     {
-        public async Task<Result<DisbResponseDto>> GetDisb(int id)
+        public async Task<Result<List<PaymentCategoryBalanceDto>>> GetAvailableBalancesForCategory(int initiativeId, int grantId, int categoryId)
+        {
+            var accounts = _dbContext.Accounts.AsNoTracking().Where(x => x.CategoryId == categoryId).Select(x => x).ToList();
+
+            var initiative = await _dbContext.Initiatives.FirstAsync(x => x.Id == initiativeId);
+            var grant = await _dbContext.Grants.FirstAsync(x => x.Id == grantId);
+            var category = await _dbContext.Categories.FirstAsync(x => x.Id == categoryId);
+
+            var lineItems = await (from b in _dbContext.BudgetLineItems
+                                   join a in _dbContext.Accounts on b.AccountId equals a.Id
+                                   where b.InitiativeId == initiativeId &&
+                                       b.GrantId == grantId &&
+                                       b.AccountId == a.Id &&
+                                       a.CategoryId == categoryId
+                                   group b by new { id = a.Id, name = a.Name, itemtype = b.ItemType, c_id = a.CategoryId } into catBal
+                                   select new
+                                   {
+                                       accountId = catBal.Key.id,
+                                       accountName = catBal.Key.name,
+                                       categoryId = catBal.Key.c_id,
+                                       catBal.Key.itemtype,
+                                       amount = catBal.Sum(x => x.Amount)
+                                   }
+                    )
+                   .ToListAsync();
+
+            var currentAmounts = from l in lineItems
+                                 group l by new { l.accountId, l.accountName } into catBal
+                                 select new
+                                 {
+                                     catBal.Key,
+                                     amount = catBal.Sum(x => x.amount)
+                                 };
+
+            var currentAmount_WithAccounts = from a in accounts
+                                             join b in currentAmounts on a.Id equals b.Key.accountId into itemsGroup
+                                             from subItems in itemsGroup.DefaultIfEmpty()
+                                             orderby a.Name
+                                             select new
+                                             {
+                                                 accountId = a.Id,
+                                                 accountName = a.Name,
+                                                 categoryId = a.CategoryId,
+                                                 currentAmount = subItems != null ? subItems.amount : 0,
+                                             };
+
+            var remainingAmounts = from l in lineItems
+                                   group l by new { l.accountId, l.accountName } into catBal
+                                   select new
+                                   {
+                                       key = catBal.Key,
+                                       amount = catBal.Sum(x => x.amount)
+                                   };
+
+            var query = from c in currentAmount_WithAccounts
+                        join r in remainingAmounts on c.accountId equals r.key.accountId into itemsGroup
+                        from subItems in itemsGroup.DefaultIfEmpty()
+                        select new
+                        {
+                            c,
+                            remainingAmount = subItems != null ? subItems.amount : 0,
+                        };
+
+            var result = (from q in query
+                          select PaymentCategoryBalanceDto.Create(
+                            initiativeId, grantId, q.c.accountId, q.c.categoryId, q.c.accountName, q.c.currentAmount,
+                            initiative.Name, grant.Name, category.Name)
+                        ).ToList();
+
+            return Result<List<PaymentCategoryBalanceDto>>.Success(result);
+        }
+
+        public async Task<Result<DisbResponseDto>> GetPayment(int id)
         {
             var reproFromDb = await _dbContext.Disbs
                                         .Include(x => x.CreatedBy)
@@ -81,7 +154,7 @@ namespace Application.Services
                     PostedDate = reproFromDb.PostedDate,
                     PostedById = reproFromDb.PostedById,
                     LineItems = [.. lineItems.Select(x =>
-                        new DisbLineItemResponseDto
+                        new PaymentLineItemResponseDto
                         {
                             Comment = x.Comment,
                             RowId = x.RowId,
@@ -107,7 +180,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<Result<int>> CreateDisb(CreateDisbRequestDto disbRequestDto)
+        public async Task<Result<int>> CreatePayment(CreatePaymentRequestDto disbRequestDto)
         {
             var newId = 0;
 
@@ -172,7 +245,7 @@ namespace Application.Services
             return Result<int>.Success(newId);
         }
 
-        public async Task<Result<Unit>> UpdateDisb(UpdateDisbRequestDto disbRequestDto)
+        public async Task<Result<Unit>> UpdatePayment(UpdatePaymentRequestDto disbRequestDto)
         {
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
@@ -326,7 +399,7 @@ namespace Application.Services
             return Result<Unit>.Success(Unit.Value);
         }
 
-        private async Task<decimal?> ValidateLineItems(List<DisbRequestLineItemDto> lineItems)
+        private async Task<decimal?> ValidateLineItems(List<PaymentRequestLineItemDto> lineItems)
         {
             var requested = from x in lineItems
                             group x by new { x.InitiativeId, x.GrantId, x.AccountId } into grp
@@ -506,7 +579,7 @@ namespace Application.Services
                     Year = newDisb.Year,
                     Posted = false,
                     RowBalances = rowBalances,
-                    LineItems = [.. disbLineItems.Select(x => new DisbLineItemResponseDto
+                    LineItems = [.. disbLineItems.Select(x => new PaymentLineItemResponseDto
                     {
                         RowId = x.RowId,
                         Year = x.Year,

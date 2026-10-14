@@ -1,5 +1,5 @@
 
-namespace Application.DTOs.Disb
+namespace Application.DTOs.Payment
 {
     public class DisbResponseDto
     {
@@ -14,7 +14,7 @@ namespace Application.DTOs.Disb
         public required bool Posted { get; set; }
         public int? PostedById { get; set; }
         public string? Justification { get; set; }
-        public List<DisbLineItemResponseDto> LineItems { get; set; } = [];
+        public List<PaymentLineItemResponseDto> LineItems { get; set; } = [];
         public required List<DisbBalanceResponseDto> RowBalances { get; set; }
         public int Year { get; internal set; }
 
