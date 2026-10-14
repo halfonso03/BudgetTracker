@@ -6,9 +6,9 @@ const useReportParameterData = (
   parameter_id: number,
   showAllOption: boolean,
 ) => {
-  const { data, isLoading } = useQuery<ReportParamterValue[]>({
-    queryFn: async (): Promise<ReportParamterValue[]> => {
-      const response = await agent.get<ReportParamterValue[]>(
+  const { data, isLoading } = useQuery<ReportParameterValue[]>({
+    queryFn: async (): Promise<ReportParameterValue[]> => {
+      const response = await agent.get<ReportParameterValue[]>(
         `/report/parameters/data/${report_id}/${parameter_id}?showAllOptions=${showAllOption}`,
       );
       const report = response.data;

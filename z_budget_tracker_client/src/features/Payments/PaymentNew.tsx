@@ -81,9 +81,9 @@ const PaymentNew = () => {
     );
   }
 
-  // function handleIsDirty(isDirty: boolean) {
-  //   setHasUnsavedChanges(isDirty);
-  // }
+  function handleIsDirty(isDirty: boolean) {
+    setHasUnsavedChanges(isDirty);
+  }
 
   const body = () => {
     if (payment && payment.year !== 0) {
@@ -92,7 +92,7 @@ const PaymentNew = () => {
           key={payment.uuid}
           payment={payment}
           onInitialSave={handleInitialSaved}
-          // onIsDirty={handleIsDirty}
+          onIsDirty={handleIsDirty}
         ></PaymentForm>
       );
     }

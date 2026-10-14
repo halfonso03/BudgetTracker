@@ -1,6 +1,5 @@
 import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
-import { PaginationContextProvider } from '../../../contexts/pagination/PaginationContextProvider';
 import PayeePaymentsList from '../../Payees/PayeePaymentsList';
 
 type Props = {

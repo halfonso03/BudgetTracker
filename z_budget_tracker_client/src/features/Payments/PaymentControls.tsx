@@ -82,7 +82,7 @@ const PaymentControls = ({
         >
           <Search></Search>
         </Button>
-        {paymentId && (
+        {paymentId !== 0 && (
           <Button
             buttonSize="small"
             variation="secondary"

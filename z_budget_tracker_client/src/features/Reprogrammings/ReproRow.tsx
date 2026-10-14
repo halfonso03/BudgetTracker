@@ -94,7 +94,7 @@ const ReproRow = ({
                 className="text-neutral-500"
               ></EllipsisVertical>
             </Menus.Toggler>
-            <Menus.List id={uuid}>
+            <Menus.List topPos='translate-y-5' id={uuid}>
               <Menus.MenuItem onClick={() => editRow(uuid)}>
                 <Edit size={18}></Edit>&nbsp;&nbsp;Edit Row
               </Menus.MenuItem>

@@ -10,7 +10,6 @@ import RadioButtonList from '../../components/RadioButtonList';
 import ReproSearchFilter from './ReproSearchFilter';
 import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
 import { parseFormattedNumber } from '../../app/util';
-import Spinner from '../../components/Spinner';
 import Skeleton from 'react-loading-skeleton';
 
 const INITIATIVES_LIST_TYPE = 'I';

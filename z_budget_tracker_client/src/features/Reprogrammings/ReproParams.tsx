@@ -90,6 +90,8 @@ const ReproParams = memo(
               }))}
               onDeselectAll={handleDeselectAll}
               onSelectAll={handleSelectAll}
+              onOptionsUpdated={() => {}}
+
             ></CheckBoxListReproSearchParam>
           )}
         </div>
@@ -109,6 +111,8 @@ const ReproParams = memo(
               }))}
               onDeselectAll={handleDeselectAll}
               onSelectAll={handleSelectAll}
+              onOptionsUpdated={() => {}}
+
             ></CheckBoxListReproSearchParam>
           )}
         </div>
@@ -126,6 +130,7 @@ const ReproParams = memo(
                 xChecked: false,
               }))}
               onDeselectAll={handleDeselectAll}
+              onOptionsUpdated={() => {}}
               onSelectAll={handleSelectAll}
             ></CheckBoxListReproSearchParam>
           )}

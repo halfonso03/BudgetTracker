@@ -6,7 +6,7 @@ const ReproPreload = () => {
   const { year, initiativeId, grantId, categoryId, accountId } = useParams();
   const navigate = useNavigate();
 
-  const { data, isSuccess, isFetching, isLoading } = useCurrentAccountBalances(
+  const { data, isSuccess, isFetching,loadingBalances  } = useCurrentAccountBalances(
     +initiativeId!,
     +grantId!,
     +categoryId!,
@@ -43,7 +43,7 @@ const ReproPreload = () => {
     navigate,
     year,
   ]);
-  if (isLoading) return <div>Loading...</div>;
+  if (loadingBalances) return <div>Loading...</div>;
   return <div>Redirecting...</div>;
 };
 export default ReproPreload;

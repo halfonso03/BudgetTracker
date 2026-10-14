@@ -104,7 +104,7 @@ const ReproSearchReults = ({ onDelete, results }: Props) => {
                       className="text-neutral-500"
                     ></EllipsisVertical>
                   </Menus.Toggler>
-                  <Menus.List id={r.id.toString()}>
+                  <Menus.List id={r.id.toString()}  topPos='translate-y-5'>
                     <Menus.MenuItem>
                       <Link className="flex" to={`/reprogramming/${r.id}`}>
                         {r.posted ? (
