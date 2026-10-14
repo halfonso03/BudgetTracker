@@ -121,7 +121,6 @@ type UpdateReproRequest = {
     posted: boolean
     lineItems: ReproLineItemRequest[]
     overrideNegativeBalance: boolean
-
 }
 
 type ReproLineItemRequest = {

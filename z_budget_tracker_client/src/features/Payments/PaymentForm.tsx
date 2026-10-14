@@ -29,16 +29,24 @@ import JustificaModal from '../Common/modals/JustificaModal';
 import ErrorsModal from '../Common/modals/ErrorsModal';
 import PaymentLineModal from './modals/PaymentLineModal';
 import PaymentAmountNumericArrayInput from './PaymentAmountNumericArrayInput';
+import { useQueryClient } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
+import { usePaymentMutations } from '../../api/hooks/payments/usePaymentMutations';
 
 interface Props {
   payment: Payment;
+  onSaved?: () => void;
+  onInitialSave?: (newId: number) => void;
+
+
   // onInitialSave?: (newId: number) => void;
   // onIsDirty: (dirty: boolean) => void;
   // onSaved?: () => void;
 }
 
-const PaymentForm = ({ payment }: Props) => {
-  const { user } = useClientAuth();
+const PaymentForm = ({ payment, onSaved, onInitialSave }: Props) => {
+  const { user, loginId } = useClientAuth();
+  const queryClient = useQueryClient();
 
   const [paymentLineModalIsOpen, setPaymentLineModalIsOpen] = useState(false);
 
@@ -112,32 +120,15 @@ const PaymentForm = ({ payment }: Props) => {
     return errors;
   }, [lines, paymentHeader.justification]);
 
-  async function saveReproButtonClick() {}
+    const { createPayment, updatePayment } = usePaymentMutations();
+  
 
   function handleLineAdded(newLine: PaymentLineItem) {
     // setTimeout(() => setAddLineModalIsOpen(false), 500);
     setTimeout(() => setPaymentLineModalIsOpen(false), 500);
 
-    const newLines: PaymentLineItem[] = lines.map(
-      (l: PaymentLineItem, i: number) => {
-        const paymentAmount = getValues(`rows.${i}.paymentAmount`);
-
-        const newLine: PaymentLineItem = {
-          ...l,
-          availableAmount: l.availableAmount,
-          paymentAmount: formatNumber(
-            parseFormattedNumber(paymentAmount.toString()),
-          ),
-          newAvailableAmount: +l.availableAmount - +paymentAmount,
-        };
-        return newLine;
-      },
-    );
-
-    console.log('newLine', newLine);
-
     setLines([
-      ...newLines,
+      ...lines,
       {
         ...newLine,
         paymentAmount: formatNumber(
@@ -154,10 +145,14 @@ const PaymentForm = ({ payment }: Props) => {
     setTimeout(() => {
       setEditSelections(null);
     }, 500);
+
     let index = -1;
+
+    console.log('updatedLine.paymentAmount', updatedLine.paymentAmount);
 
     const newLines = lines.map((l: PaymentLineItem, i: number) => {
       if (l.uuid !== updatedLine.uuid) return l;
+
       const newLine: PaymentLineItem = {
         ...updatedLine,
         rowId: l.rowId,
@@ -171,10 +166,7 @@ const PaymentForm = ({ payment }: Props) => {
       return newLine;
     });
 
-    setValue(
-      `rows.${index}.paymentAmount`,
-      formatNumber(+updatedLine.paymentAmount),
-    );
+    setValue(`rows.${index}.paymentAmount`, updatedLine.paymentAmount);
     setLines(newLines);
   }
 
@@ -282,6 +274,198 @@ const PaymentForm = ({ payment }: Props) => {
     return true;
   }
 
+  async function savePaymentButtonClick() {
+    try {
+      const lineItems = lines.map((l) => ({
+        ...l,
+        paymentAmount: parseFormattedNumber(
+          l.paymentAmount?.toString() ?? '0.00',
+        ),
+      }));
+
+      if (paymentHeader.id === 0) {
+        sendCreatePayment(lineItems);
+      } else {
+        sendUpdatePayment(lineItems);
+      }
+    } catch (error) {
+      console.log('error', error);
+    }
+  }
+  async function sendCreatePayment(
+    lineItems: PaymentLineItemRequest[],
+    posted: boolean = false,
+  ) {
+    const lineItems2 = lineItems.map((l) => {
+      return {
+        ...l,
+      };
+    });
+    const paymnentToSave: CreatePaymentRequest = {
+      createdById: +user!.id,
+      posted: posted,
+      justification: paymentHeader.justification,
+      lineItems: lineItems2,
+    };
+
+    await createPayment.mutateAsync(paymnentToSave, {
+      onSuccess: async (id) => {
+        const postedDate = new Date();
+        const createDate = new Date();
+
+        if (posted) {
+          await invalidateBalances();
+        }
+
+        queryClient.setQueryData<Payment>(['payment', id], () => ({
+          ...paymnentToSave,
+          id: id,
+          year: payment.year,
+          justification: paymentHeader.justification,
+          createdBy: loginId!,
+          createDate: createDate,
+          posted: posted,
+          postedDate: posted ? postedDate : null,
+          postedBy: posted ? loginId! : null,
+          postedById: posted ? +user!.id! : null,
+          lineItems: lines.map((l) => {
+            return {
+              ...l,
+              comment: l.comment ?? '',
+              availableAmount: 0,
+              paymentAmount: l.paymentAmount,
+              newAvailableAmount: l.newAvailableAmount              
+            };
+          }),
+        }));
+
+        onServerCreateSuccess(
+          posted,
+          id,
+          createDate,
+          posted ? postedDate : null,
+        );
+        onInitialSave?.(id);
+        onSaved?.();
+      },
+    });
+  }
+
+  async function sendUpdatePayment(
+    lineItems: PaymentLineItemRequest[],
+    posted: boolean = false,
+  ) {
+    const lineItems2 = lineItems.map((l) => {
+      return {
+        ...l,
+      };
+    });
+
+    console.log('lineItems2', lineItems2);
+
+    const reproToSave: UpdatePaymentRequest = {
+      id: paymentHeader.id,
+      updatedById: +user!.id!,
+      posted: posted,
+      justification: paymentHeader.justification,
+      lineItems: lineItems2,
+    };
+    await updatePayment.mutateAsync(reproToSave, {
+      onSuccess: async () => {
+        if (posted) {
+          await invalidateBalances();
+        }
+        // await queryClient.invalidateQueries({
+        //   queryKey: ['repro_account_balances'],
+        // });
+        // queryClient.setQueryData<Repro>(
+        //   ['repro', paymentHeader.id],
+        //   (oldData: any) => {
+        //     console.log('oldData', oldData);
+        //     return {
+        //       ...oldData,
+        //       lineItems: lines.map((l) => {
+        //         return {
+        //           ...l,
+        //           newAmount:
+        //             l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
+        //         };
+        //       }),
+        //       rowBalances: savedBalances,
+        //     };
+        //   },
+        // );
+
+        const postedDate = new Date();
+        onServerUpdateSuccess(posted, posted ? postedDate : null);
+        onSaved?.();
+      },
+    });
+  }
+
+  function onServerCreateSuccess(
+    posted: boolean,
+    newId: number,
+    createDate: Date,
+    postedDate: Date | null,
+  ) {
+    setTimeout(() => {
+      setPaymentHeader((prev) => {
+        return {
+          ...prev,
+          id: newId,
+          createdById: +user!.id!,
+          createdBy: loginId!,
+          createDate: createDate,
+          status: posted ? POSTED : SAVED,
+          postedDate: postedDate,
+          postedBy: posted ? loginId : '',
+        };
+      });
+    }, 1500);
+
+    toast.success(posted ? 'Payment Posted.' : 'Payment Saved.', {
+      duration: 1500,
+    });
+  }
+
+  function onServerUpdateSuccess(
+    posted: boolean,
+    postedDate: Date | null = null,
+  ) {
+    setPaymentHeader((prev) => {
+      return {
+        ...prev,
+        status: posted ? POSTED : SAVED,
+        postedDate: postedDate,
+        postedBy: posted ? loginId : '',
+      };
+    });
+
+    toast.success(posted ? 'Payment Posted.' : 'Payment Saved.', {
+      duration: 1500,
+    });
+  }
+
+  async function invalidateBalances() {
+    const uniqueLines = lines
+      .filter(
+        (item, index, self) =>
+          self.findIndex(
+            (t) =>
+              t.initiativeId === item.initiativeId &&
+              t.grantId == item.grantId &&
+              t.categoryId == item.categoryId,
+          ) === index,
+      )
+      .map((l) => ({ i: l.initiativeId, g: l.grantId, c: l.categoryId }));
+    for (const l of uniqueLines) {
+      await queryClient.refetchQueries({
+        queryKey: ['repro_account_balances', +l.i, +l.g, +l.c],
+      });
+    }
+  }
+
   return (
     <MenuIdProvider>
       <div>
@@ -300,7 +484,7 @@ const PaymentForm = ({ payment }: Props) => {
             <Button
               buttonSize="small"
               disabled={!canSave() || !user}
-              onClick={saveReproButtonClick}
+              onClick={savePaymentButtonClick}
             >
               <Save className="mr-1"></Save>
               Save
@@ -392,7 +576,7 @@ const PaymentForm = ({ payment }: Props) => {
                         <div>
                           <PaymentAmountNumericArrayInput
                             index={index}
-                            setValue={setValue}                            
+                            setValue={setValue}
                             register={register(`rows.${index}.paymentAmount`)}
                             fieldName="paymentAmount"
                             readOnly={true}

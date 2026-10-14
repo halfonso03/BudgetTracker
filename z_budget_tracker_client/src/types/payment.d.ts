@@ -89,3 +89,30 @@ type PaymentLineItemSelections = {
     amount?: number
     comment?: string
 };
+
+type PaymentLineItemRequest = {
+    rowId: number
+    initiativeId: number
+    grantId: number
+    categoryId: number
+    accountId: number
+    payeeId: number,
+    paymentAmount: number
+    comment?: string | null
+}
+
+
+type CreatePaymentRequest = {
+    justification: string
+    createdById: number
+    posted: boolean
+    lineItems: PaymentLineItemRequest[]
+}
+
+type UpdatePaymentRequest = {
+    id: number
+    justification: string
+    updatedById: number
+    posted: boolean
+    lineItems: PaymentLineItemRequest[]
+}
