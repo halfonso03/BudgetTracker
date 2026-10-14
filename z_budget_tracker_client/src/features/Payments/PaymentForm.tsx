@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   DUP_LINES,
   EDITED,
@@ -16,6 +16,7 @@ import {
 } from '../../app/util';
 import MenuIdProvider from '../../contexts/MenuIdContext';
 import {
+  AlertCircle,
   AlertTriangle,
   BookOpenText,
   CheckCircle2,
@@ -116,6 +117,45 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
   }, [lines, paymentHeader.justification]);
 
   const { createPayment, updatePayment } = usePaymentMutations();
+
+  useEffect(() => {
+    const errors = getErrors();
+
+    if (
+      errors.length > 0 &&
+      lines.length > 0 &&
+      paymentHeader.status !== POSTED
+    ) {
+      toast.custom(
+        <div className="animate-right-to-in mt-20 rounded-sm p-4 shadow-md w-70 font-semibold bg-red-500 text-neutral-50 flex gap-2">
+          <AlertCircle></AlertCircle>
+          <div
+            className="self-center hover:underline underline-offset-2 cursor-pointer"
+            onClick={() => setErrorModalOpen(true)}
+          >
+            {errors.length} error{errors.length > 1 && <span>s</span>}
+          </div>
+        </div>,
+        {
+          position: 'top-right',
+          duration: Infinity,
+          id: 'errors',
+        },
+      );
+    }
+    // else {
+    //   toast.remove();
+    // }
+
+    return () => {
+      if (
+        errors.length > 0 &&
+        lines.length > 0 &&
+        paymentHeader.status !== POSTED
+      )
+        toast.remove();
+    };
+  }, [getErrors, lines, paymentHeader.status]);
 
   function handleLineAdded(newLine: PaymentLineItem) {
     // setTimeout(() => setAddLineModalIsOpen(false), 500);
