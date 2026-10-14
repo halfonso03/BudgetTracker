@@ -509,7 +509,7 @@ namespace Application.Services
             return true;
         }
 
-        public async Task<Result<DisbResponseDto>> DuplicateRepro(int id, int userId)
+        public async Task<Result<DisbResponseDto>> DuplicatePayment(int id, int userId)
         {
             var repro = await _dbContext.Disbs.FirstOrDefaultAsync(x => x.Id == id);
 

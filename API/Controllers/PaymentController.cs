@@ -31,10 +31,10 @@ namespace API.Controllers
             return HandleResult(await _paymentService.UpdatePayment(paymentRequestDto));
         }
 
-        // [HttpPost("duplicate")]
-        // public async Task<IActionResult> Duplicate([FromBody] DisbDuplicateRequestDto data)
-        // {
-        //     return HandleResult(await _disbService.DuplicateRepro(data.Id, data.UserId));
-        // }
+        [HttpPost("duplicate")]
+        public async Task<IActionResult> Duplicate([FromBody] PaymentDuplicateRequestDto data)
+        {
+            return HandleResult(await _paymentService.DuplicatePayment(data.Id, data.UserId));
+        }
     }
 }

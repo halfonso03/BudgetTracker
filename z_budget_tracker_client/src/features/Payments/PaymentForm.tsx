@@ -585,7 +585,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
               <PaymentRow
                 key={index}
                 lineItem={item}
-                canEdit={true}
+                canEdit={paymentHeader.status !== POSTED}
                 status={paymentHeader.status}
                 deleteRow={handleDeletRow}
                 duplicateRow={handleDuplicateRow}
