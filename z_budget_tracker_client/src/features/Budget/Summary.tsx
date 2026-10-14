@@ -40,7 +40,7 @@ const Summary = ({ year }: Props) => {
         .map((i) => i.spent_amount)
         .reduce((acc, cur) => acc + cur, 0),
       remaining_amount: b.account_balances
-        .map((i) => i.current_amount - i.spent_amount)
+        .map((i) => i.current_amount + i.spent_amount)
         .reduce((acc, cur) => (acc ?? 0) + (cur ?? 0), 0),
     };
   });
@@ -129,7 +129,7 @@ const Summary = ({ year }: Props) => {
             </div>
             <div className="text-end self-center">
               {budget.spent_amount !== 0 ? (
-                formatCurrency(-1 * budget.spent_amount)
+                formatCurrency(budget.spent_amount)
               ) : (
                 <span className="text-neutral-400">-</span>
               )}
@@ -238,7 +238,7 @@ function CategorySummary({
       {categoryTotals.map((c, index) => {
         const n = items
           .filter((x) => x.category?.name == c.category)
-          .map((i) => i.current_amount - i.spent_amount)
+          .map((i) => i.current_amount + i.spent_amount)
           .some((x) => x < 0);
         const cateoryRedClass = n === true ? 'text-red-600' : '';
         return (
@@ -272,14 +272,14 @@ function CategorySummary({
               </div>
               <div className="text-end">
                 {c.spent_amount !== 0 ? (
-                  formatCurrency(c.spent_amount)
+                  formatCurrency(-1 * c.spent_amount)
                 ) : (
                   <span className="text-neutral-400">-</span>
                 )}
               </div>
               <div className={`text-end ${c.current_amount + c.spent_amount < 0 && "text-red-500"}`}>
-                {c.current_amount - c.spent_amount > 0 ? (
-                  formatCurrency(c.current_amount + c.spent_amount)
+                {c.current_amount + c.spent_amount > 0 ? (
+                  formatCurrency(c.current_amount - c.spent_amount)
                 ) : (
                   <span className="text-neutral-400">-</span>
                 )}
@@ -334,17 +334,17 @@ function CategorySummary({
                       </div>
                       <div className="text-end italic text-neutral-700">
                         {i.spent_amount !== 0 ? (
-                          formatCurrency(-1 * i.spent_amount)
+                          formatCurrency(i.spent_amount)
                         ) : (
                           <span className="text-neutral-400">-</span>
                         )}
                       </div>
                       <div>
                         <div
-                          className={`italic text-end ${i.current_amount - i.spent_amount < 0 ? 'text-red-600' : ''}`}
+                          className={`italic text-end ${i.current_amount + i.spent_amount < 0 ? 'text-red-600' : ''}`}
                         >
-                          {i.current_amount - i.spent_amount !== 0 ? (
-                            formatCurrency(i.current_amount - i.spent_amount)
+                          {i.current_amount + i.spent_amount !== 0 ? (
+                            formatCurrency(i.current_amount + i.spent_amount)
                           ) : (
                             <span className="text-neutral-400">-</span>
                           )}

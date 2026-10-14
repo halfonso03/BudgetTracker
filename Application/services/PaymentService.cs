@@ -466,7 +466,7 @@ namespace Application.Services
                     InitiativeId = line.InitiativeId,
                     GrantId = line.GrantId,
                     AccountId = line.AccountId,
-                    Amount = line.Amount,
+                    Amount = -1 * line.Amount,
                     ItemType = Globals.ITEM_TYPE_DISB,
                     CreateDate = DateTime.Now,
                     CreatedBy = userId,

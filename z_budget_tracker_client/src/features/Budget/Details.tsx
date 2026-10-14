@@ -142,7 +142,7 @@ const Details = () => {
         amount: formattedTotalBudgeted,
         current_amount: formatterTotalCurrent,
         spent_amount: formattedTotalSpent,
-        remaining_amount: formatNumber(totalCurrent - totalSpent),
+        remaining_amount: formatCurrency(totalCurrent + totalSpent),
         hasRepro: false,
         name: 'Total',
       };

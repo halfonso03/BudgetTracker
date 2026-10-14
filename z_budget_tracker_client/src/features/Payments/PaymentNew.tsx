@@ -71,7 +71,7 @@ const PaymentNew = () => {
     setHasUnsavedChanges(false);
     setTimeout(
       () =>
-        navigate(`/payment/${id}`, {
+        navigate(`/payments/${id}`, {
           state: {
             created: true,
           },

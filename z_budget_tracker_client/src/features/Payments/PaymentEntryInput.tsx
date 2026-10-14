@@ -34,7 +34,9 @@ const PaymentEntryInput = ({
 }: Props) => {
   // console.log('errorMessage', error);
 
-  const [paymentAmount, setPaymentAmount] = useState(getValues('paymentAmount'));
+  const [paymentAmount, setPaymentAmount] = useState(
+    getValues('paymentAmount'),
+  );
 
   const remaining = available - parseFormattedNumber(paymentAmount);
 
@@ -42,13 +44,17 @@ const PaymentEntryInput = ({
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center ">
         <div className="text-neutral-600/90 font-medium">Available</div>
-        <div className="font-semibold pl-2">{formatCurrency(available)}</div>
-      </div>
-      <div className="grid grid-cols-[.35fr_1.1fr]  w-full items-center ">
-        <div className="text-neutral-600/90 font-medium">
-          <div className="flex items-baseline gap-2 ">Payment Amount</div>
+        <div
+          className={`pl-2 ${available < 0 ? 'text-red-500 font-semibold' : ''}`}
+        >
+          {formatCurrency(available)}
         </div>
-        <div className='flex gap-3 items-center'>
+      </div>
+      <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center ">
+        <div className="  text-neutral-600/90 font-medium">
+          Payment Amount
+        </div>
+        <div>
           <NumericInputReactHookForm
             register={register}
             readOnly={false}
@@ -73,14 +79,15 @@ const PaymentEntryInput = ({
             className="w-[40%] text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-300 
             focus:dark:border-gray-100 dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-neutral-800 dark:border-gray-500"
           ></NumericInputReactHookForm>
-          {error && (
-            <div className="text-red-500 pl-1">
-              <Asterisk size={18}></Asterisk>
-            </div>
-          )}
         </div>
+
+        {error && (
+          <div className="text-red-500 pl-1">
+            <Asterisk size={18}></Asterisk>
+          </div>
+        )}
       </div>
-      <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center ">
+      <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center ">
         <div className="text-neutral-600/90 font-medium">Remaining</div>
         <div
           className={`font-semibold pl-2 ${remaining < 0 ? 'text-red-500' : ''}`}

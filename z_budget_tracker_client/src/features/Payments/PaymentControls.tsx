@@ -22,7 +22,7 @@ const PaymentControls = ({
 }: Props) => {
   // console.log('ReproControls render');
 
-  const [choosingYear, setChoosingYear] = useState(true);
+  const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
   const [confirmLooseChangesModalIsOpen, setConfirmLooseChangesModalIsOpen] =
     useState(false);

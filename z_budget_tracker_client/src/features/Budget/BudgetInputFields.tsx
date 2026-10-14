@@ -70,7 +70,7 @@ const BudgetInputFields = ({
   const [error, setError] = useState<boolean>(false);
   const [remaining, setRemaining] = useState<string>(() =>
     formatNumber(
-      parseFormattedNumber(currentAmount) - parseFormattedNumber(spentAmount),
+      parseFormattedNumber(currentAmount) + parseFormattedNumber(spentAmount),
     ),
   );
 
@@ -134,10 +134,10 @@ const BudgetInputFields = ({
               } else setCurrent('-');
 
               const newRemaining = formatNumber(
-                budgeted + reprogrammed - spentParsed,
+                budgeted + reprogrammed + spentParsed,
               );
               setRemaining(newRemaining);
-              setError(budgeted + reprogrammed - spentParsed < 0);
+              setError(budgeted + reprogrammed + spentParsed < 0);
               onBlur({
                 e,
                 isDirty: budgeted !== parseFormattedNumber(budgetedAmount),
