@@ -138,7 +138,7 @@ const PaymentControls = ({
           }, 500);
           onDuplicatePayment?.();
         }}
-        message="Duplicate the current reprogramming? Click OK to continue."
+        message="Duplicate the current payment? Click OK to continue."
       ></ConfirmModal>
     </>
   );

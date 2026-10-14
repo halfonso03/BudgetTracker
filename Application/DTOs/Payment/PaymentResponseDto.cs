@@ -1,7 +1,7 @@
 
 namespace Application.DTOs.Payment
 {
-    public class DisbResponseDto
+    public class PaymentResponseDto
     {
         public required int Id { get; set; } = 0;
         public required DateTime CreateDate { get; set; }
@@ -15,7 +15,7 @@ namespace Application.DTOs.Payment
         public int? PostedById { get; set; }
         public string? Justification { get; set; }
         public List<PaymentLineItemResponseDto> LineItems { get; set; } = [];
-        public required List<DisbBalanceResponseDto> RowBalances { get; set; }
+        public required List<PaymentBalanceResponseDto> RowBalances { get; set; }
         public int Year { get; internal set; }
 
         // type RowBalance = {

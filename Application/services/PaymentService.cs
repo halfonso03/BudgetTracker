@@ -1,20 +1,9 @@
-using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using Application.Core;
-using Application.DTOs.Budgets;
-using Application.DTOs.Payment;
 using Application.DTOs.Payment;
 using Application.Interfaces;
-using Application.services;
-using Azure.Core.GeoJson;
 using Domain;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Persistence;
 
 namespace Application.Services
@@ -93,17 +82,17 @@ namespace Application.Services
             return Result<List<PaymentCategoryBalanceDto>>.Success(result);
         }
 
-        public async Task<Result<DisbResponseDto>> GetPayment(int id)
+        public async Task<Result<PaymentResponseDto>> GetPayment(int id)
         {
-            var reproFromDb = await _dbContext.Disbs
+            var paymentFromDb = await _dbContext.Disbs
                                         .Include(x => x.CreatedBy)
                                         .Include(x => x.UpdatedBy)
                                         .Include(x => x.PostedBy)
                                         .FirstOrDefaultAsync(x => x.Id == id);
 
-            if (reproFromDb is null)
+            if (paymentFromDb is null)
             {
-                return Result<DisbResponseDto>.Failure($"Reprogramming not found", 400);
+                return Result<PaymentResponseDto>.Failure($"Reprogramming not found", 400);
             }
 
             try
@@ -114,18 +103,19 @@ namespace Application.Services
                                         .Include(x => x.Grant)
                                         .Include(x => x.Category)
                                         .Include(x => x.Account)
+                                        .Include(x => x.Payee)
                                         .Where(x => x.DisbId == id).ToListAsync();
 
 
                 var keys = lineItems.Select(x => new { x.InitiativeId, x.GrantId, x.CategoryId }).Distinct();
 
-                var rowBalances = new List<DisbBalanceResponseDto>();
+                var rowBalances = new List<PaymentBalanceResponseDto>();
 
                 foreach (var key in keys)
                 {
                     var balances = await _budgetService.GetBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
 
-                    rowBalances.Add(new DisbBalanceResponseDto()
+                    rowBalances.Add(new PaymentBalanceResponseDto()
                     {
                         Key = new()
                         {
@@ -138,21 +128,21 @@ namespace Application.Services
                 }
 
 
-                var response = new DisbResponseDto
+                var response = new PaymentResponseDto
                 {
                     RowBalances = rowBalances,
-                    Id = reproFromDb.Id,
+                    Id = paymentFromDb.Id,
                     Year = lineItems.First().Year,
-                    Justification = reproFromDb.Justification,
-                    CreatedBy = reproFromDb.CreatedBy!.WindowsLogin,
-                    CreateDate = reproFromDb.CreatedDate,
-                    CreatedById = reproFromDb.CreatedById,
-                    UpdateDate = reproFromDb.UpdateDate,
-                    UpdatedById = reproFromDb.UpdatedById,
-                    Posted = reproFromDb.Posted,
-                    PostedBy = reproFromDb.PostedBy != null ? reproFromDb.PostedBy.FirstName[0].ToString() + reproFromDb.PostedBy.LastName : "",
-                    PostedDate = reproFromDb.PostedDate,
-                    PostedById = reproFromDb.PostedById,
+                    Justification = paymentFromDb.Justification,
+                    CreatedBy = paymentFromDb.CreatedBy!.WindowsLogin,
+                    CreateDate = paymentFromDb.CreatedDate,
+                    CreatedById = paymentFromDb.CreatedById,
+                    UpdateDate = paymentFromDb.UpdateDate,
+                    UpdatedById = paymentFromDb.UpdatedById,
+                    Posted = paymentFromDb.Posted,
+                    PostedBy = paymentFromDb.PostedBy != null ? paymentFromDb.PostedBy.FirstName[0].ToString() + paymentFromDb.PostedBy.LastName : "",
+                    PostedDate = paymentFromDb.PostedDate,
+                    PostedById = paymentFromDb.PostedById,
                     LineItems = [.. lineItems.Select(x =>
                         new PaymentLineItemResponseDto
                         {
@@ -172,11 +162,11 @@ namespace Application.Services
                         })]
                 };
 
-                return Result<DisbResponseDto>.Success(response);
+                return Result<PaymentResponseDto>.Success(response);
             }
             catch (Exception ex)
             {
-                return Result<DisbResponseDto>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+                return Result<PaymentResponseDto>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
         }
 
@@ -509,11 +499,11 @@ namespace Application.Services
             return true;
         }
 
-        public async Task<Result<DisbResponseDto>> DuplicatePayment(int id, int userId)
+        public async Task<Result<PaymentResponseDto>> DuplicatePayment(int id, int userId)
         {
             var repro = await _dbContext.Disbs.FirstOrDefaultAsync(x => x.Id == id);
 
-            if (repro == null) return Result<DisbResponseDto>.Failure("", 404);
+            if (repro == null) return Result<PaymentResponseDto>.Failure("", 404);
 
             var disbLineItems = await _dbContext.DisbLineItems
                                                 .Include(x => x.Initiative)
@@ -560,13 +550,13 @@ namespace Application.Services
 
                 var keys = disbLineItems.Select(x => new { x.InitiativeId, x.GrantId, x.CategoryId }).Distinct();
 
-                var rowBalances = new List<DisbBalanceResponseDto>();
+                var rowBalances = new List<PaymentBalanceResponseDto>();
 
                 foreach (var key in keys)
                 {
                     var balances = await _budgetService.GetBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
 
-                    rowBalances.Add(new DisbBalanceResponseDto()
+                    rowBalances.Add(new PaymentBalanceResponseDto()
                     {
                         Key = new()
                         {
@@ -578,7 +568,7 @@ namespace Application.Services
                     });
                 }
 
-                var response = new DisbResponseDto
+                var response = new PaymentResponseDto
                 {
                     Id = newDisb.Id,
                     Justification = newDisb.Justification,
@@ -606,16 +596,16 @@ namespace Application.Services
                     })]
                 };
 
-                return Result<DisbResponseDto>.Success(response);
+                return Result<PaymentResponseDto>.Success(response);
 
             }
             catch (DbException ex)
             {
-                return Result<DisbResponseDto>.Failure($"DB Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 500);
+                return Result<PaymentResponseDto>.Failure($"DB Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 500);
             }
             catch (Exception ex)
             {
-                return Result<DisbResponseDto>.Failure(ex.Message, 500);
+                return Result<PaymentResponseDto>.Failure(ex.Message, 500);
             }
         }
 

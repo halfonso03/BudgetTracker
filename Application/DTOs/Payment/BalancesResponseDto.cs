@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs.Payment
 {
-    public class DisbBalanceResponseDto
+    public class PaymentBalanceResponseDto
     {
         public required Key1 Key { get; set; }
         public required List<Balance> Balances { get; set; }
