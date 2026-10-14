@@ -154,6 +154,7 @@ namespace Application.Services
                             CategoryId = x.CategoryId,
                             Amount = x.Amount,
                             PayeeName = x.Payee!.Name,
+                            PayeeId = x.PayeeId,
                             InitiativeName = x.Initiative!.Name,
                             GrantName = x.Grant!.Name,
                             CategoryName = x.Category!.Name,
