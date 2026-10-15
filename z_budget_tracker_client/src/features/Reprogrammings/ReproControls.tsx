@@ -4,7 +4,7 @@ import { Search } from 'lucide-react';
 import ConfirmModal from '../../components/ConfirmModal';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ChooseYearModal from '../Common/modals/ChooseYearModal';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink} from 'react-router-dom';
 
 type Props = {
   reproId?: number | undefined;
@@ -19,18 +19,18 @@ const ReproControls = ({
   reproId = 0,
 }: Props) => {
   // console.log('ReproControls render');
-  const navigate = useNavigate();
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
   const [confirmLooseChangesModalIsOpen, setConfirmLooseChangesModalIsOpen] =
     useState(false);
-  const [confirmDuplicateModalIsOpen, setConfirmDuplicateModalIsOpen] =
-    useState(false);
+
   const hasUnsavedChanges = useHasUnsavedChangesStore(
     (x) => x.hasUnsavedChanges,
   );
 
-  // const [duplicating, setDuplicating] = useState(false);
+  const setHasUnsavedChanges = useHasUnsavedChangesStore(
+    (x) => x.setHasUnsavedChanges,
+  );
 
   const handleYearSelected = (e: { year: number; justification: string }) => {
     onYearSelected(e.year, e.justification);
@@ -43,17 +43,6 @@ const ReproControls = ({
   function handleSearchClick() {
     onSearchClick();
   }
-
-  // function handleDuplicateClick() {
-  //   setConfirmDuplicateModalIsOpen(true);
-
-  //   // if (hasUnsavedChanges) {
-  //   //   setDuplicating(true);
-  //   //   setConfirmLooseChangesModalIsOpen(true);
-  //   // } else {
-  //   //   setConfirmDuplicateModalIsOpen(true);
-  //   // }
-  // }
 
   return (
     <>
@@ -81,13 +70,6 @@ const ReproControls = ({
           <Search></Search>
         </Button>
         {reproId !== undefined && reproId !== 0 && (
-          // <Button
-          //   buttonSize="small"
-          //   variation="secondary"
-          //   onClick={handleDuplicateClick}
-          // >
-          //   Duplicate
-          // </Button>
           <NavLink
             to={`/reprogramming/duplicate/${reproId}`}
             className="font-semibold text-neutral-50 bg-neutral-500/70  hover:bg-neutral-500 hover:border-gray-400 disabled:opacity-70 disabled:text-neutral-500 dark:bg-transparent dark:text-white dark:border-gray-600 dark:hover:bg-neutral-800 dark:hover:border-gray-600 transition-all duration-300 p-2 w-35 cursor-pointer disabled:cursor-not-allowed rounded-sm shadow-sm flex justify-center items-center "
@@ -115,6 +97,7 @@ const ReproControls = ({
           }, 500);
         }}
         onConfirm={() => {
+          setHasUnsavedChanges(false);
           setTimeout(() => {
             setConfirmLooseChangesModalIsOpen(false);
           }, 500);
@@ -122,7 +105,7 @@ const ReproControls = ({
             setChoosingYear(true);
           }, 500);
         }}
-        message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
+        message="2 Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
       ></ConfirmModal>
       {/* <ConfirmModal
         isOpen={confirmDuplicateModalIsOpen}

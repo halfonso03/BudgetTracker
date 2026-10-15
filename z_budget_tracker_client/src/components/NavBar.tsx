@@ -261,9 +261,9 @@ const NavBar = () => {
                       setHasUnsavedChanges(false);
                       // navigate(urltoGoTo);
                     }}
-                    message="You have unsaved changes! Are you sure you want to leave? Any changes made to this entry will be lost. Click OK to continue."
+                    message="NEW You have unsaved changes! Are you sure you want to leave? Any changes made to this entry will be lost. Click OK to continue."
                   ></ConfirmModal>
-                  <div className="modal">
+                  {/* <div className="modal">
                     <p>
                       You have unsaved changes! Are you sure you want to leave?
                     </p>
@@ -276,7 +276,7 @@ const NavBar = () => {
                       Yes, Leave
                     </button>
                     <button onClick={() => blocker.reset()}>Stay Here</button>
-                  </div>
+                  </div> */}
                 </div>
               )}
             </div>
@@ -304,7 +304,7 @@ const NavBar = () => {
               setHasUnsavedChanges(false);
               navigate(urltoGoTo);
             }}
-            message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
+            message="1 Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
           ></ConfirmModal>
         </div>
       )}

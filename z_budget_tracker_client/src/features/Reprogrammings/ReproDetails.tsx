@@ -1,8 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useState } from 'react';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import useGetRepro from '../../api/hooks/repro/useGetRepro';
-import ConfirmModal from '../../components/ConfirmModal';
 import ReproControls from './ReproControls';
 import ReproForm from './ReproForm';
 
@@ -12,9 +10,9 @@ const ReproDetails = () => {
 
   const navigate = useNavigate();
   const { id } = useParams();
-  const { hasUnsavedChanges, setHasUnsavedChanges } =
+  const { setHasUnsavedChanges } =
     useHasUnsavedChangesStore();
-  const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
+  // const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const reproId = id !== undefined ? +id : undefined;
 
   const {
@@ -52,11 +50,12 @@ const ReproDetails = () => {
   }
 
   function handleSearchClick() {
-    if (hasUnsavedChanges) {
-      setConfirmModalIsOpen(true);
-    } else {
-      navigate('/reprogramming/search');
-    }
+    navigate('/reprogramming/search');
+    // if (hasUnsavedChanges) {
+    //   setConfirmModalIsOpen(true);
+    // } else {
+    //   navigate('/reprogramming/search');
+    // }
   }
 
   async function handleDuplicateReprogramming() {
@@ -113,7 +112,7 @@ const ReproDetails = () => {
         onDuplicateReprogramming={handleDuplicateReprogramming}
       ></ReproControls>
       {body()}
-      <ConfirmModal
+      {/* <ConfirmModal
         isOpen={confirmModalIsOpen}
         onCancel={() => {
           setTimeout(() => {
@@ -125,7 +124,7 @@ const ReproDetails = () => {
           navigate('/reprogramming/search');
         }}
         message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
-      ></ConfirmModal>
+      ></ConfirmModal> */}
     </div>
   );
 };

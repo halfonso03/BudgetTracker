@@ -1,6 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import ConfirmModal from '../../components/ConfirmModal';
 import useClientAuth from '../../contexts/useAuth';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ReproControls from './ReproControls';
@@ -13,10 +12,9 @@ const ReproNew = () => {
   const preloadState = location.state;
   const rowBalances: ReproRowBalance[] = [];
   const lineItems: ReproLineItem[] = [];
-  const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
+  // const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
 
-  const { hasUnsavedChanges, setHasUnsavedChanges } =
-    useHasUnsavedChangesStore();
+  const { setHasUnsavedChanges } = useHasUnsavedChangesStore();
   // const [isDirty, setIsDirty] = useState<DirtyState>({
   //   numbersAresDirty: false,
   //   formValuesIsDirty: false,
@@ -25,8 +23,7 @@ const ReproNew = () => {
   let initialYear = 0;
   let justification = '';
 
-
-  console.log('preloadState', preloadState)
+  console.log('preloadState', preloadState);
   if (preloadState) {
     if (preloadState.year) {
       initialYear = preloadState.year;
@@ -118,11 +115,13 @@ const ReproNew = () => {
   }
 
   function handleSearchClick() {
-    if (hasUnsavedChanges) {
-      setConfirmModalIsOpen(true);
-    } else {
-      navigate('/reprogramming/search');
-    }
+    navigate('/reprogramming/search');
+    // console.log('12', hasUnsavedChanges)
+    // if (hasUnsavedChanges) {
+    //   setConfirmModalIsOpen(true);
+    // } else {
+    //   navigate('/reprogramming/search');
+    // }
   }
 
   function handleIsDirty(isDirty: boolean) {
@@ -150,7 +149,7 @@ const ReproNew = () => {
         onSearchClick={handleSearchClick}
       ></ReproControls>
       {body()}
-      <ConfirmModal
+      {/* <ConfirmModal
         isOpen={confirmModalIsOpen}
         onCancel={() => {
           setTimeout(() => {
@@ -162,7 +161,7 @@ const ReproNew = () => {
           navigate('/reprogramming/search');
         }}
         message="There are unsaved changes in this reprogramming. Any changes made to this entry will be lost. Click OK to continue."
-      ></ConfirmModal>
+      ></ConfirmModal> */}
     </>
   );
 };
