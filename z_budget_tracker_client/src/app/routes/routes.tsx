@@ -19,6 +19,7 @@ import PaymentLanding from '../../features/Payments/PaymentLanding';
 import PaymentDetails from '../../features/Payments/PaymentDetails';
 import PaymentNew from '../../features/Payments/PaymentNew';
 import Logout from '../../features/Auth/Logout';
+import PaymentSearch from '../../features/Payments/PaymentSearch';
 
 export const routes: RouteObject[] = [
   {

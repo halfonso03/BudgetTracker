@@ -48,29 +48,29 @@ const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
                 textToDisplay={v.name}
               ></SearchTermMarker>
             </div>
-            <div className="px-4 py-1 text-center text-neutral-900">
+            <div className="px-4 py-1 text-center text-neutral-800">
               <SearchTermMarker
                 textToFind={searchTerm || ''}
                 textToDisplay={v.payeeType}
               ></SearchTermMarker>
             </div>
-            <div className="px-4 py-1 text-neutral-600 text-center">
+            <div className="px-4 py-1 text-neutral-800 text-center">
               <SearchTermMarker
                 textToFind={searchTerm || ''}
                 textToDisplay={v.accountName}
               ></SearchTermMarker>
             </div>
-            <div className="px-4 py-1 text-neutral-500 text-center">
+            <div className="px-4 py-1 text-neutral-800 text-center">
               {v.totalPaid ? formatNumber(v.totalPaid) : '-'}
             </div>
-            <div className="px-4 py-1 text-neutral-600 text-center">
+            <div className="px-4 py-1 text-neutral-800 text-center">
               {v.lastPaymentAmount ? formatNumber(v.lastPaymentAmount) : '-'}
             </div>
-            <div className="px-4 py-1 text-neutral-600 text-center">
+            <div className="px-4 py-1 text-neutral-800 text-center">
               {v.lastPaymentDate ? formatDate(v.lastPaymentDate) : '-'}
             </div>
 
-            <div className="px-4 py-1 text-neutral-600 text-center ">
+            <div className="px-4 py-1 text-neutral-800 text-center ">
               {v.daysSinceLastPayment || '-'}
             </div>
             <div className="flex justify-center ">

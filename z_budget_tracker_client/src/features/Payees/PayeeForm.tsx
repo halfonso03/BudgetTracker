@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from 'react';
+import { useState } from 'react';
 import useCategories from '../../api/hooks/common/useCategories';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -34,9 +34,10 @@ const PayeeForm = ({
   const [payeeId, setPayeeId] = useState(payee.id);
 
   const {
-    register, 
-    handleSubmit, 
+    register,
+    handleSubmit,
     setValues,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(PayeeFormSchema) as Resolver<FormValues>,
@@ -52,7 +53,7 @@ const PayeeForm = ({
   });
 
   const { createPayee, updatePayee } = usePayeeMutations();
-  const { categories } = useCategories();
+  const { categories, catSuccess } = useCategories();
 
   const [categoryIsSelected, setCategoryIsSelected] = useState(
     payee.id === 0 ? false : true,
@@ -64,7 +65,6 @@ const PayeeForm = ({
           return { id: x.id, name: x.name };
         })
       : [];
-  let accountOptionSetup: Account[] = [];
 
   let payeeTypeOptions = [
     { id: 1, name: 'Vendor' },
@@ -81,40 +81,38 @@ const PayeeForm = ({
     payeeTypeOptions = [{ id: 0, name: '-- Select a Payee Type--' }, ...oldT];
   }
 
-  if (categories !== null && categories!.length > 0) {
-    if (payee.id === 0) {
-      const t2 = categories!
-        .filter((c) => c.id === categories![0].id)[0]
-        .accounts!.map((a: Account) => ({ ...a }));
+  // if (categories !== null && categories!.length > 0) {
+  //   if (payee.id === 0) {
+  //     const t2 = categories!
+  //       .filter((c) => c.id === categories![0].id)[0]
+  //       .accounts!.map((a: Account) => ({ ...a }));
 
-      accountOptionSetup = [
-        {
-          id: 0,
-          name: '-- Select an Account --',
-          number: '',
-          category_id: 0,
-        },
-        ...t2,
-      ];
-    } else {
-      accountOptionSetup = categories!.filter(
-        (c) => c.id === payee.categoryId,
-      )[0].accounts!;
-    }
-  }
+  //     accountOptionSetup = [
+  //       {
+  //         id: 0,
+  //         name: '-- Select an Account --',
+  //         number: '',
+  //         category_id: 0,
+  //       },
+  //       ...t2,
+  //     ];
+  //   } else {
+  //     accountOptionSetup = categories!.filter(
+  //       (c) => c.id === payee.categoryId,
+  //     )[0].accounts!;
+  //   }
+  // }
 
-  const [accountOptions, setAccountOptions] = useState<Account[] | null>(
-    accountOptionSetup,
-  );
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const categoryIdWatchValue = watch('categoryId') as number;
 
+  const accounts =
+    catSuccess && categories
+      ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
+      : [];
 
-  function onCategoryChange(e: ChangeEvent<HTMLSelectElement>) {
+  function onCategoryChange() {
     setCategoryIsSelected(true);
-    setAccountOptions(
-      categories!
-        .filter((c) => c.id === +e.target.value)[0]
-        .accounts!.map((a: Account) => ({ ...a })),
-    );
   }
 
   async function onSubmit(data: FormValues) {
@@ -225,7 +223,7 @@ const PayeeForm = ({
           </FormRow>
           <FormRow id="accountId" label="Account">
             <Select {...register('accountId')} disabled={!categoryIsSelected}>
-              {accountOptions?.map((x) => (
+              {accounts?.map((x) => (
                 <option value={x.id}>{x.name}</option>
               ))}
             </Select>
