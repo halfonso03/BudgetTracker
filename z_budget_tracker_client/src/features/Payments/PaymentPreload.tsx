@@ -1,6 +1,8 @@
+
 const PaymentPreload = () => {
-  return (
-    <div>PaymentPreload</div>
-  )
-}
-export default PaymentPreload
+  // const { payeeId } = useParams();
+  // const navigate = useNavigate();
+
+  return <div>PaymentPreload</div>;
+};
+export default PaymentPreload;

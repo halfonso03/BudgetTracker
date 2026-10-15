@@ -1,5 +1,5 @@
 import { Check, X, DollarSign } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { formatNumber, formatDate } from '../../app/util';
 import SearchTermMarker from '../../components/SearchTermMarker';
 import { usePagination } from '../../contexts/pagination/usePagination';
@@ -13,6 +13,8 @@ type Props = {
 };
 const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
   const { searchTerm } = usePagination();
+
+  const navigate = useNavigate();
 
   if (loadingPayees)
     return (
@@ -84,9 +86,10 @@ const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
             <div className="flex justify-center font-semibold">
               <Link to="/test">
                 <DollarSign
-                  className={`${!v.isActive ? 'text-neutral-400' : 'text-blue-500'} cursor-pointer`}
-                  onClick={(e) => {
-                    e.stopPropagation();
+                  onClick={() => {
+                    navigate(
+                      `/payment/${v.id}/${v.categoryId}/${v.accountId}`,
+                    );
                   }}
                 ></DollarSign>
               </Link>

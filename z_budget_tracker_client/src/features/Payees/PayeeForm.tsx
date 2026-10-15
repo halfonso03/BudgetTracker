@@ -33,6 +33,9 @@ const PayeeForm = ({
   const [isActive, setIsActive] = useState(payee.isActive);
   const [payeeId, setPayeeId] = useState(payee.id);
 
+
+  console.log('payee', payee)
+  
   const {
     register,
     handleSubmit,
@@ -65,6 +68,8 @@ const PayeeForm = ({
           return { id: x.id, name: x.name };
         })
       : [];
+
+  console.log('categoryOptions', categoryOptions);
 
   let payeeTypeOptions = [
     { id: 1, name: 'Vendor' },
@@ -111,6 +116,7 @@ const PayeeForm = ({
       ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
       : [];
 
+  console.log('accounts', accounts);
   function onCategoryChange() {
     setCategoryIsSelected(true);
   }

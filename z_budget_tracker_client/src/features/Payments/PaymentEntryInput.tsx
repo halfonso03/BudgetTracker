@@ -51,9 +51,7 @@ const PaymentEntryInput = ({
         </div>
       </div>
       <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center ">
-        <div className="  text-neutral-600/90 font-medium">
-          Payment Amount
-        </div>
+        <div className="  text-neutral-600/90 font-medium">Payment Amount</div>
         <div>
           <NumericInputReactHookForm
             register={register}
@@ -63,8 +61,9 @@ const PaymentEntryInput = ({
               onBlur?.(e);
               setPaymentAmount(e.target.value);
               if (e.target.value) {
-                const value = parseFormattedNumber(e.target.value);
-
+                let value = parseFormattedNumber(e.target.value);
+                if (isNaN(value)) value = 0;
+                console.log('value', value);
                 if (available - value >= 0) {
                   onOK?.(value);
                 } else {
@@ -74,7 +73,7 @@ const PaymentEntryInput = ({
             }}
             onChange={(e) => {
               register.onChange(e);
-              setPaymentAmount(e.target.value);
+              // setPaymentAmount(e.target.value);
             }}
             className="w-[40%] text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-300 
             focus:dark:border-gray-100 dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-neutral-800 dark:border-gray-500"

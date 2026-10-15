@@ -52,7 +52,6 @@ const PaymentLineModal = (props: Props) => {
   );
   const { data: selectedEditPayee } = useSelectedPayeeInfo(selections?.payeeId);
 
-
   let availableAmount = 0;
 
   const {
@@ -144,7 +143,8 @@ const PaymentLineModal = (props: Props) => {
         payeeName: payee!.name,
         availableAmount: availableAmount,
         paymentAmount: getValues('paymentAmount'),
-        newAvailableAmount: availableAmount - parseFormattedNumber(getValues('paymentAmount')),
+        newAvailableAmount:
+          availableAmount - parseFormattedNumber(getValues('paymentAmount')),
         comment: data.comment,
       };
 
@@ -179,8 +179,13 @@ const PaymentLineModal = (props: Props) => {
   }
 
   function handleInputEntryOnBlur() {
-    const formatted = formatNumber(+getValues('paymentAmount'));
-    setValue('paymentAmount', formatted);
+    if (isNaN(+getValues('paymentAmount'))) {
+      setValue('paymentAmount', '0.00');
+    } else {
+      const formatted = formatNumber(+getValues('paymentAmount'));
+      setValue('paymentAmount', formatted);
+    }
+    console.log(+getValues('paymentAmount'));
   }
 
   function handleLessThanZero() {

@@ -979,7 +979,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             return (
               <div
                 key={index}
-                className="grid grid-cols-[.1fr_.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 border border-neutral-300 items-center mb-3 "
+                className="grid grid-cols-[.1fr_.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 border border-neutral-300/70 items-center mb-3 "
               >
                 <ReproRow
                   key={item.uuid}

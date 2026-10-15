@@ -20,6 +20,7 @@ import PaymentDetails from '../../features/Payments/PaymentDetails';
 import PaymentNew from '../../features/Payments/PaymentNew';
 import Logout from '../../features/Auth/Logout';
 import PaymentSearch from '../../features/Payments/PaymentSearch';
+import PaymentPreload from '../../features/Payments/PaymentPreload';
 
 export const routes: RouteObject[] = [
   {
@@ -178,6 +179,14 @@ export const routes: RouteObject[] = [
             element: (
               <ProtectedRoute>
                 <PaymentSearch />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: ':payeeId/:categoryId/:accountId',
+            element: (
+              <ProtectedRoute>
+                <PaymentPreload></PaymentPreload>
               </ProtectedRoute>
             ),
           },
