@@ -1,5 +1,10 @@
-import { useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useCallback, useState } from 'react';
+import {
+  NavLink,
+  useBlocker,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import ConfirmModal from './ConfirmModal';
 import { useHasUnsavedChangesStore } from '../state/useHasUnsavedChangesStore';
 import useClientAuth from '../contexts/useAuth';
@@ -22,6 +27,15 @@ const NavBar = () => {
   );
 
   const { user: user, isLoggedIn } = useClientAuth();
+
+  const blocker = useBlocker(
+    useCallback(
+      ({ currentLocation, nextLocation }) =>
+        hasUnsavedChanges && currentLocation.pathname !== nextLocation.pathname,
+      [hasUnsavedChanges],
+    ),
+  );
+
   // if (!user) {
   //   reLogin();
   // }
@@ -82,8 +96,6 @@ const NavBar = () => {
 
   function handleNavigation(e: React.MouseEvent<HTMLElement>, url: string) {
     e.preventDefault();
-    navigate(url);
-    return;
 
     const path = location.pathname;
     const basePath =
@@ -102,60 +114,46 @@ const NavBar = () => {
     }
   }
 
-  function handleBudgetNavigation(
-    e: React.MouseEvent<HTMLElement>,
-    url: string,
-  ) {
-    e.preventDefault();
-    navigate(url);
-    return;
-    if (hasUnsavedChanges) {
-      setConfirmModalIsOpen(true);
-      setUrlToGoTo(url);
-    } else {
-      navigate(url);
-    }
-  }
+  // function handleBudgetNavigation(
+  //   e: React.MouseEvent<HTMLElement>,
+  //   url: string,
+  // ) {
+  //   e.preventDefault();
+  //   if (hasUnsavedChanges) {
+  //     setConfirmModalIsOpen(true);
+  //     setUrlToGoTo(url);
+  //   } else {
+  //     navigate(url);
+  //   }
+  // }
 
-  function handleReproNavigation(
-    e: React.MouseEvent<HTMLElement>,
-    url: string,
-  ) {
-    e.preventDefault();
-    navigate(url);
-    return;
+  // function handleReproNavigation(
+  //   e: React.MouseEvent<HTMLElement>,
+  //   url: string,
+  // ) {
+  //   e.preventDefault();
 
-    const path = location.pathname;
+  //   const path = location.pathname;
 
-    const basePath =
-      path.indexOf('/', 1) > -1
-        ? path.substring(0, path.indexOf('/', 1))
-        : path;
+  //   const basePath =
+  //     path.indexOf('/', 1) > -1
+  //       ? path.substring(0, path.indexOf('/', 1))
+  //       : path;
 
-    if (location.pathname !== '/reprogramming/search') {
-      if (basePath !== url) {
-        if (hasUnsavedChanges) {
-          setConfirmModalIsOpen(true);
-          setUrlToGoTo(url);
-        } else {
-          navigate(url);
-        }
-      }
-    } else {
-      navigate(url);
-    }
-  }
-  {
-    /* <div className="flex absolute bottom-0 left-0">
-        {user && <pre>{JSON.stringify(user)}</pre>}
-        <div className="border p-2">
-          {hasUnsavedChanges ? <span>Yes</span> : <span>No</span>}
-        </div>
-      </div> */
-  }
-  {
-    /* <pre>{JSON.stringify(user)}</pre> */
-  }
+  //   if (location.pathname !== '/reprogramming/search') {
+  //     if (basePath !== url) {
+  //       if (hasUnsavedChanges) {
+  //         setConfirmModalIsOpen(true);
+  //         setUrlToGoTo(url);
+  //       } else {
+  //         navigate(url);
+  //       }
+  //     }
+  //   } else {
+  //     navigate(url);
+  //   }
+  // }
+
   {
     /* <div className="flex text-sm gap-3">
           <input
@@ -182,6 +180,11 @@ const NavBar = () => {
         //bg-dark-nav
         <div className="bg-white border-b border-b-neutral-300 flex justify-between align-middle p-3 text-gray-900 dark:text-gray-100  ">
           <div className="flex p-2 text-xl pb-0 justify-between w-full">
+            <div className="flex absolute bottom-0 left-0">
+              <div className="border p-2">
+                {hasUnsavedChanges ? <span>Yes</span> : <span>No</span>}
+              </div>
+            </div>
             <div className="flex gap-5 ">
               <NavLink
                 to="/"
@@ -195,22 +198,23 @@ const NavBar = () => {
               <NavLink
                 to="/budget"
                 className="nav-link"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleBudgetNavigation(e, '/budget');
-                }}
+                // onClick={(e: React.MouseEvent<HTMLElement>) => {
+                //   handleBudgetNavigation(e, '/budget');
+                // }}
               >
                 Budgets
               </NavLink>
+
               <NavLink
                 to="/reprogramming"
                 className="nav-link"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleReproNavigation(e, '/reprogramming');
-                }}
+                // onClick={(e: React.MouseEvent<HTMLElement>) => {
+                //   handleReproNavigation(e, '/reprogramming');
+                // }}
               >
                 Reprogrammings
               </NavLink>
-              <NavLink
+              {/* <NavLink
                 to="/payments"
                 className="nav-link"
                 onClick={(e: React.MouseEvent<HTMLElement>) => {
@@ -237,10 +241,44 @@ const NavBar = () => {
                 }}
               >
                 Reports
-              </NavLink>
-              {/* <NavLink to="/proto" className="nav-link">
-                Proto
               </NavLink> */}
+              {blocker.state === 'blocked' && hasUnsavedChanges && (
+                <div>
+                  <ConfirmModal
+                    isOpen={true}
+                    onCancel={() => {
+                      setTimeout(() => {
+                        setConfirmModalIsOpen(false);
+                        blocker.reset();
+                      }, 500);
+                      // navigate(currentLocation);
+                    }}
+                    onConfirm={() => {
+                      // setTimeout(() => {
+                      //   setConfirmModalIsOpen(false);
+                      // }, 500);
+                      blocker.proceed();
+                      setHasUnsavedChanges(false);
+                      // navigate(urltoGoTo);
+                    }}
+                    message="You have unsaved changes! Are you sure you want to leave? Any changes made to this entry will be lost. Click OK to continue."
+                  ></ConfirmModal>
+                  <div className="modal">
+                    <p>
+                      You have unsaved changes! Are you sure you want to leave?
+                    </p>
+                    <button
+                      onClick={() => {
+                        setHasUnsavedChanges(false);
+                        blocker.proceed();
+                      }}
+                    >
+                      Yes, Leave
+                    </button>
+                    <button onClick={() => blocker.reset()}>Stay Here</button>
+                  </div>
+                </div>
+              )}
             </div>
             <div>
               {isLoggedIn() && <span>Hello, {user.firstName}</span>}{' '}

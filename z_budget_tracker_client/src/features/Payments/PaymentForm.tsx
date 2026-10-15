@@ -227,7 +227,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
     };
 
     setLines([...lines, duplicatedLine]);
-    // onIsDirty(true);
+    onIsDirty(true);
   }
 
   function onAddRow() {
@@ -265,7 +265,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
         .filter((x) => x.uuid !== uuid)
         .map((l: PaymentLineItem, i: number) => ({ ...l, rowId: i })),
     );
-    // onIsDirty(true);
+    onIsDirty(true);
   }
 
   function handleSaveJust(text: string) {
@@ -275,7 +275,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
       status: EDITED,
     }));
     setTimeout(() => setJustModalIsOpen(false), 500);
-    // onIsDirty(true);
+    onIsDirty(true);
   }
 
   function handleSaveComment(uuid: string, comment: string | null | undefined) {
@@ -286,7 +286,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
       })),
     );
 
-    // onIsDirty(true);
+    onIsDirty(true);
   }
 
   function paymentAmountOnBlur(uuid: string) {
@@ -296,11 +296,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
       const paymentAmount = parseFormattedNumber(
         getValues(`rows.${index}.paymentAmount`) as string,
       );
-
-      console.log(
-        'paymentAmount - line.availableAmount',
-        paymentAmount - line.availableAmount,
-      );
+     
       const updatedLine: PaymentLineItem = {
         ...line,
         paymentAmount: formatNumber(paymentAmount),
@@ -311,22 +307,16 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
     });
 
     setLines(newLines);
-    // onIsDirty(true);
+    onIsDirty(true);
   }
 
   function canPost() {
-    let result = lines.length > 0;
-
-    // no duplicate lines
-    result = result && noDupLines(lines);
-
-    return result;
+    return lines.length > 0 && noDupLines(lines);
   }
 
   function canSave() {
     let result = lines.length > 0;
 
-    // no duplicate lines
     result = result && noDupLines(lines);
 
     result = result && paymentHeader.status !== POSTED;

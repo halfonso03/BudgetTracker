@@ -4,9 +4,8 @@ import { Search } from 'lucide-react';
 import ConfirmModal from '../../components/ConfirmModal';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ChooseYearModal from '../Common/modals/ChooseYearModal';
+import { NavLink, useNavigate } from 'react-router-dom';
 
-// const NEW_REPRO
-// type Actions:number
 type Props = {
   reproId?: number | undefined;
   onYearSelected: (year: number, justification: string) => void;
@@ -17,11 +16,10 @@ type Props = {
 const ReproControls = ({
   onYearSelected,
   onSearchClick,
-  onDuplicateReprogramming,
   reproId = 0,
 }: Props) => {
   // console.log('ReproControls render');
-
+  const navigate = useNavigate();
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
   const [confirmLooseChangesModalIsOpen, setConfirmLooseChangesModalIsOpen] =
@@ -32,7 +30,7 @@ const ReproControls = ({
     (x) => x.hasUnsavedChanges,
   );
 
-  const [duplicating, setDuplicating] = useState(false);
+  // const [duplicating, setDuplicating] = useState(false);
 
   const handleYearSelected = (e: { year: number; justification: string }) => {
     onYearSelected(e.year, e.justification);
@@ -46,14 +44,16 @@ const ReproControls = ({
     onSearchClick();
   }
 
-  function handleDuplicateClick() {
-    if (hasUnsavedChanges) {
-      setDuplicating(true);
-      setConfirmLooseChangesModalIsOpen(true);
-    } else {
-      setConfirmDuplicateModalIsOpen(true);
-    }
-  }
+  // function handleDuplicateClick() {
+  //   setConfirmDuplicateModalIsOpen(true);
+
+  //   // if (hasUnsavedChanges) {
+  //   //   setDuplicating(true);
+  //   //   setConfirmLooseChangesModalIsOpen(true);
+  //   // } else {
+  //   //   setConfirmDuplicateModalIsOpen(true);
+  //   // }
+  // }
 
   return (
     <>
@@ -81,13 +81,19 @@ const ReproControls = ({
           <Search></Search>
         </Button>
         {reproId !== undefined && reproId !== 0 && (
-          <Button
-            buttonSize="small"
-            variation="secondary"
-            onClick={handleDuplicateClick}
+          // <Button
+          //   buttonSize="small"
+          //   variation="secondary"
+          //   onClick={handleDuplicateClick}
+          // >
+          //   Duplicate
+          // </Button>
+          <NavLink
+            to={`/reprogramming/duplicate/${reproId}`}
+            className="font-semibold text-neutral-50 bg-neutral-500/70  hover:bg-neutral-500 hover:border-gray-400 disabled:opacity-70 disabled:text-neutral-500 dark:bg-transparent dark:text-white dark:border-gray-600 dark:hover:bg-neutral-800 dark:hover:border-gray-600 transition-all duration-300 p-2 w-35 cursor-pointer disabled:cursor-not-allowed rounded-sm shadow-sm flex justify-center items-center "
           >
             Duplicate
-          </Button>
+          </NavLink>
         )}
       </div>
       <ChooseYearModal
@@ -113,31 +119,28 @@ const ReproControls = ({
             setConfirmLooseChangesModalIsOpen(false);
           }, 500);
           setTimeout(() => {
-            if (duplicating) {
-              onDuplicateReprogramming?.();
-            } else {
-              setChoosingYear(true);
-            }
+            setChoosingYear(true);
           }, 500);
         }}
         message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
       ></ConfirmModal>
-      <ConfirmModal
+      {/* <ConfirmModal
         isOpen={confirmDuplicateModalIsOpen}
         onCancel={() => {
           setTimeout(() => {
             setConfirmDuplicateModalIsOpen(false);
-            setDuplicating(false);
+            // setDuplicating(false);
           }, 500);
         }}
         onConfirm={() => {
           setTimeout(() => {
             setConfirmDuplicateModalIsOpen(false);
+            navigate(`/reprogramming/duplicate/${reproId}`);
           }, 500);
-          onDuplicateReprogramming?.();
+          // onDuplicateReprogramming?.();
         }}
         message="Duplicate the current reprogramming? Click OK to continue."
-      ></ConfirmModal>
+      ></ConfirmModal> */}
     </>
   );
 };

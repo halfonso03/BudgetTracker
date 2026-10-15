@@ -185,7 +185,6 @@ const PaymentLineModal = (props: Props) => {
       const formatted = formatNumber(+getValues('paymentAmount'));
       setValue('paymentAmount', formatted);
     }
-    console.log(+getValues('paymentAmount'));
   }
 
   function handleLessThanZero() {

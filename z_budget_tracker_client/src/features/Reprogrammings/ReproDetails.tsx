@@ -5,9 +5,6 @@ import useGetRepro from '../../api/hooks/repro/useGetRepro';
 import ConfirmModal from '../../components/ConfirmModal';
 import ReproControls from './ReproControls';
 import ReproForm from './ReproForm';
-import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
-import toast from 'react-hot-toast';
-import useClientAuth from '../../contexts/useAuth';
 
 const ReproDetails = () => {
   console.log('ReproDetails render');
@@ -19,7 +16,6 @@ const ReproDetails = () => {
     useHasUnsavedChangesStore();
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const reproId = id !== undefined ? +id : undefined;
-  const { user } = useClientAuth();
 
   const {
     data: reproFromDb,
@@ -27,19 +23,19 @@ const ReproDetails = () => {
     isLoading,
   } = useGetRepro(reproId ?? 0);
 
-  const { duplicateRepro } = useReproMutations();
-
   if (isLoading || isFetching) return <div></div>;
 
   const handleYearSelected = (year: number, justification: string) => {
     setHasUnsavedChanges(false);
 
-    navigate('/reprogramming/new', {
-      state: {
-        year: year,
-        justification: justification,
-      },
-    });
+    setTimeout(() => {
+      navigate('/reprogramming/new', {
+        state: {
+          year: year,
+          justification: justification,
+        },
+      });
+    }, 1);
   };
 
   function handleInitialSaved(id: number) {
@@ -64,33 +60,31 @@ const ReproDetails = () => {
   }
 
   async function handleDuplicateReprogramming() {
-    setTimeout(async () => {
-      try {
-        await duplicateRepro.mutateAsync(
-          { id: reproFromDb!.id!, userId: +user!.id! },
-          {
-            onSuccess: async (repro) => {
-              toast.success(
-                <div>
-                  <div className="pb-1">{`Reprogramming Id ${+id!} duplicated.`}</div>
-                  <div>{`Opening reprogramming id ${repro.id}.`}</div>
-                </div>,
-
-                {
-                  duration: 2000,
-                },
-              );
-
-              setTimeout(() => {
-                navigate(`/reprogramming/${repro.id}`);
-              }, 2000);
-            },
-          },
-        );
-      } catch (error) {
-        console.log('e', error);
-      }
-    }, 500);
+    // setTimeout(async () => {
+    //   try {
+    //     await duplicateRepro.mutateAsync(
+    //       { id: reproFromDb!.id!, userId: +user!.id! },
+    //       {
+    //         onSuccess: async (repro) => {
+    //           toast.success(
+    //             <div>
+    //               <div className="pb-1">{`Reprogramming Id ${+id!} duplicated.`}</div>
+    //               <div>{`Opening reprogramming id ${repro.id}.`}</div>
+    //             </div>,
+    //             {
+    //               duration: 2000,
+    //             },
+    //           );
+    //           setTimeout(() => {
+    //             navigate(`/reprogramming/${repro.id}`);
+    //           }, 2000);
+    //         },
+    //       },
+    //     );
+    //   } catch (error) {
+    //     console.log('e', error);
+    //   }
+    // }, 500);
   }
 
   const body = () => {

@@ -23,12 +23,23 @@ export const useReproMutations = () => {
     },
   });
 
-  const duplicateRepro = useMutation({
+  const {
+    mutate: duplicateRepro,
+    isPending: isDuplicating,
+    isSuccess: duplcateSuccess,
+  } = useMutation({
     mutationFn: async (data: { id: number; userId: number }) => {
       const response = await agent.post(`/repro/duplicate`, data);
       return response.data;
     },
   });
 
-  return { createRepro, updateRepro, deleteRepro, duplicateRepro };
+  return {
+    createRepro,
+    updateRepro,
+    deleteRepro,
+    duplicateRepro,
+    isDuplicating,
+    duplcateSuccess,
+  };
 };

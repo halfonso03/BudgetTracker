@@ -21,6 +21,7 @@ import PaymentNew from '../../features/Payments/PaymentNew';
 import Logout from '../../features/Auth/Logout';
 import PaymentSearch from '../../features/Payments/PaymentSearch';
 import PaymentPreload from '../../features/Payments/PaymentPreload';
+import ReproDuplicate from '../../features/Reprogrammings/ReproDuplicate';
 
 export const routes: RouteObject[] = [
   {
@@ -121,6 +122,14 @@ export const routes: RouteObject[] = [
             element: (
               <ProtectedRoute>
                 <ReproSearch />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'duplicate/:id',
+            element: (
+              <ProtectedRoute>
+                <ReproDuplicate />
               </ProtectedRoute>
             ),
           },
