@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261005134957_payeetype4")]
-    partial class payeetype4
+    [Migration("20261015145656_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -224,7 +224,7 @@ namespace Persistence.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("Auth.tblRoles", (string)null);
+                    b.ToTable("Roles", "Auth");
                 });
 
             modelBuilder.Entity("Domain.ApplicationUser", b =>
@@ -300,7 +300,7 @@ namespace Persistence.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Auth.tblUsers", (string)null);
+                    b.ToTable("Users", "Auth");
                 });
 
             modelBuilder.Entity("Domain.AuthorizedUser", b =>
@@ -643,6 +643,80 @@ namespace Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Domain.BudgetLineItemAudit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccountId")
+                        .HasColumnType("int")
+                        .HasColumnName("account_id")
+                        .HasColumnOrder(3);
+
+                    b.Property<string>("AdditionalInformation")
+                        .HasColumnType("VARCHAR(1000)")
+                        .HasColumnName("additional_information");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("NUMERIC(15,2)")
+                        .HasColumnName("amount")
+                        .HasColumnOrder(4);
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("DATETIME2")
+                        .HasColumnName("create_date")
+                        .HasColumnOrder(8);
+
+                    b.Property<int>("CreatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("created_by")
+                        .HasColumnOrder(7);
+
+                    b.Property<int>("GrantId")
+                        .HasColumnType("int")
+                        .HasColumnName("grant_id")
+                        .HasColumnOrder(2);
+
+                    b.Property<int>("InitiativeId")
+                        .HasColumnType("int")
+                        .HasColumnName("initiative_id")
+                        .HasColumnOrder(1);
+
+                    b.Property<string>("ItemType")
+                        .IsRequired()
+                        .HasColumnType("CHAR(1)")
+                        .HasColumnName("item_type")
+                        .HasColumnOrder(5);
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(10)")
+                        .HasColumnName("version");
+
+                    b.Property<short>("Year")
+                        .HasColumnType("SMALLINT")
+                        .HasColumnName("year")
+                        .HasColumnOrder(6);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("GrantId");
+
+                    b.HasIndex("InitiativeId");
+
+                    b.HasIndex("ItemType");
+
+                    b.ToTable("tblBudget", "Audit");
+                });
+
             modelBuilder.Entity("Domain.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -909,7 +983,7 @@ namespace Persistence.Migrations
                         {
                             Id = 1,
                             EndDate = new DateTime(2026, 12, 31, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Fiduciary = "MSCO",
+                            Fiduciary = "COMS",
                             Name = "G25001",
                             StartDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Year = 2025
@@ -975,7 +1049,7 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 3,
-                            Name = "ORS"
+                            Name = "SOR"
                         },
                         new
                         {
@@ -985,12 +1059,12 @@ namespace Persistence.Migrations
                         new
                         {
                             Id = 5,
-                            Name = "DHE"
+                            Name = "HED"
                         },
                         new
                         {
                             Id = 6,
-                            Name = "DTAG"
+                            Name = "TAG"
                         });
                 });
 
@@ -1619,12 +1693,15 @@ namespace Persistence.Migrations
                     b.Property<string>("AccountName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("AdditionalInformation")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("additional_information");
+
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<int?>("DaysSinceLastPayment")
-                        .HasColumnType("int")
-                        .HasColumnName("daysSinceLastPayment");
+                        .HasColumnType("int");
 
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -1634,19 +1711,26 @@ namespace Persistence.Migrations
                         .HasColumnName("is_active");
 
                     b.Property<decimal?>("LastPaymentAmount")
-                        .HasColumnType("decimal(18,2)")
-                        .HasColumnName("lastPaymentAmount");
+                        .HasColumnType("NUMERIC(15,2)");
 
                     b.Property<DateTime?>("LastPaymentDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("lastPaymentDate");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PayeeType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("payeeType");
+
+                    b.Property<int>("PayeeTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("payee_type_id");
+
                     b.Property<decimal?>("TotalPaid")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("NUMERIC(15,2)");
 
                     b.ToTable((string)null);
 
@@ -1675,6 +1759,8 @@ namespace Persistence.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Auth.tblRoleClaims", (string)null);
+
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
@@ -1699,6 +1785,8 @@ namespace Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Auth.tblUserClaims", (string)null);
+
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
@@ -1720,6 +1808,8 @@ namespace Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Auth.tblUserLogins", (string)null);
+
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
@@ -1735,6 +1825,8 @@ namespace Persistence.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Auth.tblUserRoles", (string)null);
+
+                    b.UseTptMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -1754,6 +1846,43 @@ namespace Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("Auth.tblUserTokens", (string)null);
+
+                    b.UseTptMappingStrategy();
+                });
+
+            modelBuilder.Entity("Domain.ApplicationRoleClaim", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>");
+
+                    b.ToTable("RoleClaims", "Auth");
+                });
+
+            modelBuilder.Entity("Domain.ApplicationUserClaim", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>");
+
+                    b.ToTable("UserClaims", "Auth");
+                });
+
+            modelBuilder.Entity("Domain.ApplicationUserLogin", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>");
+
+                    b.ToTable("UserLogins", "Auth");
+                });
+
+            modelBuilder.Entity("Domain.ApplicationUserRole", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<int>");
+
+                    b.ToTable("UserRoles", "Auth");
+                });
+
+            modelBuilder.Entity("Domain.ApplicationUserToken", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserToken<int>");
+
+                    b.ToTable("UserTokens", "Auth");
                 });
 
             modelBuilder.Entity("Domain.Account", b =>
@@ -1855,6 +1984,49 @@ namespace Persistence.Migrations
                     b.Navigation("Initiative");
 
                     b.Navigation("UpdatedByUser");
+                });
+
+            modelBuilder.Entity("Domain.BudgetLineItemAudit", b =>
+                {
+                    b.HasOne("Domain.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.AuthorizedUser", "CreatedByUser")
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Grant", "Grant")
+                        .WithMany()
+                        .HasForeignKey("GrantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Initiative", "Initiative")
+                        .WithMany()
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.BudgetItemType", "BudgetItemType")
+                        .WithMany()
+                        .HasForeignKey("ItemType")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("BudgetItemType");
+
+                    b.Navigation("CreatedByUser");
+
+                    b.Navigation("Grant");
+
+                    b.Navigation("Initiative");
                 });
 
             modelBuilder.Entity("Domain.Disb", b =>
@@ -2101,6 +2273,51 @@ namespace Persistence.Migrations
                     b.HasOne("Domain.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.ApplicationRoleClaim", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.ApplicationRoleClaim", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.ApplicationUserClaim", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.ApplicationUserClaim", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.ApplicationUserLogin", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.ApplicationUserLogin", "LoginProvider", "ProviderKey")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.ApplicationUserRole", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.ApplicationUserRole", "UserId", "RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.ApplicationUserToken", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", null)
+                        .WithOne()
+                        .HasForeignKey("Domain.ApplicationUserToken", "UserId", "LoginProvider", "Name")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

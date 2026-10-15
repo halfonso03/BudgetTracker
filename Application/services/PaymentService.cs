@@ -593,6 +593,7 @@ namespace Application.Services
                         AccountName = x.Account!.Name,
                         CategoryName = x.Category!.Name,
                         PayeeName = x.Payee!.Name,
+                        PayeeId = x.PayeeId,
                         Comment = x.Comment
                     })]
                 };

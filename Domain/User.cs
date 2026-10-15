@@ -16,4 +16,31 @@ namespace Domain
     {
         // Add custom role properties here if needed
     }
+
+    public class ApplicationUserRole : IdentityUserRole<int>
+    {
+
+    }
+
+    public class ApplicationUserClaim : IdentityUserClaim<int>
+    {
+
+    }
+
+    public class ApplicationUserLogin : IdentityUserLogin<int>
+    {
+
+    }
+
+
+    public class ApplicationRoleClaim : IdentityRoleClaim<int>
+    {
+
+    }
+
+    public class ApplicationUserToken : IdentityUserToken<int>
+    {
+        
+    }
+    
 }

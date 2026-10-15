@@ -483,6 +483,14 @@ namespace Persistence
             }
           );
 
+            builder.Entity<ApplicationUser>().ToTable("Users", "Auth");
+            builder.Entity<ApplicationRole>().ToTable("Roles", "Auth");
+            builder.Entity<ApplicationUserRole>().ToTable("UserRoles", "Auth");
+            builder.Entity<ApplicationUserClaim>().ToTable("UserClaims", "Auth");
+            builder.Entity<ApplicationUserLogin>().ToTable("UserLogins", "Auth");
+            builder.Entity<ApplicationRoleClaim>().ToTable("RoleClaims", "Auth");
+            builder.Entity<ApplicationUserToken>().ToTable("UserTokens", "Auth");
+
             builder.Entity<Category>()
                 .HasMany(x => x.Accounts)
                 .WithOne(x => x.Category)
@@ -661,7 +669,16 @@ namespace Persistence
             builder.Entity<PayeeSummary>().Property(x => x.TotalPaid).HasColumnType("NUMERIC(15,2)");
             builder.Entity<PayeeSummary>().Property(x => x.LastPaymentAmount).HasColumnType("NUMERIC(15,2)");
 
-
+            builder.Entity<BudgetLineItemAudit>().Property(x => x.Year).HasColumnName("year").HasColumnType("SMALLINT");
+            builder.Entity<BudgetLineItemAudit>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
+            builder.Entity<BudgetLineItemAudit>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
+            builder.Entity<BudgetLineItemAudit>().Property(x => x.GrantId).HasColumnName("grant_id");
+            builder.Entity<BudgetLineItemAudit>().Property(x => x.AccountId).HasColumnName("account_id");
+            builder.Entity<BudgetLineItemAudit>().Property(x => x.ItemType).HasColumnName("item_type").HasColumnType("CHAR(1)");
+            builder.Entity<BudgetLineItemAudit>().Property(x => x.CreateDate).HasColumnName("create_date").HasColumnType("DATETIME2");
+            builder.Entity<BudgetLineItemAudit>().Property(x => x.CreatedBy).HasColumnName("created_by");
+            builder.Entity<BudgetLineItemAudit>().Property(x => x.AdditionalInformation).HasColumnName("additional_information").HasColumnType("VARCHAR(1000)");
+            builder.Entity<BudgetLineItemAudit>().Property(x => x.Version).HasColumnName("version").HasColumnType("VARCHAR(10)");
         }
     }
 }
