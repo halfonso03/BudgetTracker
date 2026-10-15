@@ -36,7 +36,7 @@ const PaymentRow = ({
   }
   return (
     <Fragment>
-      <div className=" flex pl-4  items-start gap-4 p-2 py-4 border border-neutral-200 mb-4 divide-neutral-300/60 divide-x">
+      <div className=" flex pl-4 items-start gap-4 p-2 py-4 border border-neutral-200 mb-4 divide-neutral-300/60 divide-x">
         <div className="flex-2  self-stretch items-center tracking-wider">
           <div className="font-semibold text-neutral-500 ">
             Payee Name

@@ -172,6 +172,14 @@ export const routes: RouteObject[] = [
               </ProtectedRoute>
             ),
           },
+          {
+            path: 'search',
+            element: (
+              <ProtectedRoute>
+                <PaymentSearch />
+              </ProtectedRoute>
+            ),
+          },
         ],
       },
       {

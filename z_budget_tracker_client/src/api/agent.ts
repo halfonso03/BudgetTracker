@@ -8,16 +8,16 @@ const agent = axios.create({
 
 
 const sleep = (delay: number) =>
-	new Promise((resolve) => setTimeout(resolve, delay));
+    new Promise((resolve) => setTimeout(resolve, delay));
 
 
 agent.interceptors.request.use(async (config) => {
-	// store.uiStore.isBusy();
+    // store.uiStore.isBusy();
 
-	if (import.meta.env.DEV) {
-		await sleep(250);
-	}
-	return config;
+    if (import.meta.env.DEV) {
+        await sleep(250);
+    }
+    return config;
 });
 
 agent.interceptors.response.use(
@@ -62,8 +62,32 @@ agent.interceptors.response.use(
             switch (error.response.status) {
                 case 400: {
 
-                    console.log('error', error)
-                    toast.error(error.response.data)
+                    // const data = {
+                    //     response: {
+                    //         type: 'https://tools.ietf.org/html/rfc9110#section-15.5.1',
+                    //         title: 'One or more validation errors occurred.',
+                    //         status: 400,
+                    //         errors: { Justification: ['The Justification field is required.'] },
+                    //         traceId: '00-4dc566c61390943cdbf90037d2bb1038-dd38a36cfb784cb1-00'
+                    //     },
+                    //     status: 400,
+                    //     statusText: '',
+                    //     headers: {
+                    //         'content-type': 'application/problem+json; charset=utf-8'
+                    //     }
+                    // }
+
+
+
+                    // console.log('error', error)
+
+                    if (error.response.data) {
+                        toast.error(error.response.data, { duration: 2000 })
+
+                    }
+                    else if (error.response) {
+                        toast.error(error.response, { duration: 2000 })
+                    }
                     break;
                 }
                 case 401: {

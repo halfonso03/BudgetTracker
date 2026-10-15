@@ -48,7 +48,7 @@ const PaymentNew = () => {
     if (hasUnsavedChanges) {
       setConfirmModalIsOpen(true);
     } else {
-      navigate('/payment/search');
+      navigate('/payments/search');
     }
   }
 
@@ -67,6 +67,7 @@ const PaymentNew = () => {
     });
   };
 
+
   function handleInitialSaved(id: number) {
     setHasUnsavedChanges(false);
     setTimeout(
@@ -77,7 +78,7 @@ const PaymentNew = () => {
           },
         }),
 
-      1600,
+      1000,
     );
   }
 

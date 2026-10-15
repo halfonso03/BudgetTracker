@@ -45,7 +45,7 @@ const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
             <div className="px-4 py-1 font-medium text-neutral-900">
               <SearchTermMarker
                 textToFind={searchTerm || ''}
-                textToDisplay={v.name + " " + v.id}
+                textToDisplay={v.name}
               ></SearchTermMarker>
             </div>
             <div className="px-4 py-1 text-center text-neutral-900">

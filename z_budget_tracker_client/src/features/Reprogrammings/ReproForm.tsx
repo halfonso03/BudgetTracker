@@ -24,7 +24,6 @@ import 'react-dropdown/style.css';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import useClientAuth from '../../contexts/useAuth';
 import ConfirmModal from '../../components/ConfirmModal';
-import IdHeader from './IdHeader';
 import { useLocation } from 'react-router-dom';
 import AddLineModal from './modals/AddLineModal';
 import EditLineModal from './modals/EditLineModal';
@@ -44,6 +43,7 @@ import {
   SAVED,
 } from '../../app/constants';
 import ReproGrantSummary from './ReproGrantSummary';
+import IdHeader from '../Common/IdHeader';
 
 // export type DirtyState = {
 //   formValuesIsDirty: boolean;
@@ -909,6 +909,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             <div></div>
           </div>
         )}
+
         {reproHeader.status !== POSTED &&
           hasNegativeRemainingBalances(lines) && (
             <div className="flex justify-center items-start my-9">

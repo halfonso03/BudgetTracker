@@ -11,6 +11,7 @@ import {
 import { useForm } from 'react-hook-form';
 import {
   formatCurrency,
+  formatDate,
   formatNumber,
   parseFormattedNumber,
 } from '../../app/util';
@@ -34,6 +35,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { usePaymentMutations } from '../../api/hooks/payments/usePaymentMutations';
 import ConfirmModal from '../../components/ConfirmModal';
+import IdHeader from '../Common/IdHeader';
+import { useLocation } from 'react-router-dom';
 
 interface Props {
   payment: Payment;
@@ -45,6 +48,9 @@ interface Props {
 const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
   const { user, loginId } = useClientAuth();
   const queryClient = useQueryClient();
+  const location = useLocation();
+
+  const created = location.state?.created ? true : false;
 
   const [paymentLineModalIsOpen, setPaymentLineModalIsOpen] = useState(false);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
@@ -86,6 +92,14 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
       }),
     },
   });
+
+  const getPaymentTotal = useCallback(() => {
+    const paymentTotal = lines
+      .map((l) => l.paymentAmount ?? 0)
+      .reduce((acc, cum) => +acc! + +cum!, 0);
+
+    return Number(paymentTotal).toFixed(2);
+  }, [lines]);
 
   const getErrors = useCallback(() => {
     const errors: string[] = [];
@@ -301,11 +315,28 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
   }
 
   function canPost() {
-    return true;
+    let result = lines.length > 0;
+
+    // no duplicate lines
+    result = result && noDupLines(lines);
+
+    return result;
   }
 
   function canSave() {
-    return true;
+    let result = lines.length > 0;
+
+    // no duplicate lines
+    result = result && noDupLines(lines);
+
+    result = result && paymentHeader.status !== POSTED;
+
+    result =
+      result &&
+      paymentHeader.justification !== null &&
+      paymentHeader.justification.trim().length > 0;
+
+    return result;
   }
 
   async function savePaymentButtonClick() {
@@ -579,6 +610,54 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
             )}
           </Button>
         </div>
+
+        <div className="flex justify-between mb-8 border-b border-b-neutral-200 pb-2 ">
+          <IdHeader
+            id={paymentHeader.id}
+            status={paymentHeader.status}
+            created={created}
+          ></IdHeader>
+
+          {paymentHeader.status === POSTED && (
+            <div className="flex gap-12 mr-4  ">
+              <div className="flex gap-3 font-semibold">
+                <div className=" text-neutral-500">POSTED ON</div>
+                <div>
+                  {paymentHeader.postedDate
+                    ? formatDate(paymentHeader.postedDate)
+                    : ''}
+                </div>
+              </div>
+              <div className="flex gap-3 font-semibold">
+                <div className=" text-neutral-500">POSTED BY</div>
+                <div>{paymentHeader.postedBy}</div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {paymentHeader.status === POSTED && (
+          <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 mt-12">
+            <div className="">Total</div>
+            <div className="text-neutral-900">{getPaymentTotal()}</div>
+            <div></div>
+          </div>
+        )}
+
+        {lines.length > 0 && paymentHeader.status !== POSTED && (
+          <div className="flex px-3 py-1 border-b border-neutral-200 mb-12 text-neutral-500 font-semibold">
+            <div className="flex-4">Total Payment</div>
+            <div className="flex-3 items-center justify-center ">
+              <input
+                readOnly={true}
+                value={getPaymentTotal()}
+                disabled={true}
+                className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-center focus:outline-none focus:ring-0 focus:ring-offset-0"
+              ></input>
+            </div>
+          </div>
+        )}
+
         <div className="pb-10">
           {lines.map((item, index) => {
             return (
@@ -594,10 +673,13 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
                 render={() => {
                   const alertClass =
                     item.availableAmount -
-                      parseFormattedNumber(item.paymentAmount.toString()) <
+                      parseFormattedNumber(
+                        item?.paymentAmount?.toString() ?? 0,
+                      ) <
                     0
                       ? 'text-red-500'
                       : '';
+
                   return (
                     <div className="flex-3 px-3 pr-6">
                       <div className="grid grid-cols-[1fr_1fr_1fr] justify-between gap-2 ">

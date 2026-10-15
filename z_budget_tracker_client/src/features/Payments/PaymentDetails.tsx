@@ -34,7 +34,7 @@ const PaymentDetails = () => {
   const handleYearSelected = (year: number, justification: string) => {
     setHasUnsavedChanges(false);
 
-    navigate('/payment/new', {
+    navigate('/payments/new', {
       state: {
         year: year,
         justification: justification,
@@ -43,7 +43,7 @@ const PaymentDetails = () => {
   };
 
   function handleInitialSaved(id: number) {
-    setTimeout(() => navigate(`/payment/${id}`), 1600);
+    setTimeout(() => navigate(`/payments/${id}`), 1000);
   }
 
   function handleIsDirty(isDirty: boolean) {
@@ -59,7 +59,7 @@ const PaymentDetails = () => {
     if (hasUnsavedChanges) {
       setConfirmModalIsOpen(true);
     } else {
-      navigate('/payment/search');
+      navigate('/payments/search');
     }
   }
 
@@ -129,7 +129,7 @@ const PaymentDetails = () => {
         }}
         onConfirm={() => {
           setHasUnsavedChanges(false);
-          navigate('/payment/search');
+          navigate('/payments/search');
         }}
         message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
       ></ConfirmModal>

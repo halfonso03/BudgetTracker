@@ -521,6 +521,14 @@ namespace Persistence
 
             builder.Entity<BudgetItemType>().Property(x => x.ItemType).HasColumnName("item_type").HasColumnType("CHAR(1)");
 
+
+            builder.Entity<BudgetLineItem>(entity =>
+                {
+                    // Replace "YourTableName" with the real table name.
+                    // The trigger name parameter can be any string representing your database trigger.
+                    entity.ToTable("tblBudget", tb => tb.HasTrigger("trg_tblBudget_Update"));
+                });
+    
             builder.Entity<BudgetLineItem>().Property(x => x.Year).HasColumnName("year").HasColumnType("SMALLINT");
             builder.Entity<BudgetLineItem>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
             builder.Entity<BudgetLineItem>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
