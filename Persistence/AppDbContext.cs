@@ -28,6 +28,9 @@ namespace Persistence
         public required DbSet<Payee> Payees { get; set; }
         // public required DbSet<Contrator> Contrators { get; set; }
         public required DbSet<PayeeSummary> PayeeSummaries { get; set; }
+        public required DbSet<BudgetLineItemAudit> BudgetLineItemAudits { get; set; }
+        public required DbSet<BudgetHeader> BudgetHeaders { get; set; }
+
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
@@ -528,7 +531,7 @@ namespace Persistence
                     // The trigger name parameter can be any string representing your database trigger.
                     entity.ToTable("tblBudget", tb => tb.HasTrigger("trg_tblBudget_Update"));
                 });
-    
+
             builder.Entity<BudgetLineItem>().Property(x => x.Year).HasColumnName("year").HasColumnType("SMALLINT");
             builder.Entity<BudgetLineItem>().Property(x => x.Amount).HasColumnName("amount").HasColumnType("NUMERIC(15,2)");
             builder.Entity<BudgetLineItem>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
@@ -687,6 +690,12 @@ namespace Persistence
             builder.Entity<BudgetLineItemAudit>().Property(x => x.CreatedBy).HasColumnName("created_by");
             builder.Entity<BudgetLineItemAudit>().Property(x => x.AdditionalInformation).HasColumnName("additional_information").HasColumnType("VARCHAR(1000)");
             builder.Entity<BudgetLineItemAudit>().Property(x => x.Version).HasColumnName("version").HasColumnType("VARCHAR(10)");
+
+
+            builder.Entity<BudgetHeader>().Property(x => x.InitiativeId).HasColumnName("initiative_id");
+            builder.Entity<BudgetHeader>().Property(x => x.GrantId).HasColumnName("grant_id");
+            builder.Entity<BudgetHeader>().HasKey(x => new { x.InitiativeId, x.GrantId });
+            builder.Entity<BudgetHeader>().Property(x => x.UpdatedDate).HasColumnName("update_date").HasColumnType("DATETIME2");
         }
     }
 }

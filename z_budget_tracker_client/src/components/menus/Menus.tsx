@@ -41,9 +41,10 @@ interface ListProps {
   id: string;
   children: any;
   topPos: string;
+  leftPos ?:string
 }
 
-function List({ id, topPos = 'translate-y-5', children }: ListProps) {
+function List({ id, topPos = 'translate-y-5', leftPos, children }: ListProps) {
   const { priorId } = useMenuId();
   const { openId, close } = useContext<MenuContextType>(MenusContext as any);
   const ref = useOutsideClick<HTMLDivElement>(close, false);
@@ -51,9 +52,12 @@ function List({ id, topPos = 'translate-y-5', children }: ListProps) {
   if (priorId !== openId) return null;
   if (openId !== id) return null;
 
+
+  const leftPosition = leftPos ? leftPos : "translate-x-30"
+
   return (
     <div
-      className={`absolute animate-repro-fade-in z-1000 translate-x-30 ${topPos}  bg-neutral-50  bg-dark-content border border-gray-300 dark:border-neutral-700 p-2 rounded-sm cursor-pointer`}
+      className={`absolute animate-repro-fade-in z-1000 ${leftPosition} ${topPos} bg-neutral-50  bg-dark-content border border-gray-300 dark:border-neutral-700 p-2 rounded-sm cursor-pointer`}
       ref={ref}
     >
       <ul className="w-40 ">{children}</ul>

@@ -13,7 +13,7 @@ import {
   formatArrayFieldAmount,
   removeNumberFormattingFromArrayField,
 } from './utils';
-import { ChevronDownSquare } from 'lucide-react';
+import { ChevronDownSquare, EllipsisVertical, Shield } from 'lucide-react';
 import useBudgetDetails from '../../api/hooks/budgets/useBudgetDetails';
 import BudgetHeader from './BudgetHeader';
 import toast from 'react-hot-toast';
@@ -23,6 +23,10 @@ import TransactionsModal from './modals/TransactionsModal';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ReproMiniDetailsModal from './modals/ReproMiniDetailModal';
 import Spinner from '../../components/Spinner';
+import { formatDate } from 'date-fns';
+import Menus from '../../components/menus/Menus';
+import MenuIdProvider from '../../contexts/MenuIdContext';
+import ChangesModal from './modals/ChangesModal';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
 
@@ -34,7 +38,7 @@ type TrxIds = {
   accountName: string;
 };
 
-const Details = () => {
+const BudgetDetails = () => {
   const userId = 1;
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
   const [trxModalIsOpen, setTrxModalIsOpen] = useState(false);
@@ -49,6 +53,8 @@ const Details = () => {
   const [selectedId, setSelectedId] = useState(0);
   const [selectedAccountName, setSelectedAccountName] = useState('');
   const [selectedInitiativeId, setSelectedInitiativeId] = useState(0);
+
+  const [changesModalIsOpen, setChangesModalIsOpen] = useState(false);
 
   const { updateBudget } = useBudgetMutations();
 
@@ -110,7 +116,6 @@ const Details = () => {
             amount: formatNumber(item.amount),
             current_amount: formatNumber(item.current_amount),
             spent_amount: formatNumber(item.spent_amount),
-            // remaining_amount: formatNumber(item.current_amount - item.spent_amount),
             name: item.account_name,
             comment: item.comment,
             hasRepro: item.hasRepro,
@@ -308,114 +313,232 @@ const Details = () => {
   let indexRunningTotal = -1;
 
   return (
-    <div className="w-full mx-auto">
-      {/* <Button onClick={testCommetnField}>Comment</Button> */}
-      <div className="mb-2 font-semibold text-2xl pb-5 text-neutral-700">
-        Edit Budget
-      </div>
-      <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-2 py-2 border-b border-b-neutral-200 ">
-        <div className="entity-label">Year</div>
-        <div className="entity-label">Initiative</div>
-        <div className="entity-label">Grant</div>
-        <div className="entity-name">{grant?.year}</div>
-        <div className="entity-name">{initiative?.name}</div>
-        <div className="entity-name">
-          {grant?.name} - {grant?.fiduciary}
+    <MenuIdProvider>
+      <div className="w-full mx-auto">
+        {/* <Button onClick={testCommetnField}>Comment</Button> */}
+        <div className="mb-2 font-semibold text-2xl pb-5 text-neutral-700">
+          Edit Budget
         </div>
-      </div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex justify-end mt-8 mb-4">
-          <Button type="submit" variation="primary">
-            Save Budget
-          </Button>
+        <div className="grid grid-cols-[.15fr_.4fr_.3fr_1fr_.5fr_.075fr] mb-2 py-2 border-b border-b-neutral-200 ">
+          <div className="entity-label">Year</div>
+          <div className="entity-label">Initiative</div>
+          <div className="entity-label">Grant</div>
+          <div></div>
+          <div className="grid grid-cols-[1fr_1fr] justify-end gap-4 text-sm">
+            {budget.lastUpdatedDate && (
+              <>
+                <div className="font-medium text-neutral-500/90 text-end animate-repro-fade-in">
+                  Updated On
+                </div>
+                <div className="font-medium text-neutral-500/90 text-end">
+                  Updated By
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="flex justify-end items-center row-span-2 cursor-pointer">
+            {budget.lastUpdatedDate && (
+              <Menus>
+                <Menus.Toggler id={'1'}>
+                  <EllipsisVertical
+                    className="align-middle text-neutral-500"
+                    size={20}
+                  ></EllipsisVertical>
+                </Menus.Toggler>
+                <Menus.List
+                  topPos="translate-y-7"
+                  leftPos="translate-x-45"
+                  id={'1'}
+                >
+                  <Menus.MenuItem onClick={() => setChangesModalIsOpen(true)}>
+                    <div className="flex gap-1 items-center">
+                      <Shield className="text-neutral-700" size={16}></Shield>{' '}
+                      View Changes
+                    </div>
+                  </Menus.MenuItem>
+                </Menus.List>
+              </Menus>
+            )}
+          </div>
+
+          <div className="entity-name">{grant?.year}</div>
+          <div className="entity-name">{initiative?.name}</div>
+          <div className="entity-name">
+            {grant?.name} - {grant?.fiduciary}
+          </div>
+          <div></div>
+          <div className="grid grid-cols-[1fr_1fr] justify-end gap-4 text-sm ">
+            <div className="font-medium text-neutral-800 text-end">
+              {budget.lastUpdatedDate
+                ? formatDate(budget.lastUpdatedDate, 'M/d/yyyy hh:mm a')
+                : ''}
+            </div>
+            <div className="font-medium text-neutral-800 text-end">
+              {budget.lastUpdatedBy ? budget.lastUpdatedBy : ''}
+            </div>
+          </div>
         </div>
-        <BudgetHeader
-          bRef={bRef}
-          cRef={cRef}
-          rRef={rRef}
-          totalSpent={totalSpent}
-        ></BudgetHeader>
-        {categories.map((c, index) => {
-          const amountFieldsForCategory = fields.filter(
-            (x) => x.categoryId == c.id && x.accountId !== 999,
-          );
-          const totalFieldForCategory = fields.filter(
-            (x) => x.categoryId == c.id && x.accountId === 999,
-          );
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="flex justify-end mt-8 mb-4">
+            <Button type="submit" variation="primary">
+              Save Budget
+            </Button>
+          </div>
+          <BudgetHeader
+            bRef={bRef}
+            cRef={cRef}
+            rRef={rRef}
+            totalSpent={totalSpent}
+          ></BudgetHeader>
+          {categories.map((c, index) => {
+            const amountFieldsForCategory = fields.filter(
+              (x) => x.categoryId == c.id && x.accountId !== 999,
+            );
+            const totalFieldForCategory = fields.filter(
+              (x) => x.categoryId == c.id && x.accountId === 999,
+            );
 
-          const n = budget.account_balances
-            .filter((x) => x.category_id == c.id)
+            const n = budget.account_balances
+              .filter((x) => x.category_id == c.id)
 
-            .some((c) => c.current_amount - c.spent_amount < 0);
+              .some((c) => c.current_amount - c.spent_amount < 0);
 
-          const categoryRedClass = n === true ? 'text-red-600' : '';
+            const categoryRedClass = n === true ? 'text-red-600' : '';
 
-          return (
-            <div className="border border-neutral-200 mb-7" key={c.id}>
-              <div className="flex justify-between bg-neutral-100 ">
-                <div className={`pl-3 py-2 font-bold ${categoryRedClass}`}>
-                  {c.name}
+            return (
+              <div className="border border-neutral-200 mb-7" key={c.id}>
+                <div className="flex justify-between bg-neutral-100 ">
+                  <div className={`pl-3 py-2 font-bold ${categoryRedClass}`}>
+                    {c.name}
+                  </div>
+                  <div className="self-center mr-2">
+                    <ChevronDownSquare
+                      className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
+                      onClick={() => {
+                        if (expandedIndexes.some((x) => x == index)) {
+                          setExpandedIndexes((prev) =>
+                            prev.filter((x) => x !== index),
+                          );
+                        } else {
+                          setExpandedIndexes((prev) => [...prev, index]);
+                        }
+                      }}
+                    ></ChevronDownSquare>
+                  </div>
                 </div>
-                <div className="self-center mr-2">
-                  <ChevronDownSquare
-                    className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
-                    onClick={() => {
-                      if (expandedIndexes.some((x) => x == index)) {
-                        setExpandedIndexes((prev) =>
-                          prev.filter((x) => x !== index),
-                        );
-                      } else {
-                        setExpandedIndexes((prev) => [...prev, index]);
-                      }
-                    }}
-                  ></ChevronDownSquare>
-                </div>
-              </div>
 
-              <div
-                className={`  grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200' : ''}`}
-                key={c.id}
-              >
-                <div className="pl-3 py-2 font-bold bg-neutral-100 text-neutral-600 border-b border-b-neutral-200">
-                  Account
+                <div
+                  className={`  grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200' : ''}`}
+                  key={c.id}
+                >
+                  <div className="pl-3 py-2 font-bold bg-neutral-100 text-neutral-600 border-b border-b-neutral-200">
+                    Account
+                  </div>
+                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                    Budgeted
+                  </div>
+                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                    Current
+                  </div>
+                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                    Spent
+                  </div>
+                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                    Remaining
+                  </div>
+                  <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                    Comments
+                  </div>
+                  <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                    Actions
+                  </div>
+                  {amountFieldsForCategory.map((field) => {
+                    indexRunningTotal += 1;
+
+                    const amountRegister = register(
+                      `rows.${indexRunningTotal}.amount`,
+                    );
+
+                    const hasRero: boolean = getValues(
+                      `rows.${indexRunningTotal}.hasRepro`,
+                    );
+
+                    return (
+                      <Fragment key={field.id}>
+                        <BudgetInputFields
+                          hasRepro={hasRero}
+                          isLastRow={false}
+                          year={+year!}
+                          categoryId={field.categoryId}
+                          accountId={field.accountId}
+                          initiativeId={+initiativeId!}
+                          grantId={+grantId!}
+                          fieldName={field.name}
+                          comment={field.comment}
+                          budgetedAmount={field.amount}
+                          currentAmount={field.current_amount as string}
+                          spentAmount={field.spent_amount as string}
+                          amountRegister={amountRegister}
+                          currentAmountRegister={register(
+                            `rows.${indexRunningTotal}.current_amount`,
+                          )}
+                          remainingAmountRegister={register(
+                            `rows.${indexRunningTotal}.remaining_amount`,
+                          )}
+                          onClick={(e: React.MouseEvent<HTMLInputElement>) => {
+                            const input = e.target as HTMLInputElement;
+                            input.select();
+                          }}
+                          onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
+                            const input = e.target as HTMLInputElement;
+                            input.select();
+                            removeNumberFormattingFromArrayField(
+                              setValue,
+                              budgetRows,
+                              field.accountId,
+                              e.target.value,
+                            );
+                          }}
+                          onBlur={({ e, isDirty }) => {
+                            amountRegister.onBlur(e);
+                            formatArrayFieldAmount(
+                              setValue,
+                              budgetRows,
+                              field.accountId,
+                              e.target.value,
+                            );
+                            handleCalculateTotal(
+                              field.categoryId,
+                              categoryAccountIndexes[field.categoryId]
+                                .startIndex,
+                              categoryAccountIndexes[field.categoryId]
+                                .totalIndex,
+                            );
+
+                            if (isDirty && !hasUnsavedChanges)
+                              setHasUnsavedChanges(true);
+                          }}
+                          onShowAccountHistory={handleShowAccountHistory}
+                        ></BudgetInputFields>
+                      </Fragment>
+                    );
+                  })}
                 </div>
-                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
-                  Budgeted
-                </div>
-                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
-                  Current
-                </div>
-                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
-                  Spent
-                </div>
-                <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
-                  Remaining
-                </div>
-                <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
-                  Comments
-                </div>
-                <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
-                  Actions
-                </div>
-                {amountFieldsForCategory.map((field) => {
+                {totalFieldForCategory.map((field) => {
                   indexRunningTotal += 1;
 
-                  const amountRegister = register(
-                    `rows.${indexRunningTotal}.amount`,
-                  );
-
-                  const hasRero: boolean = getValues(
-                    `rows.${indexRunningTotal}.hasRepro`,
-                  );
-
                   return (
-                    <Fragment key={field.id}>
+                    <div
+                      className="border-t border-t-neutral-200 grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr] pb-0"
+                      key={field.id}
+                    >
                       <BudgetInputFields
-                        hasRepro={hasRero}
-                        isLastRow={false}
-                        year={+year!}
-                        categoryId={field.categoryId}
+                        hasRepro={field.hasRepro}
+                        isLastRow={true}
                         accountId={field.accountId}
+                        categoryId={field.categoryId}
+                        year={+year!}
                         initiativeId={+initiativeId!}
                         grantId={+grantId!}
                         fieldName={field.name}
@@ -423,117 +546,63 @@ const Details = () => {
                         budgetedAmount={field.amount}
                         currentAmount={field.current_amount as string}
                         spentAmount={field.spent_amount as string}
-                        amountRegister={amountRegister}
+                        amountRegister={register(
+                          `rows.${indexRunningTotal}.amount`,
+                        )}
                         currentAmountRegister={register(
                           `rows.${indexRunningTotal}.current_amount`,
                         )}
                         remainingAmountRegister={register(
                           `rows.${indexRunningTotal}.remaining_amount`,
                         )}
-                        onClick={(e: React.MouseEvent<HTMLInputElement>) => {
-                          const input = e.target as HTMLInputElement;
-                          input.select();
-                        }}
-                        onFocus={(e: React.FocusEvent<HTMLInputElement>) => {
-                          const input = e.target as HTMLInputElement;
-                          input.select();
-                          removeNumberFormattingFromArrayField(
-                            setValue,
-                            budgetRows,
-                            field.accountId,
-                            e.target.value,
-                          );
-                        }}
-                        onBlur={({ e, isDirty }) => {
-                          amountRegister.onBlur(e);
-                          formatArrayFieldAmount(
-                            setValue,
-                            budgetRows,
-                            field.accountId,
-                            e.target.value,
-                          );
-                          handleCalculateTotal(
-                            field.categoryId,
-                            categoryAccountIndexes[field.categoryId].startIndex,
-                            categoryAccountIndexes[field.categoryId].totalIndex,
-                          );
-
-                          if (isDirty && !hasUnsavedChanges)
-                            setHasUnsavedChanges(true);
-                        }}
-                        onShowAccountHistory={handleShowAccountHistory}
                       ></BudgetInputFields>
-                    </Fragment>
+                    </div>
                   );
                 })}
               </div>
-              {totalFieldForCategory.map((field) => {
-                indexRunningTotal += 1;
+            );
+          })}
+        </form>
+        {trxModalIsOpen && (
+          <TransactionsModal
+            {...trxIds}
+            isOpen={trxModalIsOpen}
+            onSelectedId={handleSelectedId}
+            onCancel={() => {
+              setTimeout(() => {
+                setTrxModalIsOpen(false);
+              }, 500);
+            }}
+          ></TransactionsModal>
+        )}
+        {changesModalIsOpen && (
+          <ChangesModal
+            isOpen={true}
+            onCancel={() => {
+              setTimeout(() => {
+                setChangesModalIsOpen(false);
+              }, 500);
+            }}
+          ></ChangesModal>
+        )}
 
-                return (
-                  <div
-                    className="border-t border-t-neutral-200 grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr] pb-0"
-                    key={field.id}
-                  >
-                    <BudgetInputFields
-                      hasRepro={field.hasRepro}
-                      isLastRow={true}
-                      accountId={field.accountId}
-                      categoryId={field.categoryId}
-                      year={+year!}
-                      initiativeId={+initiativeId!}
-                      grantId={+grantId!}
-                      fieldName={field.name}
-                      comment={field.comment}
-                      budgetedAmount={field.amount}
-                      currentAmount={field.current_amount as string}
-                      spentAmount={field.spent_amount as string}
-                      amountRegister={register(
-                        `rows.${indexRunningTotal}.amount`,
-                      )}
-                      currentAmountRegister={register(
-                        `rows.${indexRunningTotal}.current_amount`,
-                      )}
-                      remainingAmountRegister={register(
-                        `rows.${indexRunningTotal}.remaining_amount`,
-                      )}
-                    ></BudgetInputFields>
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
-      </form>
-      {trxModalIsOpen && (
-        <TransactionsModal
-          {...trxIds}
-          isOpen={trxModalIsOpen}
-          onSelectedId={handleSelectedId}
-          onCancel={() => {
-            setTimeout(() => {
-              setTrxModalIsOpen(false);
-            }, 500);
-          }}
-        ></TransactionsModal>
-      )}
-
-      {selectedId !== 0 && (
-        <ReproMiniDetailsModal
-          reproId={selectedId}
-          accountName={selectedAccountName}
-          initiativeId={selectedInitiativeId}
-          isOpen={miniDetailsIsOpen}
-          onCancel={() => {
-            setMiniDetailsIsOpen(false);
-          }}
-        ></ReproMiniDetailsModal>
-      )}
-    </div>
+        {selectedId !== 0 && (
+          <ReproMiniDetailsModal
+            reproId={selectedId}
+            accountName={selectedAccountName}
+            initiativeId={selectedInitiativeId}
+            isOpen={miniDetailsIsOpen}
+            onCancel={() => {
+              setMiniDetailsIsOpen(false);
+            }}
+          ></ReproMiniDetailsModal>
+        )}
+      </div>
+    </MenuIdProvider>
   );
 };
 
-export default Details;
+export default BudgetDetails;
 
 // {
 

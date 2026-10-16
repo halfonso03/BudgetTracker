@@ -12,14 +12,11 @@ const fetchBudget = async (
     },
   });
 
-  const budget = response.data;
-
   // budget = {
   //   ...budget,
   //   account_balances: budget.account_balances.map((b) => ({ ...b })),
   // };
-
-  return budget;
+  return response.data;
 };
 
 const useBudgetDetails = (initiative_id: number, grant_id: number) => {

@@ -3,7 +3,7 @@ import App from '../../App';
 import Home from '../../features/Home';
 import Budgets from '../../features/Budget/Budgets';
 import NotFound from '../../components/NotFound';
-import Details from '../../features/Budget/Details';
+import BudgetDetails from '../../features/Budget/BudgetDetails';
 import CreateBudget from '../../features/Budget/CreateBudget';
 import ReproLanding from '../../features/Reprogrammings/ReproLanding';
 import ReproSearch from '../../features/Reprogrammings/ReproSearch';
@@ -65,7 +65,7 @@ export const routes: RouteObject[] = [
         path: '/budget/:year/:initiativeId/:grantId',
         element: (
           <ProtectedRoute>
-            <Details />
+            <BudgetDetails />
           </ProtectedRoute>
         ),
       },

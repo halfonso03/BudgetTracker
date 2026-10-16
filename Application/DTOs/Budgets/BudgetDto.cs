@@ -22,7 +22,8 @@ namespace Application.DTOs.Budgets
         [JsonPropertyName("account_balances")]
         public IEnumerable<AccountBalancesDto> AccountBalances { get; set; } = [];
 
-
+        public string? LastUpdatedBy { get; set; }
+        public DateTime? LastUpdatedDate { get; set; }
         // [JsonPropertyName("account_balances2")]
         // public IEnumerable<AccountBalancesDto>? AccountBalances2
         // {

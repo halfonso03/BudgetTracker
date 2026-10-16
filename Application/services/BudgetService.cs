@@ -30,7 +30,8 @@ namespace Application.services
                             .Include(x => x.Initiative)
                             .Include(x => x.Grant)
                             .Include(x => x.Account)
-                            .ThenInclude(y => y!.Category!)
+                                .ThenInclude(y => y!.Category!)
+                            .Include(x => x.UpdatedByUser)
                         .Where(x => x.InitiativeId == initiativeId
                             && x.GrantId == grantId)
                         .ToListAsync();
@@ -59,6 +60,7 @@ namespace Application.services
                 .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId)
                 .ToListAsync();
 
+
             var result = new BudgetDto
             {
                 Grant = GrantDto.Create(g.Id, g.Name, g.StartDate, g.EndDate, g.Fiduciary),
@@ -66,8 +68,20 @@ namespace Application.services
                 InitiativeId = i.Id,
                 GrantId = g.Id,
                 Year = g.Year,
-                AccountBalances = CreatePivotedBalances(lineItems, comments)
+                AccountBalances = CreatePivotedBalances(lineItems, comments),
             };
+
+
+            var lastUpdateDate = budgetLineItemsFromDb.Max(x => x.UpdateDate);
+
+            if (lastUpdateDate != null)
+            {
+                result.LastUpdatedDate = lastUpdateDate;
+
+                var lastUpdatedBy = budgetLineItemsFromDb.Where(x => x.UpdateDate == lastUpdateDate).Select(x => x.UpdatedBy).First();
+                var user = _dbContext.Users.Where(x => x.Id == lastUpdatedBy).Select(x => x.FirstName + " " + x.LastName).Single();
+                result.LastUpdatedBy = user;
+            }
 
             return result;
         }

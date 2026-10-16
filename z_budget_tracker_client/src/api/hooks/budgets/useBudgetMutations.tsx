@@ -2,10 +2,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import agent from '../../agent';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import useClientAuth from '../../../contexts/useAuth';
 
 export const useBudgetMutations = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { user } = useClientAuth();
 
   const {
     mutate: createBudget,
@@ -60,9 +62,25 @@ export const useBudgetMutations = () => {
 
       for (const item of updateRequest.lineItems) {
         queryClient.invalidateQueries({
-          queryKey: ['transactions', updateRequest.initiativeId, updateRequest.grantId, item.accountId],
+          queryKey: [
+            'transactions',
+            updateRequest.initiativeId,
+            updateRequest.grantId,
+            item.accountId,
+          ],
         });
       }
+
+      queryClient.setQueryData(
+        ['budgets', updateRequest.initiativeId, updateRequest.grantId],
+        (oldData: Budget) => {
+          return {
+            ...oldData,
+            lastUpdatedDate: new Date(),
+            lastUpdatedBy: user?.firstName + ' ' + user?.lastName,
+          };
+        },
+      );
     },
     onError: () => {
       alert('error');

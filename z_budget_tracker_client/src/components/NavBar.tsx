@@ -114,66 +114,6 @@ const NavBar = () => {
     }
   }
 
-  // function handleBudgetNavigation(
-  //   e: React.MouseEvent<HTMLElement>,
-  //   url: string,
-  // ) {
-  //   e.preventDefault();
-  //   if (hasUnsavedChanges) {
-  //     setConfirmModalIsOpen(true);
-  //     setUrlToGoTo(url);
-  //   } else {
-  //     navigate(url);
-  //   }
-  // }
-
-  // function handleReproNavigation(
-  //   e: React.MouseEvent<HTMLElement>,
-  //   url: string,
-  // ) {
-  //   e.preventDefault();
-
-  //   const path = location.pathname;
-
-  //   const basePath =
-  //     path.indexOf('/', 1) > -1
-  //       ? path.substring(0, path.indexOf('/', 1))
-  //       : path;
-
-  //   if (location.pathname !== '/reprogramming/search') {
-  //     if (basePath !== url) {
-  //       if (hasUnsavedChanges) {
-  //         setConfirmModalIsOpen(true);
-  //         setUrlToGoTo(url);
-  //       } else {
-  //         navigate(url);
-  //       }
-  //     }
-  //   } else {
-  //     navigate(url);
-  //   }
-  // }
-
-  {
-    /* <div className="flex text-sm gap-3">
-          <input
-            type="text"
-            ref={reproInputRef}
-            defaultValue={1}
-            className="border w-20"
-          />
-          <Button buttonSize="xsmall" onClick={gotoRepro}>
-            Go to Repro
-          </Button>
-
-          <Button buttonSize="xsmall" onClick={gotoPrev}>
-            <ChevronLeft></ChevronLeft>
-          </Button>
-          <Button buttonSize="xsmall" onClick={gotoNext}>
-            <ChevronRight></ChevronRight>
-          </Button>
-        </div> */
-  }
   return (
     <div>
       {user && (
@@ -195,23 +135,11 @@ const NavBar = () => {
               >
                 Home
               </NavLink>
-              <NavLink
-                to="/budget"
-                className="nav-link"
-                // onClick={(e: React.MouseEvent<HTMLElement>) => {
-                //   handleBudgetNavigation(e, '/budget');
-                // }}
-              >
+              <NavLink to="/budget" className="nav-link">
                 Budgets
               </NavLink>
 
-              <NavLink
-                to="/reprogramming"
-                className="nav-link"
-                // onClick={(e: React.MouseEvent<HTMLElement>) => {
-                //   handleReproNavigation(e, '/reprogramming');
-                // }}
-              >
+              <NavLink to="/reprogramming" className="nav-link">
                 Reprogrammings
               </NavLink>
               {/* <NavLink
@@ -263,20 +191,6 @@ const NavBar = () => {
                     }}
                     message="NEW You have unsaved changes! Are you sure you want to leave? Any changes made to this entry will be lost. Click OK to continue."
                   ></ConfirmModal>
-                  {/* <div className="modal">
-                    <p>
-                      You have unsaved changes! Are you sure you want to leave?
-                    </p>
-                    <button
-                      onClick={() => {
-                        setHasUnsavedChanges(false);
-                        blocker.proceed();
-                      }}
-                    >
-                      Yes, Leave
-                    </button>
-                    <button onClick={() => blocker.reset()}>Stay Here</button>
-                  </div> */}
                 </div>
               )}
             </div>

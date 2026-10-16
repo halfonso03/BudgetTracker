@@ -52,6 +52,8 @@ type Budget = {
     account_balances: AccountBalance[]
     initiative?: Initiative
     grant?: Grant
+    lastUpdatedDate: Date | null
+    lastUpdatedBy: string | null
 }
 
 // used by CreateBudget.tsx
