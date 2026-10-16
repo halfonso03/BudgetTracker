@@ -7,7 +7,7 @@ type Props = {
   isOpen: boolean;
   itemComment: string;
   canEdit: boolean;
-  onCommentSaved: (text: string) => void;
+  onCommentSaved: () => void;
   onCancel: () => void;
 };
 
@@ -26,7 +26,7 @@ const JustificaModal = ({ itemComment, ...props }: Props) => {
     setIsDirty(true);
     setPriorComment(comment);
     try {
-      props.onCommentSaved(comment);
+      props.onCommentSaved();
       setAnimateOut(true);
       setTimeout(() => {
         setAnimateOut(false);

@@ -9,6 +9,7 @@ type ReproHeader = {
     createDate?: Date;
     postedDate?: Date | null;
     postedBy?: string | null;
+    updateDate?: Date | null
 };
 
 type ReproLineItemSelections = {
