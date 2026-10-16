@@ -23,6 +23,24 @@ namespace Application.services
     {
         private List<Account>? _accounts;
 
+        public async Task<Result<List<BudgetAuditResponseDto>>> GetBudgetAudit(int initiativeId, int grantId)
+        {
+
+            var result = await _dbContext.BudgetLineItemAudits
+                                .Include(x => x.CreatedBy)
+                                .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId && x.Version.ToLower() == "new")
+                                .Select(x => new BudgetAuditResponseDto
+                                {
+                                    Amount = x.Amount,
+                                    UpdateDate = x.CreateDate,
+                                    UpdatedBy = $"{x.CreatedByUser!.FirstName} {x.CreatedByUser.LastName}"
+                                })
+                                .ToListAsync();
+
+            return Result<List<BudgetAuditResponseDto>>.Success(result);
+
+        }
+
         public async Task<BudgetDto> GetBudget(int initiativeId, int grantId)
         {
             var budgetLineItemsFromDb = await _dbContext
@@ -72,16 +90,21 @@ namespace Application.services
             };
 
 
-            var lastUpdateDate = budgetLineItemsFromDb.Max(x => x.UpdateDate);
+            var header = await _dbContext.BudgetHeaders
+                                    .Include(x => x.UpdatedByUser)
+                                    .SingleOrDefaultAsync(x => x.InitiativeId == initiativeId && x.GrantId == grantId);
 
-            if (lastUpdateDate != null)
+            if (header != null)
             {
-                result.LastUpdatedDate = lastUpdateDate;
+                var lastUpdateDate = header.UpdatedDate;
 
-                var lastUpdatedBy = budgetLineItemsFromDb.Where(x => x.UpdateDate == lastUpdateDate).Select(x => x.UpdatedBy).First();
-                var user = _dbContext.Users.Where(x => x.Id == lastUpdatedBy).Select(x => x.FirstName + " " + x.LastName).Single();
-                result.LastUpdatedBy = user;
+                if (lastUpdateDate != null)
+                {
+                    result.LastUpdatedDate = lastUpdateDate;
+                    result.LastUpdatedBy = $"{header.UpdatedByUser!.FirstName} {header.UpdatedByUser!.LastName}";
+                }
             }
+
 
             return result;
         }
@@ -221,6 +244,12 @@ namespace Application.services
                         EntryPersonId = createBudgetDto.CreatedBy
                     }));
 
+                _dbContext.BudgetHeaders.Add(new BudgetHeader
+                {
+                    InitiativeId = initiativeId,
+                    GrantId = grantId
+                });
+
                 await _dbContext.SaveChangesAsync();
             }
             catch (DbException ex)
@@ -248,6 +277,8 @@ namespace Application.services
                 {
                     return Result<Unit>.Failure("Budget does not exist.", 400);
                 }
+
+                var header = await _dbContext.BudgetHeaders.SingleAsync(x => x.InitiativeId == initiativeId && x.GrantId == grantId);
 
                 var lineItemsFromDb = await _dbContext.BudgetLineItems.Where(x => x.InitiativeId == initiativeId &&
                     x.GrantId == grantId &&
@@ -302,6 +333,9 @@ namespace Application.services
                         _dbContext.BudgetLineItems.Add(newLineItem);
                     }
                 }
+
+                header.UpdatedDate = DateTime.Now;
+                header.UpdatedBy = updateBudgetDto.UpdatedBy;
 
                 await _dbContext.SaveChangesAsync();
             }

@@ -14,9 +14,9 @@ namespace Domain
         public DateTime? UpdatedDate { get; set; }
 
         [ForeignKey("UpdatedByUser")]
-        public int UpdatedBy { get; set; }
+        public int? UpdatedBy { get; set; }
         public ApplicationUser? UpdatedByUser { get; set; }
-        public required Initiative Initiative { get; set; }
-        public required Grant Grant { get; set; }
+        public Initiative? Initiative { get; set; }
+        public Grant? Grant { get; set; }
     }
 }

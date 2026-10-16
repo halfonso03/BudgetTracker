@@ -41,7 +41,7 @@ namespace Domain
         public int CreatedBy { get; set; }
 
         [ForeignKey(nameof(CreatedBy))]
-        public AuthorizedUser? CreatedByUser { get; set; }
+        public ApplicationUser? CreatedByUser { get; set; }
 
         [Column(Order = 10)]
         public DateTime? UpdateDate { get; set; }
@@ -50,7 +50,7 @@ namespace Domain
         public int? UpdatedBy { get; set; }
 
         [ForeignKey(nameof(UpdatedBy))]
-        public AuthorizedUser? UpdatedByUser { get; set; }
+        public ApplicationUser? UpdatedByUser { get; set; }
 
         public BudgetItemType? BudgetItemType { get; set; }
         

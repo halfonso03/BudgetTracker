@@ -142,21 +142,21 @@ const NavBar = () => {
               <NavLink to="/reprogramming" className="nav-link">
                 Reprogrammings
               </NavLink>
-              {/* <NavLink
+              <NavLink
                 to="/payments"
                 className="nav-link"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleReproNavigation(e, '/payments');
-                }}
+                // onClick={(e: React.MouseEvent<HTMLElement>) => {
+                //   handleReproNavigation(e, '/payments');
+                // }}
               >
                 Payments
               </NavLink>
               <NavLink
                 to="/payees"
                 className="nav-link"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleReproNavigation(e, '/payees');
-                }}
+                // onClick={(e: React.MouseEvent<HTMLElement>) => {
+                //   handleReproNavigation(e, '/payees');
+                // }}
               >
                 Payees
               </NavLink>
@@ -164,12 +164,12 @@ const NavBar = () => {
               <NavLink
                 to="/reports"
                 className="nav-link"
-                onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  handleReproNavigation(e, '/reports');
-                }}
+                // onClick={(e: React.MouseEvent<HTMLElement>) => {
+                //   handleReproNavigation(e, '/reports');
+                // }}
               >
                 Reports
-              </NavLink> */}
+              </NavLink>
               {blocker.state === 'blocked' && hasUnsavedChanges && (
                 <div>
                   <ConfirmModal

@@ -21,8 +21,8 @@ namespace Domain
         public required int EntryPersonId { get; set; }
         public DateTime? UpdateDate { get; set; }
         public int? UpdatePersonId { get; set; }
-        public AuthorizedUser? EntryPerson { get; set; }
-        public AuthorizedUser? UpdatePerson { get; set; }
+        public ApplicationUser? EntryPerson { get; set; }
+        public ApplicationUser? UpdatePerson { get; set; }
         public Grant? Grant { get; set; }
         public Initiative? Initiative { get; set; }
         public Account? Account { get; set; }

@@ -75,13 +75,13 @@ namespace Application.Services
                     Id = reproFromDb.Id,
                     Year = lineItems.First().Year,
                     Justification = reproFromDb.Justification,
-                    CreatedBy = reproFromDb.CreatedBy!.WindowsLogin,
+                    CreatedBy = $"{reproFromDb.CreatedBy!.FirstName} {reproFromDb.CreatedBy!.LastName}",
                     CreateDate = reproFromDb.CreatedDate,
                     CreatedById = reproFromDb.CreatedById,
                     UpdateDate = reproFromDb.UpdateDate,
                     UpdatedById = reproFromDb.UpdatedById,
                     Posted = reproFromDb.Posted,
-                    PostedBy = reproFromDb.PostedBy != null ? reproFromDb.PostedBy.WindowsLogin : "",
+                    PostedBy = reproFromDb.PostedBy != null ? $"{reproFromDb.PostedBy!.FirstName} {reproFromDb.PostedBy!.LastName}" : "",
                     PostedDate = reproFromDb.PostedDate,
                     PostedById = reproFromDb.PostedById,
                     LineItems = [.. lineItems.Select(x =>
@@ -615,10 +615,10 @@ namespace Application.Services
                             {
                                 Id = x.Id,
                                 CreateDate = x.CreatedDate,
-                                CreatedBy = x.CreatedBy!.WindowsLogin,
+                                CreatedBy = $"{x.CreatedBy!.FirstName} {x.CreatedBy!.LastName}",
                                 PostedDate = x.PostedDate,
                                 Posted = x.Posted,
-                                PostedBy = x.PostedBy != null ? x.PostedBy!.WindowsLogin : string.Empty,
+                                PostedBy = x.PostedBy != null ? $"{x.PostedBy!.FirstName} {x.PostedBy!.LastName}" : string.Empty,
                                 StatusSort = x.Posted ? 1 : 2,
                                 Amount = x.Amount
                             })

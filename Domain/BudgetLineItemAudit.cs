@@ -40,7 +40,7 @@ namespace Domain
         public int CreatedBy { get; set; }
 
         [ForeignKey(nameof(CreatedBy))]
-        public AuthorizedUser? CreatedByUser { get; set; }
+        public ApplicationUser? CreatedByUser { get; set; }
         public BudgetItemType? BudgetItemType { get; set; }
         public string? AdditionalInformation { get; set; }
         public required string Version { get; set; }

@@ -32,6 +32,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
+    opt.Stores.MaxLengthForKeys = 450; 
 })
 .AddRoles<ApplicationRole>()
 .AddEntityFrameworkStores<AppDbContext>();
@@ -131,39 +132,39 @@ try
     await context.Database.MigrateAsync();
 
     // Seed Admin Role
-    var role = await roleManager.FindByNameAsync("ADMIN");
-    if (role == null)
-    {
-        await roleManager.CreateAsync(new ApplicationRole() { Name = "Admin", NormalizedName = "ADMIN" });
-    }
+    // var role = await roleManager.FindByNameAsync("ADMIN");
+    // if (role == null)
+    // {
+    //     await roleManager.CreateAsync(new ApplicationRole() { Name = "Admin", NormalizedName = "ADMIN" });
+    // }
 
-    // Seed User Role
-    var userRole = await userManager.FindByNameAsync("USER");
-    if (userRole == null)
-    {
-        await roleManager.CreateAsync(new ApplicationRole() { Name = "User", NormalizedName = "USER" });
-    }
+    // // Seed User Role
+    // var userRole = await userManager.FindByNameAsync("USER");
+    // if (userRole == null)
+    // {
+    //     await roleManager.CreateAsync(new ApplicationRole() { Name = "User", NormalizedName = "USER" });
+    // }
 
-    // Seed Default Administrator User
-    var adminEmail = builder.Configuration.GetValue<string>("AdminEmail")!;
-    var user1 = await userManager.FindByEmailAsync(adminEmail);
+    // // Seed Default Administrator User
+    // var adminEmail = builder.Configuration.GetValue<string>("AdminEmail")!;
+    // var user1 = await userManager.FindByEmailAsync(adminEmail);
 
-    if (user1 == null)
-    {
-        var result = await userManager.CreateAsync(new ApplicationUser
-        {
-            FirstName = "Hector",
-            LastName = "Alfonso",
-            UserName = adminEmail,
-            NormalizedEmail = adminEmail.ToUpper(),
-            Email = adminEmail,
-        }, "Password#1");
+    // if (user1 == null)
+    // {
+    //     var result = await userManager.CreateAsync(new ApplicationUser
+    //     {
+    //         FirstName = "Hector",
+    //         LastName = "Alfonso",
+    //         UserName = adminEmail,
+    //         NormalizedEmail = adminEmail.ToUpper(),
+    //         Email = adminEmail,
+    //     }, "Password#1");
 
-        if (!result.Succeeded)
-        {
-            throw new Exception("Could not create seeding user");
-        }
-    }
+    //     if (!result.Succeeded)
+    //     {
+    //         throw new Exception("Could not create seeding user");
+    //     }
+    // }
 }
 catch (Exception ex)
 {

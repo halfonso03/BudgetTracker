@@ -28,7 +28,7 @@ namespace Domain
         public int? UpdatedById { get; set; }
 
         [ForeignKey("UpdatedById")]
-        public AuthorizedUser? UpdatedBy { get; set; }
+        public ApplicationUser? UpdatedBy { get; set; }
 
         [ForeignKey("ReproId")]
         public Repro? Repro { get; set; }

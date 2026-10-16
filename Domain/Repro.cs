@@ -26,12 +26,12 @@ namespace Domain
         public required IList<ReproLineItem> Items { get; set; }
 
         [ForeignKey("CreatedById")]
-        public AuthorizedUser? CreatedBy { get; set; }
+        public ApplicationUser? CreatedBy { get; set; }
 
         [ForeignKey("UpdatedById")]
-        public AuthorizedUser? UpdatedBy { get; set; }
+        public ApplicationUser? UpdatedBy { get; set; }
 
         [ForeignKey("PostedById")]
-        public AuthorizedUser? PostedBy { get; set; }
+        public ApplicationUser? PostedBy { get; set; }
     }
 }

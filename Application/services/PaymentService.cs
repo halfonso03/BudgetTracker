@@ -134,7 +134,7 @@ namespace Application.Services
                     Id = paymentFromDb.Id,
                     Year = lineItems.First().Year,
                     Justification = paymentFromDb.Justification,
-                    CreatedBy = paymentFromDb.CreatedBy!.WindowsLogin,
+                    CreatedBy = $"{paymentFromDb.CreatedBy!.FirstName} {paymentFromDb.CreatedBy!.LastName}",
                     CreateDate = paymentFromDb.CreatedDate,
                     CreatedById = paymentFromDb.CreatedById,
                     UpdateDate = paymentFromDb.UpdateDate,
@@ -517,7 +517,9 @@ namespace Application.Services
             try
             {
                 var grant = await _dbContext.Grants.FirstAsync(x => x.Id == disbLineItems.First().GrantId);
-                var loginid = await _dbContext.AuthorizedUsers.FirstAsync(x => x.Id == userId);
+
+                var user = await _dbContext.Users.FirstAsync(x => x.Id == userId);
+                var loginid = $"{user.FirstName} {user.LastName}";
 
                 var newDisb = new Disb()
                 {
@@ -575,7 +577,7 @@ namespace Application.Services
                     Justification = newDisb.Justification,
                     CreateDate = newDisb.CreatedDate,
                     CreatedById = newDisb.CreatedById,
-                    CreatedBy = loginid.WindowsLogin,
+                    CreatedBy = loginid,
                     Year = newDisb.Year,
                     Posted = false,
                     RowBalances = rowBalances,

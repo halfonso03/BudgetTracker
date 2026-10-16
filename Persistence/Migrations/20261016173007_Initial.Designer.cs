@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261015145656_init")]
-    partial class init
+    [Migration("20261016173007_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -224,7 +224,7 @@ namespace Persistence.Migrations
                         .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
-                    b.ToTable("Roles", "Auth");
+                    b.ToTable("tblRoles", "Auth");
                 });
 
             modelBuilder.Entity("Domain.ApplicationUser", b =>
@@ -300,7 +300,26 @@ namespace Persistence.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Users", "Auth");
+                    b.ToTable("tblUsers", "Auth");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3",
+                            Email = "hialfonso@nhac.org",
+                            EmailConfirmed = false,
+                            FirstName = "Hector",
+                            LastName = "Alfonso",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "HIALFONSO@NHAC.ORG",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMretS6tJQofnGHE6J8YK9Nl9rrAKYe1lzklwWTDO5tyKZaolQg1ViAEkCVTg+Tl7g==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3",
+                            TwoFactorEnabled = false,
+                            UserName = "hialfonso"
+                        });
                 });
 
             modelBuilder.Entity("Domain.AuthorizedUser", b =>
@@ -313,7 +332,7 @@ namespace Persistence.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("LastLoginDate")
-                        .HasColumnType("datetime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("last_login_date");
 
                     b.Property<string>("WindowsLogin")
@@ -401,6 +420,45 @@ namespace Persistence.Migrations
                     b.HasIndex("UpdatePersonId");
 
                     b.ToTable("tblBudgetComment");
+                });
+
+            modelBuilder.Entity("Domain.BudgetHeader", b =>
+                {
+                    b.Property<int>("InitiativeId")
+                        .HasColumnType("int")
+                        .HasColumnName("initiative_id");
+
+                    b.Property<int>("GrantId")
+                        .HasColumnType("int")
+                        .HasColumnName("grant_id");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int")
+                        .HasColumnName("updated_by");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("DATETIME2")
+                        .HasColumnName("update_date");
+
+                    b.HasKey("InitiativeId", "GrantId");
+
+                    b.HasIndex("GrantId");
+
+                    b.HasIndex("UpdatedBy");
+
+                    b.ToTable("tblBudgetHeader");
+
+                    b.HasData(
+                        new
+                        {
+                            InitiativeId = 1,
+                            GrantId = 1
+                        },
+                        new
+                        {
+                            InitiativeId = 1,
+                            GrantId = 2
+                        });
                 });
 
             modelBuilder.Entity("Domain.BudgetItemType", b =>
@@ -506,7 +564,12 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UpdatedBy");
 
-                    b.ToTable("tblBudget");
+                    b.ToTable("tblBudget", null, t =>
+                        {
+                            t.HasTrigger("trg_tblBudget_Update");
+                        });
+
+                    b.HasAnnotation("SqlServer:UseSqlOutputClause", false);
 
                     b.HasData(
                         new
@@ -1792,9 +1855,11 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
+                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
+                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
@@ -1835,9 +1900,11 @@ namespace Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("LoginProvider")
+                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
+                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
@@ -1854,35 +1921,35 @@ namespace Persistence.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>");
 
-                    b.ToTable("RoleClaims", "Auth");
+                    b.ToTable("tblRoleClaims", "Auth");
                 });
 
             modelBuilder.Entity("Domain.ApplicationUserClaim", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>");
 
-                    b.ToTable("UserClaims", "Auth");
+                    b.ToTable("tblUserClaims", "Auth");
                 });
 
             modelBuilder.Entity("Domain.ApplicationUserLogin", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>");
 
-                    b.ToTable("UserLogins", "Auth");
+                    b.ToTable("tblUserLogins", "Auth");
                 });
 
             modelBuilder.Entity("Domain.ApplicationUserRole", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<int>");
 
-                    b.ToTable("UserRoles", "Auth");
+                    b.ToTable("tblUserRoles", "Auth");
                 });
 
             modelBuilder.Entity("Domain.ApplicationUserToken", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserToken<int>");
 
-                    b.ToTable("UserTokens", "Auth");
+                    b.ToTable("tblUserTokens", "Auth");
                 });
 
             modelBuilder.Entity("Domain.Account", b =>
@@ -1904,7 +1971,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.AuthorizedUser", "EntryPerson")
+                    b.HasOne("Domain.ApplicationUser", "EntryPerson")
                         .WithMany()
                         .HasForeignKey("EntryPersonId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1922,7 +1989,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.AuthorizedUser", "UpdatePerson")
+                    b.HasOne("Domain.ApplicationUser", "UpdatePerson")
                         .WithMany()
                         .HasForeignKey("UpdatePersonId");
 
@@ -1937,6 +2004,31 @@ namespace Persistence.Migrations
                     b.Navigation("UpdatePerson");
                 });
 
+            modelBuilder.Entity("Domain.BudgetHeader", b =>
+                {
+                    b.HasOne("Domain.Grant", "Grant")
+                        .WithMany()
+                        .HasForeignKey("GrantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Initiative", "Initiative")
+                        .WithMany()
+                        .HasForeignKey("InitiativeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.ApplicationUser", "UpdatedByUser")
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy");
+
+                    b.Navigation("Grant");
+
+                    b.Navigation("Initiative");
+
+                    b.Navigation("UpdatedByUser");
+                });
+
             modelBuilder.Entity("Domain.BudgetLineItem", b =>
                 {
                     b.HasOne("Domain.Account", "Account")
@@ -1945,7 +2037,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.AuthorizedUser", "CreatedByUser")
+                    b.HasOne("Domain.ApplicationUser", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1969,7 +2061,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.AuthorizedUser", "UpdatedByUser")
+                    b.HasOne("Domain.ApplicationUser", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy");
 
@@ -1994,7 +2086,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.AuthorizedUser", "CreatedByUser")
+                    b.HasOne("Domain.ApplicationUser", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2031,7 +2123,7 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Disb", b =>
                 {
-                    b.HasOne("Domain.AuthorizedUser", "CreatedBy")
+                    b.HasOne("Domain.ApplicationUser", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2041,7 +2133,7 @@ namespace Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("PostedById");
 
-                    b.HasOne("Domain.AuthorizedUser", "UpdatedBy")
+                    b.HasOne("Domain.ApplicationUser", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
 
@@ -2094,7 +2186,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.AuthorizedUser", "UpdatedBy")
+                    b.HasOne("Domain.ApplicationUser", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
 
@@ -2150,17 +2242,17 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Domain.Repro", b =>
                 {
-                    b.HasOne("Domain.AuthorizedUser", "CreatedBy")
+                    b.HasOne("Domain.ApplicationUser", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.AuthorizedUser", "PostedBy")
+                    b.HasOne("Domain.ApplicationUser", "PostedBy")
                         .WithMany()
                         .HasForeignKey("PostedById");
 
-                    b.HasOne("Domain.AuthorizedUser", "UpdatedBy")
+                    b.HasOne("Domain.ApplicationUser", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
 
@@ -2207,7 +2299,7 @@ namespace Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.AuthorizedUser", "UpdatedBy")
+                    b.HasOne("Domain.ApplicationUser", "UpdatedBy")
                         .WithMany()
                         .HasForeignKey("UpdatedById");
 

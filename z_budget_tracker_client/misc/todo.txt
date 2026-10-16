@@ -1,4 +1,17 @@
 
+
+
+Payee detila account and catgory not selected
+payee - New same as above
+payments - amounts went 'NAN' when switch back to screen
+add budget audit
+add check number for each payment line
+remove the $ from the payee line, only use the budget sumary $
+add a 2E link to the budget summary
+
+
+
+
 BUG - when changing pages in search results, expanaded items stay open
 Make exclusive work for initiative and account
 
