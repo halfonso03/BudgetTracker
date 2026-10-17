@@ -148,7 +148,7 @@ const PayeeSearcher = ({
         </div>
       </div>
       <div className="relative bg-white opacity-100">
-        <div className="w-full rounded-sm pt-1 absolute">
+        <div className="w-full rounded-sm pt-1 absolute z-1000">
           {suggestions && suggestions.length > 0 && searching && (
             <ScrollableDiv className="relative bg-white border border-neutral-300/55 rounded-sm w-full shadow-md ">
               {suggestions?.map((item, index) => (

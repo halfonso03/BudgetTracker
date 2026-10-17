@@ -50,8 +50,8 @@ const PaymentLineModal = (props: Props) => {
   const [remIsvalid, setRemIsValid] = useState(true);
   const [paymentYear] = useState(() => props.year);
 
-  const { grants } = useGrants(paymentYear);
-  const { initiatives } = useInitiatives();
+  const { grants, grantsSuccess } = useGrants(paymentYear);
+  const { initiatives, iSuccess: loadInitiativesSuccess } = useInitiatives();
   const { categories, catSuccess } = useCategories();
 
   const [selections, setSelections] = useState<Selections | null>(
@@ -241,7 +241,28 @@ const PaymentLineModal = (props: Props) => {
     return t2[0].availableAmount;
   }
 
-  const accounts2 =
+  const initiativesForDropdown = loadInitiativesSuccess
+    ? initiatives!.map((b) => ({
+        value: b.id,
+        label: <div>{b.name}</div>,
+      }))
+    : [];
+
+  const grantsForDropdown = grantsSuccess
+    ? grants!.map((b) => ({
+        value: b.id,
+        label: <div>{b.name}</div>,
+      }))
+    : [];
+
+  const catsForDropdown = catSuccess
+    ? categories!.map((b) => ({
+        value: b.id,
+        label: <div>{b.name}</div>,
+      }))
+    : [];
+
+  const accountsForDropdown =
     !loadingBalances && balances
       ? balances!.map((b) => ({
           value: b.accountId,
@@ -269,6 +290,16 @@ const PaymentLineModal = (props: Props) => {
           onKeyDown={checkKeyDown}
           className="self-center h-full w-full"
         >
+          {/* payee id: {getValues('payeeId')} */}
+          {/* <br></br>
+          initiative id: {getValues('initiativeId')}
+          <br></br>
+          grant id: {getValues('grantId')}
+          <br></br>
+          category id: {getValues('categoryId')}
+          <br></br>
+          account id: {getValues('accountId')}
+          <br></br> */}
           <div className="flex flex-col justify-between h-full mt-2">
             <div className=" overflow-y-scroll h-[75dvh]">
               <div className="flex flex-col justify-between p-3 px-4 ">
@@ -295,12 +326,13 @@ const PaymentLineModal = (props: Props) => {
                     </div>
                   </div>
                 </div>
+                <div></div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
                   <div className="text-neutral-600/90 font-medium">
                     Initiative
                   </div>
 
-                  <Select
+                  {/* <Select
                     {...register('initiativeId')}
                     tabIndex={3}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
@@ -342,7 +374,38 @@ const PaymentLineModal = (props: Props) => {
                         {i.name}
                       </option>
                     ))}
-                  </Select>
+                  </Select> */}
+                  <Dropdown
+                    options={initiativesForDropdown}
+                    value={getValues('initiativeId')}
+                    onChange={(option: Option) => {
+                      setValue('initiativeId', +option.value);
+
+                      const newSelections = {
+                        ...selections,
+                        initiativeId: +option.value,
+                      };
+
+                      if (!remIsvalid) {
+                        const availableAmount2 = getAvailable(
+                          newSelections.initiativeId!,
+                          newSelections.grantId!,
+                          newSelections.categoryId!,
+                          newSelections.accountId!,
+                        );
+
+                        if (
+                          availableAmount2 - +getValues('paymentAmount') >=
+                          0
+                        ) {
+                          setRemIsValid(true);
+                        }
+                      }
+
+                      setSelections(newSelections);
+                    }}
+                    className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
+                  ></Dropdown>
                   {errors?.initiativeId && (
                     <div className="text-red-500 pl-1">
                       <Asterisk size={18}></Asterisk>
@@ -352,7 +415,38 @@ const PaymentLineModal = (props: Props) => {
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-5 ">
                   <div className="text-neutral-600/90 font-medium">Grant</div>
-                  <Select
+                  <Dropdown
+                    options={grantsForDropdown}
+                    value={getValues('grantId')}
+                    onChange={(option: Option) => {
+                      setValue('grantId', +option.value);
+
+                      const newSelections = {
+                        ...selections,
+                        grantId: +option.value,
+                      };
+
+                      if (!remIsvalid) {
+                        const availableAmount2 = getAvailable(
+                          newSelections.initiativeId!,
+                          newSelections.grantId!,
+                          newSelections.categoryId!,
+                          newSelections.accountId!,
+                        );
+
+                        if (
+                          availableAmount2 - +getValues('paymentAmount') >=
+                          0
+                        ) {
+                          setRemIsValid(true);
+                        }
+                      }
+
+                      setSelections(newSelections);
+                    }}
+                    className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
+                  ></Dropdown>
+                  {/* <Select
                     {...register('grantId')}
                     tabIndex={5}
                     onChange={(e: ChangeEvent<HTMLSelectElement>) => {
@@ -394,7 +488,7 @@ const PaymentLineModal = (props: Props) => {
                         {i.name}
                       </option>
                     ))}
-                  </Select>
+                  </Select> */}
                   {errors?.grantId && (
                     <div className="text-red-500 pl-1">
                       <Asterisk size={18}></Asterisk>
@@ -406,6 +500,22 @@ const PaymentLineModal = (props: Props) => {
                   <div className="text-neutral-600/90 font-medium">
                     Category
                   </div>
+                  <Dropdown
+                    options={catsForDropdown}
+                    value={getValues('categoryId')}
+                    onChange={(option: Option) => {
+                      setValue('categoryId', +option.value);
+                      if (+option.value !== 0) {
+                        setSelections((prev) => ({
+                          ...prev,
+                          categoryId: +option.value,
+                        }));
+                        setValue('accountId', 0);
+                      }
+                    }}
+                    className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
+                  ></Dropdown>
+                  {/* 
                   <Select
                     {...register('categoryId')}
                     tabIndex={0}
@@ -432,12 +542,12 @@ const PaymentLineModal = (props: Props) => {
                         {i.name}
                       </option>
                     ))}
-                  </Select>
+                  </Select> */}
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
                   <div className="text-neutral-600/90 font-medium">Account</div>
                   <Dropdown
-                    options={accounts2}
+                    options={accountsForDropdown}
                     value={getValues('accountId')}
                     onChange={(option: Option) => {
                       setValue('accountId', +option.value);
