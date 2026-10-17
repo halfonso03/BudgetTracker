@@ -23,7 +23,18 @@ const Summary = ({ year }: Props) => {
 
   if (!data) return null;
 
-  const budgetSummaries: BudgetSummary[] = data.map((b) => {
+
+  
+  const activeAccounts = data.map(x => {
+    const ac = x.account_balances.filter(x => x.amount != 0 || x.current_amount !== 0 || x.spent_amount !== 0);
+
+    return {...x, account_balances: ac}
+  })
+
+  console.log('activeAccounts', activeAccounts[0])
+
+  
+  const budgetSummaries: BudgetSummary[] = activeAccounts.map((b) => {
     return {
       initiative_id: b.initiative_id,
       initiative_name: b.initiative!.name,
@@ -54,7 +65,7 @@ const Summary = ({ year }: Props) => {
       >
         <div>Totals</div>
         <div></div>
-        <div className="text-end">Approved</div>
+        <div className="text-end">Allocated</div>
         <div className="text-end">Current</div>
         <div className="text-end">Spent</div>
         <div className="text-end">Remaining</div>
@@ -96,7 +107,7 @@ const Summary = ({ year }: Props) => {
       >
         <div>Initiative</div>
         <div>Grant</div>
-        <div className="text-end">Approved </div>
+        <div className="text-end">Allocated </div>
         <div className="text-end">Current </div>
         <div className="text-end">Spent </div>
         <div className="text-end">Remaining </div>
@@ -160,7 +171,7 @@ const Summary = ({ year }: Props) => {
               initiativeId={budget.initiative_id}
               grantId={budget.grant_id}
               items={
-                data.filter(
+                activeAccounts.filter(
                   (x) =>
                     x.initiative_id == budget.initiative_id &&
                     x.grant_id === budget.grant_id,
@@ -232,7 +243,7 @@ function CategorySummary({
 
   return (
     <div className=" border-t border-t-neutral-300">
-      <div className="entity-label  border-b border-b-neutral-300 p-3 ">
+      <div className="entity-label  border-b border-b-neutral-300 p-3 pl-5 ">
         Category
       </div>
       {categoryTotals.map((c, index) => {
@@ -243,15 +254,15 @@ function CategorySummary({
         const cateoryRedClass = n === true ? 'text-red-600' : '';
         return (
           <div
-            className=" relative z-6 border-b border-b-slate-300 last:border-0"
+            className=" relative z-6 border-b border-b-neutral-300 last:border-0"
             key={index}
           >
             <div
-              className={` grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 items-center`}
+              className={` grid bg-neutral-200/50 grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 items-center`}
               key={index}
             >
               <div
-                className={` py-3 pl-4 font-bold col-span-2 ${cateoryRedClass}`}
+                className={` py-3 pl-8 font-bold col-span-2  ${cateoryRedClass}`}
                 key={index}
               >
                 {c.category}
@@ -303,7 +314,7 @@ function CategorySummary({
             <div
               className={` box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}   `}
             >
-              <div className="pl-5 pb-0 font-semibold entity-label">
+              <div className="pl-12 py-2  font-semibold entity-label border-t border-t-neutral-300">
                 Account
               </div>
               <div className="bg-neutral-50 border-t border-t-neutral-300  ">
@@ -315,7 +326,7 @@ function CategorySummary({
                       className="py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] items-center gap-4  last:mb-0 transition-all duration-200 hover:bg-neutral-200/50"
                       key={i.account_id}
                     >
-                      <div className="italic pl-8 col-span-2">
+                      <div className="italic pl-16 col-span-2">
                         {i.account_name}
                       </div>
                       <div className="text-end italic text-neutral-700">

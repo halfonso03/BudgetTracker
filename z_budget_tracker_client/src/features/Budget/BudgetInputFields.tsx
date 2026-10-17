@@ -115,7 +115,7 @@ const BudgetInputFields = ({
         {fieldName}
       </div>
       <div
-        className={`text-end self-center py-1  ${isLastRow ? ' py-2 bg-neutral-100' : ''}`}
+        className={`text-end self-center py-2  ${isLastRow ? ' py-2 bg-neutral-100' : ''}`}
       >
         <NumericArrayInput
           key={accountId}

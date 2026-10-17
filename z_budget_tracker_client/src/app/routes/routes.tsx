@@ -22,6 +22,7 @@ import Logout from '../../features/Auth/Logout';
 import PaymentSearch from '../../features/Payments/PaymentSearch';
 import PaymentPreload from '../../features/Payments/PaymentPreload';
 import ReproDuplicate from '../../features/Reprogrammings/ReproDuplicate';
+import EncHome from '../../features/Encumberance/EncHome';
 
 export const routes: RouteObject[] = [
   {
@@ -208,6 +209,10 @@ export const routes: RouteObject[] = [
             <PayeeHome />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: '/enc',
+        element: <EncHome></EncHome>,
       },
     ],
   },

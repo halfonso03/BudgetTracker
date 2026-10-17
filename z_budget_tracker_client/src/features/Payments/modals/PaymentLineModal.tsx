@@ -1,9 +1,8 @@
-import { useState, type ChangeEvent } from 'react';
+import { useState } from 'react';
 import useCategories from '../../../api/hooks/common/useCategories';
 import useGrants from '../../../api/hooks/common/useGrants';
 import useInitiatives from '../../../api/hooks/common/useInitiatives';
 import Button from '../../../components/Button';
-import Select from '../../../components/Select';
 import PayeeSearcher from '../PayeeSearcher';
 import TallModal from '../../../components/TallModal';
 import { PaginationContextProvider } from '../../../contexts/pagination/PaginationContextProvider';
@@ -404,7 +403,7 @@ const PaymentLineModal = (props: Props) => {
 
                       setSelections(newSelections);
                     }}
-                    className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
+                    className=" border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
                   ></Dropdown>
                   {errors?.initiativeId && (
                     <div className="text-red-500 pl-1">

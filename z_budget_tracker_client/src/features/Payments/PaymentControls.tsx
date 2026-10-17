@@ -61,7 +61,7 @@ const PaymentControls = ({
         <Button
           buttonSize="large"
           variation="primary"
-          additionalclasses="py-2"
+          additionalclasses="py-[.5rem]"
           onClick={() => {
             setChoosingYear(true);
             setNewReproJustification('');

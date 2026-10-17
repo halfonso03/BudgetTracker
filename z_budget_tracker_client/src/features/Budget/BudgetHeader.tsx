@@ -12,7 +12,7 @@ const BudgetHeader = ({ bRef, cRef, rRef, totalSpent }: Props) => {
         Totals
       </div>
       <div className="pl-3 py-2 text-end bg-neutral-100 text-neutral-600 font-bold">
-        Budgeted
+        Allocated
       </div>
       <div className="pl-3 py-2 text-end bg-neutral-100 text-neutral-600 font-bold">
         Current

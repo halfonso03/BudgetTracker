@@ -189,7 +189,10 @@ input:-webkit-autofill:focus {
   border: 0 !important;
   padding: 0 !important;
 }
-
+.Dropdown-control:focus {
+  outline: none;
+  box-shadow: none;
+}
 .Dropdown-control.is-disabled {
   background-color: red;
 }
@@ -201,7 +204,7 @@ input:-webkit-autofill:focus {
 }
 
 .Dropdown-menu li {
-  border-bottom: 1px solid var(--color-neutral-200) !important;
+  border-bottom: 1px solid var(--color-neutral-100) !important;
 }
 
 .Dropdown-menu li:last-child {
@@ -225,7 +228,7 @@ input:-webkit-autofill:focus {
   display: none !important;
 }
 
-.Dropdown-placeholder.is-disabled div  {
+.Dropdown-placeholder.is-disabled div {
   background-color: red;
 }
 

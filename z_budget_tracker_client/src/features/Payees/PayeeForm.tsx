@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useCategories from '../../api/hooks/common/useCategories';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
@@ -32,7 +32,7 @@ const PayeeForm = ({
   const queryClient = useQueryClient();
   const [isActive, setIsActive] = useState(payee.isActive);
   const [payeeId, setPayeeId] = useState(payee.id);
-
+  const [categorySelected, setCategoryIsSelected] = useState(false);
   const {
     register,
     handleSubmit,
@@ -53,8 +53,8 @@ const PayeeForm = ({
     },
   });
 
+  console.log('payee', payee.categoryId);
 
-  console.log('payee', payee.categoryId)
   const { createPayee, updatePayee } = usePayeeMutations();
   const { categories, catSuccess } = useCategories();
 
@@ -65,15 +65,16 @@ const PayeeForm = ({
 
   // eslint-disable-next-line react-hooks/incompatible-library
   const categoryIdWatchValue = watch('categoryId') as number;
-console.log('categoryIdWatchValue', categoryIdWatchValue)
-  const accounts =
-    catSuccess && categories
+
+  const accounts = useMemo(() => {
+    return catSuccess && categories
       ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
       : [];
+  },[catSuccess, categories, categoryIdWatchValue]);
 
-  // function onCategoryChange() {
-  //   setCategoryIsSelected(true);
-  // }
+  function onCategoryChange() {
+    setCategoryIsSelected(true);
+  }
 
   async function onSubmit(data: FormValues) {
     try {
@@ -123,12 +124,22 @@ console.log('categoryIdWatchValue', categoryIdWatchValue)
 
   function onError() {}
 
+  useEffect(() => {
+    if (categorySelected && accounts && accounts.length) {
+      setValues({accountId: accounts[0].id});
+    }
+  }, [accounts, categorySelected, setValues]);
+
   return (
     <div>
       <form
         onSubmit={handleSubmit(onSubmit, onError)}
         className="self-center w-full"
       >
+        category id: {getValues('categoryId')}
+        <br></br>
+        accountId: {getValues('accountId')}
+        <br></br>
         <input type="hidden" {...register('id')} />
         {/* {errors.additionalInformation && <div>FORM ERROR!</div>} */}
         <div className="flex flex-col gap-2 w-full">
@@ -178,7 +189,13 @@ console.log('categoryIdWatchValue', categoryIdWatchValue)
             error={errors?.categoryId?.message}
             useMessage={true}
           >
-            <Select {...register('categoryId')}>
+            <Select
+              {...register('categoryId')}
+              onChange={(e) => {
+                register('categoryId').onChange(e);
+                onCategoryChange();
+              }}
+            >
               {payeeId === 0 && (
                 <option value="0">--Select a Category --</option>
               )}

@@ -10,18 +10,33 @@ GO
 
 
 
+USE [BudgetTracker]
+GO
 
-CREATE view [Audit].[vwBudgets]
+/****** Object:  View [Audit].[vwBudgets]    Script Date: 10/17/2026 10:17:22 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+create view [Audit].[vwBudgets]
 as
 select b.version, i.id i_id, g.id g_id, a.id a_id, i.name initiative_name, g.name grant_name, a.name account_name, b.amount, item_type, 
-	YEAR(g.start_date) grant_year, b.create_date
+	YEAR(g.start_date) grant_year, b.create_date update_date, u.firstname + ' ' + u.lastname udpated_by
 
 from tblInitiative i join Audit.tblBudget b on i.id = b.initiative_id
 join tblAccount a on a.id = b.account_id
 join tblGrant g on g.id = b.grant_id
-join [Auth].[Users] u on u.id = b.created_by
+join [Auth].[tblUsers] u on u.id = b.created_by
 
 GO
+
+
 
 
 

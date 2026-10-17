@@ -268,7 +268,7 @@ const CreateBudget = () => {
                   Account
                 </div>
                 <div className="py-2 text-end bg-neutral-100 text-neutral-600 font-bold">
-                  Budgeted
+                  Allocated
                 </div>
                 <div className="text-center py-2 bg-neutral-100 text-neutral-600 font-bold">
                   Comments
