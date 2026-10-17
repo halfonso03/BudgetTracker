@@ -190,6 +190,10 @@ input:-webkit-autofill:focus {
   padding: 0 !important;
 }
 
+.Dropdown-control.is-disabled {
+  background-color: red;
+}
+
 .Dropdown-menu {
   border: 1px solid var(--color-neutral-300) !important;
   overflow-y: hidden !important;
@@ -197,7 +201,7 @@ input:-webkit-autofill:focus {
 }
 
 .Dropdown-menu li {
-  border-bottom: 1px solid var(--color-neutral-100) !important;
+  border-bottom: 1px solid var(--color-neutral-200) !important;
 }
 
 .Dropdown-menu li:last-child {
@@ -219,6 +223,10 @@ input:-webkit-autofill:focus {
 
 .Dropdown-placeholder.is-selected div > div:last-child {
   display: none !important;
+}
+
+.Dropdown-placeholder.is-disabled div  {
+  background-color: red;
 }
 
 pre {

@@ -13,9 +13,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { PaymentFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
 import { Asterisk } from 'lucide-react';
-import { formatNumber, parseFormattedNumber } from '../../../app/util';
+import {
+  formatCurrency,
+  formatNumber,
+  parseFormattedNumber,
+} from '../../../app/util';
 import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailableAccountBalances';
 import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeInfo';
+import Dropdown, { type Option } from 'react-dropdown';
+import useCurrentAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
 
 type Selections = {
   initiativeId?: number;
@@ -42,8 +48,9 @@ const PaymentLineModal = (props: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
   const [payee, setPayee] = useState<Payee | null>(null);
   const [remIsvalid, setRemIsValid] = useState(true);
+  const [paymentYear] = useState(() => props.year);
 
-  const { grants } = useGrants(props.year);
+  const { grants } = useGrants(paymentYear);
   const { initiatives } = useInitiatives();
   const { categories, catSuccess } = useCategories();
 
@@ -51,6 +58,12 @@ const PaymentLineModal = (props: Props) => {
     props.selections,
   );
   const { data: selectedEditPayee } = useSelectedPayeeInfo(selections?.payeeId);
+
+  const { data: balances, loadingBalances } = useCurrentAccountBalances(
+    selections?.initiativeId,
+    selections?.grantId,
+    selections?.categoryId,
+  );
 
   let availableAmount = 0;
 
@@ -77,15 +90,7 @@ const PaymentLineModal = (props: Props) => {
     },
   });
 
-  // payee ? payee.categoryId : 0,
-
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const categoryIdWatchValue = watch('categoryId') as number;
-
-  const accounts =
-    catSuccess && categories
-      ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
-      : [];
+  // const categoryIdWatchValue = watch('categoryId') as number;
 
   const { data: availableAccountBalances } = useAvailableAccountBalances(
     selections?.initiativeId ?? 0,
@@ -102,6 +107,9 @@ const PaymentLineModal = (props: Props) => {
       )[0].availableAmount ?? 0;
   }
 
+  // eslint-disable-next-line react-hooks/incompatible-library
+  watch('accountId');
+
   function handlePayeeSelected(payee: Payee) {
     const options = {
       shouldDirty: true,
@@ -110,18 +118,24 @@ const PaymentLineModal = (props: Props) => {
     };
 
     setPayee(payee);
-    setValue('payeeId', payee.id, options);
-    setValue('categoryId', payee.categoryId, options);
-    setTimeout(() => {
-      setValue('accountId', payee.accountId, options);
-    }, 0);
 
-    setSelections((prev) => ({
-      ...prev,
-      categoryId: payee.categoryId,
-      accountId: payee.accountId,
-      payeeId: payee.id,
-    }));
+    console.log(getValues('categoryId'));
+
+    setValue('payeeId', payee.id, options);
+
+    if (+getValues('categoryId') === 0) {
+      setValue('categoryId', payee.categoryId, options);
+
+      setSelections((prev) => ({
+        ...prev,
+        categoryId: payee.categoryId,
+        accountId: payee.accountId,
+        payeeId: payee.id,
+      }));
+      setTimeout(() => {
+        setValue('accountId', payee.accountId, options);
+      }, 0);
+    }
   }
 
   async function onSubmit(data: FormValues) {
@@ -226,6 +240,20 @@ const PaymentLineModal = (props: Props) => {
     const t2 = t!;
     return t2[0].availableAmount;
   }
+
+  const accounts2 =
+    !loadingBalances && balances
+      ? balances!.map((b) => ({
+          value: b.accountId,
+          label: (
+            <div className="flex justify-between gap-2">
+              <div>{b.accountName}</div>
+              <div>{formatCurrency(b.currentAmount)}</div>
+            </div>
+          ),
+        }))
+      : [];
+
   return (
     <PaginationContextProvider>
       <TallModal
@@ -236,68 +264,192 @@ const PaymentLineModal = (props: Props) => {
         isOpen={true}
         onCancel={closeModal}
       >
-        {/* <pre>{JSON.stringify(props.selections)}</pre>
-        <pre>{JSON.stringify(selections)}</pre> */}
-
         <form
           onSubmit={handleSubmit(onSubmit)}
           onKeyDown={checkKeyDown}
           className="self-center h-full w-full"
         >
-          <div className="flex flex-col justify-between h-full mt-4">
-            <div className="flex flex-col justify-between p-3 px-4 ">
-              <div className="relative flex items-center mb-5">
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full">
-                  <div className="text-neutral-600/90 font-medium">Payee</div>
-                  <PayeeSearcher
-                    onPayeeSelected={handlePayeeSelected}
-                    onPayeeSelectionCleared={handlePayeeSelectionCleared}
-                    payeeId={selections?.payeeId}
-                  ></PayeeSearcher>
-                  <div className="self-center">
-                    {errors.payeeId && (
-                      <div className="text-red-500 pl-1">
-                        <Asterisk size={18}></Asterisk>
-                      </div>
-                    )}
+          <div className="flex flex-col justify-between h-full mt-2">
+            <div className=" overflow-y-scroll h-[75dvh]">
+              <div className="flex flex-col justify-between p-3 px-4 ">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full mb-5">
+                  <div className="text-neutral-600/90 font-medium">Year</div>
+                  <div className="text-neutral-700/90 font-medium">
+                    {paymentYear}
                   </div>
                 </div>
-              </div>
+                <div className="relative flex items-center mb-5">
+                  <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full">
+                    <div className="text-neutral-600/90 font-medium">Payee</div>
+                    <PayeeSearcher
+                      onPayeeSelected={handlePayeeSelected}
+                      onPayeeSelectionCleared={handlePayeeSelectionCleared}
+                      payeeId={selections?.payeeId}
+                    ></PayeeSearcher>
+                    <div className="self-center">
+                      {errors.payeeId && (
+                        <div className="text-red-500 pl-1">
+                          <Asterisk size={18}></Asterisk>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
+                  <div className="text-neutral-600/90 font-medium">
+                    Initiative
+                  </div>
 
-              <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center  mb-5">
-                <div className="text-neutral-600/90 font-medium">Category</div>
-                <Select
-                  {...register('categoryId')}
-                  tabIndex={0}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                    register('categoryId').onChange(e);
-                    if (+e.target.value !== 0) {
+                  <Select
+                    {...register('initiativeId')}
+                    tabIndex={3}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      register('initiativeId').onChange(e);
+
+                      const newSelections = {
+                        ...selections,
+                        initiativeId: +e.target.value,
+                      };
+
+                      if (!remIsvalid) {
+                        const availableAmount2 = getAvailable(
+                          newSelections.initiativeId!,
+                          newSelections.grantId!,
+                          newSelections.categoryId!,
+                          newSelections.accountId!,
+                        );
+
+                        if (
+                          availableAmount2 - +getValues('paymentAmount') >=
+                          0
+                        ) {
+                          setRemIsValid(true);
+                        }
+                      }
+
+                      setSelections(newSelections);
+                    }}
+                  >
+                    <option value={0} className="text-neutral-600">
+                      Select...
+                    </option>
+                    {initiatives?.map((i) => (
+                      <option
+                        value={i.id}
+                        key={i.id}
+                        className="text-neutral-900"
+                      >
+                        {i.name}
+                      </option>
+                    ))}
+                  </Select>
+                  {errors?.initiativeId && (
+                    <div className="text-red-500 pl-1">
+                      <Asterisk size={18}></Asterisk>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-5 ">
+                  <div className="text-neutral-600/90 font-medium">Grant</div>
+                  <Select
+                    {...register('grantId')}
+                    tabIndex={5}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      register('grantId').onChange(e);
+
+                      const newSelections = {
+                        ...selections,
+                        grantId: +e.target.value,
+                      };
+
+                      if (!remIsvalid) {
+                        const availableAmount2 = getAvailable(
+                          newSelections.initiativeId!,
+                          newSelections.grantId!,
+                          newSelections.categoryId!,
+                          newSelections.accountId!,
+                        );
+
+                        if (
+                          availableAmount2 - +getValues('paymentAmount') >=
+                          0
+                        ) {
+                          setRemIsValid(true);
+                        }
+                      }
+
+                      setSelections(newSelections);
+                    }}
+                  >
+                    <option value={0} className="text-neutral-600">
+                      Select...
+                    </option>
+                    {grants?.map((i) => (
+                      <option
+                        value={i.id}
+                        key={i.id}
+                        className="text-neutral-900"
+                      >
+                        {i.name}
+                      </option>
+                    ))}
+                  </Select>
+                  {errors?.grantId && (
+                    <div className="text-red-500 pl-1">
+                      <Asterisk size={18}></Asterisk>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center  mb-5">
+                  <div className="text-neutral-600/90 font-medium">
+                    Category
+                  </div>
+                  <Select
+                    {...register('categoryId')}
+                    tabIndex={0}
+                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                      register('categoryId').onChange(e);
+                      if (+e.target.value !== 0) {
+                        setSelections((prev) => ({
+                          ...prev,
+                          categoryId: +e.target.value,
+                        }));
+                        setValue('accountId', 0);
+                      }
+                    }}
+                  >
+                    <option value={0} className="text-neutral-600">
+                      Select...
+                    </option>
+                    {categories?.map((i) => (
+                      <option
+                        value={i.id}
+                        key={i.id}
+                        className="text-neutral-900"
+                      >
+                        {i.name}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
+                  <div className="text-neutral-600/90 font-medium">Account</div>
+                  <Dropdown
+                    options={accounts2}
+                    value={getValues('accountId')}
+                    onChange={(option: Option) => {
+                      setValue('accountId', +option.value);
                       setSelections((prev) => ({
                         ...prev,
-                        categoryId: +e.target.value,
+                        accountId: +option.value,
                       }));
-                      setValue('accountId', 0);
-                    }
-                  }}
-                >
-                  <option value={0} className="text-neutral-600">
-                    Select...
-                  </option>
-                  {categories?.map((i) => (
-                    <option
-                      value={i.id}
-                      key={i.id}
-                      className="text-neutral-900"
-                    >
-                      {i.name}
-                    </option>
-                  ))}
-                </Select>
-              </div>
+                    }}
+                    className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
+                  ></Dropdown>
 
-              <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
-                <div className="text-neutral-600/90 font-medium">Account</div>
-                <Select
+                  {/* <Select
                   {...register('accountId')}
                   tabIndex={2}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => {
@@ -341,129 +493,29 @@ const PaymentLineModal = (props: Props) => {
                   <div className="text-red-500 pl-1">
                     <Asterisk size={18}></Asterisk>
                   </div>
-                )}
-              </div>
-
-              <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
-                <div className="text-neutral-600/90 font-medium">
-                  Initiative
+                )} */}
                 </div>
 
-                <Select
-                  {...register('initiativeId')}
-                  tabIndex={3}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                    register('initiativeId').onChange(e);
-
-                    const newSelections = {
-                      ...selections,
-                      initiativeId: +e.target.value,
-                    };
-
-                    if (!remIsvalid) {
-                      const availableAmount2 = getAvailable(
-                        newSelections.initiativeId!,
-                        newSelections.grantId!,
-                        newSelections.categoryId!,
-                        newSelections.accountId!,
-                      );
-
-                      if (availableAmount2 - +getValues('paymentAmount') >= 0) {
-                        setRemIsValid(true);
-                      }
-                    }
-
-                    setSelections(newSelections);
-                  }}
-                >
-                  <option value={0} className="text-neutral-600">
-                    Select...
-                  </option>
-                  {initiatives?.map((i) => (
-                    <option
-                      value={i.id}
-                      key={i.id}
-                      className="text-neutral-900"
-                    >
-                      {i.name}
-                    </option>
-                  ))}
-                </Select>
-                {errors?.initiativeId && (
-                  <div className="text-red-500 pl-1">
-                    <Asterisk size={18}></Asterisk>
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-5">
+                  <div className="text-neutral-600/90 font-medium self-start">
+                    Comment
                   </div>
-                )}
-              </div>
-
-              <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-5 ">
-                <div className="text-neutral-600/90 font-medium">Grant</div>
-                <Select
-                  {...register('grantId')}
-                  tabIndex={5}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                    register('grantId').onChange(e);
-
-                    const newSelections = {
-                      ...selections,
-                      grantId: +e.target.value,
-                    };
-
-                    if (!remIsvalid) {
-                      const availableAmount2 = getAvailable(
-                        newSelections.initiativeId!,
-                        newSelections.grantId!,
-                        newSelections.categoryId!,
-                        newSelections.accountId!,
-                      );
-
-                      if (availableAmount2 - +getValues('paymentAmount') >= 0) {
-                        setRemIsValid(true);
-                      }
-                    }
-
-                    setSelections(newSelections);
-                  }}
-                >
-                  <option value={0} className="text-neutral-600">
-                    Select...
-                  </option>
-                  {grants?.map((i) => (
-                    <option
-                      value={i.id}
-                      key={i.id}
-                      className="text-neutral-900"
-                    >
-                      {i.name}
-                    </option>
-                  ))}
-                </Select>
-                {errors?.grantId && (
-                  <div className="text-red-500 pl-1">
-                    <Asterisk size={18}></Asterisk>
-                  </div>
-                )}
-              </div>
-
-              <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-10">
-                <div className="text-neutral-600/90 font-medium self-start">
-                  Comment
+                  <textarea
+                    {...register('comment')}
+                    className="p-2 border border-neutral-300 rounded-sm"
+                    rows={2}
+                  ></textarea>
                 </div>
-                <textarea
-                  {...register('comment')}
-                  className="p-2 border border-neutral-300 rounded-sm"
-                  rows={2}
-                ></textarea>
+                <PaymentEntryInput
+                  getValues={getValues}
+                  error={errors?.paymentAmount}
+                  register={register('paymentAmount')}
+                  available={availableAmount}
+                  onBlur={handleInputEntryOnBlur}
+                  onLessThanZero={handleLessThanZero}
+                  onOK={handleAmountOk}
+                ></PaymentEntryInput>
               </div>
-              <PaymentEntryInput
-                getValues={getValues}
-                error={errors?.paymentAmount}
-                register={register('paymentAmount')}
-                available={availableAmount}
-                onBlur={handleInputEntryOnBlur}
-                onLessThanZero={handleLessThanZero}
-                onOK={handleAmountOk}
-              ></PaymentEntryInput>
             </div>
             <div className="flex justify-end gap-2 border-t border-t-neutral-200 p-4">
               {/* {allSelections() && <span>have all selections</span>}

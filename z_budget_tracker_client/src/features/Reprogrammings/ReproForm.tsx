@@ -540,8 +540,9 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     return result;
   }
 
-  function handleSaveJust() {
+  function handleSaveJust(text: string) {
     setTimeout(() => setJustModalIsOpen(false), 500);
+    setReproHeader((prev) => ({ ...prev, justification: text }));
     reproEdited();
   }
 

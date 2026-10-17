@@ -13,22 +13,22 @@ const PaymentNew = () => {
   const { user } = useClientAuth();
   const lineItems: PaymentLineItem[] = [];
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
+  const [year2, setYear2] = useState(0);
 
   const { hasUnsavedChanges, setHasUnsavedChanges } =
     useHasUnsavedChangesStore();
 
-  let initialYear = 0;
   let justification = '';
 
   if (preloadState) {
-    initialYear = preloadState.year;
     justification = preloadState.justification ?? '';
+    if (year2 == 0) setYear2(+preloadState.year);
   }
 
   const defaultPayment: Payment = {
     uuid: crypto.randomUUID(),
     id: 0,
-    year: initialYear,
+    year: year2,
     justification: justification,
     createdBy: '',
     createdById: +user!.id!,
@@ -66,7 +66,6 @@ const PaymentNew = () => {
       },
     });
   };
-
 
   function handleInitialSaved(id: number) {
     setHasUnsavedChanges(false);
@@ -106,6 +105,7 @@ const PaymentNew = () => {
         onYearSelected={handleYearSelected}
         onSearchClick={handleSearchClick}
       ></PaymentControls>
+     
       {body()}
       <ConfirmModal
         isOpen={confirmModalIsOpen}

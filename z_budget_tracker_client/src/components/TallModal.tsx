@@ -59,10 +59,10 @@ const TallModal = ({
     >
       {/* modal */}
       <div
-        className={`${modalStyles} ${animateClass}  max-w-md bg-white bg-dark-nav self-center rounded-sm `}
+        className={`${modalStyles} ${animateClass} translate-y-7 max-w-md bg-white bg-dark-nav self-center rounded-sm `}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-full bg-neutral-200/30 h-full mb-2 p-3 flex justify-between align-center border-b border-gray-200 dark:border-b-neutral-800">
+        <div className="w-full bg-neutral-200/30  mb-2 p-3 flex justify-between align-center border-b border-gray-200 dark:border-b-neutral-800">
           <h2 className="m-0 p-0 text-2xl text-gray-800 dark:text-gray-200">
             {title}
           </h2>

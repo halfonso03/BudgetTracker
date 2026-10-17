@@ -96,6 +96,7 @@ const PayeeSearcher = ({
     setSelectedPayee(null);
     setSearching(false);
     onPayeeSelectionCleared();
+
   }
 
   return (
@@ -113,7 +114,7 @@ const PayeeSearcher = ({
           />
         )}
 
-        {selectedPayeeInfo && (
+        {selectedPayee && selectedPayeeInfo && (
           <div className="mb-2 pr-1 mt-1">
             <SelectedPayeeCard
               selectedPayeeInfo={selectedPayeeInfo}

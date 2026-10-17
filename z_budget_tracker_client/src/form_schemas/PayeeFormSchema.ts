@@ -6,7 +6,7 @@ export const PayeeFormSchema = Yup.object().shape({
     name: Yup.string().trim().required("*"),
     additionalInformation: Yup.string().nullable(),
     categoryId: Yup.number().notOneOf([0], '*').required("*"),
+    accountId: Yup.number().notOneOf([0], '*').required("*"),
     payeeTypeId: Yup.number().notOneOf([0], '*').required("*"),
-    accountId: Yup.number().required("*"),
     isActive: Yup.bool().required("*"),
 });

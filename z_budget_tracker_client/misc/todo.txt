@@ -1,7 +1,6 @@
 
 
 
-Payee detila account and catgory not selected
 payee - New same as above
 payments - amounts went 'NAN' when switch back to screen
 add budget audit

@@ -33,13 +33,11 @@ const PayeeForm = ({
   const [isActive, setIsActive] = useState(payee.isActive);
   const [payeeId, setPayeeId] = useState(payee.id);
 
-
-  console.log('payee', payee)
-  
   const {
     register,
     handleSubmit,
     setValues,
+    getValues,
     watch,
     formState: { errors },
   } = useForm<FormValues>({
@@ -55,71 +53,27 @@ const PayeeForm = ({
     },
   });
 
+
+  console.log('payee', payee.categoryId)
   const { createPayee, updatePayee } = usePayeeMutations();
   const { categories, catSuccess } = useCategories();
 
-  const [categoryIsSelected, setCategoryIsSelected] = useState(
-    payee.id === 0 ? false : true,
-  );
-
-  let categoryOptions =
-    categories !== null && categories!.length > 0
-      ? categories!.map((x: Category) => {
-          return { id: x.id, name: x.name };
-        })
-      : [];
-
-  console.log('categoryOptions', categoryOptions);
-
-  let payeeTypeOptions = [
+  const payeeTypeOptions = [
     { id: 1, name: 'Vendor' },
     { id: 2, name: 'Contractor' },
   ];
 
-  if (payee.id === 0) {
-    const oldC = [...categoryOptions];
-    categoryOptions.splice(0, categoryOptions.length);
-    categoryOptions = [{ id: 0, name: '-- Select a Category--' }, ...oldC];
-
-    const oldT = [...payeeTypeOptions];
-    payeeTypeOptions.splice(0, payeeTypeOptions.length);
-    payeeTypeOptions = [{ id: 0, name: '-- Select a Payee Type--' }, ...oldT];
-  }
-
-  // if (categories !== null && categories!.length > 0) {
-  //   if (payee.id === 0) {
-  //     const t2 = categories!
-  //       .filter((c) => c.id === categories![0].id)[0]
-  //       .accounts!.map((a: Account) => ({ ...a }));
-
-  //     accountOptionSetup = [
-  //       {
-  //         id: 0,
-  //         name: '-- Select an Account --',
-  //         number: '',
-  //         category_id: 0,
-  //       },
-  //       ...t2,
-  //     ];
-  //   } else {
-  //     accountOptionSetup = categories!.filter(
-  //       (c) => c.id === payee.categoryId,
-  //     )[0].accounts!;
-  //   }
-  // }
-
   // eslint-disable-next-line react-hooks/incompatible-library
   const categoryIdWatchValue = watch('categoryId') as number;
-
+console.log('categoryIdWatchValue', categoryIdWatchValue)
   const accounts =
     catSuccess && categories
       ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
       : [];
 
-  console.log('accounts', accounts);
-  function onCategoryChange() {
-    setCategoryIsSelected(true);
-  }
+  // function onCategoryChange() {
+  //   setCategoryIsSelected(true);
+  // }
 
   async function onSubmit(data: FormValues) {
     try {
@@ -203,6 +157,9 @@ const PayeeForm = ({
             error={errors?.payeeTypeId?.message}
           >
             <Select {...register('payeeTypeId')}>
+              {payeeId === 0 && (
+                <option value="0">--Select a Payee Type --</option>
+              )}
               {payeeTypeOptions.map((x) => (
                 <option value={x.id}>{x.name}</option>
               ))}
@@ -221,14 +178,28 @@ const PayeeForm = ({
             error={errors?.categoryId?.message}
             useMessage={true}
           >
-            <Select {...register('categoryId')} onChange={onCategoryChange}>
-              {categoryOptions?.map((x) => (
+            <Select {...register('categoryId')}>
+              {payeeId === 0 && (
+                <option value="0">--Select a Category --</option>
+              )}
+              {categories?.map((x) => (
                 <option value={x.id}>{x.name}</option>
               ))}
             </Select>
           </FormRow>
-          <FormRow id="accountId" label="Account">
-            <Select {...register('accountId')} disabled={!categoryIsSelected}>
+          <FormRow
+            id="accountId"
+            label="Account"
+            error={errors?.accountId?.message}
+            useMessage={true}
+          >
+            <Select
+              {...register('accountId')}
+              disabled={+getValues('categoryId') === 0}
+            >
+              {payeeId === 0 && (
+                <option value="0">--Select an Account --</option>
+              )}
               {accounts?.map((x) => (
                 <option value={x.id}>{x.name}</option>
               ))}

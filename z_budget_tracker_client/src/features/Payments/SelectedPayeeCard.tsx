@@ -69,7 +69,7 @@ const SelectedPayeeCard = ({
                         </span>
                       )}
                   </span>
-                  ]<br></br>
+                  ]
                   [No. of Payments: <span className="text-neutral-700">{selectedPayeeInfo.numberOfPayments}</span>
                   ]
                 </>
