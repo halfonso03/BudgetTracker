@@ -9,7 +9,6 @@ import { usePayeeSearch } from '../../api/hooks/payees/usePayeeSearch';
 import ScrollableDiv from '../../components/ScrollableDiv';
 import useSelectedPayeeInfo from '../../api/hooks/payments/useSelectedPayeeInfo';
 import InfoModal from './modals/InfoModal';
-import { usePayeePayments } from '../../api/hooks/payees/usePayeePayments';
 import SelectedPayeeCard from './SelectedPayeeCard';
 import Skeleton from 'react-loading-skeleton';
 import Spinner from '../../components/Spinner';
@@ -27,15 +26,13 @@ const PayeeSearcher = ({
 }: Props) => {
   let payeeIdToFind = 0;
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [inputFocused, stInputFocused] = useState(false);
   const [query, setQuery] = useState<string>(() => '');
   const [infoWindowIsOpen, setInfoWindowIsOpen] = useState(false);
   const [highlightedRow, setHighlightedRow] = useState(-1);
   const [selectedPayee, setSelectedPayee] = useState<Payee | null>(null);
   const [searching, setSearching] = useState(false);
-
-  usePayeePayments(selectedPayee?.id ?? 0);
 
   if (selectedPayee) {
     payeeIdToFind = selectedPayee.id;
@@ -45,10 +42,17 @@ const PayeeSearcher = ({
 
   const { data: suggestions, isFetching } = usePayeeSearch(query);
 
-  const { data: selectedPayeeInfo, isLoading: loadginSelectedPayeeInfo } =
-    useSelectedPayeeInfo(payeeIdToFind);
+  const {
+    data: selectedPayeeInfoFromDb,
+    isLoading: loadginSelectedPayeeInfo,
+    isSuccess: loadPayeeSuccess,
+  } = useSelectedPayeeInfo(payeeIdToFind);
 
-  // console.log('selectedPayeeInfo', selectedPayeeInfo);
+  if (loadPayeeSuccess) {
+    if (!selectedPayee && selectedPayeeInfoFromDb)
+      setSelectedPayee(selectedPayeeInfoFromDb);
+  }
+
   const selectRow = useCallback(
     (amount: number) => {
       if (suggestions && suggestions?.length && suggestions.length > 0) {
@@ -82,8 +86,8 @@ const PayeeSearcher = ({
         }
       }
     };
-    if (highlightedRow !== -1 && inputRef!.current!.value === '')
-      setHighlightedRow(-1);
+    // if (highlightedRow !== -1 && inputRef!.current!.value === '')
+    // setHighlightedRow(-1);
 
     window.addEventListener('keydown', handleKeyDown);
 
@@ -96,7 +100,6 @@ const PayeeSearcher = ({
     setSelectedPayee(null);
     setSearching(false);
     onPayeeSelectionCleared();
-
   }
 
   return (
@@ -114,10 +117,10 @@ const PayeeSearcher = ({
           />
         )}
 
-        {selectedPayee && selectedPayeeInfo && (
+        {selectedPayee && selectedPayeeInfoFromDb && (
           <div className="mb-2 pr-1 mt-1">
             <SelectedPayeeCard
-              selectedPayeeInfo={selectedPayeeInfo}
+              selectedPayeeInfo={selectedPayeeInfoFromDb}
               onRemoveSelection={onRemoveSelection}
               onOpenInfoWindow={() => setInfoWindowIsOpen(true)}
             ></SelectedPayeeCard>

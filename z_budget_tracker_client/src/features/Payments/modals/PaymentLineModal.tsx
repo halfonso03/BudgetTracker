@@ -115,9 +115,7 @@ const PaymentLineModal = (props: Props) => {
       shouldTouch: true,
       shouldValidate: true,
     };
-
     setPayee(payee);
-
     console.log(getValues('categoryId'));
 
     setValue('payeeId', payee.id, options);
@@ -135,6 +133,7 @@ const PaymentLineModal = (props: Props) => {
         setValue('accountId', payee.accountId, options);
       }, 0);
     }
+    setSelections((prev) => ({ ...prev, payeeId: payee.id }));
   }
 
   async function onSubmit(data: FormValues) {
@@ -273,7 +272,6 @@ const PaymentLineModal = (props: Props) => {
           ),
         }))
       : [];
-
   return (
     <PaginationContextProvider>
       <TallModal
@@ -302,31 +300,15 @@ const PaymentLineModal = (props: Props) => {
           <div className="flex flex-col justify-between h-full mt-2">
             <div className=" overflow-y-scroll h-[75dvh]">
               <div className="flex flex-col justify-between p-3 px-4 ">
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full mb-5">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <div className="text-neutral-600/90 font-medium">Year</div>
                   <div className="text-neutral-700/90 font-medium">
                     {paymentYear}
                   </div>
                 </div>
-                <div className="relative flex items-center mb-5">
-                  <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full">
-                    <div className="text-neutral-600/90 font-medium">Payee</div>
-                    <PayeeSearcher
-                      onPayeeSelected={handlePayeeSelected}
-                      onPayeeSelectionCleared={handlePayeeSelectionCleared}
-                      payeeId={selections?.payeeId}
-                    ></PayeeSearcher>
-                    <div className="self-center">
-                      {errors.payeeId && (
-                        <div className="text-red-500 pl-1">
-                          <Asterisk size={18}></Asterisk>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                <div className="relative flex items-center mb-3"></div>
                 <div></div>
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-3">
                   <div className="text-neutral-600/90 font-medium">
                     Initiative
                   </div>
@@ -412,7 +394,7 @@ const PaymentLineModal = (props: Props) => {
                   )}
                 </div>
 
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-5 ">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-3 ">
                   <div className="text-neutral-600/90 font-medium">Grant</div>
                   <Dropdown
                     options={grantsForDropdown}
@@ -495,7 +477,7 @@ const PaymentLineModal = (props: Props) => {
                   )}
                 </div>
 
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center  mb-5">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center  mb-3">
                   <div className="text-neutral-600/90 font-medium">
                     Category
                   </div>
@@ -543,7 +525,7 @@ const PaymentLineModal = (props: Props) => {
                     ))}
                   </Select> */}
                 </div>
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-5">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-3">
                   <div className="text-neutral-600/90 font-medium">Account</div>
                   <Dropdown
                     options={accountsForDropdown}
@@ -604,8 +586,25 @@ const PaymentLineModal = (props: Props) => {
                   </div>
                 )} */}
                 </div>
-
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-5">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full mb-3">
+                  <div className="text-neutral-600/90 font-medium">
+                    Payee
+                    {selections?.payeeId}
+                  </div>
+                  <PayeeSearcher
+                    onPayeeSelected={handlePayeeSelected}
+                    onPayeeSelectionCleared={handlePayeeSelectionCleared}
+                    payeeId={selections?.payeeId}
+                  ></PayeeSearcher>
+                  <div className="self-center">
+                    {errors.payeeId && (
+                      <div className="text-red-500 pl-1">
+                        <Asterisk size={18}></Asterisk>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-3">
                   <div className="text-neutral-600/90 font-medium self-start">
                     Comment
                   </div>
@@ -664,6 +663,7 @@ const PaymentLineModal = (props: Props) => {
     </PaginationContextProvider>
   );
 };
+
 export default PaymentLineModal;
 
 const checkKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {

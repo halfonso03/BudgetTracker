@@ -26,12 +26,14 @@ const SelectedPayeeCard = ({
             <div className="text-neutral-700 font-medium">
               <div className="flex justify-between font-semibold tracking-wider">
                 {selectedPayeeInfo?.name}
-                <div
-                  className="text-neutral-500 cursor-pointer "
-                  onClick={onOpenInfoWindow}
-                >
-                  <Info size={18}></Info>
-                </div>
+                {selectedPayeeInfo?.lastPaymentDate && (
+                  <div
+                    className="text-neutral-500 cursor-pointer "
+                    onClick={onOpenInfoWindow}
+                  >
+                    <Info size={18}></Info>
+                  </div>
+                )}
               </div>
             </div>
             <div className="text-neutral-500 text-[.95rem]">
@@ -42,7 +44,9 @@ const SelectedPayeeCard = ({
               ]<br></br>
               [Charge Account:{' '}
               <span className="text-neutral-700">
-                {selectedPayeeInfo.categoryName + ' - ' + selectedPayeeInfo.accountName}
+                {selectedPayeeInfo.categoryName +
+                  ' - ' +
+                  selectedPayeeInfo.accountName}
               </span>
               ]<br></br>
               {selectedPayeeInfo?.lastPaymentDate && (
@@ -69,8 +73,10 @@ const SelectedPayeeCard = ({
                         </span>
                       )}
                   </span>
-                  ]
-                  [No. of Payments: <span className="text-neutral-700">{selectedPayeeInfo.numberOfPayments}</span>
+                  ] [No. of Payments:{' '}
+                  <span className="text-neutral-700">
+                    {selectedPayeeInfo.numberOfPayments}
+                  </span>
                   ]
                 </>
               )}

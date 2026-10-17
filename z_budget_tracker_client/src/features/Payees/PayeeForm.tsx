@@ -53,7 +53,6 @@ const PayeeForm = ({
     },
   });
 
-  console.log('payee', payee.categoryId);
 
   const { createPayee, updatePayee } = usePayeeMutations();
   const { categories, catSuccess } = useCategories();

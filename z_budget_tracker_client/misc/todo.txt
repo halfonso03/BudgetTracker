@@ -3,11 +3,9 @@
 
 payee - New same as above
 payments - amounts went 'NAN' when switch back to screen
-add budget audit
-add check number for each payment line
-remove the $ from the payee line, only use the budget sumary $
-add a 2E link to the budget summary
 
+add check number for each payment line
+add a 2E link to the budget summary
 
 
 
@@ -17,7 +15,7 @@ Make exclusive work for initiative and account
  ? -- add delete budget when no reprogrammings and no expenses
 
 
-
-
+DONE remove the $ from the payee line, only use the budget sumary $
+DONE add budget audit
 DONE show comment modal when creating reprogramming from sumamry page
 DONE fix comments moda, not reverting comment to roginal when Cancel is clicked
