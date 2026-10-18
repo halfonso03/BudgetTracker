@@ -43,22 +43,36 @@ interface Props {
   onSaved?: () => void;
   onInitialSave?: (newId: number) => void;
   onIsDirty: (dirty: boolean) => void;
+  preloadedValues?: PaymentPreloadedValues | null;
 }
 
-const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
+const PaymentForm = ({
+  payment,
+  onSaved,
+  onInitialSave,
+  onIsDirty,
+  preloadedValues,
+}: Props) => {
+  let initialEditSelection: PaymentLineItemSelections | null = null;
+
   const { user, loginId } = useClientAuth();
   const queryClient = useQueryClient();
   const location = useLocation();
 
   const created = location.state?.created ? true : false;
-
-  const [paymentLineModalIsOpen, setPaymentLineModalIsOpen] = useState(false);
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [confirmPostModalIsOpen, setConfirmPostModal] =
     useState<boolean>(false);
+
+  if (preloadedValues !== null && preloadedValues !== undefined) {
+    console.log('preloadedValues', preloadedValues);
+    console.log('initialSelection', initialEditSelection);
+    initialEditSelection = { ...preloadedValues, uuid: crypto.randomUUID() };
+  }
+
   const [editSelections, setEditSelections] =
-    useState<PaymentLineItemSelections | null>(null);
+    useState<PaymentLineItemSelections | null>(initialEditSelection);
 
   if (payment.year === 0) throw new Error('no year');
 
@@ -79,6 +93,10 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
       };
       return line;
     }),
+  );
+
+  const [paymentLineModalIsOpen, setPaymentLineModalIsOpen] = useState(
+    initialEditSelection !== null || payment.lineItems.length === 0,
   );
 
   const { setValue, register, getValues } = useForm<PaymentInputRows>({
@@ -196,8 +214,6 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
 
     let index = -1;
 
-    console.log('updatedLine.paymentAmount', updatedLine.paymentAmount);
-
     const newLines = lines.map((l: PaymentLineItem, i: number) => {
       if (l.uuid !== updatedLine.uuid) return l;
 
@@ -296,7 +312,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
       const paymentAmount = parseFormattedNumber(
         getValues(`rows.${index}.paymentAmount`) as string,
       );
-     
+
       const updatedLine: PaymentLineItem = {
         ...line,
         paymentAmount: formatNumber(paymentAmount),
@@ -345,6 +361,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
       console.log('error', error);
     }
   }
+
   async function sendCreatePayment(
     lineItems: PaymentLineItemRequest[],
     posted: boolean = false,
@@ -734,6 +751,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
             onLineUpdated={handleLineUpdated}
             selections={editSelections}
             uuid={editSelections?.uuid || null}
+            fromRedirect={initialEditSelection !== null}
             onCancel={() => {
               setTimeout(() => {
                 setPaymentLineModalIsOpen(false);
@@ -742,32 +760,6 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
             }}
           ></PaymentLineModal>
         )}
-
-        {/* <AddLineModal
-          year={payment.year}
-          isOpen={addLineModalIsOpen}
-          onLineAdded={handleLineAdded}
-          selections={editSelections}
-          onCancel={() => {
-            setTimeout(() => {
-              setAddLineModalIsOpen(false);
-            }, 500);
-          }}
-        ></AddLineModal> */}
-        {/* {editSelections && (
-          <EditLineModal
-            year={payment.year}
-            uuid={editSelections.uuid}
-            isOpen={editSelections !== null}
-            selections={editSelections}
-            onLineUpdated={handleLineUpdated}
-            onCancel={() => {
-              setTimeout(() => {
-                setEditSelections(null);
-              }, 500);
-            }}
-          ></EditLineModal>
-        )} */}
         <JustificaModal
           canEdit={paymentHeader.status !== POSTED}
           isOpen={justModalIsOpen}
@@ -801,7 +793,7 @@ const PaymentForm = ({ payment, onSaved, onInitialSave, onIsDirty }: Props) => {
               setConfirmPostModal(false);
             }, 500);
           }}
-          message="This reprogramming wil be posted. Click OK to continue."
+          message="This payment wil be posted. Click OK to continue."
         ></ConfirmModal>
       </div>
     </MenuIdProvider>
@@ -838,7 +830,9 @@ function noDupLines(lines: PaymentLineItem[]): boolean {
       '--' +
       l.categoryName +
       '--' +
-      l.accountId.toString();
+      l.accountId.toString() +
+      '--' +
+      l.payeeId.toString();
     if (counts.some((x) => x.name === entity)) {
       const currCount = counts.filter((x) => x.name === entity)[0];
       currCount.count += 1;

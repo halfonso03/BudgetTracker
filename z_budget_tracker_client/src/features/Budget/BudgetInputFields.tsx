@@ -254,7 +254,7 @@ const BudgetInputFields = ({
       <div
         className={`flex py-1 justify-around cursor-pointer text-blue-500 self-center ${isLastRow ? 'bg-neutral-100' : ''}`}
       >
-        {!isLastRow ? (
+        {!isLastRow && parseFormattedNumber(remaining) > 0 ? (
           <>
             <Link
               to={`/reprogramming/${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`}
@@ -266,7 +266,7 @@ const BudgetInputFields = ({
             <DollarSign
               onClick={() => {
                 navigate(
-                  `/disbusersement/create/${initiativeId}/${grantId}/${accountId}`,
+                  `/payments//${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`,
                 );
               }}
             ></DollarSign>

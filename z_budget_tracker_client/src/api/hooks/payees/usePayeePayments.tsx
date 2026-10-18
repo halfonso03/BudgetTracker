@@ -14,6 +14,7 @@ export const usePayeePayments = (payeeId: number) => {
   }>({
     queryKey: ['payee', 'payments', payeeId, pageNumber, sortByValue],
     staleTime: 1 * 60 * 1000,
+    enabled: payeeId !== 0,
     queryFn: async () => {
       const response = await agent.get(
         `/payee/payments?payeeId=${payeeId}&pageNumber=${pageNumber}&sortBy=${sortByValue}`,

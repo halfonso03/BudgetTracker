@@ -23,17 +23,15 @@ const Summary = ({ year }: Props) => {
 
   if (!data) return null;
 
+  const activeAccounts = data.map((x) => {
+    const ac = x.account_balances.filter(
+      (x) => x.amount != 0 || x.current_amount !== 0 || x.spent_amount !== 0,
+    );
 
-  
-  const activeAccounts = data.map(x => {
-    const ac = x.account_balances.filter(x => x.amount != 0 || x.current_amount !== 0 || x.spent_amount !== 0);
+    return { ...x, account_balances: ac };
+  });
 
-    return {...x, account_balances: ac}
-  })
 
-  console.log('activeAccounts', activeAccounts[0])
-
-  
   const budgetSummaries: BudgetSummary[] = activeAccounts.map((b) => {
     return {
       initiative_id: b.initiative_id,
@@ -288,7 +286,9 @@ function CategorySummary({
                   <span className="text-neutral-400">-</span>
                 )}
               </div>
-              <div className={`text-end ${c.current_amount + c.spent_amount < 0 && "text-red-500"}`}>
+              <div
+                className={`text-end ${c.current_amount + c.spent_amount < 0 && 'text-red-500'}`}
+              >
                 {c.current_amount + c.spent_amount > 0 ? (
                   formatCurrency(c.current_amount - c.spent_amount)
                 ) : (
@@ -370,7 +370,7 @@ function CategorySummary({
                         <DollarSign
                           onClick={() => {
                             navigate(
-                              `/disbusersement/create/${initiativeId}/${grantId}/${i.account_id}`,
+                              `/payments/${year}/${initiativeId}/${grantId}/${i.category_id}/${i.account_id}`,
                             );
                           }}
                         ></DollarSign>

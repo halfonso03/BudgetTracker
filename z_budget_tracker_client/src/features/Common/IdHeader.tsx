@@ -10,7 +10,7 @@ const SAVED = 2;
 const POSTED = 3;
 
 const IdHeader = React.memo(({ id, status, created }: Props) => {
-  console.log('IdHeader render');
+  // console.log('IdHeader render');
 
   return (
     <div className={`flex gap-10 ${created ? '' : 'animate-page-fade-in'}`}>

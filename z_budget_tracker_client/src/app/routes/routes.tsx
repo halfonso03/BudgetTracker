@@ -193,7 +193,7 @@ export const routes: RouteObject[] = [
             ),
           },
           {
-            path: ':payeeId/:categoryId/:accountId',
+            path: ':year/:initiativeId/:grantId/:categoryId/:accountId',
             element: (
               <ProtectedRoute>
                 <PaymentPreload></PaymentPreload>

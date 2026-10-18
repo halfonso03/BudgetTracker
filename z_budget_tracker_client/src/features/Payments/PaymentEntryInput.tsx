@@ -63,7 +63,6 @@ const PaymentEntryInput = ({
               if (e.target.value) {
                 let value = parseFormattedNumber(e.target.value);
                 if (isNaN(value)) value = 0;
-                console.log('value', value);
                 if (available - value >= 0) {
                   onOK?.(value);
                 } else {

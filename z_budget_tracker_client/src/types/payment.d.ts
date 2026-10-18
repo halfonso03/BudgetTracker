@@ -116,3 +116,13 @@ type UpdatePaymentRequest = {
     posted: boolean
     lineItems: PaymentLineItemRequest[]
 }
+
+
+
+type PaymentPreloadedValues = {
+    initiativeId?: number
+    grantId?: number
+    categoryId?: number
+    accountId?: number
+}
+

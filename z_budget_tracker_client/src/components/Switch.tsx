@@ -12,7 +12,6 @@ const Switch = ({ isOn, handleToggle }: Props) => {
       <input
         checked={isOn}
         onChange={() => {
-console.log('123', 123)
           handleToggle();
         }}
         className="react-switch-checkbox"

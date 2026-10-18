@@ -12,7 +12,7 @@ type Props = {
 };
 
 const JustificaModal = ({ itemComment, ...props }: Props) => {
-  console.log('JustificaModal render');
+  // console.log('JustificaModal render');
 
   const [animateOut, setAnimateOut] = useState(false);
   // const [hasComment, setHasComment] = useState<boolean>(false);

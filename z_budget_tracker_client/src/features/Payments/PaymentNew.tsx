@@ -13,22 +13,35 @@ const PaymentNew = () => {
   const { user } = useClientAuth();
   const lineItems: PaymentLineItem[] = [];
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-  const [year2, setYear2] = useState(0);
-
   const { hasUnsavedChanges, setHasUnsavedChanges } =
     useHasUnsavedChangesStore();
 
+  let initialYear = 0;
   let justification = '';
+  let forcePaymentLineModal = false;
+  let preloadedValues: PaymentPreloadedValues | null = null;
 
   if (preloadState) {
     justification = preloadState.justification ?? '';
-    if (year2 == 0) setYear2(+preloadState.year);
+    initialYear = +preloadState.year;
+
+    if (preloadState.ids) {
+      forcePaymentLineModal = true;
+      initialYear = preloadState.ids.year;
+
+      preloadedValues = {
+        initiativeId: preloadState.ids.initiativeId,
+        grantId: preloadState.ids.grantId,
+        categoryId: preloadState.ids.categoryId,
+        accountId: preloadState.ids.accountId,
+      };
+    }
   }
 
   const defaultPayment: Payment = {
     uuid: crypto.randomUUID(),
     id: 0,
-    year: year2,
+    year: initialYear,
     justification: justification,
     createdBy: '',
     createdById: +user!.id!,
@@ -38,7 +51,6 @@ const PaymentNew = () => {
   };
 
   const [payment, setPayment] = useState<Payment>(defaultPayment);
-
   useEffect(() => {
     navigate(location.pathname, { replace: true, state: {} });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -93,6 +105,7 @@ const PaymentNew = () => {
           payment={payment}
           onInitialSave={handleInitialSaved}
           onIsDirty={handleIsDirty}
+          preloadedValues={preloadedValues}
         ></PaymentForm>
       );
     }
@@ -105,7 +118,7 @@ const PaymentNew = () => {
         onYearSelected={handleYearSelected}
         onSearchClick={handleSearchClick}
       ></PaymentControls>
-     
+
       {body()}
       <ConfirmModal
         isOpen={confirmModalIsOpen}

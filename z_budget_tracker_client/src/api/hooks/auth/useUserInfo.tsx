@@ -11,7 +11,6 @@ const useUserInfo = () => {
     queryKey: ['user'],
     queryFn: async () => {
       const response = await agent.get<User>('/account/user-info');
-      console.log(response.data);
       return response.data;
     },
   });

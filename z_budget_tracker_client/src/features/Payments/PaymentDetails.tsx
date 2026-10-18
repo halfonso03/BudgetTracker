@@ -70,7 +70,6 @@ const PaymentDetails = () => {
           { id: paymentFromDb!.id!, userId: +user!.id! },
           {
             onSuccess: async (payment) => {
-              console.log('payment', payment)
               toast.success(
                 <div>
                   <div className="pb-1">{`Payment Id ${+id!} duplicated.`}</div>

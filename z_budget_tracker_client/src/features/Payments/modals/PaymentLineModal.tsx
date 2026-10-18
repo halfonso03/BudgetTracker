@@ -11,7 +11,7 @@ import { useForm, type Resolver } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { PaymentFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
-import { Asterisk } from 'lucide-react';
+import { Asterisk, X } from 'lucide-react';
 import {
   formatCurrency,
   formatNumber,
@@ -21,8 +21,9 @@ import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailabl
 import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeInfo';
 import Dropdown, { type Option } from 'react-dropdown';
 import useCurrentAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
+import { usePayeePayments } from '../../../api/hooks/payees/usePayeePayments';
 
-type Selections = {
+type PaymentLineItemSelections = {
   initiativeId?: number;
   grantId?: number;
   categoryId?: number;
@@ -34,28 +35,36 @@ type Selections = {
 
 type Props = {
   year: number;
-  selections: Selections | null;
+  selections: PaymentLineItemSelections | null;
   uuid: string | null;
   onLineAdded: (lineItem: PaymentLineItem) => void;
   onLineUpdated: (lineItem: PaymentLineItem) => void;
   onCancel: () => void;
+  fromRedirect: boolean;
 };
 
 type FormValues = Yup.InferType<typeof PaymentFormSchema>;
 
 const PaymentLineModal = (props: Props) => {
+  // console.log('uuid', props.uuid)
+  console.log('fromRedirect', props.fromRedirect);
+
+  // console.log('selections', props.selections)
   const [animateOut, setAnimateOut] = useState(false);
   const [payee, setPayee] = useState<Payee | null>(null);
   const [remIsvalid, setRemIsValid] = useState(true);
   const [paymentYear] = useState(() => props.year);
+  const [fromRedirect, setFromRedirect] = useState(() => props.fromRedirect);
 
+  const [redirectMessageIsOpen, setRedirectMessagIsOpen] =
+    useState(fromRedirect);
   const { grants, grantsSuccess } = useGrants(paymentYear);
   const { initiatives, iSuccess: loadInitiativesSuccess } = useInitiatives();
   const { categories, catSuccess } = useCategories();
 
-  const [selections, setSelections] = useState<Selections | null>(
-    props.selections,
-  );
+  const [selections, setSelections] =
+    useState<PaymentLineItemSelections | null>(props.selections);
+
   const { data: selectedEditPayee } = useSelectedPayeeInfo(selections?.payeeId);
 
   const { data: balances, loadingBalances } = useCurrentAccountBalances(
@@ -65,6 +74,8 @@ const PaymentLineModal = (props: Props) => {
   );
 
   let availableAmount = 0;
+
+  // usePayeePayments(payee?.id ?? 0);
 
   const {
     register,
@@ -116,8 +127,6 @@ const PaymentLineModal = (props: Props) => {
       shouldValidate: true,
     };
     setPayee(payee);
-    console.log(getValues('categoryId'));
-
     setValue('payeeId', payee.id, options);
 
     if (+getValues('categoryId') === 0) {
@@ -287,6 +296,8 @@ const PaymentLineModal = (props: Props) => {
           onKeyDown={checkKeyDown}
           className="self-center h-full w-full"
         >
+          {/* {props.fromRedirect && <div className="p-3">Redirectir</div>} */}
+
           {/* payee id: {getValues('payeeId')} */}
           {/* <br></br>
           initiative id: {getValues('initiativeId')}
@@ -297,6 +308,22 @@ const PaymentLineModal = (props: Props) => {
           <br></br>
           account id: {getValues('accountId')}
           <br></br> */}
+          {fromRedirect && redirectMessageIsOpen && (
+            <div className="p-3  border border-red-400 bg-red-50 flex items-center relative">
+              <div className="flex-1 text-lg">
+                Initiative, Grant, Category and Account have been pre-selected.
+              </div>
+              <div>
+                <X
+                  size={23}
+                  className="absolute top-1 right-1 text-red-600 border border-transparent hover:text-red-400
+               transition-all duration-200 cursor-pointer"
+                  onClick={() => setRedirectMessagIsOpen(false)}
+                ></X>
+              </div>
+            </div>
+          )}
+
           <div className="flex flex-col justify-between h-full mt-2">
             <div className=" overflow-y-scroll h-[75dvh]">
               <div className="flex flex-col justify-between p-3 px-4 ">

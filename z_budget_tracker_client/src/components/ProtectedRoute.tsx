@@ -20,7 +20,7 @@ const ProtectedRoute = ({ children }: Props) => {
     if (serverUser && serverUserSuccess && !clientAuth.isLoggedIn()) {
       clientAuth.login(serverUser);
       navigate(location.pathname);
-      console.log('location', location);
+      // console.log('location', location);
     }
   }, [clientAuth, location, navigate, serverUser, serverUserSuccess]);
 
