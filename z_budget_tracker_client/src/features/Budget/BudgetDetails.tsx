@@ -575,11 +575,13 @@ const BudgetDetails = () => {
             }}
           ></TransactionsModal>
         )}
-        {changesModalIsOpen && (
+        {changesModalIsOpen && initiative && grant && grantId && initiativeId && (
           <ChangesModal
             isOpen={true}
-            initiativeId={+initiativeId!}
-            grantId={+grantId!}
+            initiativeId={+initiativeId}
+            initiativeName={initiative.name}
+            grantName={grant.name}
+            grantId={+grantId}
             onCancel={() => {
               setTimeout(() => {
                 setChangesModalIsOpen(false);

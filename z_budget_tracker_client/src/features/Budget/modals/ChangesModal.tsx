@@ -15,10 +15,18 @@ type Props = {
   initiativeId: number;
   grantId: number;
   isOpen: boolean;
+  initiativeName: string;
+  grantName: string;
   onCancel: () => void;
 };
 
-const ChangeModal = ({ initiativeId, grantId, ...props }: Props) => {
+const ChangeModal = ({
+  initiativeId,
+  grantId,
+  initiativeName,
+  grantName,
+  ...props
+}: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
   const { data: audits, isLoading: loadingAudits } = useBudgetAudit(
     initiativeId,
@@ -40,18 +48,22 @@ const ChangeModal = ({ initiativeId, grantId, ...props }: Props) => {
     );
 
   return (
-    <Modal2 size="lg" title="Budget Audit" animateOut={animateOut} {...props}>
-      <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] font-medium p-2 px-3 bg-neutral-200/50 text-neutral-500 border border-neutral-300/60 rounded-t-sm">
-        <div>Acount</div>
+    <Modal2
+      size="lg"
+      title={`Budget Audit | ${initiativeName} - ${grantName}`}
+      animateOut={animateOut}
+      {...props}
+    >
+      <div className="grid grid-cols-[1.3fr_1fr_1fr_1fr_1fr] font-medium p-2 px-3 bg-neutral-200/50 text-neutral-500 border border-neutral-300/60 rounded-t-sm">
         <div>Version</div>
+        <div>Acount</div>
         <div className="text-center">New Amount</div>
         <div className="text-center">Updated By</div>
         <div className="text-center">Update Date</div>
       </div>
       <div className="border-l border-r border-b border-neutral-300/60 mb-4 h-[65dvh] overflow-y-scroll">
         {audits?.map((a, index) => {
-
-          console.log('  a.version',   a.version)
+          console.log('  a.version', a.version);
           const classes =
             a.version === BUDGET_AUDIT_INITIAL_VERSION
               ? 'border-blue-500'
@@ -61,13 +73,12 @@ const ChangeModal = ({ initiativeId, grantId, ...props }: Props) => {
                   ? 'border-red-500'
                   : 'border-neutral-300';
           return (
-            <div
-              key={index}
-              className={`  last:border-0 mt-1  p-1`}
-            >
-              <div className={`hover:bg-neutral-100/60 grid grid-cols-[1fr_1fr_1fr_1fr_1fr] border p-2 px-3 ${classes}`}>
+            <div key={index} className={`  last:border-0 mt-1  p-1`}>
+              <div
+                className={`hover:bg-neutral-100/60 grid grid-cols-[1.3fr_1fr_1fr_1fr_1fr] border p-2 px-3 ${classes}`}
+              >
+                <div className='font-medium'>{a.accountName}</div>
                 <div>{a.version}</div>
-                <div>{a.accountName}</div>
                 <div className="text-center">{formatCurrency(a.amount)}</div>
                 <div className="text-center">{a.updatedBy}</div>
                 <div className="text-center">
