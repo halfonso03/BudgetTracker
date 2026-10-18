@@ -50,12 +50,12 @@ const PaymentEntryInput = ({
           {formatCurrency(available)}
         </div>
       </div>
-      <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center ">
+      <div className="grid grid-cols-[.45fr_.35fr_1fr]  w-full items-center ">
         <div className="  text-neutral-600/90 font-medium">Payment Amount</div>
         <div>
           <NumericInputReactHookForm
             register={register}
-            readOnly={false}
+            readOnly={false}            
             onBlur={(e) => {
               register.onBlur(e);
               onBlur?.(e);
@@ -74,7 +74,7 @@ const PaymentEntryInput = ({
               register.onChange(e);
               // setPaymentAmount(e.target.value);
             }}
-            className="w-[40%] text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-300 
+            className="w-full text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-300 
             focus:dark:border-gray-100 dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-neutral-800 dark:border-gray-500"
           ></NumericInputReactHookForm>
         </div>

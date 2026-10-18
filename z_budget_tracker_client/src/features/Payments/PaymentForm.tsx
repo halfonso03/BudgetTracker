@@ -58,7 +58,6 @@ const PaymentForm = ({
   const { user, loginId } = useClientAuth();
   const queryClient = useQueryClient();
   const location = useLocation();
-
   const created = location.state?.created ? true : false;
   const [justModalIsOpen, setJustModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
@@ -66,8 +65,8 @@ const PaymentForm = ({
     useState<boolean>(false);
 
   if (preloadedValues !== null && preloadedValues !== undefined) {
-    console.log('preloadedValues', preloadedValues);
-    console.log('initialSelection', initialEditSelection);
+    // console.log('preloadedValues', preloadedValues);
+    // console.log('initialSelection', initialEditSelection);
     initialEditSelection = { ...preloadedValues, uuid: crypto.randomUUID() };
   }
 
@@ -96,7 +95,7 @@ const PaymentForm = ({
   );
 
   const [paymentLineModalIsOpen, setPaymentLineModalIsOpen] = useState(
-    initialEditSelection !== null || payment.lineItems.length === 0,
+    (initialEditSelection !== null || payment.lineItems.length === 0) ,
   );
 
   const { setValue, register, getValues } = useForm<PaymentInputRows>({
@@ -189,10 +188,10 @@ const PaymentForm = ({
     };
   }, [getErrors, lines, paymentHeader.status]);
 
+
   function handleLineAdded(newLine: PaymentLineItem) {
     // setTimeout(() => setAddLineModalIsOpen(false), 500);
     setTimeout(() => setPaymentLineModalIsOpen(false), 500);
-
     setLines([
       ...lines,
       {
@@ -555,10 +554,16 @@ const PaymentForm = ({
     }
   }
 
+  function closeLineModal() {
+    setTimeout(() => {
+      setPaymentLineModalIsOpen(false);
+    }, 500);
+  }
+
   return (
     <MenuIdProvider>
       <div>
-        {/* <pre>{JSON.stringify(lines)}</pre> */}
+        <pre>{JSON.stringify(lines)}</pre>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           <div
             className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
@@ -752,12 +757,7 @@ const PaymentForm = ({
             selections={editSelections}
             uuid={editSelections?.uuid || null}
             fromRedirect={initialEditSelection !== null}
-            onCancel={() => {
-              setTimeout(() => {
-                setPaymentLineModalIsOpen(false);
-                // setAddLineModalIsOpen(false);
-              }, 500);
-            }}
+            onCancel={closeLineModal}
           ></PaymentLineModal>
         )}
         <JustificaModal

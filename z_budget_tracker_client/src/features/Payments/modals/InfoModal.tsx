@@ -14,7 +14,7 @@ const InfoModal = ({ ...props }: Props) => {
       <Modal2 size="xl" title="Payee Information" animateOut={false} {...props}>
         <div className=" mb-4 gap-4">
           {props.payeeId && (
-            <PayeePaymentsList payeeId={props.payeeId}></PayeePaymentsList>
+            <PayeePaymentsList payeeId={props.payeeId} showSkeleton={false}></PayeePaymentsList>
           )}
         </div>
         <div className="flex justify-end gap-3 pb-3">

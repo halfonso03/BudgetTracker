@@ -21,7 +21,7 @@ import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailabl
 import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeInfo';
 import Dropdown, { type Option } from 'react-dropdown';
 import useCurrentAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
-import { usePayeePayments } from '../../../api/hooks/payees/usePayeePayments';
+import { useEscapeKey } from '../../../hooks/useEscapeKey';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -46,16 +46,13 @@ type Props = {
 type FormValues = Yup.InferType<typeof PaymentFormSchema>;
 
 const PaymentLineModal = (props: Props) => {
-  // console.log('uuid', props.uuid)
-  console.log('fromRedirect', props.fromRedirect);
+  useEscapeKey(closeModal);
 
-  // console.log('selections', props.selections)
   const [animateOut, setAnimateOut] = useState(false);
   const [payee, setPayee] = useState<Payee | null>(null);
   const [remIsvalid, setRemIsValid] = useState(true);
   const [paymentYear] = useState(() => props.year);
-  const [fromRedirect, setFromRedirect] = useState(() => props.fromRedirect);
-
+  const [fromRedirect] = useState(() => props.fromRedirect);
   const [redirectMessageIsOpen, setRedirectMessagIsOpen] =
     useState(fromRedirect);
   const { grants, grantsSuccess } = useGrants(paymentYear);
@@ -147,7 +144,9 @@ const PaymentLineModal = (props: Props) => {
 
   async function onSubmit(data: FormValues) {
     closeModal();
-    if (!props.uuid) {
+    console.log('props.fromRedirect', fromRedirect);
+    console.log('!props.uuid', props.uuid);
+    if (!props.uuid || fromRedirect) {
       const newLine: PaymentLineItem = {
         ...data,
         rowId: -1,
@@ -281,6 +280,7 @@ const PaymentLineModal = (props: Props) => {
           ),
         }))
       : [];
+
   return (
     <PaginationContextProvider>
       <TallModal
@@ -309,16 +309,18 @@ const PaymentLineModal = (props: Props) => {
           account id: {getValues('accountId')}
           <br></br> */}
           {fromRedirect && redirectMessageIsOpen && (
-            <div className="p-3  border border-red-400 bg-red-50 flex items-center relative">
+            <div className="p-3  border border-blue-400 bg-blue-50 flex items-center relative">
               <div className="flex-1 text-lg">
                 Initiative, Grant, Category and Account have been pre-selected.
               </div>
-              <div>
+              <div
+                onClick={() => setRedirectMessagIsOpen(false)}
+                className="absolute top-1 right-1 p-1  transition-all duration-200  cursor-pointer hover:bg-blue-200/70"
+              >
                 <X
                   size={23}
-                  className="absolute top-1 right-1 text-red-600 border border-transparent hover:text-red-400
-               transition-all duration-200 cursor-pointer"
-                  onClick={() => setRedirectMessagIsOpen(false)}
+                  className=" text-blue-500 border border-transparent hover:text-blue-700
+               transition-all duration-200 "
                 ></X>
               </div>
             </div>
@@ -335,6 +337,7 @@ const PaymentLineModal = (props: Props) => {
                 </div>
                 <div className="relative flex items-center mb-3"></div>
                 <div></div>
+
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-3">
                   <div className="text-neutral-600/90 font-medium">
                     Initiative
@@ -631,7 +634,7 @@ const PaymentLineModal = (props: Props) => {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-3">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-7">
                   <div className="text-neutral-600/90 font-medium self-start">
                     Comment
                   </div>
@@ -641,15 +644,20 @@ const PaymentLineModal = (props: Props) => {
                     rows={2}
                   ></textarea>
                 </div>
-                <PaymentEntryInput
-                  getValues={getValues}
-                  error={errors?.paymentAmount}
-                  register={register('paymentAmount')}
-                  available={availableAmount}
-                  onBlur={handleInputEntryOnBlur}
-                  onLessThanZero={handleLessThanZero}
-                  onOK={handleAmountOk}
-                ></PaymentEntryInput>
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]">
+                  <div className="col-span-2 border-t border-b p-2 border-neutral-200 py-4 ">
+                    <PaymentEntryInput
+                      getValues={getValues}
+                      error={errors?.paymentAmount}
+                      register={register('paymentAmount')}
+                      available={availableAmount}
+                      onBlur={handleInputEntryOnBlur}
+                      onLessThanZero={handleLessThanZero}
+                      onOK={handleAmountOk}
+                    ></PaymentEntryInput>
+                  </div>
+                  <div></div>
+                </div>
               </div>
             </div>
             <div className="flex justify-end gap-2 border-t border-t-neutral-200 p-4">
@@ -678,7 +686,7 @@ const PaymentLineModal = (props: Props) => {
                     0
                 }
               >
-                {props.uuid ? 'Update Payment' : 'Add Payment'}
+                {!fromRedirect && props.uuid ? 'Update Payment' : 'Add Payment'}
               </Button>
               <Button variation="secondary" onClick={closeModal}>
                 Cancel

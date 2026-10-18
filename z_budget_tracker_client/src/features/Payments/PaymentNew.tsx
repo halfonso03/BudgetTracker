@@ -18,7 +18,6 @@ const PaymentNew = () => {
 
   let initialYear = 0;
   let justification = '';
-  let forcePaymentLineModal = false;
   let preloadedValues: PaymentPreloadedValues | null = null;
 
   if (preloadState) {
@@ -26,7 +25,6 @@ const PaymentNew = () => {
     initialYear = +preloadState.year;
 
     if (preloadState.ids) {
-      forcePaymentLineModal = true;
       initialYear = preloadState.ids.year;
 
       preloadedValues = {
@@ -98,7 +96,7 @@ const PaymentNew = () => {
   }
 
   const body = () => {
-    if (payment && payment.year !== 0) {
+    if (payment && payment.year !== 0 && !isNaN(payment.year)) {
       return (
         <PaymentForm
           key={payment.uuid}

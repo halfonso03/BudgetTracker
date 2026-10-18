@@ -5,11 +5,13 @@ import { Pagination } from '../../components/Pagination';
 import SortBySelector from '../../components/SortBySelector';
 import { usePagination } from '../../contexts/pagination/usePagination';
 import { useSortingContext } from '../../contexts/useSortingContext';
+import Spinner from '../../components/Spinner';
 
 type Props = {
   payeeId: number;
+  showSkeleton?: boolean;
 };
-const PayeePaymentsList = ({ payeeId }: Props) => {
+const PayeePaymentsList = ({ payeeId, showSkeleton = true }: Props) => {
   const { payments, loadingPayments, loadingPaymentsSuccess } =
     usePayeePayments(payeeId);
 
@@ -28,7 +30,7 @@ const PayeePaymentsList = ({ payeeId }: Props) => {
   //   }
   // }, [setSortByValue, sortInitialSet]);
 
-  if (loadingPayments)
+  if (loadingPayments && showSkeleton) {
     return (
       <div className="mt-2 ">
         <Skeleton
@@ -41,6 +43,13 @@ const PayeePaymentsList = ({ payeeId }: Props) => {
         />
       </div>
     );
+  } else if (loadingPayments) {
+    return (
+      <div>
+        <Spinner></Spinner>
+      </div>
+    );
+  }
 
   if (loadingPaymentsSuccess && payments?.payments.length === 0) {
     return (
