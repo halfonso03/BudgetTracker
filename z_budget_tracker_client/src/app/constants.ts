@@ -20,3 +20,9 @@ export const NEGATIVE_NEW_AVAILABLE_BALANCE = "There is a negative available bal
 export const EDITED = 1;
 export const SAVED = 2;
 export const POSTED = 3;
+
+
+export const BUDGET_AUDIT_INITIAL_VERSION = "initial_value"
+export const BUDGET_AUDIT_OLD_VERSION = "old_value"
+export const BUDGET_AUDIT_NEW_VERSION = "new_value"
+

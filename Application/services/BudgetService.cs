@@ -27,14 +27,21 @@ namespace Application.services
         {
 
             var result = await _dbContext.BudgetLineItemAudits
-                                .Include(x => x.CreatedBy)
-                                .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId && x.Version.ToLower() == "new")
+                                .Include(x => x.CreatedByUser)
+                                .Include(x => x.Account)
+                                .Where(x => x.InitiativeId == initiativeId
+                                    && x.GrantId == grantId)
                                 .Select(x => new BudgetAuditResponseDto
                                 {
+                                    AccountName = x.Account!.Name,
                                     Amount = x.Amount,
                                     UpdateDate = x.CreateDate,
-                                    UpdatedBy = $"{x.CreatedByUser!.FirstName} {x.CreatedByUser.LastName}"
+                                    UpdatedBy = $"{x.CreatedByUser!.FirstName} {x.CreatedByUser.LastName}",
+                                    Version = x.Version
+
                                 })
+                                .OrderBy(x => x.AccountName)
+                                .ThenBy(x => x.UpdateDate)
                                 .ToListAsync();
 
             return Result<List<BudgetAuditResponseDto>>.Success(result);
@@ -474,7 +481,8 @@ namespace Application.services
                             )
                            .ToListAsync();
 
-            balances = [.. from a in accounts join
+            balances = (from a in accounts
+                        join
                         b in balances on a.Id equals b.AccountId into itemsGroup
                         from subItems in itemsGroup.DefaultIfEmpty()
                         orderby a.Name
@@ -486,7 +494,7 @@ namespace Application.services
                                     initiative.Name,
                                     grant.Name,
                                     category.Name)
-                        ];
+                        ).ToList();
 
             return balances;
 
@@ -559,5 +567,6 @@ namespace Application.services
 
             return Result<List<TransactionResponseDto>>.Success([.. result.OrderBy(x => x.PostedDate)]);
         }
+
     }
 }

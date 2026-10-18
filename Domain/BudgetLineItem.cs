@@ -56,5 +56,7 @@ namespace Domain
         
         public string? AdditionalInformation { get; set; }
 
+        public BudgetHeader? BudgetHeader { get; set; }
+
     }
 }

@@ -454,7 +454,17 @@ namespace Persistence.Migrations
                         new
                         {
                             InitiativeId = 1,
-                            GrantId = 2
+                            GrantId = 3
+                        },
+                        new
+                        {
+                            InitiativeId = 2,
+                            GrantId = 1
+                        },
+                        new
+                        {
+                            InitiativeId = 2,
+                            GrantId = 3
                         });
                 });
 
@@ -505,6 +515,12 @@ namespace Persistence.Migrations
                         .HasColumnType("NUMERIC(15,2)")
                         .HasColumnName("amount")
                         .HasColumnOrder(4);
+
+                    b.Property<int?>("BudgetHeaderGrantId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BudgetHeaderInitiativeId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("DATETIME2")
@@ -560,6 +576,8 @@ namespace Persistence.Migrations
                     b.HasIndex("ItemType");
 
                     b.HasIndex("UpdatedBy");
+
+                    b.HasIndex("BudgetHeaderInitiativeId", "BudgetHeaderGrantId");
 
                     b.ToTable("tblBudget", null, t =>
                         {
@@ -754,7 +772,7 @@ namespace Persistence.Migrations
 
                     b.Property<string>("Version")
                         .IsRequired()
-                        .HasColumnType("VARCHAR(10)")
+                        .HasColumnType("VARCHAR(20)")
                         .HasColumnName("version");
 
                     b.Property<short>("Year")
@@ -2062,7 +2080,13 @@ namespace Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("UpdatedBy");
 
+                    b.HasOne("Domain.BudgetHeader", "BudgetHeader")
+                        .WithMany()
+                        .HasForeignKey("BudgetHeaderInitiativeId", "BudgetHeaderGrantId");
+
                     b.Navigation("Account");
+
+                    b.Navigation("BudgetHeader");
 
                     b.Navigation("BudgetItemType");
 

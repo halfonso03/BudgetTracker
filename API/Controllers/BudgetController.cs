@@ -60,5 +60,11 @@ namespace API.Controllers
         {
             return HandleResult(await _budgetService.GetTransactionsForAccount(budgetType, initiativeId, grantId, accountId));
         }
+
+        [HttpGet("budgetAudit")]
+        public async Task<IActionResult> GetBudgetAudit(int initiativeId, int grantId)
+        {
+            return HandleResult(await _budgetService.GetBudgetAudit(initiativeId, grantId));
+        }
     }
 }

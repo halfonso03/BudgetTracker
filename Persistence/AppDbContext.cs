@@ -244,7 +244,7 @@ namespace Persistence
             builder.Entity<BudgetLineItemAudit>().Property(x => x.CreateDate).HasColumnName("create_date").HasColumnType("DATETIME2");
             builder.Entity<BudgetLineItemAudit>().Property(x => x.CreatedBy).HasColumnName("created_by");
             builder.Entity<BudgetLineItemAudit>().Property(x => x.AdditionalInformation).HasColumnName("additional_information").HasColumnType("VARCHAR(1000)");
-            builder.Entity<BudgetLineItemAudit>().Property(x => x.Version).HasColumnName("version").HasColumnType("VARCHAR(10)");
+            builder.Entity<BudgetLineItemAudit>().Property(x => x.Version).HasColumnName("version").HasColumnType("VARCHAR(20)");
 
 
             builder.Entity<BudgetHeader>().Property(x => x.InitiativeId).HasColumnName("initiative_id");

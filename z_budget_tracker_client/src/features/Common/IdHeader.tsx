@@ -1,4 +1,5 @@
 import React from 'react';
+import { POSTED, SAVED } from '../../app/constants';
 
 type Props = {
   id: number;
@@ -6,8 +7,7 @@ type Props = {
   created: boolean;
 };
 
-const SAVED = 2;
-const POSTED = 3;
+
 
 const IdHeader = React.memo(({ id, status, created }: Props) => {
   // console.log('IdHeader render');

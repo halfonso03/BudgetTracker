@@ -17,5 +17,6 @@ namespace Application.Interfaces
         Task<List<ReproCategoryBalanceDto>> GetBalancesForCategory(int initiativeId, int grantId, int categoryId);
         Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId);
         Task<Result<List<TransactionResponseDto>>> GetTransactionsForAccount(BudgetType budgetType, int initiativeId, int grantId, int accountId);
+        Task<Result<List<BudgetAuditResponseDto>>> GetBudgetAudit(int initiativeId, int grantId);
     }
 }

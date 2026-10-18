@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261016173007_Initial")]
-    partial class Initial
+    [Migration("20261018163444_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -509,6 +509,12 @@ namespace Persistence.Migrations
                         .HasColumnName("amount")
                         .HasColumnOrder(4);
 
+                    b.Property<int?>("BudgetHeaderGrantId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("BudgetHeaderInitiativeId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("DATETIME2")
                         .HasColumnName("create_date")
@@ -563,6 +569,8 @@ namespace Persistence.Migrations
                     b.HasIndex("ItemType");
 
                     b.HasIndex("UpdatedBy");
+
+                    b.HasIndex("BudgetHeaderInitiativeId", "BudgetHeaderGrantId");
 
                     b.ToTable("tblBudget", null, t =>
                         {
@@ -2065,7 +2073,13 @@ namespace Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("UpdatedBy");
 
+                    b.HasOne("Domain.BudgetHeader", "BudgetHeader")
+                        .WithMany()
+                        .HasForeignKey("BudgetHeaderInitiativeId", "BudgetHeaderGrantId");
+
                     b.Navigation("Account");
+
+                    b.Navigation("BudgetHeader");
 
                     b.Navigation("BudgetItemType");
 

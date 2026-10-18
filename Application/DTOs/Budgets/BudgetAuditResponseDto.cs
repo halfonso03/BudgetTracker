@@ -9,6 +9,8 @@ namespace Application.DTOs.Budgets
     {
         public decimal Amount { get; set; }
         public required DateTime UpdateDate { get; set; }
-        public required string UpdatedBy{ get; set; }
+        public required string UpdatedBy { get; set; }
+        public required string AccountName { get; set; }
+        public required string Version { get; set; }
     }
 }

@@ -1,76 +1,5 @@
-USE [BudgetTracker]
-GO
-
-/****** Object:  View [Audit].[vwBudgets]    Script Date: 10/16/2026 10:58:57 AM ******/
 SET ANSI_NULLS ON
 GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-
-USE [BudgetTracker]
-GO
-
-/****** Object:  View [Audit].[vwBudgets]    Script Date: 10/17/2026 10:17:22 AM ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-
-
-
-create view [Audit].[vwBudgets]
-as
-select b.version, i.id i_id, g.id g_id, a.id a_id, i.name initiative_name, g.name grant_name, a.name account_name, b.amount, item_type, 
-	YEAR(g.start_date) grant_year, b.create_date update_date, u.firstname + ' ' + u.lastname udpated_by
-
-from tblInitiative i join Audit.tblBudget b on i.id = b.initiative_id
-join tblAccount a on a.id = b.account_id
-join tblGrant g on g.id = b.grant_id
-join [Auth].[tblUsers] u on u.id = b.created_by
-
-GO
-
-
-
-
-
-
-USE [BudgetTracker]
-GO
-
-/****** Object:  View [dbo].[vwBudgets]    Script Date: 10/16/2026 10:59:05 AM ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-
-CREATE view [dbo].[vwBudgets]
-as
-select i.id i_id, g.id g_id, a.id a_id, i.name initiative_name, g.name grant_name, a.name account_name, b.amount, item_type, YEAR(g.start_date) grant_year
-from tblInitiative i join tblBudget b on i.id = b.initiative_id
-join tblAccount a on a.id = b.account_id
-join tblGrant g on g.id = b.grant_id
-
-GO
-
-
-
-USE [BudgetTracker]
-GO
-
-/****** Object:  View [dbo].[vwPayeeSummary]    Script Date: 10/16/2026 10:59:12 AM ******/
-SET ANSI_NULLS ON
-GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -105,4 +34,38 @@ FROM tblPayee v LEFT OUTER JOIN tblAccount a ON v.account_id = a.id
     LEFT OUTER JOIN max_p ON max_p.payee_id = v.id
 GROUP BY v.id, v.name, v.is_active, a.name, a.id, c.id, max_p.last_amount_paid, c.id, v.additional_information, v.payee_type_id
 GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 
+
+
+
+
+CREATE view [Audit].[vwBudgets]
+as
+select b.version, i.id i_id, g.id g_id, a.id a_id, i.name initiative_name, g.name grant_name, a.name account_name, b.amount, item_type, 
+	YEAR(g.start_date) grant_year, b.create_date update_date, u.firstname + ' ' + u.lastname udpated_by
+
+from tblInitiative i join Audit.tblBudget b on i.id = b.initiative_id
+join tblAccount a on a.id = b.account_id
+join tblGrant g on g.id = b.grant_id
+join [Auth].[tblUsers] u on u.id = b.created_by
+
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+CREATE view [dbo].[vwBudgets]
+as
+select i.id i_id, g.id g_id, a.id a_id, i.name initiative_name, g.name grant_name, a.name account_name, b.amount, item_type, YEAR(g.start_date) grant_year
+from tblInitiative i join tblBudget b on i.id = b.initiative_id
+join tblAccount a on a.id = b.account_id
+join tblGrant g on g.id = b.grant_id
+
+GO

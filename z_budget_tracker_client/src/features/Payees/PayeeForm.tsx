@@ -135,10 +135,7 @@ const PayeeForm = ({
         onSubmit={handleSubmit(onSubmit, onError)}
         className="self-center w-full"
       >
-        category id: {getValues('categoryId')}
-        <br></br>
-        accountId: {getValues('accountId')}
-        <br></br>
+       
         <input type="hidden" {...register('id')} />
         {/* {errors.additionalInformation && <div>FORM ERROR!</div>} */}
         <div className="flex flex-col gap-2 w-full">

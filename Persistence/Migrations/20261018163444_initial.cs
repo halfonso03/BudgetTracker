@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -424,66 +424,6 @@ namespace Persistence.Migrations
 
             migrationBuilder.CreateTable(
                 name: "tblBudget",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    initiative_id = table.Column<int>(type: "int", nullable: false),
-                    grant_id = table.Column<int>(type: "int", nullable: false),
-                    account_id = table.Column<int>(type: "int", nullable: false),
-                    amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
-                    item_type = table.Column<string>(type: "CHAR(1)", nullable: false),
-                    year = table.Column<short>(type: "SMALLINT", nullable: false),
-                    created_by = table.Column<int>(type: "int", nullable: false),
-                    create_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
-                    updated_by = table.Column<int>(type: "int", nullable: true),
-                    update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
-                    additional_information = table.Column<string>(type: "VARCHAR(1000)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tblBudget", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tblBudget_tblAccount_account_id",
-                        column: x => x.account_id,
-                        principalTable: "tblAccount",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tblBudget_tblBudgetItemType_item_type",
-                        column: x => x.item_type,
-                        principalTable: "tblBudgetItemType",
-                        principalColumn: "item_type",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tblBudget_tblGrant_grant_id",
-                        column: x => x.grant_id,
-                        principalTable: "tblGrant",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tblBudget_tblInitiative_initiative_id",
-                        column: x => x.initiative_id,
-                        principalTable: "tblInitiative",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tblBudget_tblUsers_created_by",
-                        column: x => x.created_by,
-                        principalSchema: "Auth",
-                        principalTable: "tblUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tblBudget_tblUsers_updated_by",
-                        column: x => x.updated_by,
-                        principalSchema: "Auth",
-                        principalTable: "tblUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tblBudget",
                 schema: "Audit",
                 columns: table => new
                 {
@@ -732,66 +672,66 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblReproLineItem",
+                name: "tblBudget",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    repro_id = table.Column<int>(type: "int", nullable: false),
-                    row_id = table.Column<int>(type: "int", nullable: false),
                     initiative_id = table.Column<int>(type: "int", nullable: false),
                     grant_id = table.Column<int>(type: "int", nullable: false),
-                    category_id = table.Column<int>(type: "int", nullable: false),
                     account_id = table.Column<int>(type: "int", nullable: false),
-                    increase = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: true),
-                    decrease = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: true),
-                    year = table.Column<int>(type: "int", nullable: false),
-                    allow_neg_balance = table.Column<bool>(type: "bit", nullable: true),
-                    entry_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
-                    update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
+                    amount = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: false),
+                    item_type = table.Column<string>(type: "CHAR(1)", nullable: false),
+                    year = table.Column<short>(type: "SMALLINT", nullable: false),
+                    created_by = table.Column<int>(type: "int", nullable: false),
+                    create_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     updated_by = table.Column<int>(type: "int", nullable: true),
-                    comment = table.Column<string>(type: "VARCHAR(MAX)", nullable: true),
-                    budget_line_id = table.Column<int>(type: "int", nullable: true)
+                    update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
+                    additional_information = table.Column<string>(type: "VARCHAR(1000)", nullable: true),
+                    BudgetHeaderInitiativeId = table.Column<int>(type: "int", nullable: true),
+                    BudgetHeaderGrantId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblReproLineItem", x => x.id);
+                    table.PrimaryKey("PK_tblBudget", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_tblReproLineItem_tblAccount_account_id",
+                        name: "FK_tblBudget_tblAccount_account_id",
                         column: x => x.account_id,
                         principalTable: "tblAccount",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tblReproLineItem_tblBudget_budget_line_id",
-                        column: x => x.budget_line_id,
-                        principalTable: "tblBudget",
-                        principalColumn: "Id");
+                        name: "FK_tblBudget_tblBudgetHeader_BudgetHeaderInitiativeId_BudgetHeaderGrantId",
+                        columns: x => new { x.BudgetHeaderInitiativeId, x.BudgetHeaderGrantId },
+                        principalTable: "tblBudgetHeader",
+                        principalColumns: new[] { "initiative_id", "grant_id" });
                     table.ForeignKey(
-                        name: "FK_tblReproLineItem_tblCategory_category_id",
-                        column: x => x.category_id,
-                        principalTable: "tblCategory",
-                        principalColumn: "id");
+                        name: "FK_tblBudget_tblBudgetItemType_item_type",
+                        column: x => x.item_type,
+                        principalTable: "tblBudgetItemType",
+                        principalColumn: "item_type",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tblReproLineItem_tblGrant_grant_id",
+                        name: "FK_tblBudget_tblGrant_grant_id",
                         column: x => x.grant_id,
                         principalTable: "tblGrant",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tblReproLineItem_tblInitiative_initiative_id",
+                        name: "FK_tblBudget_tblInitiative_initiative_id",
                         column: x => x.initiative_id,
                         principalTable: "tblInitiative",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tblReproLineItem_tblRepro_repro_id",
-                        column: x => x.repro_id,
-                        principalTable: "tblRepro",
-                        principalColumn: "id",
+                        name: "FK_tblBudget_tblUsers_created_by",
+                        column: x => x.created_by,
+                        principalSchema: "Auth",
+                        principalTable: "tblUsers",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_tblReproLineItem_tblUsers_updated_by",
+                        name: "FK_tblBudget_tblUsers_updated_by",
                         column: x => x.updated_by,
                         principalSchema: "Auth",
                         principalTable: "tblUsers",
@@ -863,6 +803,73 @@ namespace Persistence.Migrations
                         principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_tblDisbLineItem_tblUsers_updated_by",
+                        column: x => x.updated_by,
+                        principalSchema: "Auth",
+                        principalTable: "tblUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblReproLineItem",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    repro_id = table.Column<int>(type: "int", nullable: false),
+                    row_id = table.Column<int>(type: "int", nullable: false),
+                    initiative_id = table.Column<int>(type: "int", nullable: false),
+                    grant_id = table.Column<int>(type: "int", nullable: false),
+                    category_id = table.Column<int>(type: "int", nullable: false),
+                    account_id = table.Column<int>(type: "int", nullable: false),
+                    increase = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: true),
+                    decrease = table.Column<decimal>(type: "NUMERIC(15,2)", nullable: true),
+                    year = table.Column<int>(type: "int", nullable: false),
+                    allow_neg_balance = table.Column<bool>(type: "bit", nullable: true),
+                    entry_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
+                    update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
+                    updated_by = table.Column<int>(type: "int", nullable: true),
+                    comment = table.Column<string>(type: "VARCHAR(MAX)", nullable: true),
+                    budget_line_id = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblReproLineItem", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_tblReproLineItem_tblAccount_account_id",
+                        column: x => x.account_id,
+                        principalTable: "tblAccount",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblReproLineItem_tblBudget_budget_line_id",
+                        column: x => x.budget_line_id,
+                        principalTable: "tblBudget",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_tblReproLineItem_tblCategory_category_id",
+                        column: x => x.category_id,
+                        principalTable: "tblCategory",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_tblReproLineItem_tblGrant_grant_id",
+                        column: x => x.grant_id,
+                        principalTable: "tblGrant",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblReproLineItem_tblInitiative_initiative_id",
+                        column: x => x.initiative_id,
+                        principalTable: "tblInitiative",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblReproLineItem_tblRepro_repro_id",
+                        column: x => x.repro_id,
+                        principalTable: "tblRepro",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblReproLineItem_tblUsers_updated_by",
                         column: x => x.updated_by,
                         principalSchema: "Auth",
                         principalTable: "tblUsers",
@@ -989,20 +996,20 @@ namespace Persistence.Migrations
 
             migrationBuilder.InsertData(
                 table: "tblBudget",
-                columns: new[] { "Id", "account_id", "additional_information", "amount", "create_date", "created_by", "grant_id", "initiative_id", "item_type", "update_date", "updated_by", "year" },
+                columns: new[] { "Id", "account_id", "additional_information", "amount", "BudgetHeaderGrantId", "BudgetHeaderInitiativeId", "create_date", "created_by", "grant_id", "initiative_id", "item_type", "update_date", "updated_by", "year" },
                 values: new object[,]
                 {
-                    { 1, 1, null, 100m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
-                    { 2, 3, null, 100m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
-                    { 3, 4, null, 105m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
-                    { 5, 7, null, 1200m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
-                    { 6, 8, null, 400m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
-                    { 7, 5, null, 596.0m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
-                    { 9, 8, null, 400m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 2, "B", null, null, (short)2025 },
-                    { 10, 5, null, 750m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 1, "B", null, null, (short)2026 },
-                    { 11, 8, null, 250m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 2, "B", null, null, (short)2026 },
-                    { 12, 8, null, 250m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 2, "B", null, null, (short)2026 },
-                    { 13, 1, null, -50m, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "D", null, null, (short)2025 }
+                    { 1, 1, null, 100m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 2, 3, null, 100m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 3, 4, null, 105m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 5, 7, null, 1200m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 6, 8, null, 400m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 7, 5, null, 596.0m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "B", null, null, (short)2025 },
+                    { 9, 8, null, 400m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 2, "B", null, null, (short)2025 },
+                    { 10, 5, null, 750m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 1, "B", null, null, (short)2026 },
+                    { 11, 8, null, 250m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 2, "B", null, null, (short)2026 },
+                    { 12, 8, null, 250m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 2, "B", null, null, (short)2026 },
+                    { 13, 1, null, -50m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "D", null, null, (short)2025 }
                 });
 
             migrationBuilder.InsertData(
@@ -1084,6 +1091,11 @@ namespace Persistence.Migrations
                 name: "IX_tblBudget_account_id",
                 table: "tblBudget",
                 column: "account_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblBudget_BudgetHeaderInitiativeId_BudgetHeaderGrantId",
+                table: "tblBudget",
+                columns: new[] { "BudgetHeaderInitiativeId", "BudgetHeaderGrantId" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblBudget_created_by",
@@ -1343,9 +1355,6 @@ namespace Persistence.Migrations
                 name: "tblBudgetComment");
 
             migrationBuilder.DropTable(
-                name: "tblBudgetHeader");
-
-            migrationBuilder.DropTable(
                 name: "tblDisbLineItem");
 
             migrationBuilder.DropTable(
@@ -1414,7 +1423,17 @@ namespace Persistence.Migrations
                 name: "tblAccount");
 
             migrationBuilder.DropTable(
+                name: "tblBudgetHeader");
+
+            migrationBuilder.DropTable(
                 name: "tblBudgetItemType");
+
+            migrationBuilder.DropTable(
+                name: "tblRoles",
+                schema: "Auth");
+
+            migrationBuilder.DropTable(
+                name: "tblCategory");
 
             migrationBuilder.DropTable(
                 name: "tblGrant");
@@ -1423,15 +1442,8 @@ namespace Persistence.Migrations
                 name: "tblInitiative");
 
             migrationBuilder.DropTable(
-                name: "tblRoles",
-                schema: "Auth");
-
-            migrationBuilder.DropTable(
                 name: "tblUsers",
                 schema: "Auth");
-
-            migrationBuilder.DropTable(
-                name: "tblCategory");
         }
     }
 }

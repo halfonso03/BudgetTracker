@@ -256,7 +256,7 @@ function CategorySummary({
             key={index}
           >
             <div
-              className={` grid bg-neutral-200/50 grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 items-center`}
+              className={` grid bg-neutral-200/30 grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 items-center`}
               key={index}
             >
               <div

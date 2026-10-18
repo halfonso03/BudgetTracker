@@ -619,7 +619,6 @@ const PaymentLineModal = (props: Props) => {
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full mb-3">
                   <div className="text-neutral-600/90 font-medium">
                     Payee
-                    {selections?.payeeId}
                   </div>
                   <PayeeSearcher
                     onPayeeSelected={handlePayeeSelected}

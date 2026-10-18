@@ -30,7 +30,7 @@ namespace Persistence
             // Pass the prepared data into HasData
             builder.Entity<ApplicationUser>().HasData(adminUser);
 
-           
+
 
 
 
@@ -309,8 +309,20 @@ namespace Persistence
             builder.Entity<BudgetHeader>().HasData(new BudgetHeader
             {
                 InitiativeId = 1,
-                GrantId = 2
+                GrantId = 3
             });
+
+            builder.Entity<BudgetHeader>().HasData(new BudgetHeader
+            {
+                InitiativeId = 2,
+                GrantId = 1
+            });
+            builder.Entity<BudgetHeader>().HasData(new BudgetHeader
+            {
+                InitiativeId = 2,
+                GrantId = 3
+            });
+
 
             builder.Entity<BudgetLineItem>().HasData(
               new BudgetLineItem()

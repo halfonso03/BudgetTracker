@@ -42,13 +42,13 @@ const SelectedPayeeCard = ({
                 {selectedPayeeInfo?.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}
               </span>
               ]<br></br>
-              [Charge Account:{' '}
+              {/* [Charge Account:{' '}
               <span className="text-neutral-700">
                 {selectedPayeeInfo.categoryName +
                   ' - ' +
                   selectedPayeeInfo.accountName}
               </span>
-              ]<br></br>
+              ]<br></br> */}
               {selectedPayeeInfo?.lastPaymentDate && (
                 <>
                   [Last Payment:{' '}

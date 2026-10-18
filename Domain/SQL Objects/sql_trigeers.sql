@@ -1,10 +1,5 @@
-USE [BudgetTracker]
-GO
-
-/****** Object:  Trigger [dbo].[trg_tblBudget_Update]    Script Date: 10/16/2026 10:58:29 AM ******/
 SET ANSI_NULLS ON
 GO
-
 SET QUOTED_IDENTIFIER ON
 GO
 
@@ -67,7 +62,5 @@ BEGIN
 END
 
 GO
-
 ALTER TABLE [dbo].[tblBudget] ENABLE TRIGGER [trg_tblBudget_Update]
 GO
-
