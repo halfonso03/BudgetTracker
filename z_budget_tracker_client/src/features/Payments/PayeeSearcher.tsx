@@ -13,18 +13,20 @@ import SelectedPayeeCard from './SelectedPayeeCard';
 import Skeleton from 'react-loading-skeleton';
 import Spinner from '../../components/Spinner';
 import { Plus } from 'lucide-react';
-import Modal2 from '../../components/Modal2';
+import NewPayeeWindow from './NewPayeeWindow';
 
 type Props = {
   onPayeeSelected: (payee: Payee) => void;
   onPayeeSelectionCleared: () => void;
   payeeId?: number | null;
+  onPayeeCreated: (payee: Payee) => void;
 };
 
 const PayeeSearcher = ({
   payeeId,
   onPayeeSelected,
   onPayeeSelectionCleared,
+  onPayeeCreated,
 }: Props) => {
   let payeeIdToFind = 0;
 
@@ -129,7 +131,7 @@ const PayeeSearcher = ({
             ></SelectedPayeeCard>
           </div>
         )}
-        <div className="flex items-center">
+        <div className="flex items-center relative">
           <input
             ref={inputRef}
             value={query}
@@ -151,9 +153,13 @@ const PayeeSearcher = ({
               <Spinner></Spinner>
             </div>
           )}
-          <button onClick={() => setAddNewPayeeModalIsOpen(true)}>
-            <Plus className="text-neutral-400 hover:text-neutral-500 duration-200 transition-all cursor-pointer"></Plus>
+          <button type="button" onClick={() => setAddNewPayeeModalIsOpen(true)}>
+            <Plus className="border border-transparent hover:border-neutral-400 hover:bg-neutral-300/60 rounded-sm mr-1 text-neutral-500 hover:text-neutral-600 duration-200 transition-all cursor-pointer"></Plus>
           </button>
+
+          {/* <div className="absolute  w-80 right-0 top-0 z-30000 menu border border-red-700 p-2  bg-red-500">
+            <div className="border border-blue-300 w-full p-2 ">N</div>
+          </div> */}
         </div>
       </div>
       <div className="relative bg-white opacity-100">
@@ -207,16 +213,31 @@ const PayeeSearcher = ({
           setInfoWindowIsOpen(false);
         }}
       ></InfoModal>
-      <Modal2
+      <NewPayeeWindow
         isOpen={addNewPayeeModalisOpen}
-        size={'sm'}
-        onCancel={() => {
-          setAddNewPayeeModalIsOpen(false);
+        onPayeeCreated={(details: NewPayeeInfo) => {
+          const newPayee: Payee = {
+            id: details.id,
+            accountId: details.accountId,
+            categoryId: details.categoryId,
+            name: details.payeeName,
+            isActive: true,
+            accountName: details.accountName,
+            numberOfPayments: 0,
+            payeeTypeId: details.payeeTypeId,
+          };
+          onPayeeCreated(newPayee);
+          setTimeout(() => {
+            setAddNewPayeeModalIsOpen(false);
+            setSelectedPayee(newPayee);
+          }, 1);
         }}
-        animateOut={false}
-      >
-        sds
-      </Modal2>
+        onCancel={() => {
+          setTimeout(() => {
+            setAddNewPayeeModalIsOpen(false);
+          }, 500);
+        }}
+      ></NewPayeeWindow>
     </div>
   );
 };

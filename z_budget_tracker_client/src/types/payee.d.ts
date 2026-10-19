@@ -61,5 +61,8 @@ type NewPayeeInfo = {
     id: number;
     accountId: number;
     categoryId: number;
+    payeeName: string,
+    accountName: string
+    payeeTypeId: number
 }
 

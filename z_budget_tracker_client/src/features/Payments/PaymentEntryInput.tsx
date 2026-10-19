@@ -50,9 +50,9 @@ const PaymentEntryInput = ({
           {formatCurrency(available)}
         </div>
       </div>
-      <div className="grid grid-cols-[.45fr_.35fr_1fr]  w-full items-center ">
+      <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center ">
         <div className="  text-neutral-600/90 font-medium">Payment Amount</div>
-        <div>
+        <div className='w-[50%]'>
           <NumericInputReactHookForm
             register={register}
             readOnly={false}            

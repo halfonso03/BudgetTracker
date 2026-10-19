@@ -117,6 +117,9 @@ const PaymentLineModal = (props: Props) => {
   // eslint-disable-next-line react-hooks/incompatible-library
   watch('accountId');
 
+  function handlePayeeCreated(payee: Payee) {
+    handlePayeeSelected(payee);
+  }
   function handlePayeeSelected(payee: Payee) {
     const options = {
       shouldDirty: true,
@@ -327,7 +330,7 @@ const PaymentLineModal = (props: Props) => {
           )}
 
           <div className="flex flex-col justify-between h-full mt-2">
-            <div className=" overflow-y-scroll h-[75dvh]">
+            <div className=" overflow-y-scroll h-[70dvh]">
               <div className="flex flex-col justify-between p-3 px-4 ">
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <div className="text-neutral-600/90 font-medium">Year</div>
@@ -617,13 +620,12 @@ const PaymentLineModal = (props: Props) => {
                 )} */}
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full mb-3">
-                  <div className="text-neutral-600/90 font-medium">
-                    Payee
-                  </div>
+                  <div className="text-neutral-600/90 font-medium">Payee</div>
                   <PayeeSearcher
                     onPayeeSelected={handlePayeeSelected}
                     onPayeeSelectionCleared={handlePayeeSelectionCleared}
                     payeeId={selections?.payeeId}
+                    onPayeeCreated={handlePayeeCreated}
                   ></PayeeSearcher>
                   <div className="self-center">
                     {errors.payeeId && (
@@ -644,7 +646,7 @@ const PaymentLineModal = (props: Props) => {
                   ></textarea>
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-                  <div className="col-span-2 border-t border-b p-2 border-neutral-200 py-4 ">
+                  <div className="col-span-2 border-t border-b p-2 border-neutral-300/90 py-4 ">
                     <PaymentEntryInput
                       getValues={getValues}
                       error={errors?.paymentAmount}
@@ -659,7 +661,7 @@ const PaymentLineModal = (props: Props) => {
                 </div>
               </div>
             </div>
-            <div className="flex justify-end gap-2 border-t border-t-neutral-200 p-4">
+            <div className="flex justify-end gap-2 border-t border-t-neutral-300/90 p-4">
               {/* {allSelections() && <span>have all selections</span>}
               <br></br>
               {remIsvalid ? (

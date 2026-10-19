@@ -18,7 +18,7 @@ type Props = {
   payee: Payee;
   mode?: string;
   onCancel?: () => void;
-  onCreatePayeeCreated: (detals: NewPayeeInfo) => void;
+  onCreatePayeeCreated: (details: NewPayeeInfo) => void;
 };
 
 type FormValues = Yup.InferType<typeof PayeeFormSchema>;
@@ -53,7 +53,6 @@ const PayeeForm = ({
     },
   });
 
-
   const { createPayee, updatePayee } = usePayeeMutations();
   const { categories, catSuccess } = useCategories();
 
@@ -69,13 +68,14 @@ const PayeeForm = ({
     return catSuccess && categories
       ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
       : [];
-  },[catSuccess, categories, categoryIdWatchValue]);
+  }, [catSuccess, categories, categoryIdWatchValue]);
 
   function onCategoryChange() {
     setCategoryIsSelected(true);
   }
 
   async function onSubmit(data: FormValues) {
+
     try {
       if (payeeId === 0) {
         await createPayee.mutateAsync(data, {
@@ -90,6 +90,9 @@ const PayeeForm = ({
               id: newId,
               accountId: data.accountId,
               categoryId: data.categoryId,
+              accountName: accounts!.filter(x => x.id == data.accountId)[0].name,
+              payeeName : getValues('name'),
+              payeeTypeId: getValues('payeeTypeId'),
             });
           },
           onError: (e) => {
@@ -125,21 +128,24 @@ const PayeeForm = ({
 
   useEffect(() => {
     if (categorySelected && accounts && accounts.length) {
-      setValues({accountId: accounts[0].id});
+      setValues({ accountId: accounts[0].id });
     }
   }, [accounts, categorySelected, setValues]);
 
   return (
-    <div>
+    <div className="">
       <form
-        onSubmit={handleSubmit(onSubmit, onError)}
+        id="payee_form"
+        onSubmit={(e) => {
+          e.stopPropagation(); // Stops the event from bubbling to parent forms in the React tree
+          handleSubmit(onSubmit, onError)(e);
+        }}
         className="self-center w-full"
       >
-       
         <input type="hidden" {...register('id')} />
         {/* {errors.additionalInformation && <div>FORM ERROR!</div>} */}
         <div className="flex flex-col gap-2 w-full">
-          <div className="font-semibold text-neutral-500 mb-2  border-b border-b-neutral-200/60 pl-0 p-1 ">
+          <div className="font-semibold text-neutral-500 mb-2 border-b border-b-neutral-200/60 pl-0 p-1 ">
             Details
           </div>
           <FormRow
@@ -218,10 +224,15 @@ const PayeeForm = ({
               ))}
             </Select>
           </FormRow>
-          <div className="grid grid-cols-[1fr_1.6fr_0.17fr] mt-10">
+          <div className="grid grid-cols-[1fr_1.6fr_0.1fr]  mt-4">
             <div></div>
-            <div className="flex gap-2 justify-start">
-              <Button type="submit" variation="primary" buttonSize="medium">
+            <div className="flex gap-2 justify-end">
+              <Button
+                type="submit"
+                variation="primary"
+                buttonSize="medium"
+                form="payee_form"
+              >
                 {/* {isLoginSuccess ? (
                 <Check></Check>
               ) : isLoginPending ? (

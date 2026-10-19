@@ -263,6 +263,27 @@ pre {
   visibility: visible;
 }
 
+.new-payee-window {
+  position: absolute;
+  right: 350px;
+
+  /* 1. Set the anchor point (e.g., top-right corner near the button) */
+
+  /* 2. Hide by default using zero scale and zero opacity */
+  opacity: 0;
+  visibility: hidden;
+  z-index: 20000;
+  /* 3. Smooth transition curve */
+}
+
+/* Open State Trigger */
+.new-payee-window.open {
+  /* transform: scale(1); */
+  opacity: 1;
+  visibility: visible;
+   z-index: 20000;
+}
+
 .page-link-active {
   color: var(--color-neutral-600);
   background-color: var(--color-neutral-200);

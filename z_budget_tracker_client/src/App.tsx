@@ -17,6 +17,9 @@ function App() {
         //   position: 'absolute',
         //   top: '250px',
         // }}
+         containerStyle={{
+          zIndex: 99999,
+        }} 
         toastOptions={{
           success: {
             duration: 1500,
@@ -31,7 +34,7 @@ function App() {
             padding: '20px 20px',
             borderRadius: '3px',
             border: '1px solid var(--color-neutral-300)',
-            translate: '0 -50px'
+            translate: '0 -50px',
           },
         }}
       >
