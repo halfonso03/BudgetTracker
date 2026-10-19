@@ -313,7 +313,7 @@ const PaymentLineModal = (props: Props) => {
           <br></br> */}
           {fromRedirect && redirectMessageIsOpen && (
             <div className="p-3  border border-blue-400 bg-blue-50 flex items-center relative">
-              <div className="flex-1 text-lg">
+              <div className="flex-1 ">
                 Initiative, Grant, Category and Account have been pre-selected.
               </div>
               <div

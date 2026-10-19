@@ -38,7 +38,6 @@ const YearFilterModal = ({ ...props }: Props) => {
             <Select
               value={year}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                props.onYearSelected(+e.target.value);
                 setYear(+e.target.value);
               }}
             >
@@ -50,7 +49,13 @@ const YearFilterModal = ({ ...props }: Props) => {
         </div>
       </div>
       <div className="flex justify-end gap-3 pb-3">
-        <Button variation="primary" onClick={closeModal}>
+        <Button
+          variation="primary"
+          onClick={() => {
+            props.onYearSelected(year);
+            closeModal();
+          }}
+        >
           Apply Filter
         </Button>
       </div>

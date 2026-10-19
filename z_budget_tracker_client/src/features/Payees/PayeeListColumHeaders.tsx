@@ -1,4 +1,4 @@
-import { Filter, Settings } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import SortBySelector from '../../components/SortBySelector';
 import { useSortingContext } from '../../contexts/useSortingContext';
 
@@ -7,7 +7,7 @@ type Props = {
   year: number;
 };
 
-const PayeeListColumHeaders = ({year, onOpenYearFilterModal }: Props) => {
+const PayeeListColumHeaders = ({ year, onOpenYearFilterModal }: Props) => {
   const { sortByValue } = useSortingContext();
 
   return (
@@ -36,17 +36,20 @@ const PayeeListColumHeaders = ({year, onOpenYearFilterModal }: Props) => {
           currentSortValue={sortByValue}
         ></SortBySelector>
       </div>
-      <div className="flex justify-center items-center gap-1">
-        <SortBySelector
-          label="Total Paid"
-          value="TOTALPAID"
-          currentSortValue={sortByValue}
-        ></SortBySelector>
-        <Filter
-          size={18}
-          className={`cursor-pointer  ${year !== 0 ? "text-blue-500" : "text-neutral-500"}`}
-          onClick={onOpenYearFilterModal}
-        ></Filter>
+      <div className='flex flex-col justify-center '>
+        <div className="flex justify-center items-center gap-1">
+          <SortBySelector
+            label="Total Paid"
+            value="TOTALPAID"
+            currentSortValue={sortByValue}
+          ></SortBySelector>
+          <Filter
+            size={18}
+            className={`cursor-pointer  ${year !== 0 ? 'text-blue-500' : 'text-neutral-500'}`}
+            onClick={onOpenYearFilterModal}
+          ></Filter>
+        </div>
+        {year !== 0 && <div className='self-center italic text-[.9rem] text-blue-500'>FY {year}</div>}
       </div>
       <div className="flex justify-center">
         <SortBySelector

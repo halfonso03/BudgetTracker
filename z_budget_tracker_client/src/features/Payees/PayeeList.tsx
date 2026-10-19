@@ -84,7 +84,6 @@ const PayeeList = () => {
         onSearch={handleSearch}
         onAddPayee={onAddPayee}
       ></PayeeListHeaderControls>
-
       <PayeeListColumHeaders
         year={year}
         onOpenYearFilterModal={handleOpenYearFilterModal}

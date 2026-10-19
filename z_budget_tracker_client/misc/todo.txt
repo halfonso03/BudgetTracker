@@ -1,12 +1,11 @@
 
 
 
-add payee list year filter
 
-add payee modal when entering a new payment
-
+payments list not showing when clicking the info link for a payee
 payee - New same as above
-payments - amounts went 'NAN' when switch back to screen
+payments - amounts went 'NAN' when switch back to screen <- seems to happen when a payment is duplicated
+
 
 add check number for each payment line
 add a 2E link to the budget summary
@@ -17,6 +16,8 @@ BUG - when changing pages in search results, expanaded items stay open
 
  ? -- add delete budget when no reprogrammings and no expenses
 
+DONE add payee list year filter
+DONE add payee modal when entering a new payment
 DONE Make exclusive work for initiative and account
 DONE remove the $ from the payee line, only use the budget summary $
 DONE add budget audit
