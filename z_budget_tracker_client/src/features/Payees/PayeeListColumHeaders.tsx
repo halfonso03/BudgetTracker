@@ -1,7 +1,13 @@
+import { Filter, Settings } from 'lucide-react';
 import SortBySelector from '../../components/SortBySelector';
 import { useSortingContext } from '../../contexts/useSortingContext';
 
-const PayeeListColumHeaders = () => {
+type Props = {
+  onOpenYearFilterModal: () => void;
+  year: number;
+};
+
+const PayeeListColumHeaders = ({year, onOpenYearFilterModal }: Props) => {
   const { sortByValue } = useSortingContext();
 
   return (
@@ -30,12 +36,17 @@ const PayeeListColumHeaders = () => {
           currentSortValue={sortByValue}
         ></SortBySelector>
       </div>
-      <div className="flex justify-center">
+      <div className="flex justify-center items-center gap-1">
         <SortBySelector
           label="Total Paid"
           value="TOTALPAID"
           currentSortValue={sortByValue}
         ></SortBySelector>
+        <Filter
+          size={18}
+          className={`cursor-pointer  ${year !== 0 ? "text-blue-500" : "text-neutral-500"}`}
+          onClick={onOpenYearFilterModal}
+        ></Filter>
       </div>
       <div className="flex justify-center">
         <SortBySelector

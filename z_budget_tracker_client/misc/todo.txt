@@ -1,9 +1,13 @@
 
 
+
+add payee list year filter
+
 add payee modal when entering a new payment
 
 payee - New same as above
 payments - amounts went 'NAN' when switch back to screen
+
 add check number for each payment line
 add a 2E link to the budget summary
 

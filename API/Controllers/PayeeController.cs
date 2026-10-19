@@ -25,11 +25,11 @@ namespace API.Controllers
         }
 
         [HttpGet("list")]
-        public async Task<IActionResult> List([FromQuery] PaginationParams paginationParams, string searchTerm = "", string sortBy = "NAME")
+        public async Task<IActionResult> List([FromQuery] PaginationParams paginationParams, string searchTerm = "", string sortBy = "NAME", int year = 0)
         {
             try
             {
-                var payeesFromDb = await payeeService.GetPayees(paginationParams, searchTerm, sortBy);
+                var payeesFromDb = await payeeService.GetPayees(paginationParams, searchTerm, sortBy, year);
 
                 Response.AddPaginationHeader(payeesFromDb.Value!.MetaData);
 

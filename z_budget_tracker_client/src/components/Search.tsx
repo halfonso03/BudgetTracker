@@ -33,13 +33,13 @@ const Search = ({ onSearch }: Props) => {
   }
 
   return (
-    <div className="flex w-[25%]">
+    <div className="flex">
       <input
         ref={searchInputRef}
         onKeyUp={onKeyUp}
         defaultValue={searchTerm}
-        className={`px-4 w-full text-sm bg-neutral-50/20 border border-neutral-200/80 rounded-lg 
-              text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-neutral-300 
+        className={`px-4 py-2 w-full text-sm bg-neutral-50/20 border border-neutral-300 rounded-sm
+              text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-neutral-400/80 
               focus:bg-white transition-all text-[1rem]`}
         placeholder="Enter a search term and presss enter..."
         style={{

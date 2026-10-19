@@ -151,18 +151,24 @@ namespace Application.Services
             return Result<PayeePaymentStatsDto?>.Success(paymentsQuery ?? new PayeePaymentStatsDto());
         }
 
-        public async Task<Result<PayeeSearchResponseDto>> GetPayees(PaginationParams paginationParams, string searchTerm, string sortBy)
+        public async Task<Result<PayeeSearchResponseDto>> GetPayees(PaginationParams paginationParams, string searchTerm, string sortBy, int year = 0)
         {
 
-            var payeeSummaries = dbContext.PayeeSummaries.AsQueryable();
+            // var payeeSummaries = dbContext.PayeeSummaries.AsQueryable();
+
+            var payeeSummaries = (await dbContext.PayeeSummaries
+                            .FromSql($"EXECUTE dbo.spPayeeSummaries {searchTerm}, {year}")
+                            .ToListAsync())
+                            .AsQueryable();
+
+            // var payeeSummaries = payeeSummaries1.AsQueryable();
 
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 payeeSummaries = payeeSummaries.Where(x =>
                         (!string.IsNullOrEmpty(x.Name) && x.Name.Contains(searchTerm))
                         || (!string.IsNullOrEmpty(x.PayeeType) && x.PayeeType.Contains(searchTerm))
-                        || (!string.IsNullOrEmpty(x.AccountName) && x.AccountName.Contains(searchTerm)))
-                        .AsQueryable();
+                        || (!string.IsNullOrEmpty(x.AccountName) && x.AccountName.Contains(searchTerm)));
 
             }
 
@@ -187,7 +193,7 @@ namespace Application.Services
                 _ => payeeSummaries.OrderBy(x => x.Id)
             };
 
-            var payeesQueryResult = await payeesSummariesSorted.ToListAsync();
+            var payeesQueryResult =  payeesSummariesSorted.ToList();
 
             var mapped = mapper.Map<List<PayeeSearchPayeeResponseDto>>(payeesQueryResult);
 
@@ -223,7 +229,7 @@ namespace Application.Services
                                     AccountName = x.Account.Name,
                                     PayeeTypeId = (int)x.PayeeTypeId,
                                     AdditionalInformation = x.AdditionalInformation,
-                                    CategoryName = x.Account.Category != null ? x.Account.Category.Name : ""                                    
+                                    CategoryName = x.Account.Category != null ? x.Account.Category.Name : ""
                                 }).ToListAsync();
 
                 return Result<List<PayeeSearchPayeeResponseDto>>.Success(result);

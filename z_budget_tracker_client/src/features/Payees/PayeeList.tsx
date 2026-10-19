@@ -8,14 +8,17 @@ import { usePagination } from '../../contexts/pagination/usePagination';
 import { usePayees } from '../../api/hooks/payees/usePayees';
 import { Pagination } from '../../components/Pagination';
 import Skeleton from 'react-loading-skeleton';
+import YearFilterModal from './modals/YearFilterModal';
 
 const PayeeList = () => {
   const { setPageNumber, setSearchTerm, searchTerm } = usePagination();
   const { setSortByValue } = useSortingContext();
+  const [year, setYear] = useState(0);
 
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedPayee, setSelectedPayee] = useState<Payee | null>(null);
-  const { data, loadingPayees } = usePayees(searchTerm);
+  const { data, loadingPayees } = usePayees(searchTerm, year);
+  const [yearFilterModalIsOpen, setYearFilterModalIsOpen] = useState(false);
 
   useEffect(() => {
     setSortByValue('NAME');
@@ -24,14 +27,6 @@ const PayeeList = () => {
   function handlePageNumberChange(pageNumber: number) {
     setPageNumber(pageNumber);
   }
-  // const [addPayeeIsOpen, setAddPayeeIsOpen] = useState(false);
-  // const [animateOut, setAnimateOut] = useState<boolean>(false);
-
-  // const paginationData = data?.pagination;
-  // console.log('paginationData', paginationData);
-  // const [vendorsState, setPayeesState] = useState<Payee[] | undefined>(
-  //   vendors,
-  // );
 
   function handleDetailsClose() {
     setDetailsOpen(false);
@@ -47,12 +42,6 @@ const PayeeList = () => {
     setPageNumber(1);
   }
 
-  // function handleCloseAddPayeeModal() {
-  //   setTimeout(() => {
-  //     setAddPayeeIsOpen(false);
-  //   }, 450);
-  // }
-
   function onAddPayee() {
     setDetailsOpen(true);
     setSelectedPayee({
@@ -66,6 +55,14 @@ const PayeeList = () => {
       categoryId: 0,
       numberOfPayments: 0,
     });
+  }
+
+  function handleOpenYearFilterModal() {
+    setYearFilterModalIsOpen(true);
+  }
+
+  function handleYearSelected(year: number) {
+    setYear(year);
   }
 
   const skeleton = () => (
@@ -88,7 +85,10 @@ const PayeeList = () => {
         onAddPayee={onAddPayee}
       ></PayeeListHeaderControls>
 
-      <PayeeListColumHeaders></PayeeListColumHeaders>
+      <PayeeListColumHeaders
+        year={year}
+        onOpenYearFilterModal={handleOpenYearFilterModal}
+      ></PayeeListColumHeaders>
       {data?.payees ? (
         <PayeeListResults
           openPayeeDetails={handleOpenPayeeDetails}
@@ -111,6 +111,16 @@ const PayeeList = () => {
           onClose={handleDetailsClose}
         ></PayeeDetailsWindow>
       )}
+
+      <YearFilterModal
+        isOpen={yearFilterModalIsOpen}
+        onCancel={() => {
+          setTimeout(() => {
+            setYearFilterModalIsOpen(false);
+          }, 500);
+        }}
+        onYearSelected={handleYearSelected}
+      ></YearFilterModal>
     </div>
   );
 };

@@ -141,6 +141,7 @@ namespace API.Controllers
         }
 
         [HttpPost("logout")]
+        [AllowAnonymous]
         public async Task<ActionResult> Logout()
         {
             await signInManager.SignOutAsync();
