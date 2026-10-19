@@ -1,21 +1,20 @@
 
 
+add payee modal when entering a new payment
 
 payee - New same as above
 payments - amounts went 'NAN' when switch back to screen
-
 add check number for each payment line
 add a 2E link to the budget summary
 
 
 
 BUG - when changing pages in search results, expanaded items stay open
-Make exclusive work for initiative and account
 
  ? -- add delete budget when no reprogrammings and no expenses
 
-
-DONE remove the $ from the payee line, only use the budget sumary $
+DONE Make exclusive work for initiative and account
+DONE remove the $ from the payee line, only use the budget summary $
 DONE add budget audit
 DONE show comment modal when creating reprogramming from sumamry page
 DONE fix comments moda, not reverting comment to roginal when Cancel is clicked

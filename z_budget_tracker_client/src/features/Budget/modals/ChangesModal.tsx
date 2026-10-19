@@ -55,8 +55,8 @@ const ChangeModal = ({
       {...props}
     >
       <div className="grid grid-cols-[1.3fr_1fr_1fr_1fr_1fr] font-medium p-2 px-3 bg-neutral-200/50 text-neutral-500 border border-neutral-300/60 rounded-t-sm">
-        <div>Version</div>
         <div>Acount</div>
+        <div>Version</div>
         <div className="text-center">New Amount</div>
         <div className="text-center">Updated By</div>
         <div className="text-center">Update Date</div>

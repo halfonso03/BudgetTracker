@@ -8,7 +8,7 @@ const fetchTransactions = async (
   accountId: number,
 ): Promise<TransactionResponse[]> => {
   const response = await agent.get<TransactionResponse[]>(
-    `/Budget/GetTransactionsForAccount/${budgetType}`,
+    `/budget/transactionsForAccount/${budgetType}`,
     {
       params: {
         initiativeId: initiative_id,
@@ -19,11 +19,6 @@ const fetchTransactions = async (
   );
 
   const budget = response.data;
-
-  // budget = {
-  //   ...budget,
-  //   account_balances: budget.account_balances.map((b) => ({ ...b })),
-  // };
 
   return budget;
 };

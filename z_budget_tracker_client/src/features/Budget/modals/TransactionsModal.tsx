@@ -5,14 +5,19 @@ import { Fragment, useState } from 'react';
 import Button from '../../../components/Button';
 
 type Props = {
-  budgetType:number,
+  budgetType: number;
   initiativeId: number;
   grantId: number;
   accountId: number;
   accountName: string;
   isOpen: boolean;
   onCancel: () => void;
-  onSelectedId: (id: number, accountName: string, initiativeId: number) => void;
+  onSelectedId: (
+    id: number,
+    accountName: string,
+    initiativeId: number,
+    grantId: number,
+  ) => void;
 };
 
 const TransactionsModal = (props: Props) => {
@@ -65,11 +70,11 @@ const TransactionsModal = (props: Props) => {
             if (i > 0) remaining += data[i].amount;
             return (
               <div
-                className="grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 rounded-sm p-2 hover:bg-neutral-200 duration-200 transition-all"
+                className="grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 rounded-sm p-2 hover:bg-neutral-200/40 duration-200 transition-all"
                 key={i}
               >
                 <div className="flex justify-between gap-2 ">
-                  <div className='font-medium'>{t.typeName}</div>
+                  <div className="font-medium">{t.typeName}</div>
                   <div>
                     {t.typeName == 'Reprogramming' ? (
                       <button
@@ -79,6 +84,7 @@ const TransactionsModal = (props: Props) => {
                             t.id,
                             props.accountName,
                             props.initiativeId,
+                            props.grantId
                           );
                         }}
                       >
@@ -93,6 +99,7 @@ const TransactionsModal = (props: Props) => {
                             t.id,
                             props.accountName,
                             props.initiativeId,
+                            props.grantId,
                           );
                         }}
                       >
@@ -101,9 +108,15 @@ const TransactionsModal = (props: Props) => {
                     ) : null}
                   </div>
                 </div>
-                <div className="text-center font-medium text-neutral-700">{formatDate(t.postedDate)}</div>
-                <div className="text-center font-medium text-neutral-700">{formatCurrency(t.amount)}</div>
-                <div className='text-neutral-700 font-medium text-end'>{formatNumber(remaining)}</div>
+                <div className="text-center font-medium text-neutral-700">
+                  {formatDate(t.postedDate)}
+                </div>
+                <div className="text-center font-medium text-neutral-700">
+                  {formatCurrency(t.amount)}
+                </div>
+                <div className="text-neutral-700 font-medium text-end">
+                  {formatNumber(remaining)}
+                </div>
               </div>
             );
           })}

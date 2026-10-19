@@ -53,7 +53,7 @@ const BudgetDetails = () => {
   const [selectedId, setSelectedId] = useState(0);
   const [selectedAccountName, setSelectedAccountName] = useState('');
   const [selectedInitiativeId, setSelectedInitiativeId] = useState(0);
-
+  const [selectedGrantId, setSelectedGrantId] = useState(0);
   const [changesModalIsOpen, setChangesModalIsOpen] = useState(false);
 
   const { updateBudget } = useBudgetMutations();
@@ -119,6 +119,7 @@ const BudgetDetails = () => {
             name: item.account_name,
             comment: item.comment,
             hasRepro: item.hasRepro,
+            hasSpent: item.hasSpent,
           };
         });
 
@@ -149,6 +150,7 @@ const BudgetDetails = () => {
         spent_amount: formattedTotalSpent,
         remaining_amount: formatCurrency(totalCurrent + totalSpent),
         hasRepro: false,
+        hasSpent: false,
         name: 'Total',
       };
 
@@ -290,11 +292,13 @@ const BudgetDetails = () => {
     id: number,
     accountName: string,
     initiativeId: number,
+    grantId: number,
   ) {
     setMiniDetailsIsOpen(true);
     setSelectedId(id);
     setSelectedAccountName(accountName);
     setSelectedInitiativeId(initiativeId);
+    setSelectedGrantId(grantId);
   }
 
   useEffect(() => {
@@ -460,14 +464,15 @@ const BudgetDetails = () => {
                       `rows.${indexRunningTotal}.amount`,
                     );
 
-                    const hasRero: boolean = getValues(
+                    const hasRepro: boolean = getValues(
                       `rows.${indexRunningTotal}.hasRepro`,
                     );
+              
 
                     return (
                       <Fragment key={field.id}>
                         <BudgetInputFields
-                          hasRepro={hasRero}
+                          hasRepro={hasRepro}
                           isLastRow={false}
                           year={+year!}
                           categoryId={field.categoryId}
@@ -575,26 +580,31 @@ const BudgetDetails = () => {
             }}
           ></TransactionsModal>
         )}
-        {changesModalIsOpen && initiative && grant && grantId && initiativeId && (
-          <ChangesModal
-            isOpen={true}
-            initiativeId={+initiativeId}
-            initiativeName={initiative.name}
-            grantName={grant.name}
-            grantId={+grantId}
-            onCancel={() => {
-              setTimeout(() => {
-                setChangesModalIsOpen(false);
-              }, 500);
-            }}
-          ></ChangesModal>
-        )}
+        {changesModalIsOpen &&
+          initiative &&
+          grant &&
+          grantId &&
+          initiativeId && (
+            <ChangesModal
+              isOpen={true}
+              initiativeId={+initiativeId}
+              initiativeName={initiative.name}
+              grantName={grant.name}
+              grantId={+grantId}
+              onCancel={() => {
+                setTimeout(() => {
+                  setChangesModalIsOpen(false);
+                }, 500);
+              }}
+            ></ChangesModal>
+          )}
 
         {selectedId !== 0 && (
           <ReproMiniDetailsModal
             reproId={selectedId}
             accountName={selectedAccountName}
             initiativeId={selectedInitiativeId}
+            grantId={selectedGrantId}
             isOpen={miniDetailsIsOpen}
             onCancel={() => {
               setMiniDetailsIsOpen(false);

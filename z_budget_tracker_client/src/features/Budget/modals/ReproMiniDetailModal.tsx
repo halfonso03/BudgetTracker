@@ -8,6 +8,7 @@ type Props = {
   onCancel: () => void;
   reproId: number;
   initiativeId: number;
+  grantId: number;
   accountName: string;
 };
 
@@ -61,7 +62,7 @@ const ReproMiniDetailsModal = ({ reproId, ...props }: Props) => {
         {data?.lineItems.map((item, index) => (
           <div
             key={index}
-            className={`grid grid-cols-[1.5fr_.7fr_.7fr_1fr_.5fr_.5fr] mb-3 ${props.accountName == item.accountName ? 'font-semibold' : ''} py-2 px-2`}
+            className={`grid grid-cols-[1.5fr_.7fr_.7fr_1fr_.5fr_.5fr] mb-3 ${props.accountName == item.accountName && props.initiativeId === item.initiativeId && props.grantId === item.grantId ? 'font-semibold' : ''} py-2 px-2`}
           >
             <div>{item.initiativeName}</div>
             <div>{item.grantName}</div>

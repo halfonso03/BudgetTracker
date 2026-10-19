@@ -55,7 +55,7 @@ namespace API.Controllers
         //     return Ok(budgets);
         // }
 
-        [HttpGet("GetTransactionsForAccount/{budgetType:int}")]
+        [HttpGet("transactionsForAccount/{budgetType:int}")]
         public async Task<IActionResult> GetTransactionsForAccount(BudgetType budgetType, int initiativeId, int grantId, int accountId)
         {
             return HandleResult(await _budgetService.GetTransactionsForAccount(budgetType, initiativeId, grantId, accountId));

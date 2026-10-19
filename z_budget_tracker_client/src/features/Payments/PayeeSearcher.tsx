@@ -12,6 +12,8 @@ import InfoModal from './modals/InfoModal';
 import SelectedPayeeCard from './SelectedPayeeCard';
 import Skeleton from 'react-loading-skeleton';
 import Spinner from '../../components/Spinner';
+import { Plus } from 'lucide-react';
+import Modal2 from '../../components/Modal2';
 
 type Props = {
   onPayeeSelected: (payee: Payee) => void;
@@ -33,6 +35,7 @@ const PayeeSearcher = ({
   const [highlightedRow, setHighlightedRow] = useState(-1);
   const [selectedPayee, setSelectedPayee] = useState<Payee | null>(null);
   const [searching, setSearching] = useState(false);
+  const [addNewPayeeModalisOpen, setAddNewPayeeModalIsOpen] = useState(false);
 
   if (selectedPayee) {
     payeeIdToFind = selectedPayee.id;
@@ -148,6 +151,9 @@ const PayeeSearcher = ({
               <Spinner></Spinner>
             </div>
           )}
+          <button onClick={() => setAddNewPayeeModalIsOpen(true)}>
+            <Plus className="text-neutral-400 hover:text-neutral-500 duration-200 transition-all cursor-pointer"></Plus>
+          </button>
         </div>
       </div>
       <div className="relative bg-white opacity-100">
@@ -201,6 +207,16 @@ const PayeeSearcher = ({
           setInfoWindowIsOpen(false);
         }}
       ></InfoModal>
+      <Modal2
+        isOpen={addNewPayeeModalisOpen}
+        size={'sm'}
+        onCancel={() => {
+          setAddNewPayeeModalIsOpen(false);
+        }}
+        animateOut={false}
+      >
+        sds
+      </Modal2>
     </div>
   );
 };

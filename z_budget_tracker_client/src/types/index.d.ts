@@ -26,6 +26,8 @@ type AccountBalance = {
     category_id?: number
     item_type?: ItemyType
     hasRepro: boolean
+    hasSpent: boolean
+
 }
 
 // child of Budget Type

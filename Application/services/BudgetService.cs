@@ -503,7 +503,7 @@ namespace Application.services
         public async Task<Result<List<TransactionResponseDto>>> GetTransactionsForAccount(BudgetType budgetType, int initiativeId, int grantId, int accountId)
         {
             var query = _dbContext.BudgetLineItems
-                    .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId && x.AccountId == accountId && x.ItemType == "B")
+                    .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId && x.AccountId == accountId && x.ItemType == Globals.ITEM_TYPE_BUDGET)
                     .Select(x => new
                     {
                         x.Id,

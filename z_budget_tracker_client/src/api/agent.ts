@@ -1,5 +1,6 @@
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const agent = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -56,6 +57,7 @@ agent.interceptors.response.use(
         return response;
     },
     async (error) => {
+        const navigate = useNavigate();
 
         if (error.response) {
             // Handle specific HTTP error status codes globally
@@ -91,7 +93,10 @@ agent.interceptors.response.use(
                     break;
                 }
                 case 401: {
+                    
+                    console.log('123', 123)
 
+                    navigate("/login")
                     // const originalRequest = error.config;
                     // if (error.response?.status === 401 && !originalRequest._retry) {
                     //     originalRequest._retry = true;
@@ -107,6 +112,7 @@ agent.interceptors.response.use(
                     //     console.log('error', error)
                     //     return Promise.reject(error);
                     // }
+                    
                 }
                     // e.g., Clear tokens and redirect to login page
                     break;

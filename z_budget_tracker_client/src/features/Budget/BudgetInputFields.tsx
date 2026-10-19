@@ -171,7 +171,7 @@ const BudgetInputFields = ({
                       fieldName,
                     )
                   }
-                  className=" underline underline-offset-3 text-blue-600 cursor-pointer"
+                  className=" hover:underline underline-offset-5 text-blue-600 cursor-pointer"
                 >
                   {current}
                 </button>
@@ -198,10 +198,22 @@ const BudgetInputFields = ({
       <div
         className={`text-end self-center py-1  ${getCellColor(isLastRow, spentAmount)} ${isLastRow} ? " py-2 ": ""`}
       >
-        {parseFormattedNumber(spentAmount) !== 0 ? (
-          formatCurrency(parseFormattedNumber(spentAmount))
+        {parseFormattedNumber(spentAmount) !== 0 && !isLastRow ? (
+          <button
+            type="button"
+            onClick={() =>
+              showAccountHistory(3, initiativeId, grantId, accountId, fieldName)
+            }
+            className=" hover:underline underline-offset-5 text-blue-600 cursor-pointer"
+          >
+            {formatCurrency(parseFormattedNumber(spentAmount))}
+          </button>
+        ) : parseFormattedNumber(spentAmount) === 0 ? (
+          '-'
         ) : (
-          <div className="pr-1">-</div>
+          <div className="">
+            {formatCurrency(parseFormattedNumber(spentAmount))}
+          </div>
         )}
       </div>
       <div
