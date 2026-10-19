@@ -289,7 +289,7 @@ const PaymentLineModal = (props: Props) => {
       <TallModal
         {...props}
         size="lg"
-        title="Payment"
+        title="Create Payment"
         animateOut={animateOut}
         isOpen={true}
         onCancel={closeModal}

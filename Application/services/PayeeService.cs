@@ -19,6 +19,12 @@ namespace Application.Services
         {
             try
             {
+
+                if (await dbContext.Payees.AnyAsync(x => x.Name.Trim() == createPayeeRequestDto.Name.Trim()))
+                {
+                    throw new Exception("Payee with entered name already exists. Please enter a different name.");
+                }
+
                 var payee = new Payee()
                 {
                     Id = 0,
@@ -36,7 +42,6 @@ namespace Application.Services
             }
             catch (Exception ex)
             {
-
                 return Result<int>.Failure(ex.Message, 500);
             }
         }

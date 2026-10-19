@@ -95,7 +95,7 @@ const PaymentForm = ({
   );
 
   const [paymentLineModalIsOpen, setPaymentLineModalIsOpen] = useState(
-    (initialEditSelection !== null || payment.lineItems.length === 0) ,
+    initialEditSelection !== null || payment.lineItems.length === 0,
   );
 
   const { setValue, register, getValues } = useForm<PaymentInputRows>({
@@ -187,7 +187,6 @@ const PaymentForm = ({
         toast.remove();
     };
   }, [getErrors, lines, paymentHeader.status]);
-
 
   function handleLineAdded(newLine: PaymentLineItem) {
     // setTimeout(() => setAddLineModalIsOpen(false), 500);
@@ -416,6 +415,9 @@ const PaymentForm = ({
         );
         onInitialSave?.(id);
         onSaved?.();
+      },
+      onError: (error) => {
+        console.log('error', error);
       },
     });
   }

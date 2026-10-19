@@ -57,13 +57,17 @@ agent.interceptors.response.use(
         return response;
     },
     async (error) => {
-        const navigate = useNavigate();
-
+        // const navigate = useNavigate();
         if (error.response) {
             // Handle specific HTTP error status codes globally
             switch (error.response.status) {
                 case 400: {
-
+                    console.log('error.response', error.response)
+                    if (error.response.data) {
+                        if (typeof (error.response.data) === "string") {
+                            toast.error(error.response.data, { duration: 2500 })
+                        }
+                    }
                     // const data = {
                     //     response: {
                     //         type: 'https://tools.ietf.org/html/rfc9110#section-15.5.1',
@@ -84,19 +88,18 @@ agent.interceptors.response.use(
                     // console.log('error', error)
 
                     if (error.response.data) {
-                        toast.error(error.response.data, { duration: 2000 })
+                        // toast.error(error.response.data, { duration: 2000 })
 
                     }
                     else if (error.response) {
-                        toast.error(error.response, { duration: 2000 })
+                        // toast.error(error.response, { duration: 2000 })
                     }
                     break;
                 }
                 case 401: {
-                    
-                    console.log('123', 123)
 
-                    navigate("/login")
+                    console.log("401 returned in agent.ts");
+                    // navigate("/login")
                     // const originalRequest = error.config;
                     // if (error.response?.status === 401 && !originalRequest._retry) {
                     //     originalRequest._retry = true;
@@ -112,7 +115,7 @@ agent.interceptors.response.use(
                     //     console.log('error', error)
                     //     return Promise.reject(error);
                     // }
-                    
+
                 }
                     // e.g., Clear tokens and redirect to login page
                     break;
