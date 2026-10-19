@@ -37,7 +37,7 @@ export const useBudgetMutations = () => {
       }, 2500);
     },
     onError: () => {
-      alert('errror');
+      alert('error in createBudgetMutation');
     },
   });
 
@@ -83,7 +83,7 @@ export const useBudgetMutations = () => {
       );
     },
     onError: () => {
-      alert('error');
+      alert('error in updateBudget mutation');
     },
   });
 

@@ -62,12 +62,12 @@ agent.interceptors.response.use(
             // Handle specific HTTP error status codes globally
             switch (error.response.status) {
                 case 400: {
-                    console.log('error.response', error.response)
-                    if (error.response.data) {
-                        if (typeof (error.response.data) === "string") {
-                            toast.error(error.response.data, { duration: 2500 })
-                        }
-                    }
+                    // console.log('error.response', error.response)
+                    // if (error.response.data) {
+                    //     if (typeof (error.response.data) === "string") {
+                    //         toast.error(error.response.data, { duration: 2500 })
+                    //     }
+                    // }
                     // const data = {
                     //     response: {
                     //         type: 'https://tools.ietf.org/html/rfc9110#section-15.5.1',

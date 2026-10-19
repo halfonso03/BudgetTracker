@@ -13,6 +13,7 @@ import { PayeeFormSchema } from '../../form_schemas/PayeeFormSchema';
 import { usePayeeMutations } from '../../api/hooks/payees/usePayeeMutations';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
 
 type Props = {
   payee: Payee;
@@ -75,7 +76,6 @@ const PayeeForm = ({
   }
 
   async function onSubmit(data: FormValues) {
-
     try {
       if (payeeId === 0) {
         await createPayee.mutateAsync(data, {
@@ -90,13 +90,19 @@ const PayeeForm = ({
               id: newId,
               accountId: data.accountId,
               categoryId: data.categoryId,
-              accountName: accounts!.filter(x => x.id == data.accountId)[0].name,
-              payeeName : getValues('name'),
+              accountName: accounts!.filter((x) => x.id == data.accountId)[0]
+                .name,
+              payeeName: getValues('name'),
               payeeTypeId: getValues('payeeTypeId'),
             });
           },
-          onError: (e) => {
-            // console.log('e', e);
+          onError: (e: Error) => {
+            const error = e as AxiosError;
+            if (error && error.response  && error.response.data) {
+              if (typeof error.response.data === 'string') {
+                toast.error(error.response.data, { duration: 2500 });
+              }
+            }
           },
         });
       } else {
@@ -113,7 +119,6 @@ const PayeeForm = ({
         });
       }
     } catch (error) {
-      alert(error);
       console.log('error', error);
     }
   }
