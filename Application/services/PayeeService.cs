@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.Drawing;
-using System.Runtime.InteropServices.Marshalling;
 using Application.Core;
 using Application.DTOs.Payee;
 using Application.DTOs.Payees;
@@ -8,7 +5,6 @@ using Application.PaginationHelpers;
 using AutoMapper;
 using Domain;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using Persistence;
 
 namespace Application.Services
@@ -248,12 +244,12 @@ namespace Application.Services
             int? daysSinceLastPayment = null;
 
 
-            if (await dbContext.DisbLineItems.AnyAsync(x => x.PayeeId == payeeId))
+            if (await dbContext.DisbLineItems.AnyAsync(x => x.PayeeId == payeeId && x.BudgetLineItemId != null))
             {
-                lastPaymentDate = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).MaxAsync(x => x.EntryDate);
-                totalPaid = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).SumAsync(x => x.Amount);
-                lastPaymentAmount = (await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).OrderBy(x => x.EntryDate).LastOrDefaultAsync())?.Amount;
-                numberOfPayments = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId).CountAsync();
+                lastPaymentDate = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId && x.BudgetLineItemId != null).MaxAsync(x => x.EntryDate);
+                totalPaid = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId && x.BudgetLineItemId != null).SumAsync(x => x.Amount);
+                lastPaymentAmount = (await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId && x.BudgetLineItemId != null).OrderBy(x => x.EntryDate).LastOrDefaultAsync())?.Amount;
+                numberOfPayments = await dbContext.DisbLineItems.Where(x => x.PayeeId == payeeId && x.BudgetLineItemId != null).CountAsync();
                 daysSinceLastPayment = ((TimeSpan)(DateTime.Today - lastPaymentDate!)).Days;
             }
 
