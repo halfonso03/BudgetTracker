@@ -80,6 +80,8 @@ const PaymentForm = ({
     id: payment.id,
     justification: 'test',
     status: payment.posted ? POSTED : SAVED,
+    createdById: payment.createdById,
+    createDate: payment.createDate,
     postedDate: payment.postedDate,
     postedBy: payment.postedBy,
   });
@@ -375,14 +377,14 @@ const PaymentForm = ({
         ...l,
       };
     });
-    const paymnentToSave: CreatePaymentRequest = {
+    const paymentToSave: CreatePaymentRequest = {
       createdById: +user!.id,
       posted: posted,
       justification: paymentHeader.justification,
       lineItems: lineItems2,
     };
 
-    await createPayment.mutateAsync(paymnentToSave, {
+    await createPayment.mutateAsync(paymentToSave, {
       onSuccess: async (id) => {
         const postedDate = new Date();
         const createDate = new Date();
@@ -392,7 +394,7 @@ const PaymentForm = ({
         }
 
         queryClient.setQueryData<Payment>(['payment', id], () => ({
-          ...paymnentToSave,
+          ...paymentToSave,
           id: id,
           year: payment.year,
           justification: paymentHeader.justification,
@@ -459,26 +461,35 @@ const PaymentForm = ({
         if (posted) {
           await invalidateBalances();
         }
-        // await queryClient.invalidateQueries({
-        //   queryKey: ['repro_account_balances'],
-        // });
-        // queryClient.setQueryData<Repro>(
-        //   ['repro', paymentHeader.id],
-        //   (oldData: any) => {
-        //     console.log('oldData', oldData);
-        //     return {
-        //       ...oldData,
-        //       lineItems: lines.map((l) => {
-        //         return {
-        //           ...l,
-        //           newAmount:
-        //             l.currentAmount + +(l.increase ?? 0) - +(l.decrease ?? 0),
-        //         };
-        //       }),
-        //       rowBalances: savedBalances,
-        //     };
-        //   },
-        // );
+
+        queryClient.setQueryData<Payment>(['payment', paymentHeader.id], () => ({
+          ...paymentToSave,
+          id: paymentHeader.id,
+          year: payment.year,
+          justification: paymentHeader.justification,
+          createdBy: loginId!,
+          createDate: paymentHeader.createDate!,
+          createdById: paymentHeader.createdById!,
+          posted: posted,
+          postedDate: posted ? postedDate : null,
+          postedBy: posted ? loginId! : null,
+          postedById: posted ? +user!.id! : null,
+          rowBalances: lines.map((l) => ({
+            initiativeId: l.initiativeId,
+            grantId: l.grantId,
+            accountId: l.accountId,
+            remainingAmount: l.availableAmount,
+          })),
+          lineItems: lines.map((l) => {
+            return {
+              ...l,
+              comment: l.comment ?? '',
+              availableAmount: l.availableAmount,
+              paymentAmount: l.paymentAmount,
+              newAvailableAmount: l.newAvailableAmount,
+            };
+          }),
+        }));
 
         const postedDate = new Date();
         onServerUpdateSuccess(posted, posted ? postedDate : null);

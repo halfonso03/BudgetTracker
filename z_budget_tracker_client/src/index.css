@@ -159,6 +159,19 @@ input:-webkit-autofill:focus {
     }
   }
 
+  --animate-payment-input-fade-in: fadeInPaymentInput .45s ease-out forwards;
+
+  @keyframes fadeInPaymentInput {
+    0% {
+      transform: translateY(-15%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0%);
+      opacity: 1;
+    }
+  }
+
   /* @keyframes custom-enter {
     0% {
       transform: translateX(100%);
@@ -281,7 +294,7 @@ pre {
   /* transform: scale(1); */
   opacity: 1;
   visibility: visible;
-   z-index: 20000;
+  z-index: 20000;
 }
 
 .page-link-active {

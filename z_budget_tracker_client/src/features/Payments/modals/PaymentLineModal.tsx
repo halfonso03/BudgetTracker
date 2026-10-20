@@ -22,6 +22,7 @@ import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeIn
 import Dropdown, { type Option } from 'react-dropdown';
 import useCurrentAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
 import { useEscapeKey } from '../../../hooks/useEscapeKey';
+import Spinner from '../../../components/Spinner';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -99,7 +100,10 @@ const PaymentLineModal = (props: Props) => {
 
   // const categoryIdWatchValue = watch('categoryId') as number;
 
-  const { data: availableAccountBalances } = useRemainingAccountBalances(
+  const {
+    data: availableAccountBalances,
+    isLoading: loadingAvailableAccountBalances,
+  } = useRemainingAccountBalances(
     selections?.initiativeId ?? 0,
     selections?.grantId ?? 0,
     selections?.categoryId ?? 0,
@@ -646,15 +650,18 @@ const PaymentLineModal = (props: Props) => {
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]">
                   <div className="col-span-2 border-t border-b p-2 border-neutral-300/90 py-4 ">
-                    <PaymentEntryInput
-                      getValues={getValues}
-                      error={errors?.paymentAmount}
-                      register={register('paymentAmount')}
-                      available={availableAmount}
-                      onBlur={handleInputEntryOnBlur}
-                      onLessThanZero={handleLessThanZero}
-                      onOK={handleAmountOk}
-                    ></PaymentEntryInput>
+                    {loadingAvailableAccountBalances && <Spinner></Spinner>}
+                    {availableAccountBalances && (
+                      <PaymentEntryInput
+                        getValues={getValues}
+                        error={errors?.paymentAmount}
+                        register={register('paymentAmount')}
+                        available={availableAmount}
+                        onBlur={handleInputEntryOnBlur}
+                        onLessThanZero={handleLessThanZero}
+                        onOK={handleAmountOk}
+                      ></PaymentEntryInput>
+                    )}
                   </div>
                   <div></div>
                 </div>

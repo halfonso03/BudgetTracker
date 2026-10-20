@@ -41,7 +41,7 @@ const PaymentEntryInput = ({
   const remaining = available - parseFormattedNumber(paymentAmount);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 animate-payment-input-fade-in">
       <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center ">
         <div className="text-neutral-600/90 font-medium">Available</div>
         <div
