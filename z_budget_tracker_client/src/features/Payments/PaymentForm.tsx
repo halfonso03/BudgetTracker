@@ -159,19 +159,37 @@ const PaymentForm = ({
 
   const seen: string[] = [];
 
-  const distinctNewItems: PaymentSummary[] = lines.map((item) => {
-    const key = `${item.initiativeName}-${item.grantName}-${item.categoryName}-${item.accountName}`;
-    if (seen.some((x) => x === key)) return false;
-    const setItem: PaymentSummary = {
-      initiativeName: item.initiativeName,
-      grantName: item.grantName,
-      categoryName: item.categoryName,
-      accountName: item.accountName,
-    };
-    seen.push(key);
-    return setItem;
-  })
-  .filter(x => x);
+  const distinctNewItems = lines
+    .map((item) => {
+      const key = `${item.initiativeName}-${item.grantName}-${item.categoryName}-${item.accountName}`;
+      if (seen.some((x) => x === key)) return null;
+      const setItem: PaymentSummary = {
+        initiativeName: item.initiativeName,
+        grantName: item.grantName,
+        categoryName: item.categoryName,
+        accountName: item.accountName,
+        available: lines.filter(
+          (x) =>
+            x.initiativeName == item.initiativeName &&
+            x.grantName == item.grantName &&
+            x.categoryName === item.categoryName &&
+            x.accountName == item.accountName,
+        )[0].availableAmount,
+        totalPaid: lines
+          .filter(
+            (x) =>
+              x.initiativeName == item.initiativeName &&
+              x.grantName == item.grantName &&
+              x.categoryName === item.categoryName &&
+              x.accountName == item.accountName,
+          )
+          .map((x) => parseFormattedNumber(x.paymentAmount.toString()))
+          .reduce((acc, cur) => acc + cur, 0),
+      };
+      seen.push(key);
+      return setItem;
+    })
+    .filter((x) => x);
 
   console.log(distinctNewItems);
 
@@ -848,6 +866,22 @@ const PaymentForm = ({
           message="This payment wil be posted. Click OK to continue."
         ></ConfirmModal>
       </div>
+
+      {distinctNewItems && (
+        <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr]">
+          {distinctNewItems.map((d) => (
+            <>
+              <div>{d?.initiativeName}</div>
+              <div>{d?.grantName}</div>
+              <div>{d?.categoryName}</div>
+              <div>{d?.accountName}</div>
+              <div>{formatCurrency(d?.available ?? 0)}</div>
+              <div>{formatCurrency(d?.totalPaid ?? 0)}</div>
+              <div>{(d?.available ?? 0) - (d?.totalPaid ?? 0)}</div>
+            </>
+          ))}
+        </div>
+      )}
     </MenuIdProvider>
   );
 };

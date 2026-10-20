@@ -136,4 +136,7 @@ type PaymentSummary = {
     grantName: string,
     categoryName: string,
     accountName: string,
+    available?: number,
+    totalPaid?: number,
+    remaining?: number
 }
