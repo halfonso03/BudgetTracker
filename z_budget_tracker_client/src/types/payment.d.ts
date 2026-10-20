@@ -25,11 +25,14 @@ type Payment = {
     postedById?: number | null
     postedDate?: Date | null
     lineItems: PaymentLineItem[]
-    // rowBalances?: ReproRowBalance[],
+    rowBalances?: PaymentRowBalance[],
     started?: boolean
     uuid?: string
 }
 
+type PaymentRowBalance = {
+    initiativeId: number; grantId: number; accountId: number; remainingAmount: number;
+};
 
 type PaymentLineItem = {
     rowId: number
@@ -65,7 +68,7 @@ type PaymentInputRow = {
     newAvailableAmount: number
 };
 
-type PaymentAvailableAccountBalance = {
+type PaymentRemainingAccountBalance = {
     accountId: number
     accountName: string
     availableAmount: number

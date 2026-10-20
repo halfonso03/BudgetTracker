@@ -14,7 +14,7 @@ import { PaymentFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
 import { Asterisk } from 'lucide-react';
 import { formatNumber, parseFormattedNumber } from '../../../app/util';
-import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailableAccountBalances';
+import useRemainingAccountBalances from '../../../api/hooks/payments/useRemainingAccountBalances';
 
 type Selections = {
   initiativeId?: number;
@@ -84,7 +84,7 @@ const EditLineModal = ({ ...props }: Props) => {
       ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
       : [];
 
-  const { data: availableAccountBalances } = useAvailableAccountBalances(
+  const { data: availableAccountBalances } = useRemainingAccountBalances(
     selections?.initiativeId ?? 0,
     selections?.grantId ?? 0,
     selections?.categoryId ?? 0,

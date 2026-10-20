@@ -75,18 +75,24 @@ const PaymentForm = ({
 
   if (payment.year === 0) throw new Error('no year');
 
+  //payment.justification
   const [paymentHeader, setPaymentHeader] = useState<PaymentHeader>({
     id: payment.id,
-    justification: payment.justification,
+    justification: 'test',
     status: payment.posted ? POSTED : SAVED,
     postedDate: payment.postedDate,
     postedBy: payment.postedBy,
   });
 
+  // const [savedRowBalances, setSavedRowBalances] = useState<PaymentRowBalance[]>(
+  //   payment && payment.rowBalances ? payment.rowBalances! : [],
+  // );
+
   const [lines, setLines] = useState<PaymentLineItem[]>(
     payment.lineItems.map((l) => {
       const line: PaymentLineItem = {
         ...l,
+        paymentAmount: +parseFormattedNumber(l.paymentAmount.toString()),
         availableAmount: l.availableAmount,
         newAvailableAmount: l.availableAmount - +(l.paymentAmount ?? 0),
       };
@@ -103,7 +109,7 @@ const PaymentForm = ({
       rows: lines.map((l) => {
         return {
           ...l,
-          amount: formatNumber(+(l?.paymentAmount ?? 0.0)),
+          paymentAmount: formatNumber(+(l?.paymentAmount ?? 0.0)),
           newAvailableAmount: +(l?.availableAmount ?? 0) - +l.paymentAmount,
         };
       }),
@@ -396,6 +402,12 @@ const PaymentForm = ({
           postedDate: posted ? postedDate : null,
           postedBy: posted ? loginId! : null,
           postedById: posted ? +user!.id! : null,
+          rowBalances: lines.map((l) => ({
+            initiativeId: l.initiativeId,
+            grantId: l.grantId,
+            accountId: l.accountId,
+            remainingAmount: l.availableAmount,
+          })),
           lineItems: lines.map((l) => {
             return {
               ...l,
@@ -434,14 +446,15 @@ const PaymentForm = ({
 
     console.log('lineItems2', lineItems2);
 
-    const reproToSave: UpdatePaymentRequest = {
+    const paymentToSave: UpdatePaymentRequest = {
       id: paymentHeader.id,
       updatedById: +user!.id!,
       posted: posted,
       justification: paymentHeader.justification,
       lineItems: lineItems2,
     };
-    await updatePayment.mutateAsync(reproToSave, {
+
+    await updatePayment.mutateAsync(paymentToSave, {
       onSuccess: async () => {
         if (posted) {
           await invalidateBalances();
@@ -551,7 +564,7 @@ const PaymentForm = ({
       .map((l) => ({ i: l.initiativeId, g: l.grantId, c: l.categoryId }));
     for (const l of uniqueLines) {
       await queryClient.refetchQueries({
-        queryKey: ['repro_account_balances', +l.i, +l.g, +l.c],
+        queryKey: ['payment_account_balances', +l.i, +l.g, +l.c],
       });
     }
   }
@@ -700,24 +713,26 @@ const PaymentForm = ({
                         <div
                           className={` font-semibold text-neutral-600 text-center self-end  p-1 ${paymentHeader.status === POSTED ? 'opacity-0' : ''}`}
                         >
-                          Available
+                          {paymentHeader.status !== POSTED && 'Available'}
                         </div>
                         <div className="text-center font-semibold text-neutral-600    p-1 px-3">
                           Payment
                         </div>
                         <div className="text-center self-end font-semibold text-neutral-600    p-1 px-3">
-                          Remaining
+                          {paymentHeader.status !== POSTED && 'Remaining'}
                         </div>
                         <div>
                           <div>
-                            <input
-                              readOnly={true}
-                              tabIndex={-1}
-                              className={
-                                'w-full  p-2 text-center text-neutral-600 focus:outline-none focus:ring-0'
-                              }
-                              value={formatNumber(item.availableAmount)}
-                            ></input>
+                            {paymentHeader.status !== POSTED && (
+                              <input
+                                readOnly={true}
+                                tabIndex={-1}
+                                className={
+                                  'w-full  p-2 text-center text-neutral-600 focus:outline-none focus:ring-0'
+                                }
+                                value={formatNumber(item.availableAmount)}
+                              ></input>
+                            )}
                           </div>
                         </div>
                         <div>
@@ -736,12 +751,14 @@ const PaymentForm = ({
                           />
                         </div>
                         <div>
-                          <input
-                            readOnly={true}
-                            tabIndex={-1}
-                            className={` ${alertClass} w-full  p-2 text-neutral-600 text-center focus:outline-none focus:ring-0`}
-                            value={formatCurrency(item.newAvailableAmount)}
-                          ></input>
+                          {paymentHeader.status !== POSTED && (
+                            <input
+                              readOnly={true}
+                              tabIndex={-1}
+                              className={` ${alertClass} w-full  p-2 text-neutral-600 text-center focus:outline-none focus:ring-0`}
+                              value={formatCurrency(item.newAvailableAmount)}
+                            ></input>
+                          )}
                         </div>
                       </div>
                     </div>

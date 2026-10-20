@@ -1,4 +1,22 @@
+import { Link } from 'react-router-dom';
+
 const PaymentSearch = () => {
-  return <div>PaymentSearch</div>;
+  const ids: number[] = [];
+
+  for (let x = 30; x <= 36; x++) {
+    ids.push(x);
+  }
+
+  return (
+    <div>
+      {ids.map((x) => (
+        <div>
+          <Link to={`/payments/${x}`} className="text-blue-500 hover:underline">
+            Id {x}
+          </Link>
+        </div>
+      ))}
+    </div>
+  );
 };
 export default PaymentSearch;

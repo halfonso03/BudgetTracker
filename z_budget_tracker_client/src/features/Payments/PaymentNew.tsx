@@ -12,6 +12,7 @@ const PaymentNew = () => {
   const preloadState = location.state;
   const { user } = useClientAuth();
   const lineItems: PaymentLineItem[] = [];
+  // const rowBalances: PaymentRowBalance[] = [];
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const { hasUnsavedChanges, setHasUnsavedChanges } =
     useHasUnsavedChangesStore();
@@ -86,8 +87,7 @@ const PaymentNew = () => {
             created: true,
           },
         }),
-
-      1000,
+      1600,
     );
   }
 
@@ -103,7 +103,7 @@ const PaymentNew = () => {
           payment={payment}
           onInitialSave={handleInitialSaved}
           onIsDirty={handleIsDirty}
-          preloadedValues={preloadedValues}
+          preloadedValues={preloadedValues}          
         ></PaymentForm>
       );
     }

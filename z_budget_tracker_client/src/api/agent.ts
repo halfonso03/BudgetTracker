@@ -1,6 +1,5 @@
 import axios from "axios";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 
 const agent = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
@@ -84,7 +83,6 @@ agent.interceptors.response.use(
                     // }
 
 
-
                     // console.log('error', error)
 
                     if (error.response.data) {
@@ -98,26 +96,9 @@ agent.interceptors.response.use(
                 }
                 case 401: {
 
-                    console.log("401 returned in agent.ts");
-                    // navigate("/login")
-                    // const originalRequest = error.config;
-                    // if (error.response?.status === 401 && !originalRequest._retry) {
-                    //     originalRequest._retry = true;
-                    // }
-
-                    // try {
-                    //     const response = await agent.post<{ accessToken: string }>('/account/refreshToken/webadmin');
-                    //     localStorage.setItem('token', response.data.accessToken);
-                    //     originalRequest.headers['Authorization'] = `Bearer ${response.data.accessToken}`;
-                    //     return agent(originalRequest);
-
-                    // } catch (error) {
-                    //     console.log('error', error)
-                    //     return Promise.reject(error);
-                    // }
+                    window.location.href = '/login';
 
                 }
-                    // e.g., Clear tokens and redirect to login page
                     break;
                 case 403:
                     toast.error('You do not have access.');

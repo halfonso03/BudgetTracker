@@ -2,7 +2,7 @@
 
 
 
-payments list not showing when clicking the info link for a payee
+
 payee - New same as above
 payments - amounts went 'NAN' when switch back to screen <- seems to happen when a payment is duplicated
 

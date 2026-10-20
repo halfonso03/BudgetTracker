@@ -123,7 +123,7 @@ namespace Application.Services
                             GrantId = key.GrantId,
                             CategoryId = key.CategoryId
                         },
-                        Balances = [.. balances.Select(x => Balance.Create(x.AccountId, x.CurrentAmount, x.RemainingAmount, x.AccountName))]
+                        Balances = [.. balances.Select(x => Balance.Create(x.AccountId, x.RemainingAmount, x.AccountName))]
                     });
                 }
 
@@ -152,7 +152,7 @@ namespace Application.Services
                             GrantId = x.GrantId,
                             AccountId = x.AccountId,
                             CategoryId = x.CategoryId,
-                            Amount = x.Amount,
+                            PaymentAmount = x.Amount,
                             PayeeName = x.Payee!.Name,
                             PayeeId = x.PayeeId,
                             InitiativeName = x.Initiative!.Name,
@@ -567,7 +567,7 @@ namespace Application.Services
                             GrantId = key.GrantId,
                             CategoryId = key.CategoryId
                         },
-                        Balances = [.. balances.Select(x => Balance.Create(x.AccountId, x.CurrentAmount, x.RemainingAmount, x.AccountName))]
+                        Balances = [.. balances.Select(x => Balance.Create(x.AccountId, x.RemainingAmount, x.AccountName))]
                     });
                 }
 
@@ -589,7 +589,7 @@ namespace Application.Services
                         GrantId = x.GrantId,
                         AccountId = x.AccountId,
                         CategoryId = x.CategoryId,
-                        Amount = x.Amount,
+                        PaymentAmount = x.Amount,
                         InitiativeName = x.Initiative!.Name,
                         GrantName = x.Grant!.Name,
                         AccountName = x.Account!.Name,

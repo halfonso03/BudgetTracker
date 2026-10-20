@@ -10,8 +10,13 @@ import Spinner from '../../components/Spinner';
 type Props = {
   payeeId: number;
   showSkeleton?: boolean;
+  onPaymentRowClicked?: (paymentId: number, payeeId: number) => void;
 };
-const PayeePaymentsList = ({ payeeId, showSkeleton = true }: Props) => {
+const PayeePaymentsList = ({
+  payeeId,
+  showSkeleton = true,
+  onPaymentRowClicked = null,
+}: Props) => {
   const { payments, loadingPayments, loadingPaymentsSuccess } =
     usePayeePayments(payeeId);
 
@@ -123,7 +128,7 @@ const PayeePaymentsList = ({ payeeId, showSkeleton = true }: Props) => {
           {payments.payments.map((p) => (
             <div
               key={p.id}
-              className="grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr]  gap-4  hover:bg-neutral-100 duration-200 transition-all cursor-pointer border-b border-b-neutral-200 last:border-0"
+              className={` ${onPaymentRowClicked != null ? 'cursor-pointer ' : ''} grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr]  gap-4  hover:bg-neutral-100 duration-200 transition-all border-b border-b-neutral-200 last:border-0`}
             >
               <div className="py-2 px-4 ">{p.id}</div>
               <div className="py-2 ">{p.year}</div>

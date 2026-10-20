@@ -17,7 +17,7 @@ import {
   formatNumber,
   parseFormattedNumber,
 } from '../../../app/util';
-import useAvailableAccountBalances from '../../../api/hooks/payments/useAvailableAccountBalances';
+import useRemainingAccountBalances from '../../../api/hooks/payments/useRemainingAccountBalances';
 import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeInfo';
 import Dropdown, { type Option } from 'react-dropdown';
 import useCurrentAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
@@ -99,7 +99,7 @@ const PaymentLineModal = (props: Props) => {
 
   // const categoryIdWatchValue = watch('categoryId') as number;
 
-  const { data: availableAccountBalances } = useAvailableAccountBalances(
+  const { data: availableAccountBalances } = useRemainingAccountBalances(
     selections?.initiativeId ?? 0,
     selections?.grantId ?? 0,
     selections?.categoryId ?? 0,
@@ -120,6 +120,7 @@ const PaymentLineModal = (props: Props) => {
   function handlePayeeCreated(payee: Payee) {
     handlePayeeSelected(payee);
   }
+
   function handlePayeeSelected(payee: Payee) {
     const options = {
       shouldDirty: true,
@@ -147,8 +148,6 @@ const PaymentLineModal = (props: Props) => {
 
   async function onSubmit(data: FormValues) {
     closeModal();
-    console.log('props.fromRedirect', fromRedirect);
-    console.log('!props.uuid', props.uuid);
     if (!props.uuid || fromRedirect) {
       const newLine: PaymentLineItem = {
         ...data,

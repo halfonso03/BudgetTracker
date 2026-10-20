@@ -10,7 +10,7 @@ import PaymentForm from './PaymentForm';
 import useGetPayment from '../../api/hooks/payments/useGetPayment';
 
 const PaymentDetails = () => {
-  console.log('PaymentDetails render');
+  // console.log('PaymentDetails render');
   // const { userId } = useAuth();
 
   const navigate = useNavigate();
@@ -146,7 +146,14 @@ function createPaymentFromDb(payment: Payment): Payment {
     lineItems: payment.lineItems!.map((l) => {
       return {
         ...l,
+        availableAmount: payment.rowBalances!.filter(
+          (x) =>
+            x.initiativeId === l.initiativeId &&
+            x.grantId === l.grantId &&
+            x.accountId === l.accountId,
+        )[0].remainingAmount,
         uuid: window.crypto.randomUUID(),
+        paymentAmount: l.paymentAmount,
       };
     }),
   };

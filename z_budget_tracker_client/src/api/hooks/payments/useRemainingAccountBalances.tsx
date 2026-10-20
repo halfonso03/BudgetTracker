@@ -5,27 +5,37 @@ const fetchBalances = async (
   initiativeId?: number,
   grantId?: number,
   categoryId?: number,
-): Promise<PaymentAvailableAccountBalance[]> => {
-  const response = await agent.get<PaymentAvailableAccountBalance[]>(`/payment/balances`, {
-    params: {
-      initiativeId: initiativeId,
-      grantId: grantId,
-      categoryId: categoryId,
+): Promise<PaymentRemainingAccountBalance[]> => {
+  const response = await agent.get<PaymentRemainingAccountBalance[]>(
+    `/payment/balances`,
+    {
+      params: {
+        initiativeId: initiativeId,
+        grantId: grantId,
+        categoryId: categoryId,
+      },
     },
-  });
+  );
   return response.data;
 };
 
-const useAvailableAccountBalances = (
+const useRemainingAccountBalances = (
   initiativeId?: number,
   grantId?: number,
   categoryId?: number,
+  accountId?: number,
 ) => {
   const { data, isLoading, status, isFetching, isSuccess } = useQuery<
-    PaymentAvailableAccountBalance[]
+    PaymentRemainingAccountBalance[]
   >({
     queryFn: () => fetchBalances(initiativeId, grantId, categoryId),
-    queryKey: ['payment_account_balances', initiativeId, grantId, categoryId],
+    queryKey: [
+      'payment_account_balances',
+      initiativeId,
+      grantId,
+      categoryId,
+      accountId,
+    ],
     enabled:
       initiativeId != undefined &&
       initiativeId != 0 &&
@@ -38,4 +48,4 @@ const useAvailableAccountBalances = (
   return { data, isLoading, status, isFetching, isSuccess };
 };
 
-export default useAvailableAccountBalances;
+export default useRemainingAccountBalances;

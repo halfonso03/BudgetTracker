@@ -1,10 +1,10 @@
 import { Navigate, useParams } from 'react-router-dom';
-import useAvailableAccountBalances from '../../api/hooks/payments/useAvailableAccountBalances';
+import useRemainingAccountBalances from '../../api/hooks/payments/useRemainingAccountBalances';
 
 const PaymentPreload = () => {
   const { year, initiativeId, grantId, categoryId, accountId } = useParams();
 
-  const { data, isSuccess } = useAvailableAccountBalances(
+  const { data: balances, isSuccess } = useRemainingAccountBalances(
     +initiativeId!,
     +grantId!,
     +categoryId!,
@@ -13,20 +13,22 @@ const PaymentPreload = () => {
   if (!isSuccess) return null;
 
   const s = {
-    balances: data,
+    balances: balances,
     ids: {
       year: +year!,
       initiativeId: +initiativeId!,
       grantId: +grantId!,
       categoryId: +categoryId!,
       accountId: +accountId!,
-      initiativeName: data![0].initiativeName,
-      grantName: data![0].grantName,
-      categoryName: data![0].categoryName,
-      accountName: data!.filter((x) => x.accountId === +accountId!)[0]
+      initiativeName: balances![0].initiativeName,
+      grantName: balances![0].grantName,
+      categoryName: balances![0].categoryName,
+      accountName: balances!.filter((x) => x.accountId === +accountId!)[0]
         .accountName,
     },
   };
+
+  console.log('s', s);
 
   return <Navigate to="/payments/new" state={s}></Navigate>;
 };

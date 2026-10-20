@@ -23,7 +23,7 @@ namespace Application.DTOs.Payment
         public required string AccountName { get; set; }
         public required string PayeeName { get; set; }
         public required int PayeeId { get; set; }
-        public required decimal Amount { get; set; }
+        public required decimal PaymentAmount { get; set; }
         public required int Year { get; set; }
         public string? Comment { get; set; }
         public bool? OverrideNegativeBalance { get; set; }

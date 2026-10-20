@@ -21,15 +21,13 @@ namespace Application.DTOs.Payment
     public class Balance
     {
         public required int AccountId { get; set; }
-        public required decimal AvailableAmount { get; set; }
         public required decimal RemainingAmount { get; set; }
         public required string AccountName { get; set; }
-        public static Balance Create(int accountId, decimal aAmount, decimal rAmount, string name)
+        public static Balance Create(int accountId, decimal rAmount, string name)
         {
             return new Balance
             {
                 AccountId = accountId,
-                AvailableAmount = aAmount,
                 RemainingAmount = rAmount,
                 AccountName = name
             };
