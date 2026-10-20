@@ -249,28 +249,11 @@ const BudgetDetails = () => {
     accountId: number,
     newRemaining: number,
   ) {
-    let index = 0;
-    while (budgetRows[index].accountId !== accountId) {
-      index++;
-    }
-
-    // const current_amount = parseFormattedNumber(
-    //   getValues(`rows.${index}.current_amount`)?.toString() ?? '0.00',
-    // );
-    // const spent_amount = parseFormattedNumber(
-    //   getValues(`rows.${index}.spent_amount`)?.toString() ?? '0.00',
-    // );
-
-    // const remaining = current_amount + spent_amount;
-
-    // console.log('current_amount', current_amount);
-
     if (negativeAccounts.some((x) => x.accountId === accountId)) {
       if (newRemaining > 0) {
-        const newNeg = negativeAccounts.filter(
-          (x) => x.accountId !== accountId,
+        setNegativeAccounts(
+          negativeAccounts.filter((x) => x.accountId !== accountId),
         );
-        setNegativeAccounts(newNeg);
       } else {
         const rem = negativeAccounts.filter((x) => x.accountId === accountId)[0]
           .remainingAmount;
