@@ -157,6 +157,24 @@ const PaymentForm = ({
 
   const { createPayment, updatePayment } = usePaymentMutations();
 
+  const seen: string[] = [];
+
+  const distinctNewItems: PaymentSummary[] = lines.map((item) => {
+    const key = `${item.initiativeName}-${item.grantName}-${item.categoryName}-${item.accountName}`;
+    if (seen.some((x) => x === key)) return false;
+    const setItem: PaymentSummary = {
+      initiativeName: item.initiativeName,
+      grantName: item.grantName,
+      categoryName: item.categoryName,
+      accountName: item.accountName,
+    };
+    seen.push(key);
+    return setItem;
+  })
+  .filter(x => x);
+
+  console.log(distinctNewItems);
+
   useEffect(() => {
     const errors = getErrors();
 

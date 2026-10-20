@@ -99,6 +99,8 @@ const BudgetDetails = () => {
     }
   }
 
+
+
   // if (budget?.account_balances) {
   //   console.log(budget?.account_balances);
   // }
@@ -467,7 +469,6 @@ const BudgetDetails = () => {
                     const hasRepro: boolean = getValues(
                       `rows.${indexRunningTotal}.hasRepro`,
                     );
-              
 
                     return (
                       <Fragment key={field.id}>

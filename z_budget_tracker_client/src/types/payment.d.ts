@@ -129,3 +129,11 @@ type PaymentPreloadedValues = {
     accountId?: number
 }
 
+
+
+type PaymentSummary = {
+    initiativeName: string
+    grantName: string,
+    categoryName: string,
+    accountName: string,
+}
