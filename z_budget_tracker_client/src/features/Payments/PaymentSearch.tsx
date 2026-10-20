@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 const PaymentSearch = () => {
   const ids: number[] = [];
 
-  for (let x = 30; x <= 36; x++) {
+  for (let x = 1030; x <= 1050; x++) {
     ids.push(x);
   }
 

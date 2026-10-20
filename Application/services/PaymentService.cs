@@ -9,7 +9,7 @@ using Persistence;
 
 namespace Application.Services
 {
-    public class PaymentService(AppDbContext _dbContext, IBudgetService _budgetService)
+    public class PaymentService(AppDbContext _dbContext)
     {
         public async Task<Result<List<PaymentCategoryBalanceDto>>> GetAvailableBalancesForCategory(int initiativeId, int grantId, int categoryId)
         {

@@ -446,8 +446,6 @@ const PaymentForm = ({
       };
     });
 
-    console.log('lineItems2', lineItems2);
-
     const paymentToSave: UpdatePaymentRequest = {
       id: paymentHeader.id,
       updatedById: +user!.id!,
@@ -461,37 +459,41 @@ const PaymentForm = ({
         if (posted) {
           await invalidateBalances();
         }
-
-        queryClient.setQueryData<Payment>(['payment', paymentHeader.id], () => ({
-          ...paymentToSave,
-          id: paymentHeader.id,
-          year: payment.year,
-          justification: paymentHeader.justification,
-          createdBy: loginId!,
-          createDate: paymentHeader.createDate!,
-          createdById: paymentHeader.createdById!,
-          posted: posted,
-          postedDate: posted ? postedDate : null,
-          postedBy: posted ? loginId! : null,
-          postedById: posted ? +user!.id! : null,
-          rowBalances: lines.map((l) => ({
-            initiativeId: l.initiativeId,
-            grantId: l.grantId,
-            accountId: l.accountId,
-            remainingAmount: l.availableAmount,
-          })),
-          lineItems: lines.map((l) => {
-            return {
-              ...l,
-              comment: l.comment ?? '',
-              availableAmount: l.availableAmount,
-              paymentAmount: l.paymentAmount,
-              newAvailableAmount: l.newAvailableAmount,
-            };
-          }),
-        }));
-
         const postedDate = new Date();
+
+        queryClient.setQueryData<Payment>(
+          ['payment', paymentHeader.id],
+          () => ({
+            ...paymentToSave,
+            id: paymentHeader.id,
+            year: payment.year,
+            justification: paymentHeader.justification,
+            createdBy: loginId!,
+            createDate: paymentHeader.createDate!,
+            createdById: paymentHeader.createdById!,
+            posted: posted,
+            postedDate: posted ? postedDate : null,
+            postedBy: posted ? loginId! : null,
+            postedById: posted ? +user!.id! : null,
+            rowBalances: lines.map((l) => ({
+              initiativeId: l.initiativeId,
+              grantId: l.grantId,
+              accountId: l.accountId,
+              remainingAmount: l.availableAmount,
+            })),
+            lineItems: lines.map((l) => {
+              return {
+                ...l,
+                comment: l.comment ?? '',
+                availableAmount: l.availableAmount,
+                paymentAmount: l.paymentAmount,
+                newAvailableAmount: l.newAvailableAmount,
+              };
+            }),
+          }),
+        );
+
+        console.log('123', 123);
         onServerUpdateSuccess(posted, posted ? postedDate : null);
         onSaved?.();
       },
@@ -556,9 +558,11 @@ const PaymentForm = ({
       };
     });
 
-    toast.success(posted ? 'Payment Posted.' : 'Payment Saved.', {
-      duration: 1500,
-    });
+    setTimeout(() => {
+      toast.success(posted ? 'Payment Posted.' : 'Payment Saved.', {
+        duration: 1500,
+      });
+    }, 1);
   }
 
   async function invalidateBalances() {

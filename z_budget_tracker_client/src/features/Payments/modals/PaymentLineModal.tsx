@@ -20,7 +20,6 @@ import {
 import useRemainingAccountBalances from '../../../api/hooks/payments/useRemainingAccountBalances';
 import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeInfo';
 import Dropdown, { type Option } from 'react-dropdown';
-import useCurrentAccountBalances from '../../../api/hooks/repro/useCurrentAccountBalances';
 import { useEscapeKey } from '../../../hooks/useEscapeKey';
 import Spinner from '../../../components/Spinner';
 
@@ -65,11 +64,11 @@ const PaymentLineModal = (props: Props) => {
 
   const { data: selectedEditPayee } = useSelectedPayeeInfo(selections?.payeeId);
 
-  const { data: balances, loadingBalances } = useCurrentAccountBalances(
-    selections?.initiativeId,
-    selections?.grantId,
-    selections?.categoryId,
-  );
+  // const { data: balances, loadingBalances } = useCurrentAccountBalances(
+  //   selections?.initiativeId,
+  //   selections?.grantId,
+  //   selections?.categoryId,
+  // );
 
   let availableAmount = 0;
 
@@ -101,8 +100,8 @@ const PaymentLineModal = (props: Props) => {
   // const categoryIdWatchValue = watch('categoryId') as number;
 
   const {
-    data: availableAccountBalances,
-    isLoading: loadingAvailableAccountBalances,
+    data: remainingAccountBalances,
+    isLoading: loadingRemainingAccountBalances,
   } = useRemainingAccountBalances(
     selections?.initiativeId ?? 0,
     selections?.grantId ?? 0,
@@ -110,10 +109,10 @@ const PaymentLineModal = (props: Props) => {
   );
 
   if (
-    availableAccountBalances?.some((x) => x.accountId === selections?.accountId)
+    remainingAccountBalances?.some((x) => x.accountId === selections?.accountId)
   ) {
     availableAmount =
-      availableAccountBalances?.filter(
+      remainingAccountBalances?.filter(
         (x) => x.accountId === selections?.accountId,
       )[0].availableAmount ?? 0;
   }
@@ -242,7 +241,7 @@ const PaymentLineModal = (props: Props) => {
   }
 
   function getAvailable(i: number, g: number, c: number, a: number) {
-    const t = availableAccountBalances?.filter(
+    const t = remainingAccountBalances?.filter(
       (x) =>
         x.initiativeId == i &&
         x.grantId == g &&
@@ -275,13 +274,13 @@ const PaymentLineModal = (props: Props) => {
     : [];
 
   const accountsForDropdown =
-    !loadingBalances && balances
-      ? balances!.map((b) => ({
+    !loadingRemainingAccountBalances && remainingAccountBalances
+      ? remainingAccountBalances!.map((b) => ({
           value: b.accountId,
           label: (
             <div className="flex justify-between gap-2">
               <div>{b.accountName}</div>
-              <div>{formatCurrency(b.currentAmount)}</div>
+              <div>{formatCurrency(b.availableAmount)}</div>
             </div>
           ),
         }))
@@ -650,8 +649,8 @@ const PaymentLineModal = (props: Props) => {
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]">
                   <div className="col-span-2 border-t border-b p-2 border-neutral-300/90 py-4 ">
-                    {loadingAvailableAccountBalances && <Spinner></Spinner>}
-                    {availableAccountBalances && (
+                    {loadingRemainingAccountBalances && <Spinner></Spinner>}
+                    {remainingAccountBalances && (
                       <PaymentEntryInput
                         getValues={getValues}
                         error={errors?.paymentAmount}

@@ -660,8 +660,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       };
     });
 
-    console.log('lineItems2', lineItems2);
-
     const reproToSave: UpdateReproRequest = {
       id: reproHeader.id,
       updatedById: +user!.id!,
