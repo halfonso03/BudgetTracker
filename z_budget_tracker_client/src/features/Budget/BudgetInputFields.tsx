@@ -6,7 +6,12 @@ import {
   formatNumber,
   parseFormattedNumber,
 } from '../../app/util';
-import { AlertTriangle, ArrowLeftRight, DollarSign, Pencil } from 'lucide-react';
+import {
+  AlertTriangle,
+  ArrowLeftRight,
+  DollarSign,
+  Pencil,
+} from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import CommentsModal from './modals/CommentsModal';
 
@@ -26,10 +31,10 @@ interface Props {
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
   remainingAmountRegister?: UseFormRegisterReturn<`rows.${number}.remaining_amount`>;
   currentAmountRegister?: UseFormRegisterReturn<`rows.${number}.current_amount`>;
-  onBlur?: (data: {
-    e: React.FocusEvent<HTMLInputElement>;
-    isDirty: boolean;
-  }) => void;
+  onBlur?: (
+    e: React.FocusEvent<HTMLInputElement>,
+    isDirty: boolean,
+  ) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
   onShowAccountHistory?: (
@@ -138,10 +143,10 @@ const BudgetInputFields = ({
               );
               setRemaining(newRemaining);
               setError(budgeted + reprogrammed + spentParsed < 0);
-              onBlur({
+              onBlur(
                 e,
-                isDirty: budgeted !== parseFormattedNumber(budgetedAmount),
-              });
+                budgeted !== parseFormattedNumber(budgetedAmount),
+              );
             }
           }}
           onFocus={(e) => (onFocus ? onFocus(e) : null)}
@@ -162,6 +167,7 @@ const BudgetInputFields = ({
               ) : (
                 <button
                   type="button"
+                  tabIndex={-1}
                   onClick={() =>
                     showAccountHistory(
                       2,
@@ -199,13 +205,7 @@ const BudgetInputFields = ({
         className={`text-end self-center py-1  ${getCellColor(isLastRow, spentAmount)} ${isLastRow} ? " py-2 ": ""`}
       >
         {parseFormattedNumber(spentAmount) !== 0 && !isLastRow ? (
-          <button
-            type="button"
-            onClick={() =>
-              showAccountHistory(3, initiativeId, grantId, accountId, fieldName)
-            }
-            className=" hover:underline underline-offset-5 text-blue-600 cursor-pointer"
-          >
+          <button type="button" tabIndex={-1}>
             {formatCurrency(parseFormattedNumber(spentAmount))}
           </button>
         ) : parseFormattedNumber(spentAmount) === 0 ? (
@@ -229,7 +229,16 @@ const BudgetInputFields = ({
             <span className="text-neutral-400 pr-1">-</span>
           ) : (
             <div
-              className={`${parseFormattedNumber(remaining) < 0 ? 'text-red-500' : ''}`}
+              onClick={() =>
+                showAccountHistory(
+                  3,
+                  initiativeId,
+                  grantId,
+                  accountId,
+                  fieldName,
+                )
+              }
+              className={`text-blue-600 hover:underline underline-offset-5 cursor-pointer`}
             >
               {formatCurrency(parseFormattedNumber(remaining))}
             </div>
@@ -257,7 +266,10 @@ const BudgetInputFields = ({
             tabIndex={-1}
             onClick={() => onOpenComments()}
           >
-            <Pencil size={comment?.text ? 24 : 20} className={`hover:scale-120 transition-all duration-200 ${comment?.text ? "text-blue-400" : "text-neutral-400/60 "}`}></Pencil> 
+            <Pencil
+              size={comment?.text ? 24 : 20}
+              className={`hover:scale-120 transition-all duration-200 ${comment?.text ? 'text-blue-400' : 'text-neutral-400/60 '}`}
+            ></Pencil>
           </button>
         ) : (
           <div>&nbsp;</div>

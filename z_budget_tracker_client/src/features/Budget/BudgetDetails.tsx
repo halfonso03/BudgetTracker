@@ -59,6 +59,16 @@ const BudgetDetails = () => {
   const [selectedInitiativeId, setSelectedInitiativeId] = useState(0);
   const [selectedGrantId, setSelectedGrantId] = useState(0);
   const [changesModalIsOpen, setChangesModalIsOpen] = useState(false);
+  // const [hasNegativeRemaining, setHasNegativeRemaining] = useState(false);
+
+  const [negativeAccounts, setNegativeAccounts] = useState<
+    {
+      accountId: number;
+      name: string;
+      allocatedAmount: number;
+      spentAmount: number;
+    }[]
+  >([]);
 
   const { updateBudget } = useBudgetMutations();
 
@@ -83,6 +93,7 @@ const BudgetDetails = () => {
 
   let budgetRows: BudgetInputRow[] = [];
   const categories: Category[] = [];
+  const accounts: Account[] = [];
 
   const totalSpent =
     budget &&
@@ -101,11 +112,13 @@ const BudgetDetails = () => {
         name: item.category!.name,
       });
     }
-  }
 
-  // if (budget?.account_balances) {
-  //   console.log(budget?.account_balances);
-  // }
+    accounts.push({
+      id: item.account_id,
+      name: item.account_name,
+      category_id: item!.category_id!,
+    });
+  }
 
   // get budgets rows
   if (budget && budget.account_balances) {
@@ -231,6 +244,42 @@ const BudgetDetails = () => {
       formatNumber(categoryTotal - totalSpent),
     );
     calculateTotals();
+  }
+
+  function flagAccountForNegativeRemaining(accountId: number) {
+
+    let index = 0;
+    while (budgetRows[index].accountId !== accountId) {
+      index++;
+    }
+
+    const current_amount = parseFormattedNumber(getValues(`rows.${index}.current_amount`)?.toString() ?? "0.00");
+    const spent_amount = parseFormattedNumber(getValues(`rows.${index}.spent_amount`)?.toString() ?? "0.00");
+
+    const remaining = current_amount + spent_amount;
+
+    console.log('current_amount', current_amount)
+
+    if (negativeAccounts.some((x) => x.accountId === accountId)) {
+      if (remaining > 0) {
+        const newNeg = negativeAccounts.filter(
+          (x) => x.accountId !== accountId,
+        );
+        setNegativeAccounts(newNeg);
+      }
+    } else if (!negativeAccounts.some((x) => x.accountId === accountId)) {
+      if (remaining < 0) {
+        const newNeg = {
+          accountId: accountId,
+          name: '',
+          allocatedAmount: parseFormattedNumber(
+            getValues(`rows.${index}.amount`),
+          ),
+          spentAmount: getValues(`rows.${index}.spent_amount`) ? parseFormattedNumber(getValues(`rows.${index}.remaining_amount`)?.toString() ?? "0.00") : 0,
+        };
+        setNegativeAccounts((prev) => [...prev, newNeg]);
+      }
+    }
   }
 
   function getTotalForField(fieldName: totalsFieldNames) {
@@ -390,10 +439,15 @@ const BudgetDetails = () => {
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex justify-end mt-8 mb-4">
-            <Button type="submit" variation="primary">
+            <Button
+              type="submit"
+              variation="primary"
+              disabled={negativeAccounts.length > 0}
+            >
               Save Budget
             </Button>
           </div>
+          <pre>{JSON.stringify(negativeAccounts)}</pre>
           <BudgetHeader
             bRef={bRef}
             cRef={cRef}
@@ -509,7 +563,7 @@ const BudgetDetails = () => {
                               e.target.value,
                             );
                           }}
-                          onBlur={({ e, isDirty }) => {
+                          onBlur={(e, isDirty) => {
                             amountRegister.onBlur(e);
                             formatArrayFieldAmount(
                               setValue,
@@ -517,6 +571,11 @@ const BudgetDetails = () => {
                               field.accountId,
                               e.target.value,
                             );
+
+                            flagAccountForNegativeRemaining(
+                              field.accountId,
+                            );
+
                             handleCalculateTotal(
                               field.categoryId,
                               categoryAccountIndexes[field.categoryId]
