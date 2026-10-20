@@ -13,7 +13,12 @@ import {
   formatArrayFieldAmount,
   removeNumberFormattingFromArrayField,
 } from './utils';
-import { ChevronDownSquare, EllipsisVertical, Shield } from 'lucide-react';
+import {
+  AlertCircle,
+  ChevronDownSquare,
+  EllipsisVertical,
+  Shield,
+} from 'lucide-react';
 import useBudgetDetails from '../../api/hooks/budgets/useBudgetDetails';
 import BudgetHeader from './BudgetHeader';
 import toast from 'react-hot-toast';
@@ -28,6 +33,7 @@ import Menus from '../../components/menus/Menus';
 import MenuIdProvider from '../../contexts/MenuIdContext';
 import ChangesModal from './modals/ChangesModal';
 import PaymentMiniDetailsModal from './modals/PaymentMiniDetailModal';
+import ErrorsModal from '../Common/modals/ErrorsModal';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
 
@@ -59,8 +65,7 @@ const BudgetDetails = () => {
   const [selectedInitiativeId, setSelectedInitiativeId] = useState(0);
   const [selectedGrantId, setSelectedGrantId] = useState(0);
   const [changesModalIsOpen, setChangesModalIsOpen] = useState(false);
-  // const [hasNegativeRemaining, setHasNegativeRemaining] = useState(false);
-
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [negativeAccounts, setNegativeAccounts] = useState<
     {
       accountId: number;
@@ -203,6 +208,35 @@ const BudgetDetails = () => {
     name: 'rows',
   });
 
+  useEffect(() => {
+    if (negativeAccounts.length > 0) {
+      toast.custom(
+        <div className="animate-right-to-in mt-12 rounded-sm p-4 shadow-md w-70 font-semibold bg-red-500 text-neutral-50 flex gap-2">
+          <AlertCircle></AlertCircle>
+          <div
+            className="self-center hover:underline underline-offset-2 cursor-pointer"
+            onClick={() => setErrorModalOpen(true)}
+          >
+            {negativeAccounts.length} error
+            {negativeAccounts.length > 1 && <span>s</span>}
+          </div>
+        </div>,
+        {
+          position: 'top-right',
+          duration: Infinity,
+          id: 'errors',
+        },
+      );
+    }
+    // else {
+    //   toast.remove();
+    // }
+
+    return () => {
+      if (negativeAccounts.length > 0) toast.remove();
+    };
+  }, [negativeAccounts.length]);
+
   function handleCalculateTotal(
     categoryId: number,
     startIndex: number,
@@ -257,7 +291,11 @@ const BudgetDetails = () => {
       } else {
         const rem = negativeAccounts.filter((x) => x.accountId === accountId)[0]
           .remainingAmount;
-        if (rem !== newRemaining) {
+        if (newRemaining >= 0) {
+          setNegativeAccounts(
+            negativeAccounts.filter((x) => x.accountId !== accountId),
+          );
+        } else if (rem !== newRemaining) {
           setNegativeAccounts((prev) =>
             prev.map((x) => ({
               ...x,
@@ -289,15 +327,16 @@ const BudgetDetails = () => {
   }
 
   const calculateTotals = useCallback(() => {
-    const totalBudgeted = getTotalForField('amount');
-    const totalCurrent = getTotalForField('current_amount');
-    const totalRemaining = getTotalForField('remaining_amount');
     if (bRef && bRef.current)
-      bRef.current!.innerHTML = formatCurrency(totalBudgeted);
+      bRef.current!.innerHTML = formatCurrency(getTotalForField('amount'));
     if (cRef && cRef.current)
-      cRef.current!.innerHTML = formatCurrency(totalCurrent);
+      cRef.current!.innerHTML = formatCurrency(
+        getTotalForField('current_amount'),
+      );
     if (rRef && rRef.current)
-      rRef.current!.innerHTML = formatCurrency(totalRemaining);
+      rRef.current!.innerHTML = formatCurrency(
+        getTotalForField('remaining_amount'),
+      );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories, categoryAccountIndexes]);
 
@@ -642,6 +681,18 @@ const BudgetDetails = () => {
             }}
           ></TransactionsModal>
         )}
+        <ErrorsModal
+          isOpen={errorModalOpen}
+          errors={negativeAccounts.map(
+            (x) =>
+              `${x.name} account has an invalid remaining balance of ${formatNumber(x.remainingAmount)}`,
+          )}
+          onCancel={() => {
+            setTimeout(() => {
+              setErrorModalOpen(false);
+            }, 500);
+          }}
+        ></ErrorsModal>
         {changesModalIsOpen &&
           initiative &&
           grant &&

@@ -21,8 +21,9 @@ const ErrorsModal = ({ ...props }: Props) => {
       {...props}
     >
       <div className="flex flex-col gap-4 mx-4 mb-8 mt-8">
+        <div className='font-semibold text-neutral-600 mb-2'>Please correct the following error(s):</div>
         {props.errors.map((m) => (
-          <div key={m}>{m}.</div>
+          <div key={m}>{m}</div>
         ))}
       </div>
       <div className="flex justify-end gap-3 pb-3">
