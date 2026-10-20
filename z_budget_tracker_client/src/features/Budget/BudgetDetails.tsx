@@ -50,7 +50,10 @@ const BudgetDetails = () => {
     accountName: '',
   });
   const [miniDetailsIsOpen, setMiniDetailsIsOpen] = useState(false);
-  const [selectedId, setSelectedId] = useState(0);
+  const [selectedId, setSelectedId] = useState<{
+    itemType: ItemyType;
+    id: number;
+  } | null>(null);
   const [selectedAccountName, setSelectedAccountName] = useState('');
   const [selectedInitiativeId, setSelectedInitiativeId] = useState(0);
   const [selectedGrantId, setSelectedGrantId] = useState(0);
@@ -98,8 +101,6 @@ const BudgetDetails = () => {
       });
     }
   }
-
-
 
   // if (budget?.account_balances) {
   //   console.log(budget?.account_balances);
@@ -291,13 +292,14 @@ const BudgetDetails = () => {
   };
 
   function handleSelectedId(
+    itemType: ItemyType,
     id: number,
     accountName: string,
     initiativeId: number,
     grantId: number,
   ) {
     setMiniDetailsIsOpen(true);
-    setSelectedId(id);
+    setSelectedId({ itemType, id });
     setSelectedAccountName(accountName);
     setSelectedInitiativeId(initiativeId);
     setSelectedGrantId(grantId);
@@ -600,9 +602,9 @@ const BudgetDetails = () => {
             ></ChangesModal>
           )}
 
-        {selectedId !== 0 && (
+        {selectedId&& selectedId.id !== 0 && (
           <ReproMiniDetailsModal
-            reproId={selectedId}
+            reproId={selectedId.id}
             accountName={selectedAccountName}
             initiativeId={selectedInitiativeId}
             grantId={selectedGrantId}

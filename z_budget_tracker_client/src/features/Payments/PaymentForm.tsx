@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
+  BUDGET_CUMULATIVE_TOTAL_EXCEEDED,
   DUP_LINES,
   EDITED,
   NEGATIVE_NEW_AVAILABLE_BALANCE,
@@ -126,37 +127,6 @@ const PaymentForm = ({
     return Number(paymentTotal).toFixed(2);
   }, [lines]);
 
-  const getErrors = useCallback(() => {
-    const errors: string[] = [];
-
-    if (!noDupLines(lines)) {
-      errors.push(DUP_LINES);
-    }
-
-    if (!noZeroOnlyLines(lines)) {
-      errors.push(NO_AMOUNT_LINES);
-    }
-
-    if (!noNegativeBalances(lines)) {
-      errors.push(NEGATIVE_NEW_AVAILABLE_BALANCE);
-    }
-
-    // if (hasNegativeRemainingBalances(lines) && !overrideNeg) {
-    //   errors.push(NEGATIVE_REMAINING_BALANCE);
-    // }
-
-    if (
-      !paymentHeader.justification ||
-      paymentHeader.justification.trim().length === 0
-    ) {
-      errors.push(NO_JUSTIFICATION);
-    }
-
-    return errors;
-  }, [lines, paymentHeader.justification]);
-
-  const { createPayment, updatePayment } = usePaymentMutations();
-
   const seen: string[] = [];
 
   const distinctNewItems = lines
@@ -191,7 +161,45 @@ const PaymentForm = ({
     })
     .filter((x) => x);
 
-  console.log(distinctNewItems);
+  const getErrors = useCallback(() => {
+    const errors: string[] = [];
+
+    if (!noDupLines(lines)) {
+      errors.push(DUP_LINES);
+    }
+
+    if (!noZeroOnlyLines(lines)) {
+      errors.push(NO_AMOUNT_LINES);
+    }
+
+    if (!noNegativeBalances(lines)) {
+      errors.push(NEGATIVE_NEW_AVAILABLE_BALANCE);
+    }
+
+    const x = distinctNewItems.filter(
+      (x) => (x?.available ?? 0) - (x?.totalPaid ?? 0) < 0,
+    );
+
+    if (x.length > 0) {
+      errors.push(BUDGET_CUMULATIVE_TOTAL_EXCEEDED);
+      console.log('x', x);
+    }
+
+    // if (hasNegativeRemainingBalances(lines) && !overrideNeg) {
+    //   errors.push(NEGATIVE_REMAINING_BALANCE);
+    // }
+
+    if (
+      !paymentHeader.justification ||
+      paymentHeader.justification.trim().length === 0
+    ) {
+      errors.push(NO_JUSTIFICATION);
+    }
+
+    return errors;
+  }, [distinctNewItems, lines, paymentHeader.justification]);
+
+  const { createPayment, updatePayment } = usePaymentMutations();
 
   useEffect(() => {
     const errors = getErrors();
@@ -689,7 +697,7 @@ const PaymentForm = ({
           </Button>
         </div>
 
-        <div className="flex justify-between mb-8 border-b border-b-neutral-200 pb-2 ">
+        <div className="flex justify-between mb-16 border-b border-b-neutral-200 pb-2 ">
           <IdHeader
             id={paymentHeader.id}
             status={paymentHeader.status}
@@ -714,7 +722,7 @@ const PaymentForm = ({
           )}
         </div>
 
-        {paymentHeader.status === POSTED && (
+        {paymentHeader.status !== POSTED && (
           <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 mt-12">
             <div className="">Total</div>
             <div className="text-neutral-900">{getPaymentTotal()}</div>
@@ -722,8 +730,8 @@ const PaymentForm = ({
           </div>
         )}
 
-        {lines.length > 0 && paymentHeader.status !== POSTED && (
-          <div className="flex px-3 py-1 border-b border-neutral-200 mb-12 text-neutral-500 font-semibold">
+        {lines.length > 0 && paymentHeader.status === POSTED && (
+          <div className="flex px-3 py-1 border-b border-neutral-200 mb-16 text-neutral-500 font-semibold">
             <div className="flex-4">Total Payment</div>
             <div className="flex-3 items-center justify-center ">
               <input
@@ -749,14 +757,14 @@ const PaymentForm = ({
                 editRow={handleEditRow}
                 saveComment={handleSaveComment}
                 render={() => {
-                  const alertClass =
-                    item.availableAmount -
-                      parseFormattedNumber(
-                        item?.paymentAmount?.toString() ?? 0,
-                      ) <
-                    0
-                      ? 'text-red-500'
-                      : '';
+                  // const alertClass =
+                  //   item.availableAmount -
+                  //     parseFormattedNumber(
+                  //       item?.paymentAmount?.toString() ?? 0,
+                  //     ) <
+                  //   0
+                  //     ? 'text-red-500'
+                  //     : '';
 
                   return (
                     <div className="flex-3 px-3 pr-6">
@@ -764,17 +772,17 @@ const PaymentForm = ({
                         <div
                           className={` font-semibold text-neutral-600 text-center self-end  p-1 ${paymentHeader.status === POSTED ? 'opacity-0' : ''}`}
                         >
-                          {paymentHeader.status !== POSTED && 'Available'}
+                          {/* {paymentHeader.status !== POSTED && 'Available'} */}
                         </div>
                         <div className="text-center font-semibold text-neutral-600    p-1 px-3">
                           Payment
                         </div>
                         <div className="text-center self-end font-semibold text-neutral-600    p-1 px-3">
-                          {paymentHeader.status !== POSTED && 'Remaining'}
+                          {/* {paymentHeader.status !== POSTED && 'Remaining'} */}
                         </div>
                         <div>
                           <div>
-                            {paymentHeader.status !== POSTED && (
+                            {/* {paymentHeader.status !== POSTED && (
                               <input
                                 readOnly={true}
                                 tabIndex={-1}
@@ -783,7 +791,7 @@ const PaymentForm = ({
                                 }
                                 value={formatNumber(item.availableAmount)}
                               ></input>
-                            )}
+                            )} */}
                           </div>
                         </div>
                         <div>
@@ -802,14 +810,14 @@ const PaymentForm = ({
                           />
                         </div>
                         <div>
-                          {paymentHeader.status !== POSTED && (
+                          {/* {paymentHeader.status !== POSTED && (
                             <input
                               readOnly={true}
                               tabIndex={-1}
                               className={` ${alertClass} w-full  p-2 text-neutral-600 text-center focus:outline-none focus:ring-0`}
                               value={formatCurrency(item.newAvailableAmount)}
                             ></input>
-                          )}
+                          )} */}
                         </div>
                       </div>
                     </div>
@@ -865,23 +873,71 @@ const PaymentForm = ({
           }}
           message="This payment wil be posted. Click OK to continue."
         ></ConfirmModal>
-      </div>
+        {distinctNewItems && lines && lines.length > 0 && (
+          <>
+            <div className="font-semibold text-neutral-500 text-center text-[1.1rem] mb-1">
+              Payment Totals Summary
+            </div>
 
-      {distinctNewItems && (
-        <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr]">
-          {distinctNewItems.map((d) => (
-            <>
-              <div>{d?.initiativeName}</div>
-              <div>{d?.grantName}</div>
-              <div>{d?.categoryName}</div>
-              <div>{d?.accountName}</div>
-              <div>{formatCurrency(d?.available ?? 0)}</div>
-              <div>{formatCurrency(d?.totalPaid ?? 0)}</div>
-              <div>{(d?.available ?? 0) - (d?.totalPaid ?? 0)}</div>
-            </>
-          ))}
-        </div>
-      )}
+            <div className="border border-neutral-200/80 w-[80%] mx-auto mb-10 ">
+              <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr]    ">
+                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-100 py-2 pl-1">
+                  Initiative
+                </div>
+                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-100 py-2 pl-1">
+                  Grant
+                </div>
+                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-100 py-2 pl-1">
+                  Category
+                </div>
+                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-100 py-2 pl-1">
+                  Account
+                </div>
+                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-100 py-2 pl-1">
+                  Available
+                </div>
+                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-100 py-2 pl-1">
+                  Total to Pay
+                </div>
+                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-100 py-2 pl-1">
+                  Remaining
+                </div>
+              </div>
+
+              {distinctNewItems.map((d, index) => (
+                <div
+                  className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr] p-2 border-b border-b-neutral-200 my-2 last:border-0 last:mb-0  "
+                  key={index}
+                >
+                  <div className=" text-center text-neutral-800">
+                    {d?.initiativeName}
+                  </div>
+                  <div className=" text-center text-neutral-800">
+                    {d?.grantName}
+                  </div>
+                  <div className=" text-center text-neutral-800">
+                    {d?.categoryName}
+                  </div>
+                  <div className=" text-center text-neutral-800">
+                    {d?.accountName}
+                  </div>
+                  <div className=" text-center text-neutral-800">
+                    {formatCurrency(d?.available ?? 0)}
+                  </div>
+                  <div className=" text-center font-semibold">
+                    {formatCurrency(d?.totalPaid ?? 0)}
+                  </div>
+                  <div
+                    className={`text-center  text-neutral-800 ${(d?.available ?? 0) - (d?.totalPaid ?? 0) < 0 && 'text-red-500 font-semibold'}`}
+                  >
+                    {formatCurrency((d?.available ?? 0) - (d?.totalPaid ?? 0))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </MenuIdProvider>
   );
 };

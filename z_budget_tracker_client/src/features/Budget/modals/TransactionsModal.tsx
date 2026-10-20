@@ -13,6 +13,7 @@ type Props = {
   isOpen: boolean;
   onCancel: () => void;
   onSelectedId: (
+    itemType: ItemyType,
     id: number,
     accountName: string,
     initiativeId: number,
@@ -81,6 +82,7 @@ const TransactionsModal = (props: Props) => {
                         className="cursor-pointer underline underline-offset-3 text-blue-600"
                         onClick={() => {
                           props.onSelectedId(
+                            'r',
                             t.id,
                             props.accountName,
                             props.initiativeId,
@@ -96,6 +98,7 @@ const TransactionsModal = (props: Props) => {
                         className="cursor-pointer underline underline-offset-3 text-blue-600"
                         onClick={() => {
                           props.onSelectedId(
+                            'd',
                             t.id,
                             props.accountName,
                             props.initiativeId,

@@ -6,7 +6,7 @@ import {
   formatNumber,
   parseFormattedNumber,
 } from '../../app/util';
-import { AlertTriangle, ArrowLeftRight, DollarSign } from 'lucide-react';
+import { AlertTriangle, ArrowLeftRight, DollarSign, Pencil } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import CommentsModal from './modals/CommentsModal';
 
@@ -257,7 +257,7 @@ const BudgetInputFields = ({
             tabIndex={-1}
             onClick={() => onOpenComments()}
           >
-            {comment?.text ? 1 : 0} comment
+            <Pencil size={comment?.text ? 24 : 20} className={`hover:scale-120 transition-all duration-200 ${comment?.text ? "text-blue-400" : "text-neutral-400/60 "}`}></Pencil> 
           </button>
         ) : (
           <div>&nbsp;</div>

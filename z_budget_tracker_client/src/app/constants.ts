@@ -16,6 +16,7 @@ export const NEGATIVE_REMAINING_BALANCE =
 // payments
 export const NO_AMOUNT_LINES = "There are lines with a $0 payment amount"
 export const NEGATIVE_NEW_AVAILABLE_BALANCE = "There is a negative available balance in one or more lines"
+export const BUDGET_CUMULATIVE_TOTAL_EXCEEDED = "The cumulative requested amount for a budget exceeds the total available for the budget."
 
 export const EDITED = 1;
 export const SAVED = 2;

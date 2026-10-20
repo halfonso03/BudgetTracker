@@ -6,6 +6,9 @@
 payee - New same as above
 payments - amounts went 'NAN' when switch back to screen <- seems to happen when a payment is duplicated
 
+budget details - show the payee name when view transactions mini modal
+repro form - went NaN when duplicated a line??
+
 
 add check number for each payment line
 add a 2E link to the budget summary
