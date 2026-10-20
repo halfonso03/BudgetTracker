@@ -3,6 +3,7 @@ using Application.Core;
 using Application.DTOs.Payment;
 using Application.Interfaces;
 using Domain;
+using InternalVisibleTo;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -107,23 +108,30 @@ namespace Application.Services
                                         .Where(x => x.DisbId == id).ToListAsync();
 
 
-                var keys = lineItems.Select(x => new { x.InitiativeId, x.GrantId, x.CategoryId }).Distinct();
+                var keys = lineItems.Select(x => new { x.InitiativeId, x.GrantId, x.CategoryId, x.AccountId }).Distinct();
 
                 var rowBalances = new List<PaymentBalanceResponseDto>();
 
                 foreach (var key in keys)
                 {
-                    var balances = await _budgetService.GetBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
+
+                    var remainingAmount = await _dbContext.BudgetLineItems
+                                            .Where(x =>
+                                                x.InitiativeId == key.InitiativeId &&
+                                                x.GrantId == key.GrantId &&
+                                                x.AccountId == key.AccountId)
+                                            .SumAsync(x => x.Amount);
+
+                    var account = await _dbContext.Accounts.SingleAsync(x => x.Id == key.AccountId);
 
                     rowBalances.Add(new PaymentBalanceResponseDto()
                     {
-                        Key = new()
-                        {
-                            InitiativeId = key.InitiativeId,
-                            GrantId = key.GrantId,
-                            CategoryId = key.CategoryId
-                        },
-                        Balances = [.. balances.Select(x => Balance.Create(x.AccountId, x.RemainingAmount, x.AccountName))]
+                        InitiativeId = key.InitiativeId,
+                        GrantId = key.GrantId,
+                        CategoryId = key.CategoryId,
+                        AccountId = key.AccountId,
+                        AccountName = account.Name,
+                        RemainingAmount = remainingAmount
                     });
                 }
 
@@ -557,18 +565,18 @@ namespace Application.Services
 
                 foreach (var key in keys)
                 {
-                    var balances = await _budgetService.GetBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
+                    // var balances = await _budgetService.GetBalancesForCategory(key.InitiativeId, key.GrantId, key.CategoryId);
 
-                    rowBalances.Add(new PaymentBalanceResponseDto()
-                    {
-                        Key = new()
-                        {
-                            InitiativeId = key.InitiativeId,
-                            GrantId = key.GrantId,
-                            CategoryId = key.CategoryId
-                        },
-                        Balances = [.. balances.Select(x => Balance.Create(x.AccountId, x.RemainingAmount, x.AccountName))]
-                    });
+                    // rowBalances.Add(new PaymentBalanceResponseDto()
+                    // {
+                    //     Key = new()
+                    //     {
+                    //         InitiativeId = key.InitiativeId,
+                    //         GrantId = key.GrantId,
+                    //         CategoryId = key.CategoryId
+                    //     },
+                    //     Balances = [.. balances.Select(x => Balance.Create(x.AccountId, x.RemainingAmount, x.AccountName))]
+                    // });
                 }
 
                 var response = new PaymentResponseDto
