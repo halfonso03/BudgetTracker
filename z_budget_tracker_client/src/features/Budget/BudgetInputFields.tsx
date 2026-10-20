@@ -34,6 +34,7 @@ interface Props {
   onBlur?: (
     e: React.FocusEvent<HTMLInputElement>,
     isDirty: boolean,
+    newRemaining: number,
   ) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
@@ -146,6 +147,7 @@ const BudgetInputFields = ({
               onBlur(
                 e,
                 budgeted !== parseFormattedNumber(budgetedAmount),
+                budgeted + reprogrammed + spentParsed,
               );
             }
           }}

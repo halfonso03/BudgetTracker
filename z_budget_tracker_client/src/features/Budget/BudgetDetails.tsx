@@ -65,8 +65,7 @@ const BudgetDetails = () => {
     {
       accountId: number;
       name: string;
-      allocatedAmount: number;
-      spentAmount: number;
+      remainingAmount: number;
     }[]
   >([]);
 
@@ -246,36 +245,50 @@ const BudgetDetails = () => {
     calculateTotals();
   }
 
-  function flagAccountForNegativeRemaining(accountId: number) {
-
+  function flagAccountForNegativeRemaining(
+    accountId: number,
+    newRemaining: number,
+  ) {
     let index = 0;
     while (budgetRows[index].accountId !== accountId) {
       index++;
     }
 
-    const current_amount = parseFormattedNumber(getValues(`rows.${index}.current_amount`)?.toString() ?? "0.00");
-    const spent_amount = parseFormattedNumber(getValues(`rows.${index}.spent_amount`)?.toString() ?? "0.00");
+    // const current_amount = parseFormattedNumber(
+    //   getValues(`rows.${index}.current_amount`)?.toString() ?? '0.00',
+    // );
+    // const spent_amount = parseFormattedNumber(
+    //   getValues(`rows.${index}.spent_amount`)?.toString() ?? '0.00',
+    // );
 
-    const remaining = current_amount + spent_amount;
+    // const remaining = current_amount + spent_amount;
 
-    console.log('current_amount', current_amount)
+    // console.log('current_amount', current_amount);
 
     if (negativeAccounts.some((x) => x.accountId === accountId)) {
-      if (remaining > 0) {
+      if (newRemaining > 0) {
         const newNeg = negativeAccounts.filter(
           (x) => x.accountId !== accountId,
         );
         setNegativeAccounts(newNeg);
+      } else {
+        const rem = negativeAccounts.filter((x) => x.accountId === accountId)[0]
+          .remainingAmount;
+        if (rem !== newRemaining) {
+          setNegativeAccounts((prev) =>
+            prev.map((x) => ({
+              ...x,
+              remainingAmount: x.accountId === accountId ? newRemaining : rem,
+            })),
+          );
+        }
       }
     } else if (!negativeAccounts.some((x) => x.accountId === accountId)) {
-      if (remaining < 0) {
+      if (newRemaining < 0) {
         const newNeg = {
           accountId: accountId,
-          name: '',
-          allocatedAmount: parseFormattedNumber(
-            getValues(`rows.${index}.amount`),
-          ),
-          spentAmount: getValues(`rows.${index}.spent_amount`) ? parseFormattedNumber(getValues(`rows.${index}.remaining_amount`)?.toString() ?? "0.00") : 0,
+          name: accounts.filter((x) => x.id === accountId)[0].name,
+          remainingAmount: newRemaining,
         };
         setNegativeAccounts((prev) => [...prev, newNeg]);
       }
@@ -563,7 +576,7 @@ const BudgetDetails = () => {
                               e.target.value,
                             );
                           }}
-                          onBlur={(e, isDirty) => {
+                          onBlur={(e, isDirty, newRemaining) => {
                             amountRegister.onBlur(e);
                             formatArrayFieldAmount(
                               setValue,
@@ -572,9 +585,12 @@ const BudgetDetails = () => {
                               e.target.value,
                             );
 
-                            flagAccountForNegativeRemaining(
-                              field.accountId,
-                            );
+                            setTimeout(() => {
+                              flagAccountForNegativeRemaining(
+                                field.accountId,
+                                newRemaining,
+                              );
+                            }, 100);
 
                             handleCalculateTotal(
                               field.categoryId,
