@@ -27,6 +27,7 @@ import { formatDate } from 'date-fns';
 import Menus from '../../components/menus/Menus';
 import MenuIdProvider from '../../contexts/MenuIdContext';
 import ChangesModal from './modals/ChangesModal';
+import PaymentMiniDetailsModal from './modals/PaymentMiniDetailModal';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
 
@@ -602,7 +603,7 @@ const BudgetDetails = () => {
             ></ChangesModal>
           )}
 
-        {selectedId&& selectedId.id !== 0 && (
+        {selectedId && selectedId.id !== 0 && selectedId.itemType === 'r' && (
           <ReproMiniDetailsModal
             reproId={selectedId.id}
             accountName={selectedAccountName}
@@ -613,6 +614,19 @@ const BudgetDetails = () => {
               setMiniDetailsIsOpen(false);
             }}
           ></ReproMiniDetailsModal>
+        )}
+
+        {selectedId && selectedId.id !== 0 && selectedId.itemType === 'd' && (
+          <PaymentMiniDetailsModal
+            paymentId={selectedId.id}
+            accountName={selectedAccountName}
+            initiativeId={selectedInitiativeId}
+            grantId={selectedGrantId}
+            isOpen={miniDetailsIsOpen}
+            onCancel={() => {
+              setMiniDetailsIsOpen(false);
+            }}
+          ></PaymentMiniDetailsModal>
         )}
       </div>
     </MenuIdProvider>

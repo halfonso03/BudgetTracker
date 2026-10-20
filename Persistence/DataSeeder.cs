@@ -297,7 +297,7 @@ namespace Persistence
             builder.Entity<BudgetItemType>().HasData(
                 new BudgetItemType { ItemType = Globals.ITEM_TYPE_BUDGET },
                 new BudgetItemType { ItemType = Globals.ITEM_TYPE_REPRO },
-                new BudgetItemType { ItemType = Globals.ITEM_TYPE_DISB }
+                new BudgetItemType { ItemType = Globals.ITEM_TYPE_PAYMENT }
             );
 
             builder.Entity<BudgetHeader>().HasData(new BudgetHeader
@@ -457,7 +457,7 @@ namespace Persistence
                 CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
                 GrantId = 1,
                 InitiativeId = 1,
-                ItemType = Globals.ITEM_TYPE_DISB,
+                ItemType = Globals.ITEM_TYPE_PAYMENT,
                 Id = 13,
                 Year = 2025
             }

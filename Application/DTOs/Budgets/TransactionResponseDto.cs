@@ -10,22 +10,24 @@ namespace Application.DTOs.Budgets
         {
             get
             {
-                if (ItemType == Globals.ITEM_TYPE_BUDGET) return "Budget";
+                if (ItemType == Globals.ITEM_TYPE_BUDGET) return "Allocated";
                 if (ItemType == Globals.ITEM_TYPE_REPRO) return "Reprogramming";
-                if (ItemType == Globals.ITEM_TYPE_DISB) return "Disbursement";
+                if (ItemType == Globals.ITEM_TYPE_PAYMENT) return PayeeName ?? "";
                 return "";
             }
         }
+        public string? PayeeName { get; set; }
         public required DateTime PostedDate { get; set; }
         public required decimal Amount { get; set; } = 0;
-        public static TransactionResponseDto Create(int id, string itemType, DateTime postedDate, decimal amount)
+        public static TransactionResponseDto Create(int id, string itemType, DateTime postedDate, decimal amount, string payeeName = "")
         {
             return new TransactionResponseDto
             {
                 Id = id,
                 Amount = amount,
                 PostedDate = postedDate,
-                ItemType = itemType
+                ItemType = itemType,
+                PayeeName = payeeName
             };
         }
     }

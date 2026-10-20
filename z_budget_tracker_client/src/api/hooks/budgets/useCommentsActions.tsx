@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import agent from '../../agent';
 
-const sleep = (delay: number) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(0);
-    }, delay);
-  });
+// const sleep = (delay: number) =>
+//   new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve(0);
+//     }, delay);
+//   });
 
 export const useCommentActions = () => {
   const queryClient = useQueryClient();
@@ -17,7 +17,6 @@ export const useCommentActions = () => {
     isSuccess: createCommentSuccess,
   } = useMutation({
     mutationFn: async (createRequest: CreateCommentRequest) => {
-      await sleep(1500);
       const response = await agent.post(`comments`, createRequest);
       createRequest.newId = response.data;
       return createRequest;
@@ -56,7 +55,6 @@ export const useCommentActions = () => {
     isSuccess: updateCommentSuccess,
   } = useMutation({
     mutationFn: async (updateRequest: UpdateCommentRequest) => {
-      await sleep(800);
       await agent.put(`comments`, updateRequest);
       return updateRequest;
     },

@@ -182,7 +182,7 @@ namespace Application.services
                                  AccountNumber = a.Number,
                                  CategoryId = a.CategoryId,
                                  Amount = items.Where(x => x.ItemType == Globals.ITEM_TYPE_BUDGET && x.AccountId == a.Id).Sum(x => x.Amount),
-                                 SpentAmount = items.Where(x => x.ItemType == Globals.ITEM_TYPE_DISB && x.AccountId == a.Id).Sum(x => x.Amount),
+                                 SpentAmount = items.Where(x => x.ItemType == Globals.ITEM_TYPE_PAYMENT && x.AccountId == a.Id).Sum(x => x.Amount),
                                  CurrentAmount = items.Where(x => (x.ItemType == Globals.ITEM_TYPE_REPRO || x.ItemType == Globals.ITEM_TYPE_BUDGET) && x.AccountId == a.Id).Sum(x => x.Amount),
                                  HasRepro = items.Any(x => x.ItemType == Globals.ITEM_TYPE_REPRO && x.AccountId == a.Id),
                                  Category = CategoryDto.CreateFromDomain(_accounts.First(x => x.CategoryId == a.CategoryId).Category),
@@ -377,7 +377,7 @@ namespace Application.services
 
             var disbItems = await (from b in _dbContext.BudgetLineItems
                                    where b.InitiativeId == initiativeId && b.GrantId == grantId && b.AccountId == accountId
-                                      && b.ItemType == Globals.ITEM_TYPE_DISB
+                                      && b.ItemType == Globals.ITEM_TYPE_PAYMENT
                                    select TransactionResponseDto.Create(b.Id, b.ItemType, b.CreateDate, b.Amount))
                             .ToListAsync();
 
@@ -513,6 +513,7 @@ namespace Application.services
                         x.GrantId,
                         x.AccountId,
                         x.CreateDate,
+                        payeeName = ""
                     });
 
 
@@ -533,6 +534,7 @@ namespace Application.services
                                  b.GrantId,
                                  b.AccountId,
                                  b.CreateDate,
+                                 payeeName = ""
                              };
 
                 query = query.Union(repros);
@@ -543,8 +545,10 @@ namespace Application.services
                 var disbs = from b in _dbContext.BudgetLineItems
                             join
                             r in _dbContext.DisbLineItems on b.Id equals r.BudgetLineItemId
+                            join
+                            p in _dbContext.Payees on r.PayeeId equals p.Id
                             where b.InitiativeId == initiativeId && b.GrantId == grantId && b.AccountId == accountId
-                            && (b.ItemType == Globals.ITEM_TYPE_DISB)
+                            && (b.ItemType == Globals.ITEM_TYPE_PAYMENT)
                             select new
                             {
                                 Id = r.DisbId,
@@ -554,6 +558,7 @@ namespace Application.services
                                 b.GrantId,
                                 b.AccountId,
                                 b.CreateDate,
+                                payeeName = p.Name
                             };
 
                 query = query.Union(disbs);
@@ -563,7 +568,7 @@ namespace Application.services
             var items = await query.ToListAsync();
 
             var result = from q in items
-                         select TransactionResponseDto.Create(q.Id, q.ItemType, q.CreateDate, q.Amount);
+                         select TransactionResponseDto.Create(q.Id, q.ItemType, q.CreateDate, q.Amount, q.payeeName);
 
             return Result<List<TransactionResponseDto>>.Success([.. result.OrderBy(x => x.PostedDate)]);
         }

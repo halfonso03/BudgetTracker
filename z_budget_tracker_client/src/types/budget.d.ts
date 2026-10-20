@@ -4,6 +4,7 @@ type TransactionResponse = {
     typeName: string
     postedDate: Date
     type: string
+    payeeName: string
 }
 
 type BudgetAudit = {

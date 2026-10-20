@@ -86,14 +86,14 @@ const TransactionsModal = (props: Props) => {
                             t.id,
                             props.accountName,
                             props.initiativeId,
-                            props.grantId
+                            props.grantId,
                           );
                         }}
                       >
                         {t.id}
                       </button>
                     ) : null}
-                    {t.typeName == 'Disbursement' ? (
+                    {t.payeeName ? (
                       <button
                         className="cursor-pointer underline underline-offset-3 text-blue-600"
                         onClick={() => {
