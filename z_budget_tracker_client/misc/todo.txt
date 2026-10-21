@@ -8,9 +8,6 @@ payments - amounts went 'NAN' when switch back to screen <- seems to happen when
 payment amount
 
 
-repro form - went NaN when duplicated a line?? due to thousands seperator
-
-
 add check number for each payment line
 add a 2E link to the budget summary
 
@@ -21,6 +18,7 @@ BUG - when changing pages in search results, expanaded items stay open
  ? -- add delete budget when no reprogrammings and no expenses
 
 
+DONE repro form - went NaN when duplicated a line?? due to thousands seperator
 DONE -- trigger on tblBudget is inserting audit record for payment and reprogramming records
 DONE budget details - show the payee name when view transactions mini modal
 DONE add payee list year filter

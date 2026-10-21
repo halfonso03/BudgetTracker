@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BUDGET_CUMULATIVE_TOTAL_EXCEEDED,
   DUP_LINES,
@@ -127,39 +127,41 @@ const PaymentForm = ({
     return Number(paymentTotal).toFixed(2);
   }, [lines]);
 
-  const seen: string[] = [];
+  const distinctNewItems = useMemo(() => {
+    const seen: string[] = [];
 
-  const distinctNewItems = lines
-    .map((item) => {
-      const key = `${item.initiativeName}-${item.grantName}-${item.categoryName}-${item.accountName}`;
-      if (seen.some((x) => x === key)) return null;
-      const setItem: PaymentSummary = {
-        initiativeName: item.initiativeName,
-        grantName: item.grantName,
-        categoryName: item.categoryName,
-        accountName: item.accountName,
-        available: lines.filter(
-          (x) =>
-            x.initiativeName == item.initiativeName &&
-            x.grantName == item.grantName &&
-            x.categoryName === item.categoryName &&
-            x.accountName == item.accountName,
-        )[0].availableAmount,
-        totalPaid: lines
-          .filter(
+    return lines
+      .map((item) => {
+        const key = `${item.initiativeName}-${item.grantName}-${item.categoryName}-${item.accountName}`;
+        if (seen.some((x) => x === key)) return null;
+        const setItem: PaymentSummary = {
+          initiativeName: item.initiativeName,
+          grantName: item.grantName,
+          categoryName: item.categoryName,
+          accountName: item.accountName,
+          available: lines.filter(
             (x) =>
               x.initiativeName == item.initiativeName &&
               x.grantName == item.grantName &&
               x.categoryName === item.categoryName &&
               x.accountName == item.accountName,
-          )
-          .map((x) => parseFormattedNumber(x.paymentAmount.toString()))
-          .reduce((acc, cur) => acc + cur, 0),
-      };
-      seen.push(key);
-      return setItem;
-    })
-    .filter((x) => x);
+          )[0].availableAmount,
+          totalPaid: lines
+            .filter(
+              (x) =>
+                x.initiativeName == item.initiativeName &&
+                x.grantName == item.grantName &&
+                x.categoryName === item.categoryName &&
+                x.accountName == item.accountName,
+            )
+            .map((x) => parseFormattedNumber(x.paymentAmount.toString()))
+            .reduce((acc, cur) => acc + cur, 0),
+        };
+        seen.push(key);
+        return setItem;
+      })
+      .filter((x) => x);
+  }, [lines]);
 
   const getErrors = useCallback(() => {
     const errors: string[] = [];
@@ -242,15 +244,15 @@ const PaymentForm = ({
 
   function handleLineAdded(newLine: PaymentLineItem) {
     // setTimeout(() => setAddLineModalIsOpen(false), 500);
+
+    console.log('newLine', +newLine.paymentAmount);
     setTimeout(() => setPaymentLineModalIsOpen(false), 500);
     setLines([
       ...lines,
       {
         ...newLine,
-        paymentAmount: formatNumber(
-          parseFormattedNumber(newLine.paymentAmount.toString()),
-        ),
         rowId: lines.length,
+        paymentAmount: newLine.paymentAmount,
       },
     ]);
 
@@ -264,12 +266,11 @@ const PaymentForm = ({
 
     let index = -1;
 
-    const newLines = lines.map((l: PaymentLineItem, i: number) => {
-      if (l.uuid !== updatedLine.uuid) return l;
-
+    const newLines = lines.map((lineItem: PaymentLineItem, i: number) => {
+      if (lineItem.uuid !== updatedLine.uuid) return lineItem;
       const newLine: PaymentLineItem = {
         ...updatedLine,
-        rowId: l.rowId,
+        rowId: lineItem.rowId,
         availableAmount: updatedLine.availableAmount,
         paymentAmount: updatedLine.paymentAmount,
         newAvailableAmount:
@@ -637,7 +638,7 @@ const PaymentForm = ({
   return (
     <MenuIdProvider>
       <div>
-        {/* <pre>{JSON.stringify(lines)}</pre> */}
+        <pre>{JSON.stringify(lines)}</pre>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           <div
             className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}

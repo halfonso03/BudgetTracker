@@ -167,11 +167,12 @@ const PaymentLineModal = (props: Props) => {
         grantName: grants?.filter((x) => x.id === data.grantId)[0].name ?? '',
         payeeName: payee!.name,
         availableAmount: availableAmount,
-        paymentAmount: getValues('paymentAmount'),
+        paymentAmount: parseFormattedNumber(getValues('paymentAmount').toString()),
         newAvailableAmount:
           availableAmount - parseFormattedNumber(getValues('paymentAmount')),
         comment: data.comment,
       };
+      console.log(newLine);
 
       props.onLineAdded(newLine);
     } else {
@@ -201,6 +202,7 @@ const PaymentLineModal = (props: Props) => {
   function handlePayeeSelectionCleared() {
     setValue('payeeId', 0);
     setPayee(null);
+    setSelections((prev) => ({ ...prev, payeeId: 0 }));
   }
 
   function handleInputEntryOnBlur() {

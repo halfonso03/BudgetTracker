@@ -162,9 +162,9 @@ namespace Application.Services
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 payeeSummaries = payeeSummaries.Where(x =>
-                        (!string.IsNullOrEmpty(x.Name) && x.Name.Contains(searchTerm))
-                        || (!string.IsNullOrEmpty(x.PayeeType) && x.PayeeType.Contains(searchTerm))
-                        || (!string.IsNullOrEmpty(x.AccountName) && x.AccountName.Contains(searchTerm)));
+                        (!string.IsNullOrEmpty(x.Name) && x.Name.ToLower().Contains(searchTerm.ToLower()))
+                        || (!string.IsNullOrEmpty(x.PayeeType) && x.PayeeType.ToLower().Contains(searchTerm.ToLower()))
+                        || (!string.IsNullOrEmpty(x.AccountName) && x.AccountName.ToLower().Contains(searchTerm.ToLower())));
 
             }
 
@@ -214,7 +214,7 @@ namespace Application.Services
                 var result = await dbContext.Payees
                                 .Include(x => x.Account)
                                     .ThenInclude(x => x!.Category)
-                                .Where(x => x.Name.StartsWith(filter.Trim()))
+                                .Where(x => x.Name.ToLower().Contains(filter.ToLower().Trim()))
                                 .Select(x => new PayeeSearchPayeeResponseDto
                                 {
                                     Id = x.Id,
