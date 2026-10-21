@@ -1,4 +1,3 @@
-import { Fragment } from 'react/jsx-runtime';
 import Menus from '../../components/menus/Menus';
 import { Copy, Edit, EllipsisVertical, Trash } from 'lucide-react';
 import CommentToggler from './CommentToggler';
@@ -35,91 +34,89 @@ const PaymentRow = ({
     saveComment?.(uuid, comment);
   }
   return (
-    <Fragment>
-      <div className=" flex pl-4 items-start gap-4 p-2 py-4 border border-neutral-200 mb-4 divide-neutral-300/60 divide-x">
-        <div className="flex-2  self-stretch items-center tracking-wider">
-          <div className="font-semibold text-neutral-500 ">Payee Name</div>
-          <div className="font-medium text-neutral-900 text-xl tracking-wider ">
-            {payeeName}
-          </div>
-          {/* <div className="font-semibold text-neutral-500 ">Total Paid</div>
+    <div className=" flex pl-4 items-start gap-4 p-2 py-4 border border-neutral-200 mb-4 divide-neutral-300/60 divide-x">
+      <div className="flex-2  self-stretch items-center tracking-wider">
+        <div className="font-semibold text-neutral-500 ">Payee Name</div>
+        <div className="font-medium text-neutral-900 text-xl tracking-wider ">
+          {payeeName}
+        </div>
+        {/* <div className="font-semibold text-neutral-500 ">Total Paid</div>
           <div className=" text-neutral-800 pr-3 ">$1,233.87</div>
           <div className="font-semibold text-neutral-500 ">
             Number of Payments
           </div>
           <div className=" text-neutral-800 pr-3 ">$1,233.87</div> */}
-        </div>
-        <div className="flex flex-col  flex-3">
-          <div className="flex">
-            <div className="flex-1 self-end font-semibold text-neutral-500  p-1 tracking-wider">
-              Initiative
-            </div>
-            <div className="flex-3 self-center font-medium text-neutral-900 pl-1 tracking-wider">
-              {initiativeName}
-            </div>
+      </div>
+      <div className="flex flex-col  flex-3">
+        <div className="flex">
+          <div className="flex-1 self-end font-semibold text-neutral-500  p-1 tracking-wider">
+            Initiative
           </div>
-
-          <div className="flex">
-            <div className="flex-1 self-end font-semibold text-neutral-500  p-1 tracking-wider">
-              Grant
-            </div>
-
-            <div className="flex-3 self-center font-medium text-neutral-900  pl-1 tracking-wider ">
-              {grantName}
-            </div>
-          </div>
-          <div className="flex">
-            <div className="flex-1 self-end font-semibold text-neutral-500  p-1 tracking-wider">
-              Category
-            </div>
-            <div className=" flex-3 self-center font-medium text-neutral-900 pl-1 tracking-wider">
-              {categoryName}
-            </div>
-          </div>
-
-          <div className="flex">
-            <div className="flex-1  self-end font-semibold text-neutral-500  p-1 tracking-wider">
-              Account
-            </div>
-            <div className=" flex-3  self-center font-medium text-neutral-900  pl-1 tracking-wider">
-              {accountName}
-            </div>
+          <div className="flex-3 self-center font-medium text-neutral-900 pl-1 tracking-wider">
+            {initiativeName}
           </div>
         </div>
 
-        <div className="flex-3 self-stretch">{render()}</div>
-        <div className="flex  justify-around self-stretch items-center">
-          <CommentToggler
-            uuid={uuid}
-            itemComment={comment}
-            saveComment={handleSaveComment}
-            canEdit={canEdit}
-          ></CommentToggler>
-          {canEdit && (
-            <Menus>
-              <Menus.Toggler id={uuid}>
-                <EllipsisVertical
-                  size={20}
-                  className="text-neutral-500"
-                ></EllipsisVertical>
-              </Menus.Toggler>
-              <Menus.List id={uuid} topPos="translate-y-15">
-                <Menus.MenuItem onClick={() => editRow?.(uuid)}>
-                  <Edit size={18}></Edit>&nbsp;&nbsp;Edit Row
-                </Menus.MenuItem>
-                <Menus.MenuItem onClick={() => duplicateRow?.(uuid)}>
-                  <Copy size={18}></Copy>&nbsp;&nbsp;Duplicate Row
-                </Menus.MenuItem>
-                <Menus.MenuItem onClick={() => deleteRow?.(uuid)}>
-                  <Trash className="text-red-500" size={18}></Trash>
-                  &nbsp;&nbsp;Delete Row
-                </Menus.MenuItem>
-              </Menus.List>
-            </Menus>
-          )}
+        <div className="flex">
+          <div className="flex-1 self-end font-semibold text-neutral-500  p-1 tracking-wider">
+            Grant
+          </div>
+
+          <div className="flex-3 self-center font-medium text-neutral-900  pl-1 tracking-wider ">
+            {grantName}
+          </div>
+        </div>
+        <div className="flex">
+          <div className="flex-1 self-end font-semibold text-neutral-500  p-1 tracking-wider">
+            Category
+          </div>
+          <div className=" flex-3 self-center font-medium text-neutral-900 pl-1 tracking-wider">
+            {categoryName}
+          </div>
+        </div>
+
+        <div className="flex">
+          <div className="flex-1  self-end font-semibold text-neutral-500  p-1 tracking-wider">
+            Account
+          </div>
+          <div className=" flex-3  self-center font-medium text-neutral-900  pl-1 tracking-wider">
+            {accountName}
+          </div>
         </div>
       </div>
-    </Fragment>
+
+      <div className="flex-3 self-stretch">{render()}</div>
+      <div className="flex  justify-around self-stretch items-center">
+        <CommentToggler
+          uuid={uuid}
+          itemComment={comment}
+          saveComment={handleSaveComment}
+          canEdit={canEdit}
+        ></CommentToggler>
+        {canEdit && (
+          <Menus>
+            <Menus.Toggler id={uuid}>
+              <EllipsisVertical
+                size={20}
+                className="text-neutral-500"
+              ></EllipsisVertical>
+            </Menus.Toggler>
+            <Menus.List id={uuid} topPos="translate-y-15">
+              <Menus.MenuItem onClick={() => editRow?.(uuid)}>
+                <Edit size={18}></Edit>&nbsp;&nbsp;Edit Row
+              </Menus.MenuItem>
+              <Menus.MenuItem onClick={() => duplicateRow?.(uuid)}>
+                <Copy size={18}></Copy>&nbsp;&nbsp;Duplicate Row
+              </Menus.MenuItem>
+              <Menus.MenuItem onClick={() => deleteRow?.(uuid)}>
+                <Trash className="text-red-500" size={18}></Trash>
+                &nbsp;&nbsp;Delete Row
+              </Menus.MenuItem>
+            </Menus.List>
+          </Menus>
+        )}
+      </div>
+    </div>
   );
 };
 

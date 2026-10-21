@@ -22,22 +22,23 @@ import {
   AlertTriangle,
   BookOpenText,
   CheckCircle2,
+  Pencil,
   Plus,
   Save,
+  TrashIcon,
 } from 'lucide-react';
 import Button from '../../components/Button';
 import useClientAuth from '../../contexts/useAuth';
-import PaymentRow from './PaymentRow';
 import JustificaModal from '../Common/modals/JustificaModal';
 import ErrorsModal from '../Common/modals/ErrorsModal';
 import PaymentLineModal from './modals/PaymentLineModal';
-import PaymentAmountNumericArrayInput from './PaymentAmountNumericArrayInput';
 import { useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { usePaymentMutations } from '../../api/hooks/payments/usePaymentMutations';
 import ConfirmModal from '../../components/ConfirmModal';
 import IdHeader from '../Common/IdHeader';
 import { useLocation } from 'react-router-dom';
+import CommentToggler from '../Common/CommentToggler';
 
 interface Props {
   payment: Payment;
@@ -107,7 +108,7 @@ const PaymentForm = ({
     initialEditSelection !== null || payment.lineItems.length === 0,
   );
 
-  const { setValue, register, getValues } = useForm<PaymentInputRows>({
+  const { setValue,  getValues } = useForm<PaymentInputRows>({
     values: {
       rows: lines.map((l) => {
         return {
@@ -127,14 +128,17 @@ const PaymentForm = ({
     return Number(paymentTotal).toFixed(2);
   }, [lines]);
 
-  const distinctNewItems = useMemo(() => {
+  const distinctBudgets = useMemo(() => {
     const seen: string[] = [];
-
     return lines
       .map((item) => {
         const key = `${item.initiativeName}-${item.grantName}-${item.categoryName}-${item.accountName}`;
         if (seen.some((x) => x === key)) return null;
         const setItem: PaymentSummary = {
+          initiativeId: item.initiativeId,
+          grantId: item.grantId,
+          catregoryId: item.categoryId,
+          accountId: item.accountId,
           initiativeName: item.initiativeName,
           grantName: item.grantName,
           categoryName: item.categoryName,
@@ -161,7 +165,25 @@ const PaymentForm = ({
         return setItem;
       })
       .filter((x) => x);
+  }, [lines]) as PaymentSummary[];
+
+  const distinctInitiatives = useMemo(() => {
+    const seen: { initiativeName: string; availableAmount: number }[] = [];
+
+    return lines
+      .map((item) => {
+        const key = item.initiativeName;
+        const a = item.availableAmount;
+
+        if (seen.some((x) => x.initiativeName === key)) return null;
+
+        seen.push({ initiativeName: key, availableAmount: a });
+        return key;
+      })
+      .filter((x) => x);
   }, [lines]);
+
+  console.log('distinctInitiatives', distinctInitiatives);
 
   const getErrors = useCallback(() => {
     const errors: string[] = [];
@@ -178,7 +200,7 @@ const PaymentForm = ({
       errors.push(NEGATIVE_NEW_AVAILABLE_BALANCE);
     }
 
-    const x = distinctNewItems.filter(
+    const x = distinctBudgets.filter(
       (x) => (x?.available ?? 0) - (x?.totalPaid ?? 0) < 0,
     );
 
@@ -199,7 +221,7 @@ const PaymentForm = ({
     }
 
     return errors;
-  }, [distinctNewItems, lines, paymentHeader.justification]);
+  }, [distinctBudgets, lines, paymentHeader.justification]);
 
   const { createPayment, updatePayment } = usePaymentMutations();
 
@@ -285,17 +307,17 @@ const PaymentForm = ({
     setLines(newLines);
   }
 
-  function handleDuplicateRow(uuid: string) {
-    const duplicatedLine: PaymentLineItem = {
-      ...lines.filter((x) => x.uuid === uuid)[0],
-      paymentAmount: 0,
-      rowId: lines.length,
-      uuid: crypto.randomUUID(),
-    };
+  // function handleDuplicateRow(uuid: string) {
+  //   const duplicatedLine: PaymentLineItem = {
+  //     ...lines.filter((x) => x.uuid === uuid)[0],
+  //     paymentAmount: 0,
+  //     rowId: lines.length,
+  //     uuid: crypto.randomUUID(),
+  //   };
 
-    setLines([...lines, duplicatedLine]);
-    onIsDirty(true);
-  }
+  //   setLines([...lines, duplicatedLine]);
+  //   onIsDirty(true);
+  // }
 
   function onAddRow() {
     setEditSelections(null);
@@ -326,7 +348,7 @@ const PaymentForm = ({
     setPaymentLineModalIsOpen(true);
   }
 
-  function handleDeletRow(uuid: string) {
+  function handleDeleteRow(uuid: string) {
     setLines((prev) =>
       prev
         .filter((x) => x.uuid !== uuid)
@@ -356,26 +378,26 @@ const PaymentForm = ({
     onIsDirty(true);
   }
 
-  function paymentAmountOnBlur(uuid: string) {
-    const newLines = lines.map((line: PaymentLineItem, index: number) => {
-      if (uuid !== line.uuid) return line;
+  // function paymentAmountOnBlur(uuid: string) {
+  //   const newLines = lines.map((line: PaymentLineItem, index: number) => {
+  //     if (uuid !== line.uuid) return line;
 
-      const paymentAmount = parseFormattedNumber(
-        getValues(`rows.${index}.paymentAmount`) as string,
-      );
+  //     const paymentAmount = parseFormattedNumber(
+  //       getValues(`rows.${index}.paymentAmount`) as string,
+  //     );
 
-      const updatedLine: PaymentLineItem = {
-        ...line,
-        paymentAmount: formatNumber(paymentAmount),
-        newAvailableAmount: line.availableAmount - paymentAmount,
-      };
+  //     const updatedLine: PaymentLineItem = {
+  //       ...line,
+  //       paymentAmount: formatNumber(paymentAmount),
+  //       newAvailableAmount: line.availableAmount - paymentAmount,
+  //     };
 
-      return updatedLine;
-    });
+  //     return updatedLine;
+  //   });
 
-    setLines(newLines);
-    onIsDirty(true);
-  }
+  //   setLines(newLines);
+  //   onIsDirty(true);
+  // }
 
   function canPost() {
     return lines.length > 0 && noDupLines(lines);
@@ -639,8 +661,9 @@ const PaymentForm = ({
     <MenuIdProvider>
       <div>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
+          {/* opacity-0 cursor-none */}
           <div
-            className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
+            className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : ''}`}
           >
             {/* <pre className="w-[20%]">{JSON.stringify(editSelections)}</pre> */}
             {payment !== undefined && (
@@ -744,89 +767,242 @@ const PaymentForm = ({
           </div>
         )}
 
-        <div className="pb-10">
-          {lines.map((item, index) => {
-            return (
-              <PaymentRow
-                key={index}
-                lineItem={item}
-                canEdit={paymentHeader.status !== POSTED}
-                status={paymentHeader.status}
-                deleteRow={handleDeletRow}
-                duplicateRow={handleDuplicateRow}
-                editRow={handleEditRow}
-                saveComment={handleSaveComment}
-                render={() => {
-                  // const alertClass =
-                  //   item.availableAmount -
-                  //     parseFormattedNumber(
-                  //       item?.paymentAmount?.toString() ?? 0,
-                  //     ) <
-                  //   0
-                  //     ? 'text-red-500'
-                  //     : '';
-
-                  return (
-                    <div className="flex-3 px-3 pr-6">
-                      <div className="grid grid-cols-[1fr_1fr_1fr] justify-between gap-2 ">
-                        <div
-                          className={` font-semibold text-neutral-600 text-center self-end  p-1 ${paymentHeader.status === POSTED ? 'opacity-0' : ''}`}
-                        >
-                          {/* {paymentHeader.status !== POSTED && 'Available'} */}
+        {distinctBudgets && (
+          <div>
+            <div>
+              <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr]  ">
+                <div className="font-semibold text-neutral-600/90 bg-neutral-100 py-2 pl-1">
+                  Initiative
+                </div>
+                <div className="font-semibold text-neutral-600/90 bg-neutral-100 py-2 pl-1">
+                  Grant
+                </div>
+                <div className="font-semibold text-neutral-600/90 bg-neutral-100 py-2 pl-1">
+                  Category
+                </div>
+                <div className="font-semibold text-neutral-600/90 bg-neutral-100 py-2 pl-1">
+                  Account
+                </div>
+                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-100 py-2 pl-1">
+                  Available
+                </div>
+              </div>
+            </div>
+            {distinctBudgets.map((i: PaymentSummary) => {
+              const payments = lines.filter(
+                (x) =>
+                  x.initiativeId == i.initiativeId &&
+                  x.grantId == i.grantId &&
+                  x.accountId === i.accountId,
+              );
+              return (
+                <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] mb-10  pt-1 border-t border-t-neutral-200 ">
+                  <div className="p-1 font-semibold">{i.initiativeName}</div>
+                  <div className="py-1">{i.grantName}</div>
+                  <div className="py-1">{i.categoryName}</div>
+                  <div className="py-1">{i.accountName}</div>
+                  <div className="text-center font-semibold">
+                    {i.available && formatCurrency(i.available)}
+                  </div>
+                  <div className="col-span-5 flex justify-end  mt-3 ">
+                    <div className="w-full">
+                      <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr]">
+                        <div className="col-span-3"></div>
+                        <div className="p-2 text-neutral-600/90 bg-neutral-100 font-semibold">
+                          Payments
                         </div>
-                        <div className="text-center font-semibold text-neutral-600    p-1 px-3">
-                          Payment
+                        <div className="p-2 text-center text-neutral-600/90 bg-neutral-100 font-semibold">
+                          Amount
                         </div>
-                        <div className="text-center self-end font-semibold text-neutral-600    p-1 px-3">
-                          {/* {paymentHeader.status !== POSTED && 'Remaining'} */}
+                      </div>
+                      <div>
+                        {payments.map((p, i) => {
+                          return (
+                            <div className="grid grid-cols-[3fr_2fr] py-[.15rem]">
+                              <div></div>
+                              <div
+                                className={`py-2 flex ${i === payments.length - 1 ? '' : 'border-b border-b-neutral-300/50'}`}
+                              >
+                                <div className="flex-1 pl-2  ">
+                                  {p.payeeName}
+                                </div>
+                                <div className="flex-1 text-center relative  ">
+                                  {formatCurrency(+p.paymentAmount)}
+                                  <div className="flex absolute right-0 top-0 ">
+                                    <div className="flex gap-4 pr-2">
+                                      <Pencil
+                                        size={20}
+                                        className="cursor-pointer text-neutral-400 hover:text-blue-500 duration-200 transition-all hover:scale-125"
+                                        onClick={() => handleEditRow(p.uuid)}
+                                      ></Pencil>
+                                      <TrashIcon
+                                        className="text-red-600 opacity-60 cursor-pointer duration-200 transition-all hover:scale-125 hover:opacity-100"
+                                        size={20}
+                                        onClick={() => handleDeleteRow(p.uuid)}
+                                      ></TrashIcon>
+                                        <CommentToggler
+                                          uuid={p.uuid}
+                                          itemComment={p.comment}
+                                          saveComment={handleSaveComment}
+                                          canEdit={
+                                            paymentHeader.status !== POSTED
+                                          }
+                                        ></CommentToggler>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] ">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div className="p-2 font-semibold text-neutral-600/90 bg-neutral-200/70">
+                          Total
                         </div>
-                        <div>
-                          <div>
-                            {/* {paymentHeader.status !== POSTED && (
-                              <input
-                                readOnly={true}
-                                tabIndex={-1}
-                                className={
-                                  'w-full  p-2 text-center text-neutral-600 focus:outline-none focus:ring-0'
-                                }
-                                value={formatNumber(item.availableAmount)}
-                              ></input>
-                            )} */}
-                          </div>
-                        </div>
-                        <div>
-                          <PaymentAmountNumericArrayInput
-                            index={index}
-                            setValue={setValue}
-                            register={register(`rows.${index}.paymentAmount`)}
-                            fieldName="paymentAmount"
-                            readOnly={true}
-                            disabled={true}
-                            onBlur={() => {
-                              paymentAmountOnBlur(item.uuid);
-                            }}
-                            classes={`flex-[1.5] w-full text-center border-neutral-200 text-neutral-900 font-medium focus:outline-none focus:ring-0 focus:ring-offset-0
-                       `}
-                          />
-                        </div>
-                        <div>
-                          {/* {paymentHeader.status !== POSTED && (
-                            <input
-                              readOnly={true}
-                              tabIndex={-1}
-                              className={` ${alertClass} w-full  p-2 text-neutral-600 text-center focus:outline-none focus:ring-0`}
-                              value={formatCurrency(item.newAvailableAmount)}
-                            ></input>
-                          )} */}
+                        <div className="p-2 font-semibold text-center text-neutral-600 bg-neutral-200/70">
+                          {formatCurrency(
+                            +payments
+                              .map((x) =>
+                                parseFormattedNumber(
+                                  x.paymentAmount.toString(),
+                                ),
+                              )
+                              .reduce((acc, cur) => acc + cur, 0),
+                          )}
                         </div>
                       </div>
                     </div>
-                  );
-                }}
-              ></PaymentRow>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* <div className="pb-10">
+          {lines.map((item, index) => {
+            return (
+              <div className=" flex pl-4 items-start gap-4 p-2 py-4 border border-neutral-200 mb-4 divide-neutral-300/60 divide-x">
+                <div className="flex-2  self-stretch items-center tracking-wider">
+                  <div className="font-semibold text-neutral-500 ">
+                    Payee Name
+                  </div>
+                  <div className="font-medium text-neutral-900 text-xl tracking-wider ">
+                    {item.payeeName}
+                  </div>
+                </div>
+                <div className="flex flex-col  flex-3">
+                  <div className="flex">
+                    <div className="flex-1 self-end font-semibold text-neutral-500  p-1 tracking-wider">
+                      Initiative
+                    </div>
+                    <div className="flex-3 self-center font-medium text-neutral-900 pl-1 tracking-wider">
+                      {item.initiativeName}
+                    </div>
+                  </div>
+
+                  <div className="flex">
+                    <div className="flex-1 self-end font-semibold text-neutral-500  p-1 tracking-wider">
+                      Grant
+                    </div>
+
+                    <div className="flex-3 self-center font-medium text-neutral-900  pl-1 tracking-wider ">
+                      {item.grantName}
+                    </div>
+                  </div>
+                  <div className="flex">
+                    <div className="flex-1 self-end font-semibold text-neutral-500  p-1 tracking-wider">
+                      Category
+                    </div>
+                    <div className=" flex-3 self-center font-medium text-neutral-900 pl-1 tracking-wider">
+                      {item.categoryName}
+                    </div>
+                  </div>
+
+                  <div className="flex">
+                    <div className="flex-1  self-end font-semibold text-neutral-500  p-1 tracking-wider">
+                      Account
+                    </div>
+                    <div className=" flex-3  self-center font-medium text-neutral-900  pl-1 tracking-wider">
+                      {item.accountName}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex-3 self-stretch">
+                  <div className="flex-3 px-3 pr-6">
+                    <div className="grid grid-cols-[1fr_1fr_1fr] justify-between gap-2 ">
+                      <div
+                        className={` font-semibold text-neutral-600 text-center self-end  p-1 ${paymentHeader.status === POSTED ? 'opacity-0' : ''}`}
+                      ></div>
+                      <div className="text-center font-semibold text-neutral-600    p-1 px-3">
+                        Payment
+                      </div>
+                      <div className="text-center self-end font-semibold text-neutral-600    p-1 px-3"></div>
+                      <div></div>
+                      <div>
+                        <PaymentAmountNumericArrayInput
+                          index={index}
+                          setValue={setValue}
+                          register={register(`rows.${index}.paymentAmount`)}
+                          fieldName="paymentAmount"
+                          readOnly={true}
+                          disabled={true}
+                          onBlur={() => {
+                            paymentAmountOnBlur(item.uuid);
+                          }}
+                          classes={`flex-[1.5] w-full text-center border-neutral-200 text-neutral-900 font-medium focus:outline-none focus:ring-0 focus:ring-offset-0
+                       `}
+                        />
+                      </div>
+                      <div></div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex  justify-around self-stretch items-center">
+                  <CommentToggler
+                    uuid={item.uuid}
+                    itemComment={item.comment}
+                    saveComment={handleSaveComment}
+                    canEdit={paymentHeader.status !== POSTED}
+                  ></CommentToggler>
+                  {paymentHeader.status !== POSTED && (
+                    <Menus>
+                      <Menus.Toggler id={item.uuid}>
+                        <EllipsisVertical
+                          size={20}
+                          className="text-neutral-500"
+                        ></EllipsisVertical>
+                      </Menus.Toggler>
+                      <Menus.List id={item.uuid} topPos="translate-y-15">
+                        <Menus.MenuItem
+                          onClick={() => handleEditRow(item.uuid)}
+                        >
+                          <Edit size={18}></Edit>&nbsp;&nbsp;Edit Row
+                        </Menus.MenuItem>
+                        <Menus.MenuItem
+                          onClick={() => handleDuplicateRow(item.uuid)}
+                        >
+                          <Copy size={18}></Copy>&nbsp;&nbsp;Duplicate Row
+                        </Menus.MenuItem>
+                        <Menus.MenuItem
+                          onClick={() => handleDeletRow(item.uuid)}
+                        >
+                          <Trash className="text-red-500" size={18}></Trash>
+                          &nbsp;&nbsp;Delete Row
+                        </Menus.MenuItem>
+                      </Menus.List>
+                    </Menus>
+                  )}
+                </div>
+              </div>
             );
           })}
-        </div>
+        </div> */}
         {paymentLineModalIsOpen && (
           <PaymentLineModal
             year={payment.year}
@@ -873,7 +1049,7 @@ const PaymentForm = ({
           }}
           message="This payment wil be posted. Click OK to continue."
         ></ConfirmModal>
-        {distinctNewItems && lines && lines.length > 0 && (
+        {distinctBudgets && lines && lines.length > 1000 && (
           <>
             <div className="font-semibold text-neutral-500 text-center text-[1.1rem] mb-1">
               Payment Totals Summary
@@ -904,9 +1080,9 @@ const PaymentForm = ({
                 </div>
               </div>
 
-              {distinctNewItems.map((d, index) => (
+              {distinctBudgets.map((d, index) => (
                 <div
-                  className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr]  border-b border-b-neutral-200 my-2 py-1 last:border-0 last:mb-0  "
+                  className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr] border-t border-t-neutral-200  border-b border-b-neutral-200 py-3 last:border-0 last:mb-0  "
                   key={index}
                 >
                   <div className=" text-center text-neutral-800">

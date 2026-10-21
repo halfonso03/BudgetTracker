@@ -159,7 +159,7 @@ input:-webkit-autofill:focus {
     }
   }
 
-  --animate-payment-input-fade-in: fadeInPaymentInput .45s ease-out forwards;
+  --animate-payment-input-fade-in: fadeInPaymentInput 0.45s ease-out forwards;
 
   @keyframes fadeInPaymentInput {
     0% {

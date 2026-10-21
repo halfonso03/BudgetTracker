@@ -167,7 +167,9 @@ const PaymentLineModal = (props: Props) => {
         grantName: grants?.filter((x) => x.id === data.grantId)[0].name ?? '',
         payeeName: payee!.name,
         availableAmount: availableAmount,
-        paymentAmount: parseFormattedNumber(getValues('paymentAmount').toString()),
+        paymentAmount: parseFormattedNumber(
+          getValues('paymentAmount').toString(),
+        ),
         newAvailableAmount:
           availableAmount - parseFormattedNumber(getValues('paymentAmount')),
         comment: data.comment,
@@ -191,7 +193,9 @@ const PaymentLineModal = (props: Props) => {
         grantName: grants?.filter((x) => x.id === data.grantId)[0].name ?? '',
         payeeName: selectedEditPayee!.name,
         availableAmount: availableAmount,
-        paymentAmount: parseFormattedNumber(getValues('paymentAmount').toString()),
+        paymentAmount: parseFormattedNumber(
+          getValues('paymentAmount').toString(),
+        ),
         newAvailableAmount: availableAmount - +getValues('paymentAmount'),
         comment: data.comment,
       };
@@ -334,7 +338,7 @@ const PaymentLineModal = (props: Props) => {
           )}
 
           <div className="flex flex-col justify-between h-full mt-2">
-            <div className=" overflow-y-scroll h-[70dvh]">
+            <div className=" overflow-y-scroll h-[55dvh]">
               <div className="flex flex-col justify-between p-3 px-4 ">
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <div className="text-neutral-600/90 font-medium">Year</div>
@@ -649,10 +653,11 @@ const PaymentLineModal = (props: Props) => {
                     rows={2}
                   ></textarea>
                 </div>
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-                  <div className="col-span-2 border-t border-b p-2 border-neutral-300/90 py-4 ">
-                    {loadingRemainingAccountBalances && <Spinner></Spinner>}
-                    {remainingAccountBalances && (
+                {loadingRemainingAccountBalances && <Spinner></Spinner>}
+
+                {remainingAccountBalances && (
+                  <div className="grid grid-cols-[.35fr_1fr_.1fr]">
+                    <div className="col-span-2  py-4 ">
                       <PaymentEntryInput
                         getValues={getValues}
                         error={errors?.paymentAmount}
@@ -662,10 +667,10 @@ const PaymentLineModal = (props: Props) => {
                         onLessThanZero={handleLessThanZero}
                         onOK={handleAmountOk}
                       ></PaymentEntryInput>
-                    )}
+                    </div>
+                    <div></div>
                   </div>
-                  <div></div>
-                </div>
+                )}
               </div>
             </div>
             <div className="flex justify-end gap-2 border-t border-t-neutral-300/90 p-4">

@@ -45,7 +45,6 @@ const PayeeSearcher = ({
     payeeIdToFind = payeeId;
   }
 
-
   const { data: suggestions, isFetching } = usePayeeSearch(query);
 
   const {
@@ -122,7 +121,7 @@ const PayeeSearcher = ({
             containerClassName="flex-1 self-stretch"
           />
         )}
-
+        {loadginSelectedPayeeInfo && <Spinner></Spinner>}
         {selectedPayee && selectedPayeeInfoFromDb && (
           <div className="mb-2 pr-1 mt-1">
             <SelectedPayeeCard
