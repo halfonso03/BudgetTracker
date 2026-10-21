@@ -191,7 +191,7 @@ const PaymentLineModal = (props: Props) => {
         grantName: grants?.filter((x) => x.id === data.grantId)[0].name ?? '',
         payeeName: selectedEditPayee!.name,
         availableAmount: availableAmount,
-        paymentAmount: getValues('paymentAmount'),
+        paymentAmount: parseFormattedNumber(getValues('paymentAmount').toString()),
         newAvailableAmount: availableAmount - +getValues('paymentAmount'),
         comment: data.comment,
       };

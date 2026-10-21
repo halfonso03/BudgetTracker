@@ -638,7 +638,6 @@ const PaymentForm = ({
   return (
     <MenuIdProvider>
       <div>
-        <pre>{JSON.stringify(lines)}</pre>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           <div
             className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
@@ -907,7 +906,7 @@ const PaymentForm = ({
 
               {distinctNewItems.map((d, index) => (
                 <div
-                  className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr] p-2 border-b border-b-neutral-200 my-2 last:border-0 last:mb-0  "
+                  className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr_1fr_1fr]  border-b border-b-neutral-200 my-2 py-1 last:border-0 last:mb-0  "
                   key={index}
                 >
                   <div className=" text-center text-neutral-800">
