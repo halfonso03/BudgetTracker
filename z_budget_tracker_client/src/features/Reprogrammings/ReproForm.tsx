@@ -235,8 +235,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
   function getRowIncreaseAndDecrease(index: number) {
     return {
-      inc: getValues(`rows.${index}.increase`),
-      dec: getValues(`rows.${index}.decrease`),
+      inc: parseFormattedNumber(getValues(`rows.${index}.increase`).toString()),
+      dec: parseFormattedNumber(getValues(`rows.${index}.decrease`).toString()),
     };
   }
 
@@ -318,8 +318,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         increase: inc,
         decrease: dec,
         currentAmount: updatedLine.currentAmount,
-        newCurrentAmount: updatedLine.currentAmount + +inc - +dec,
-        newRemainingAmount: updatedLine.remainingAmount + +inc - +dec,
+        newCurrentAmount: updatedLine.currentAmount + inc - dec,
+        newRemainingAmount: updatedLine.remainingAmount + inc - dec,
       };
       return newLine;
     });
@@ -404,11 +404,16 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   }
 
   function handleDuplicateRow(uuid: string) {
+
+    const lineToDuplicate = lines.filter((x) => x.uuid === uuid)[0]
     const duplicatedLine: ReproLineItem = {
-      ...lines.filter((x) => x.uuid === uuid)[0],
+      ...lineToDuplicate,
       increase: 0,
       decrease: 0,
       rowId: lines.length,
+      newCurrentAmount: lineToDuplicate.currentAmount,
+      remainingAmount: lineToDuplicate.remainingAmount,
+      newRemainingAmount: lineToDuplicate.remainingAmount,
       uuid: crypto.randomUUID(),
     };
 

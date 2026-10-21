@@ -5,35 +5,13 @@ GO
 
 
 
-CREATE TRIGGER [dbo].[trg_tblBudget_Update]
+create TRIGGER [dbo].[trg_tblBudget_Insert]
    ON  [dbo].[tblBudget]
-   AFTER UPDATE
+   AFTER INSERT
 AS 
 BEGIN
 
-
-    INSERT INTO [Audit].[tblBudget]
-               ([initiative_id]
-               ,[grant_id]
-               ,[account_id]
-               ,[amount]
-               ,[item_type]
-               ,[year]
-               ,[created_by]
-               ,[create_date]
-               ,[additional_information]
-               ,[version])
-        SELECT [initiative_id]
-               ,[grant_id]
-               ,[account_id]
-               ,[amount]
-               ,[item_type]
-               ,[year]
-               ,[created_by]
-               ,GETDATE()
-               ,[additional_information]
-               ,'old'
-        FROM deleted
+   IF (SELECT TOP (1) item_type FROM inserted ) != 'B' return
 
 
   INSERT INTO [Audit].[tblBudget]
@@ -56,11 +34,11 @@ BEGIN
                ,[created_by]
                ,GETDATE()
                ,[additional_information]
-               ,'new'
+               ,'initial_value'
         FROM inserted
 
 END
 
 GO
-ALTER TABLE [dbo].[tblBudget] ENABLE TRIGGER [trg_tblBudget_Update]
+ALTER TABLE [dbo].[tblBudget] ENABLE TRIGGER [trg_tblBudget_Insert]
 GO

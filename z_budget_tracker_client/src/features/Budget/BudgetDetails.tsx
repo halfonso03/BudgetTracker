@@ -482,7 +482,7 @@ const BudgetDetails = () => {
               Save Budget
             </Button>
           </div>
-          <pre>{JSON.stringify(negativeAccounts)}</pre>
+          {/* <pre>{JSON.stringify(negativeAccounts)}</pre> */}
           <BudgetHeader
             bRef={bRef}
             cRef={cRef}

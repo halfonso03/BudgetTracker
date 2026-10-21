@@ -4,10 +4,11 @@
 
 
 payee - New same as above
-payments - amounts went 'NAN' when switch back to screen <- seems to happen when a payment is duplicated
+payments - amounts went 'NAN' when switch back to screen <- seems to happen when a payment is duplicated. happens when number with comma is entered for the 
+payment amount
 
-budget details - show the payee name when view transactions mini modal
-repro form - went NaN when duplicated a line??
+
+repro form - went NaN when duplicated a line?? due to thousands seperator
 
 
 add check number for each payment line
@@ -19,6 +20,9 @@ BUG - when changing pages in search results, expanaded items stay open
 
  ? -- add delete budget when no reprogrammings and no expenses
 
+
+DONE -- trigger on tblBudget is inserting audit record for payment and reprogramming records
+DONE budget details - show the payee name when view transactions mini modal
 DONE add payee list year filter
 DONE add payee modal when entering a new payment
 DONE Make exclusive work for initiative and account
