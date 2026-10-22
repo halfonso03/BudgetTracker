@@ -40,8 +40,8 @@ const PaymentDetails = () => {
     setTimeout(() => navigate(`/payments/${id}`), 1000);
   }
 
-  function handleIsDirty(isDirty: boolean) {
-    // isDirty will always be true
+  function handleIsDirty(isDirty: boolean = true) {
+    // isDirty should always be true
     setHasUnsavedChanges(isDirty);
   }
 
@@ -51,39 +51,6 @@ const PaymentDetails = () => {
 
   function handleSearchClick() {
     navigate('/payments/search');
-    // if (hasUnsavedChanges) {
-    //   setConfirmModalIsOpen(true);
-    // } else {
-    //   navigate('/payments/search');
-    // }
-  }
-
-  async function handleDuplicatePayment() {
-    // setTimeout(async () => {
-    //   try {
-    //     await duplicatePayment.mutateAsync(
-    //       { id: paymentFromDb!.id!, userId: +user!.id! },
-    //       {
-    //         onSuccess: async (payment) => {
-    //           toast.success(
-    //             <div>
-    //               <div className="pb-1">{`Payment Id ${+id!} duplicated.`}</div>
-    //               <div>{`Opening payment id ${payment.id}.`}</div>
-    //             </div>,
-    //             {
-    //               duration: 2000,
-    //             },
-    //           );
-    //           setTimeout(() => {
-    //             navigate(`/payments/${payment.id}`);
-    //           }, 2000);
-    //         },
-    //       },
-    //     );
-    //   } catch (error) {
-    //     console.log('e', error);
-    //   }
-    // }, 500);
   }
 
   const body = () => {
@@ -109,7 +76,6 @@ const PaymentDetails = () => {
         paymentId={paymentFromDb?.id}
         onYearSelected={handleYearSelected}
         onSearchClick={handleSearchClick}
-        onDuplicatePayment={handleDuplicatePayment}
       ></PaymentControls>
       {body()}
       <ConfirmModal
