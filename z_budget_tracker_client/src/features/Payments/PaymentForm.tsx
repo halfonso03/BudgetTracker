@@ -177,23 +177,21 @@ const PaymentForm = ({
       .filter((x) => x);
   }, [lines]) as PaymentSummary[];
 
-  const distinctInitiatives = useMemo(() => {
-    const seen: { initiativeName: string; availableAmount: number }[] = [];
+  // const distinctInitiatives = useMemo(() => {
+  //   const seen: { initiativeName: string; availableAmount: number }[] = [];
 
-    return lines
-      .map((item) => {
-        const key = item.initiativeName;
-        const a = item.availableAmount;
+  //   return lines
+  //     .map((item) => {
+  //       const key = item.initiativeName;
+  //       const a = item.availableAmount;
 
-        if (seen.some((x) => x.initiativeName === key)) return null;
+  //       if (seen.some((x) => x.initiativeName === key)) return null;
 
-        seen.push({ initiativeName: key, availableAmount: a });
-        return key;
-      })
-      .filter((x) => x);
-  }, [lines]);
-
-  console.log('distinctInitiatives', distinctInitiatives);
+  //       seen.push({ initiativeName: key, availableAmount: a });
+  //       return key;
+  //     })
+  //     .filter((x) => x);
+  // }, [lines]);
 
   const getErrors = useCallback(() => {
     const errors: string[] = [];
@@ -260,6 +258,10 @@ const PaymentForm = ({
         },
       );
     }
+
+    if (lines.length === 0) {
+      onIsDirty(false);
+    }
     // else {
     //   toast.remove();
     // }
@@ -313,6 +315,7 @@ const PaymentForm = ({
 
     setValue(`rows.${index}.paymentAmount`, updatedLine.paymentAmount);
     setLines(newLines);
+    onIsDirty(true);
   }
 
   // function handleDuplicateRow(uuid: string) {
@@ -435,10 +438,10 @@ const PaymentForm = ({
 
     result = result && paymentHeader.status !== POSTED;
 
-    result =
-      result &&
-      paymentHeader.justification !== null &&
-      paymentHeader.justification.trim().length > 0;
+    // result =
+    //   result &&
+    //   paymentHeader.justification !== null &&
+    //   paymentHeader.justification.trim().length > 0;
 
     return result;
   }
@@ -709,6 +712,7 @@ const PaymentForm = ({
       <div>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           {/* opacity-0 cursor-none */}
+
           <div
             className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : ''}`}
           >
@@ -814,7 +818,7 @@ const PaymentForm = ({
           </div>
         )}
 
-        {distinctBudgets && (
+        {distinctBudgets && lines.length > 0 && (
           <div>
             <div>
               <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr]  ">
@@ -890,34 +894,35 @@ const PaymentForm = ({
                                 </div>
                                 <div className="flex-1 text-center relative  ">
                                   {formatCurrency(+p.paymentAmount)}
-                                  <div className="flex absolute right-0 top-0 ">
-                                    <div className="flex gap-4 pr-2">
-                                      
-                                      <Pencil
-                                        size={20}
-                                        className={`cursor-pointer text-neutral-400 hover:text-blue-500 duration-200 transition-all hover:scale-125`}
-                                        onClick={() => handleEditRow(p.uuid)}
-                                      ></Pencil>
-                                      <TrashIcon
-                                        className="text-red-600 opacity-60 cursor-pointer duration-200 transition-all hover:scale-125 hover:opacity-100"
-                                        size={20}
-                                        onClick={() => {
-                                          setDeleteRowConfirm((prev) => ({
-                                            ...prev,
-                                            isOpen: true,
-                                            payeeName: p.payeeName,
-                                            rowUuid: p.uuid,
-                                            paymentAmount: formatCurrency(
-                                              parseFormattedNumber(
-                                                p.paymentAmount?.toString() ??
-                                                  '0.00',
+                                  {paymentHeader.status !== POSTED && (
+                                    <div className="flex absolute right-0 top-0 ">
+                                      <div className="flex gap-4 pr-2">
+                                        <Pencil
+                                          size={20}
+                                          className={`${p.comment !== '' ? 'text-blue-500' : 'text-neutral-400'} cursor-pointer  hover:text-blue-500 duration-200 transition-all hover:scale-125`}
+                                          onClick={() => handleEditRow(p.uuid)}
+                                        ></Pencil>
+                                        <TrashIcon
+                                          className="text-red-600 opacity-60 cursor-pointer duration-200 transition-all hover:scale-125 hover:opacity-100"
+                                          size={20}
+                                          onClick={() => {
+                                            setDeleteRowConfirm((prev) => ({
+                                              ...prev,
+                                              isOpen: true,
+                                              payeeName: p.payeeName,
+                                              rowUuid: p.uuid,
+                                              paymentAmount: formatCurrency(
+                                                parseFormattedNumber(
+                                                  p.paymentAmount?.toString() ??
+                                                    '0.00',
+                                                ),
                                               ),
-                                            ),
-                                          }));
-                                        }}
-                                      ></TrashIcon>
+                                            }));
+                                          }}
+                                        ></TrashIcon>
+                                      </div>
                                     </div>
-                                  </div>
+                                  )}
                                 </div>
                               </div>
                             </div>

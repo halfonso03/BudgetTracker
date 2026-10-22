@@ -21,7 +21,6 @@ import useRemainingAccountBalances from '../../../api/hooks/payments/useRemainin
 import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeInfo';
 import Dropdown, { type Option } from 'react-dropdown';
 import { useEscapeKey } from '../../../hooks/useEscapeKey';
-import Spinner from '../../../components/Spinner';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -174,7 +173,6 @@ const PaymentLineModal = (props: Props) => {
           availableAmount - parseFormattedNumber(getValues('paymentAmount')),
         comment: data.comment,
       };
-      console.log(newLine);
 
       props.onLineAdded(newLine);
     } else {
@@ -653,7 +651,7 @@ const PaymentLineModal = (props: Props) => {
                     rows={3}
                   ></textarea>
                 </div>
-                {loadingRemainingAccountBalances && <Spinner></Spinner>}
+                {/* {loadingRemainingAccountBalances && <Spinner></Spinner>} */}
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]">
                   <div className="col-span-2  ">
