@@ -693,11 +693,7 @@ const PaymentLineModal = (props: Props) => {
                      */}
               <Button
                 type="submit"
-                disabled={
-                  availableAmount -
-                    parseFormattedNumber(getValues('paymentAmount')) <
-                  0
-                }
+                
               >
                 {!fromRedirect && props.uuid ? 'Update Payment' : 'Add Payment'}
               </Button>

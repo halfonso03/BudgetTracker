@@ -937,7 +937,7 @@ const PaymentForm = ({
                           Total
                         </div>
                         <div
-                          className={`${getOverBudgetClassName(payments, i.initiativeId, i.grantId, i.accountId) && 'text-red-600/70'} flex justify-center gap-2 items-center  p-2 font-semibold text-center text-neutral-600 bg-neutral-100 border-t-neutral-300/90 border-t`}
+                          className={`${getOverBudgetClassName(payments, i.initiativeId, i.grantId, i.accountId) && 'text-red-600/70'} flex justify-center gap-2 items-center p-2 pr-1 font-semibold text-center text-neutral-600 bg-neutral-100 border-t-neutral-300/90 border-t`}
                         >
                           {formatCurrency(
                             +payments
