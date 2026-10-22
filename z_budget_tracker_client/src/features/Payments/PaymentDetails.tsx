@@ -12,7 +12,7 @@ const PaymentDetails = () => {
 
   const navigate = useNavigate();
   const { id } = useParams();
-  const { hasUnsavedChanges, setHasUnsavedChanges } =
+  const { setHasUnsavedChanges } =
     useHasUnsavedChangesStore();
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const paymentId = id !== undefined ? +id : undefined;
@@ -22,7 +22,6 @@ const PaymentDetails = () => {
     isFetching,
     isLoading,
   } = useGetPayment(paymentId ?? 0);
-
 
   if (isLoading || isFetching) return <div></div>;
 
@@ -51,11 +50,12 @@ const PaymentDetails = () => {
   }
 
   function handleSearchClick() {
-    if (hasUnsavedChanges) {
-      setConfirmModalIsOpen(true);
-    } else {
-      navigate('/payments/search');
-    }
+    navigate('/payments/search');
+    // if (hasUnsavedChanges) {
+    //   setConfirmModalIsOpen(true);
+    // } else {
+    //   navigate('/payments/search');
+    // }
   }
 
   async function handleDuplicatePayment() {
@@ -70,12 +70,10 @@ const PaymentDetails = () => {
     //               <div className="pb-1">{`Payment Id ${+id!} duplicated.`}</div>
     //               <div>{`Opening payment id ${payment.id}.`}</div>
     //             </div>,
-
     //             {
     //               duration: 2000,
     //             },
     //           );
-
     //           setTimeout(() => {
     //             navigate(`/payments/${payment.id}`);
     //           }, 2000);

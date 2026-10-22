@@ -299,7 +299,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       });
     }
 
-    onIsDirty(true);
+    
+    reproEdited();
   }
 
   function handleLineUpdated(
@@ -362,7 +363,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       });
     }
 
-    onIsDirty(true);
+    reproEdited();
   }
 
   function handleAccountChange(accountId: number, uuid: string) {

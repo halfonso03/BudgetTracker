@@ -288,7 +288,7 @@ const PaymentForm = ({
       },
     ]);
 
-    onIsDirty(true);
+    paymentEdited();
   }
 
   function handleLineUpdated(updatedLine: PaymentLineItem) {
@@ -315,7 +315,7 @@ const PaymentForm = ({
 
     setValue(`rows.${index}.paymentAmount`, updatedLine.paymentAmount);
     setLines(newLines);
-    onIsDirty(true);
+    paymentEdited();
   }
 
   // function handleDuplicateRow(uuid: string) {
@@ -382,7 +382,7 @@ const PaymentForm = ({
         .filter((x) => x.uuid !== uuid)
         .map((l: PaymentLineItem, i: number) => ({ ...l, rowId: i })),
     );
-    onIsDirty(true);
+    paymentEdited();
   }
 
   function handleSaveJust(text: string) {
@@ -704,6 +704,15 @@ const PaymentForm = ({
       .reduce((acc, cur) => acc + cur, 0);
 
     return paymentTotal > available;
+  }
+
+  function paymentEdited() {
+    setPaymentHeader((prev) => ({
+      ...prev,
+      status: EDITED,
+    }));
+
+    onIsDirty(true);
   }
 
   return (
