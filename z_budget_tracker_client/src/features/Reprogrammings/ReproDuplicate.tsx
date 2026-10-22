@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import toast from 'react-hot-toast';
@@ -13,8 +13,9 @@ const ReproDuplicate = () => {
   const navigate = useNavigate();
   const { user } = useClientAuth();
 
+
   useEffect(() => {
-    setTimeout(async () => {
+    const t = setTimeout(async () => {
       try {
         duplicateRepro(
           { id: +id!, userId: +user!.id! },
@@ -41,7 +42,9 @@ const ReproDuplicate = () => {
         console.log('e', error);
       }
     }, 1);
-    return () => {};
+    return () => {
+      clearTimeout(t)
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

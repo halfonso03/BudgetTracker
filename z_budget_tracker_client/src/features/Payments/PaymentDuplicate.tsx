@@ -14,7 +14,7 @@ const PaymnentDuplicate = () => {
   const { user } = useClientAuth();
 
   useEffect(() => {
-    setTimeout(async () => {
+    const t = setTimeout(async () => {
       try {
         duplicatePayment(
           { id: +id!, userId: +user!.id! },
@@ -41,7 +41,9 @@ const PaymnentDuplicate = () => {
         console.log('e', error);
       }
     }, 1);
-    return () => {};
+    return () => {
+      clearTimeout(t);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
