@@ -6,7 +6,7 @@ import useClientAuth from '../../contexts/useAuth';
 import Spinner from '../../components/Spinner';
 
 const ReproDuplicate = () => {
-  const { duplicateRepro, isDuplicating, duplcateSuccess } =
+  const { duplicateRepro, isDuplicating, duplicateSuccess } =
     useReproMutations();
 
   const { id } = useParams();
@@ -47,7 +47,7 @@ const ReproDuplicate = () => {
 
   return (
     <>
-      {(duplcateSuccess || isDuplicating) && (
+      {(duplicateSuccess || isDuplicating) && (
         <div className="w-full mx-auto flex justify-center ">
           <Spinner></Spinner>
         </div>

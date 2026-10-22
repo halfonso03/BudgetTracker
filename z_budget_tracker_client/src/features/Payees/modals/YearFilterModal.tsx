@@ -41,7 +41,7 @@ const YearFilterModal = ({ ...props }: Props) => {
                 setYear(+e.target.value);
               }}
             >
-              <option value="0">No Filter</option>
+              <option value="0">All Years</option>
               <option value="2026">2026</option>
               <option value="2025">2025</option>
             </Select>

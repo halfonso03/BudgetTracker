@@ -214,7 +214,7 @@ const BudgetDetails = () => {
         <div className="animate-right-to-in mt-12 rounded-sm p-4 shadow-md w-70 font-semibold bg-red-500 text-neutral-50 flex gap-2">
           <AlertCircle></AlertCircle>
           <div
-            className="self-center hover:underline underline-offset-2 cursor-pointer"
+            className="self-center hover:underline underline-offset-2 cursor-pointer underline"
             onClick={() => setErrorModalOpen(true)}
           >
             {negativeAccounts.length} error

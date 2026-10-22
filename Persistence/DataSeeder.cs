@@ -448,19 +448,8 @@ namespace Persistence
                    ItemType = Globals.ITEM_TYPE_BUDGET,
                    Id = 12,
                    Year = 2026
-               },
-            new BudgetLineItem()
-            {
-                AccountId = 1,
-                Amount = -50,
-                CreatedBy = 1,
-                CreateDate = new DateTime(2026, 7, 31, 8, 0, 0),
-                GrantId = 1,
-                InitiativeId = 1,
-                ItemType = Globals.ITEM_TYPE_PAYMENT,
-                Id = 13,
-                Year = 2025
-            }
+               }
+
           );
 
         }

@@ -23,6 +23,7 @@ import PaymentSearch from '../../features/Payments/PaymentSearch';
 import PaymentPreload from '../../features/Payments/PaymentPreload';
 import ReproDuplicate from '../../features/Reprogrammings/ReproDuplicate';
 import EncHome from '../../features/Encumberance/EncHome';
+import PaymnentDuplicate from '../../features/Payments/PaymentDuplicate';
 
 export const routes: RouteObject[] = [
   {
@@ -197,6 +198,14 @@ export const routes: RouteObject[] = [
             element: (
               <ProtectedRoute>
                 <PaymentPreload></PaymentPreload>
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'duplicate/:id',
+            element: (
+              <ProtectedRoute>
+                <PaymnentDuplicate />
               </ProtectedRoute>
             ),
           },

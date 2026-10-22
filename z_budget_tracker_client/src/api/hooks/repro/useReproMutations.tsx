@@ -26,7 +26,7 @@ export const useReproMutations = () => {
   const {
     mutate: duplicateRepro,
     isPending: isDuplicating,
-    isSuccess: duplcateSuccess,
+    isSuccess: duplicateSuccess,
   } = useMutation({
     mutationFn: async (data: { id: number; userId: number }) => {
       const response = await agent.post(`/repro/duplicate`, data);
@@ -40,6 +40,6 @@ export const useReproMutations = () => {
     deleteRepro,
     duplicateRepro,
     isDuplicating,
-    duplcateSuccess,
+    duplicateSuccess,
   };
 };

@@ -105,7 +105,7 @@ const ReproControls = ({
             setChoosingYear(true);
           }, 500);
         }}
-        message="2 Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
+        message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
       ></ConfirmModal>
       {/* <ConfirmModal
         isOpen={confirmDuplicateModalIsOpen}

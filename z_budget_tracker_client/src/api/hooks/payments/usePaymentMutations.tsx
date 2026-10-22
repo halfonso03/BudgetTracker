@@ -23,12 +23,23 @@ export const usePaymentMutations = () => {
     },
   });
 
-  const duplicatePayment = useMutation({
+  const {
+    mutate: duplicatePayment,
+    isPending: isDuplicating,
+    isSuccess: duplicateSuccess,
+  } = useMutation({
     mutationFn: async (data: { id: number; userId: number }) => {
       const response = await agent.post(`/payment/duplicate`, data);
       return response.data;
     },
   });
 
-  return { createPayment, updatePayment, deletePayment, duplicatePayment };
+  return {
+    createPayment,
+    updatePayment,
+    deletePayment,
+    duplicatePayment,
+    isDuplicating,
+    duplicateSuccess,
+  };
 };

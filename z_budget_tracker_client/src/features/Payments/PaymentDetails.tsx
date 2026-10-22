@@ -2,9 +2,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ConfirmModal from '../../components/ConfirmModal';
-import toast from 'react-hot-toast';
-import useClientAuth from '../../contexts/useAuth';
-import { usePaymentMutations } from '../../api/hooks/payments/usePaymentMutations';
 import PaymentControls from './PaymentControls';
 import PaymentForm from './PaymentForm';
 import useGetPayment from '../../api/hooks/payments/useGetPayment';
@@ -19,7 +16,6 @@ const PaymentDetails = () => {
     useHasUnsavedChangesStore();
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const paymentId = id !== undefined ? +id : undefined;
-  const { user } = useClientAuth();
 
   const {
     data: paymentFromDb,
@@ -27,7 +23,6 @@ const PaymentDetails = () => {
     isLoading,
   } = useGetPayment(paymentId ?? 0);
 
-  const { duplicatePayment } = usePaymentMutations();
 
   if (isLoading || isFetching) return <div></div>;
 
@@ -64,33 +59,33 @@ const PaymentDetails = () => {
   }
 
   async function handleDuplicatePayment() {
-    setTimeout(async () => {
-      try {
-        await duplicatePayment.mutateAsync(
-          { id: paymentFromDb!.id!, userId: +user!.id! },
-          {
-            onSuccess: async (payment) => {
-              toast.success(
-                <div>
-                  <div className="pb-1">{`Payment Id ${+id!} duplicated.`}</div>
-                  <div>{`Opening payment id ${payment.id}.`}</div>
-                </div>,
+    // setTimeout(async () => {
+    //   try {
+    //     await duplicatePayment.mutateAsync(
+    //       { id: paymentFromDb!.id!, userId: +user!.id! },
+    //       {
+    //         onSuccess: async (payment) => {
+    //           toast.success(
+    //             <div>
+    //               <div className="pb-1">{`Payment Id ${+id!} duplicated.`}</div>
+    //               <div>{`Opening payment id ${payment.id}.`}</div>
+    //             </div>,
 
-                {
-                  duration: 2000,
-                },
-              );
+    //             {
+    //               duration: 2000,
+    //             },
+    //           );
 
-              setTimeout(() => {
-                navigate(`/payments/${payment.id}`);
-              }, 2000);
-            },
-          },
-        );
-      } catch (error) {
-        console.log('e', error);
-      }
-    }, 500);
+    //           setTimeout(() => {
+    //             navigate(`/payments/${payment.id}`);
+    //           }, 2000);
+    //         },
+    //       },
+    //     );
+    //   } catch (error) {
+    //     console.log('e', error);
+    //   }
+    // }, 500);
   }
 
   const body = () => {

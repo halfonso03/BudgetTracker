@@ -1,11 +1,11 @@
-
-
 add check number for each payment line
 add a 2E link to the budget summary
 
 update payments format
 show "Editing' in the payment form
 payee list year filtering not working
+
+
 
 BUG - when changing pages in search results, expanaded items stay open
 

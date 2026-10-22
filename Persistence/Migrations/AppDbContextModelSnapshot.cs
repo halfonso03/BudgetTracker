@@ -706,18 +706,6 @@ namespace Persistence.Migrations
                             InitiativeId = 2,
                             ItemType = "B",
                             Year = (short)2026
-                        },
-                        new
-                        {
-                            Id = 13,
-                            AccountId = 1,
-                            Amount = -50m,
-                            CreateDate = new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified),
-                            CreatedBy = 1,
-                            GrantId = 1,
-                            InitiativeId = 1,
-                            ItemType = "D",
-                            Year = (short)2025
                         });
                 });
 

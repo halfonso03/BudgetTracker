@@ -245,7 +245,7 @@ const PaymentForm = ({
         <div className="animate-right-to-in mt-20 rounded-sm p-4 shadow-md w-70 font-semibold bg-red-500 text-neutral-50 flex gap-2">
           <AlertCircle></AlertCircle>
           <div
-            className="self-center hover:underline underline-offset-2 cursor-pointer"
+            className="self-center hover:underline underline-offset-2 cursor-pointer underline"
             onClick={() => setErrorModalOpen(true)}
           >
             {errors.length} error{errors.length > 1 && <span>s</span>}
@@ -259,9 +259,9 @@ const PaymentForm = ({
       );
     }
 
-    if (lines.length === 0) {
-      onIsDirty(false);
-    }
+    // if (lines.length === 0) {
+    //   onIsDirty(false);
+    // }
     // else {
     //   toast.remove();
     // }

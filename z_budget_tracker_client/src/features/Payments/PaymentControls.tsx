@@ -4,6 +4,7 @@ import { Search } from 'lucide-react';
 import ChooseYearModal from '../Common/modals/ChooseYearModal';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ConfirmModal from '../../components/ConfirmModal';
+import { NavLink } from 'react-router-dom';
 
 // const NEW_REPRO
 // type Actions:number
@@ -17,7 +18,6 @@ type Props = {
 const PaymentControls = ({
   onYearSelected,
   onSearchClick,
-  onDuplicatePayment,
   paymentId = 0,
 }: Props) => {
   // console.log('ReproControls render');
@@ -26,13 +26,15 @@ const PaymentControls = ({
   const [newReproJustification, setNewReproJustification] = useState('');
   const [confirmLooseChangesModalIsOpen, setConfirmLooseChangesModalIsOpen] =
     useState(false);
-  const [confirmDuplicateModalIsOpen, setConfirmDuplicateModalIsOpen] =
-    useState(false);
+  // const [confirmDuplicateModalIsOpen, setConfirmDuplicateModalIsOpen] =
+  //   useState(false);
   const hasUnsavedChanges = useHasUnsavedChangesStore(
     (x) => x.hasUnsavedChanges,
   );
 
-  const [duplicating, setDuplicating] = useState(false);
+  const setHasUnsavedChanges = useHasUnsavedChangesStore(
+    (x) => x.setHasUnsavedChanges,
+  );
 
   const handleYearSelected = (e: { year: number; justification: string }) => {
     onYearSelected(e.year, e.justification);
@@ -46,14 +48,14 @@ const PaymentControls = ({
     onSearchClick();
   }
 
-  function handleDuplicateClick() {
-    if (hasUnsavedChanges) {
-      setDuplicating(true);
-      setConfirmLooseChangesModalIsOpen(true);
-    } else {
-      setConfirmDuplicateModalIsOpen(true);
-    }
-  }
+  // function handleDuplicateClick() {
+  //   if (hasUnsavedChanges) {
+  //     setDuplicating(true);
+  //     setConfirmLooseChangesModalIsOpen(true);
+  //   } else {
+  //     setConfirmDuplicateModalIsOpen(true);
+  //   }
+  // }
 
   return (
     <>
@@ -82,14 +84,13 @@ const PaymentControls = ({
         >
           <Search></Search>
         </Button>
-        {paymentId !== 0 && (
-          <Button
-            buttonSize="small"
-            variation="secondary"
-            onClick={handleDuplicateClick}
+        {paymentId !== undefined && paymentId !== 0 && (
+          <NavLink
+            to={`/payments/duplicate/${paymentId}`}
+            className="font-semibold text-neutral-50 bg-neutral-500/70  hover:bg-neutral-500 hover:border-gray-400 disabled:opacity-70 disabled:text-neutral-500 dark:bg-transparent dark:text-white dark:border-gray-600 dark:hover:bg-neutral-800 dark:hover:border-gray-600 transition-all duration-300 p-2 w-35 cursor-pointer disabled:cursor-not-allowed rounded-sm shadow-sm flex justify-center items-center "
           >
             Duplicate
-          </Button>
+          </NavLink>
         )}
       </div>
       <ChooseYearModal
@@ -111,20 +112,17 @@ const PaymentControls = ({
           }, 500);
         }}
         onConfirm={() => {
+          setHasUnsavedChanges(false);
           setTimeout(() => {
             setConfirmLooseChangesModalIsOpen(false);
           }, 500);
           setTimeout(() => {
-            if (duplicating) {
-              onDuplicatePayment?.();
-            } else {
-              setChoosingYear(true);
-            }
+            setChoosingYear(true);
           }, 500);
         }}
         message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
       ></ConfirmModal>
-      <ConfirmModal
+      {/* <ConfirmModal
         isOpen={confirmDuplicateModalIsOpen}
         onCancel={() => {
           setTimeout(() => {
@@ -139,7 +137,7 @@ const PaymentControls = ({
           onDuplicatePayment?.();
         }}
         message="Duplicate the current payment? Click OK to continue."
-      ></ConfirmModal>
+      ></ConfirmModal> */}
     </>
   );
 };
