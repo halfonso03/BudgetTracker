@@ -65,8 +65,6 @@ const PaymentControls = ({
           variation="primary"
           additionalclasses="py-[.5rem]"
           onClick={() => {
-            setChoosingYear(true);
-            setNewReproJustification('');
             if (hasUnsavedChanges) {
               setConfirmLooseChangesModalIsOpen(true);
             } else {

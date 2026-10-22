@@ -360,7 +360,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           },
         ];
         return newArray;
-      });
+      })
     }
 
     reproEdited();
