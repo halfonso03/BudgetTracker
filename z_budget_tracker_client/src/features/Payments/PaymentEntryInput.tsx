@@ -5,9 +5,10 @@ import type {
   UseFormRegisterReturn,
 } from 'react-hook-form';
 import NumericInputReactHookForm from '../../components/NumericInput';
-import { Asterisk } from 'lucide-react';
+import { AlertCircle, Asterisk } from 'lucide-react';
 import type { PaymentFormSchema } from '../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
+import { useState } from 'react';
 
 type FormValues = Yup.InferType<typeof PaymentFormSchema>;
 
@@ -28,12 +29,12 @@ const PaymentEntryInput = ({
   error,
   onBlur,
   onLessThanZero,
+  getValues,
   onOK,
 }: Props) => {
-
-  // const [paymentAmount, setPaymentAmount] = useState(
-  //   getValues('paymentAmount'),
-  // );
+  const [paymentAmount, setPaymentAmount] = useState<number>(
+    parseFormattedNumber(getValues('paymentAmount')),
+  );
 
   // const remaining = available - parseFormattedNumber(paymentAmount);
 
@@ -47,16 +48,18 @@ const PaymentEntryInput = ({
           {formatCurrency(available)}
         </div>
       </div> */}
-      <div className="grid grid-cols-[.37fr_1fr_.1fr]  w-full items-center ">
-        <div className="  text-neutral-600/90 font-medium">Payment Amount</div>
-        <div className='w-[50%]'>
+      <div className="grid grid-cols-[.39fr_1fr_.1fr]  w-full items-center ">
+        <div className="text-neutral-600/90 font-medium self-start pt-2">
+          Payment Amount
+        </div>
+        <div className="w-[50%]">
           <NumericInputReactHookForm
             register={register}
-            readOnly={false}            
+            readOnly={false}
             onBlur={(e) => {
               register.onBlur(e);
               onBlur?.(e);
-              // setPaymentAmount(e.target.value);
+              setPaymentAmount(parseFormattedNumber(e.target.value));
               if (e.target.value) {
                 let value = parseFormattedNumber(e.target.value);
                 if (isNaN(value)) value = 0;
@@ -74,6 +77,14 @@ const PaymentEntryInput = ({
             className="w-full text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-300 
             focus:dark:border-gray-100 dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-neutral-800 dark:border-gray-500"
           ></NumericInputReactHookForm>
+          <div>
+            {available - paymentAmount < 0 && (
+              <div className="text-red-600 mt-2 flex gap-2 items-start">
+                <AlertCircle className='' size={24} ></AlertCircle> Amount entered exceeds available
+                amount.
+              </div>
+            )}
+          </div>
         </div>
 
         {error && (

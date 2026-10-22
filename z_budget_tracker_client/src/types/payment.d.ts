@@ -136,7 +136,7 @@ type PaymentSummary = {
     initiativeName: string
     grantId: number
     grantName: string,
-    catregoryId: number
+    categoryId: number
     categoryName: string,
     accountId: number
     accountName: string,

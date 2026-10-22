@@ -226,14 +226,14 @@ const PaymentLineModal = (props: Props) => {
     setRemIsValid(true);
   }
 
-  function allSelections() {
-    return (
-      selections?.initiativeId &&
-      selections.grantId &&
-      selections.categoryId &&
-      selections.accountId
-    );
-  }
+  // function allSelections() {
+  //   return (
+  //     selections?.initiativeId &&
+  //     selections.grantId &&
+  //     selections.categoryId &&
+  //     selections.accountId
+  //   );
+  // }
 
   function closeModal() {
     props.onCancel();
@@ -338,7 +338,7 @@ const PaymentLineModal = (props: Props) => {
           )}
 
           <div className="flex flex-col justify-between h-full mt-2">
-            <div className=" overflow-y-scroll h-[55dvh]">
+            <div className=" overflow-y-scroll h-[60dvh]">
               <div className="flex flex-col justify-between p-3 px-4 ">
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <div className="text-neutral-600/90 font-medium">Year</div>
@@ -650,27 +650,25 @@ const PaymentLineModal = (props: Props) => {
                   <textarea
                     {...register('comment')}
                     className="p-2 border border-neutral-300 rounded-sm"
-                    rows={2}
+                    rows={3}
                   ></textarea>
                 </div>
                 {loadingRemainingAccountBalances && <Spinner></Spinner>}
 
-                {remainingAccountBalances && (
-                  <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-                    <div className="col-span-2  py-4 ">
-                      <PaymentEntryInput
-                        getValues={getValues}
-                        error={errors?.paymentAmount}
-                        register={register('paymentAmount')}
-                        available={availableAmount}
-                        onBlur={handleInputEntryOnBlur}
-                        onLessThanZero={handleLessThanZero}
-                        onOK={handleAmountOk}
-                      ></PaymentEntryInput>
-                    </div>
-                    <div></div>
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]">
+                  <div className="col-span-2  ">
+                    <PaymentEntryInput
+                      getValues={getValues}
+                      error={errors?.paymentAmount}
+                      register={register('paymentAmount')}
+                      available={availableAmount}
+                      onBlur={handleInputEntryOnBlur}
+                      onLessThanZero={handleLessThanZero}
+                      onOK={handleAmountOk}
+                    ></PaymentEntryInput>
                   </div>
-                )}
+                  <div></div>
+                </div>
               </div>
             </div>
             <div className="flex justify-end gap-2 border-t border-t-neutral-300/90 p-4">
@@ -689,14 +687,18 @@ const PaymentLineModal = (props: Props) => {
                 <span>ok amount requested</span>
               )} */}
 
-              <Button
-                type="submit"
-                disabled={
-                  !allSelections() ||
-                  !remIsvalid ||
+              {/* ||
                   availableAmount -
                     parseFormattedNumber(getValues('paymentAmount')) <
                     0
+                    disabled={!allSelections() || !remIsvalid}
+                     */}
+              <Button
+                type="submit"
+                disabled={
+                  availableAmount -
+                    parseFormattedNumber(getValues('paymentAmount')) <
+                  0
                 }
               >
                 {!fromRedirect && props.uuid ? 'Update Payment' : 'Add Payment'}
