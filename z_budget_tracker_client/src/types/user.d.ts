@@ -7,7 +7,7 @@ type CreateUserRequest = {
 }
 
 type CreateUserResponse = {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -20,7 +20,7 @@ type UpdateUserRequest = {
 }
 
 type UpdateUserResponse = {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -29,4 +29,14 @@ type UpdateUserResponse = {
 type ResetPasswordRequest = {
   newPassword: string
   forcePasswordChangeOnNextLogin: boolean
+}
+
+type UserListItem = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  lastLoginDate: string | null; // ISO string format from backend API
+  isLockoutEnabled: boolean;
+  accessFailedCount: number;
 }

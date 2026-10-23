@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import useClientAuth from '../../contexts/useAuth';
+import useClientAuth from '../../contexts/useClientAuth';
 import Spinner from '../../components/Spinner';
 import { usePaymentMutations } from '../../api/hooks/payments/usePaymentMutations';
 

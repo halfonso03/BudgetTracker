@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import useClientAuth from '../../contexts/useAuth';
+import useClientAuth from '../../contexts/useClientAuth';
 import { useEffect, useState } from 'react';
 import PaymentForm from './PaymentForm';
 import PaymentControls from './PaymentControls';
@@ -103,7 +103,7 @@ const PaymentNew = () => {
           payment={payment}
           onInitialSave={handleInitialSaved}
           onIsDirty={handleIsDirty}
-          preloadedValues={preloadedValues}          
+          preloadedValues={preloadedValues}
         ></PaymentForm>
       );
     }

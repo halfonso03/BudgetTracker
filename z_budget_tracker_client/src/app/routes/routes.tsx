@@ -24,7 +24,7 @@ import PaymentPreload from '../../features/Payments/PaymentPreload';
 import ReproDuplicate from '../../features/Reprogrammings/ReproDuplicate';
 import EncHome from '../../features/Encumberance/EncHome';
 import PaymnentDuplicate from '../../features/Payments/PaymentDuplicate';
-import { UserForm } from '../../features/Users/UserForm';
+import { UserList } from '../../features/Users/UserList';
 
 export const routes: RouteObject[] = [
   {
@@ -224,7 +224,7 @@ export const routes: RouteObject[] = [
         path: '/users',
         element: (
           <ProtectedRoute>
-            <UserForm></UserForm>
+            <UserList></UserList>
           </ProtectedRoute>
         ),
       },

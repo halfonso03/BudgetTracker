@@ -48,8 +48,6 @@ namespace API.Controllers
             if (result.Succeeded)
             {
                 // 3. Return safe user data (avoid returning the raw EF Core entity with password hashes)
-
-
                 var claimsPrincipal = await signInManager.CreateUserPrincipalAsync(user);
 
                 // FIX: Configure cookie behavior explicitly so it persists across reloads
@@ -83,11 +81,11 @@ namespace API.Controllers
 
             if (result.IsNotAllowed)
             {
-                return Unauthorized(new { message = "Sign in is not allowed. Please confirm your email." });
+                return BadRequest("Sign in is not allowed. Please confirm your email." );
             }
 
             // Default fallback for incorrect password
-            return Unauthorized(new { message = "Invalid email or password." });
+            return BadRequest("Invalid email or password." );
         }
 
         [AllowAnonymous]

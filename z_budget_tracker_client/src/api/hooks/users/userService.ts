@@ -18,3 +18,7 @@ export async function resetPassword(id: string, data: ResetPasswordRequest): Pro
   await agent.post(`/users/${id}/reset-password`, data);
 }
 
+export async function getUsers(): Promise<UserListItem[]> {
+  const response = await agent.get<UserListItem[]>('/users');
+  return response.data;
+}

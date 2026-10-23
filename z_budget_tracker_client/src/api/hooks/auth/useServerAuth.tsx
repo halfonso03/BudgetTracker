@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import agent from '../../agent';
 import { useNavigate } from 'react-router-dom';
-import useClientAuth from '../../../contexts/useAuth';
+import useClientAuth from '../../../contexts/useClientAuth';
 import toast from 'react-hot-toast';
 import { useHasUnsavedChangesStore } from '../../../state/useHasUnsavedChangesStore';
 import { useState } from 'react';
@@ -44,13 +44,25 @@ export default function useServerAuth() {
     },
     onError: (error: AxiosError) => {
       if (error.response) {
-        // The server responded with a status code outside the 2xx range (e.g., 400)
-        const errorData = error.response.data;
-        console.log('loginUser mutation error.response:', error.response); // 400
-        console.log('loginUser mutation error.response.data:', error.response.data); // { message: "Invalid payload", ... }
-        setErrorMessage(errorData as string);
+        if (error.response.status !== 401) {
+          console.log(error.response);
+
+          // The server responded with a status code outside the 2xx range (e.g., 400)
+          const errorData = error.response.data;
+          console.log('loginUser mutation error.response:', error.response); // 400
+          console.log(
+            'loginUser mutation error.response.data:',
+            error.response.data,
+          ); // { message: "Invalid payload", ... }
+          setErrorMessage(errorData as string);
+        } else {
+          console.log('123', 123);
+        }
       } else {
-        console.error('loginUser mutation but no error.response:', error.message);
+        console.error(
+          'loginUser mutation but no error.response:',
+          error.message,
+        );
         setErrorMessage(error.message as string);
       }
       toast.error(error.message);

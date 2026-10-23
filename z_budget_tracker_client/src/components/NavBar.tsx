@@ -7,7 +7,7 @@ import {
 } from 'react-router-dom';
 import ConfirmModal from './ConfirmModal';
 import { useHasUnsavedChangesStore } from '../state/useHasUnsavedChangesStore';
-import useClientAuth from '../contexts/useAuth';
+import useClientAuth from '../contexts/useClientAuth';
 
 const NavBar = () => {
   const navigate = useNavigate();

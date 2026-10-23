@@ -15,7 +15,7 @@ type Props = {
 const PayeePaymentsList = ({
   payeeId,
   showSkeleton = true,
-  onPaymentRowClicked = null,
+  onPaymentRowClicked,
 }: Props) => {
   const { payments, loadingPayments, loadingPaymentsSuccess } =
     usePayeePayments(payeeId);

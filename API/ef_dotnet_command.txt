@@ -2,5 +2,5 @@
 dotnet add reference ../MyLibrary/MyLibrary.csproj
 
 
-dotnet ef migrations add ddddd -p Persistence -s API
+dotnet ef migrations add ddddddd -p Persistence -s API
 dotnet ef database update -p Persistence -s API

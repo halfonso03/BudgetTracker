@@ -13,7 +13,7 @@ const PayeeListColumHeaders = ({ year, onOpenYearFilterModal }: Props) => {
   return (
     <div
       className="grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.35fr_.4fr_.2fr] gap-2 
-                        bg-neutral-200/50 text-neutral-500 border border-neutral-300/60 rounded-t-sm "
+                        bg-gray-50 text-neutral-500 border border-neutral-300/60 rounded-t-sm "
     >
       <div className="flex justify-start  pl-6">
         <SortBySelector

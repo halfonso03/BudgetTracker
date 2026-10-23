@@ -12,6 +12,8 @@ namespace Domain
         public string LastName { get; set; } = "";
 
         public bool ForcePasswordChangeOnNextLogin { get; set; } = false;
+
+        public DateTimeOffset? LastLoginDate { get; set; }
     }
 
     public class ApplicationRole : IdentityRole<int>
@@ -42,7 +44,7 @@ namespace Domain
 
     public class ApplicationUserToken : IdentityUserToken<int>
     {
-        
+
     }
-    
+
 }

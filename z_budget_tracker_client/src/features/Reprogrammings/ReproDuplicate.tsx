@@ -1,8 +1,8 @@
-import { useEffect} from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import toast from 'react-hot-toast';
-import useClientAuth from '../../contexts/useAuth';
+import useClientAuth from '../../contexts/useClientAuth';
 import Spinner from '../../components/Spinner';
 
 const ReproDuplicate = () => {
@@ -12,7 +12,6 @@ const ReproDuplicate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useClientAuth();
-
 
   useEffect(() => {
     const t = setTimeout(async () => {
@@ -43,7 +42,7 @@ const ReproDuplicate = () => {
       }
     }, 1);
     return () => {
-      clearTimeout(t)
+      clearTimeout(t);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

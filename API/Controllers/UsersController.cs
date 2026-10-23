@@ -4,7 +4,7 @@ using Application.DTOs.Users;
 using Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 public class UsersController : BaseApiController
 {
     private readonly UserManager<ApplicationUser> _userManager;
@@ -184,5 +184,24 @@ public class UsersController : BaseApiController
 
         var actionMessage = request.IsLocked ? "locked" : "unlocked";
         return Ok(new { message = $"User has been successfully {actionMessage}." });
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<UserListItemDto>>> GetUsers()
+    {
+        var users = await _userManager.Users.ToListAsync();
+
+        var userDtos = users.Select(u => new UserListItemDto
+        {
+            Id = u.Id,
+            FirstName = u.FirstName,
+            LastName = u.LastName,
+            Email = u.Email ?? string.Empty,
+            LastLoginDate = u.LastLoginDate,
+            IsLockoutEnabled = u.LockoutEnabled,
+            AccessFailedCount = u.AccessFailedCount
+        }).ToList();
+
+        return Ok(userDtos);
     }
 }

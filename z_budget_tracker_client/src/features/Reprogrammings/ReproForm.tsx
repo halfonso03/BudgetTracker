@@ -22,7 +22,7 @@ import MenuIdProvider from '../../contexts/MenuIdContext';
 import ReproRow from './ReproRow';
 import 'react-dropdown/style.css';
 import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
-import useClientAuth from '../../contexts/useAuth';
+import useClientAuth from '../../contexts/useClientAuth';
 import ConfirmModal from '../../components/ConfirmModal';
 import { useLocation } from 'react-router-dom';
 import AddLineModal from './modals/AddLineModal';
@@ -299,7 +299,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       });
     }
 
-    
     reproEdited();
   }
 
@@ -360,7 +359,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           },
         ];
         return newArray;
-      })
+      });
     }
 
     reproEdited();
@@ -405,8 +404,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
   }
 
   function handleDuplicateRow(uuid: string) {
-
-    const lineToDuplicate = lines.filter((x) => x.uuid === uuid)[0]
+    const lineToDuplicate = lines.filter((x) => x.uuid === uuid)[0];
     const duplicatedLine: ReproLineItem = {
       ...lineToDuplicate,
       increase: 0,

@@ -28,7 +28,7 @@ import {
   TrashIcon,
 } from 'lucide-react';
 import Button from '../../components/Button';
-import useClientAuth from '../../contexts/useAuth';
+import useClientAuth from '../../contexts/useClientAuth';
 import JustificaModal from '../Common/modals/JustificaModal';
 import ErrorsModal from '../Common/modals/ErrorsModal';
 import PaymentLineModal from './modals/PaymentLineModal';
@@ -829,21 +829,21 @@ const PaymentForm = ({
 
         {distinctBudgets && lines.length > 0 && (
           <div>
-            <div>
+            <div >
               <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr]  ">
-                <div className="font-semibold text-neutral-600/90 bg-neutral-100 py-2 pl-1">
+                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2">
                   Initiative
                 </div>
-                <div className="font-semibold text-neutral-600/90 bg-neutral-100 py-2 pl-1">
+                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2">
                   Grant
                 </div>
-                <div className="font-semibold text-neutral-600/90 bg-neutral-100 py-2 pl-1">
+                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2">
                   Category
                 </div>
-                <div className="font-semibold text-neutral-600/90 bg-neutral-100 py-2 pl-1">
+                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2">
                   Account
                 </div>
-                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-100 py-2 pl-1">
+                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-50 py-2 pl-1">
                   Available
                 </div>
               </div>
@@ -860,10 +860,10 @@ const PaymentForm = ({
                   <div className="p-1 font-semibold mb-4">
                     {i.initiativeName}
                   </div>
-                  <div className="py-1">{i.grantName}</div>
-                  <div className="py-1">{i.categoryName}</div>
-                  <div className="py-1">{i.accountName}</div>
-                  <div className="text-center font-semibold py-1">
+                  <div className="py-1 pl-1">{i.grantName}</div>
+                  <div className="py-1 pl-1">{i.categoryName}</div>
+                  <div className="py-1 pl-1">{i.accountName}</div>
+                  <div className="text-center font-semibold py-1 pl-1">
                     {i.available && formatCurrency(i.available)}
                   </div>
                   <div className="col-span-5 flex justify-end  mt-3 ">
@@ -885,10 +885,10 @@ const PaymentForm = ({
                             <Plus></Plus>Add Payee
                           </Button>
                         </div>
-                        <div className="p-2 text-neutral-600/90 bg-neutral-100 font-semibold border-b-neutral-300/90 border-b">
+                        <div className="p-2 text-neutral-600/90 bg-neutral-50 font-semibold border-b-neutral-300/90 border-b">
                           Payments
                         </div>
-                        <div className="p-2 text-center text-neutral-600/90 bg-neutral-100 font-semibold border-b-neutral-300/90 border-b"></div>
+                        <div className="p-2 text-center text-neutral-600/90 bg-neutral-50 font-semibold border-b-neutral-300/90 border-b"></div>
                       </div>
                       <div>
                         {payments.map((p, i) => {
@@ -942,11 +942,11 @@ const PaymentForm = ({
                         <div></div>
                         <div></div>
                         <div></div>
-                        <div className="p-2 font-semibold text-neutral-600/90 bg-neutral-100 border-t-neutral-300/90 border-t">
+                        <div className="p-2 font-semibold text-neutral-600/90 bg-neutral-50 border-t-neutral-300/90 border-t">
                           Total
                         </div>
                         <div
-                          className={`${getOverBudgetClassName(payments, i.initiativeId, i.grantId, i.accountId) && 'text-red-600/70'} flex justify-center gap-2 items-center p-2 pr-1 font-semibold text-center text-neutral-600 bg-neutral-100 border-t-neutral-300/90 border-t`}
+                          className={`${getOverBudgetClassName(payments, i.initiativeId, i.grantId, i.accountId) && 'text-red-600/70'} flex justify-center gap-2 items-center p-2 pr-1 font-semibold text-center text-neutral-600 bg-neutral-50 border-t-neutral-300/90 border-t`}
                         >
                           {formatCurrency(
                             +payments

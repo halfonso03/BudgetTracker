@@ -28,7 +28,7 @@ const ReproSearchReults = ({ onDelete, results }: Props) => {
 
   return (
     <div className="w-full min-w-full ">
-      <div className="grid grid-cols-[.5fr_.3fr_1fr_1fr.3fr_.4fr] p-2 px-3 bg-neutral-200/50 text-neutral-500 border border-neutral-300/60 rounded-t-sm">
+      <div className="grid grid-cols-[.5fr_.3fr_1fr_1fr.3fr_.4fr] p-2 px-3 bg-gray-50 text-neutral-500 border border-neutral-300/60 rounded-t-sm">
         <div className="entity-label">
           <SortBySelector
             label="ID"

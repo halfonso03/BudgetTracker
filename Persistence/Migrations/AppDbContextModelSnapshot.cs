@@ -253,6 +253,9 @@ namespace Persistence.Migrations
                     b.Property<bool>("ForcePasswordChangeOnNextLogin")
                         .HasColumnType("bit");
 
+                    b.Property<DateTimeOffset?>("LastLoginDate")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

@@ -26,7 +26,7 @@ import {
   Save,
 } from 'lucide-react';
 import Button from '../../components/Button';
-import useClientAuth from '../../contexts/useAuth';
+import useClientAuth from '../../contexts/useClientAuth';
 import PaymentRow from './PaymentRow';
 import JustificaModal from '../Common/modals/JustificaModal';
 import ErrorsModal from '../Common/modals/ErrorsModal';

@@ -22,6 +22,7 @@ agent.interceptors.request.use(async (config) => {
 
 agent.interceptors.response.use(
     async (response) => {
+
         // const token = localStorage.getItem('token');
 
         // console.log(response)
@@ -94,11 +95,8 @@ agent.interceptors.response.use(
                     }
                     break;
                 }
-                case 401: {
-
+                case 401:
                     window.location.href = '/login';
-
-                }
                     break;
                 case 403:
                     toast.error('You do not have access.');

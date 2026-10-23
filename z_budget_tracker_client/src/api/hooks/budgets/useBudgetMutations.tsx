@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import agent from '../../agent';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import useClientAuth from '../../../contexts/useAuth';
+import useClientAuth from '../../../contexts/useClientAuth';
 
 export const useBudgetMutations = () => {
   const navigate = useNavigate();

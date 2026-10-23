@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import useClientAuth from '../contexts/useAuth';
+import useClientAuth from '../contexts/useClientAuth';
 import useUserInfo from '../api/hooks/auth/useUserInfo';
 
 type Props = {
@@ -15,11 +15,10 @@ const ProtectedRoute = ({ children }: Props) => {
 
   const { serverUser, serverUserSuccess } = useUserInfo();
 
-
   useEffect(() => {
     if (serverUser && serverUserSuccess && !clientAuth.isLoggedIn()) {
       clientAuth.login(serverUser);
-     // navigate(location.pathname);
+      // navigate(location.pathname);
       // console.log('location', location);
     }
   }, [clientAuth, location, navigate, serverUser, serverUserSuccess]);
