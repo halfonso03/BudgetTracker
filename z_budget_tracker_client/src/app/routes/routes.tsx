@@ -24,6 +24,7 @@ import PaymentPreload from '../../features/Payments/PaymentPreload';
 import ReproDuplicate from '../../features/Reprogrammings/ReproDuplicate';
 import EncHome from '../../features/Encumberance/EncHome';
 import PaymnentDuplicate from '../../features/Payments/PaymentDuplicate';
+import { UserForm } from '../../features/Users/UserForm';
 
 export const routes: RouteObject[] = [
   {
@@ -216,6 +217,14 @@ export const routes: RouteObject[] = [
         element: (
           <ProtectedRoute>
             <PayeeHome />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/users',
+        element: (
+          <ProtectedRoute>
+            <UserForm></UserForm>
           </ProtectedRoute>
         ),
       },

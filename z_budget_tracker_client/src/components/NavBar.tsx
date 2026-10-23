@@ -170,6 +170,15 @@ const NavBar = () => {
               >
                 Reports
               </NavLink>
+              <NavLink
+                to="/users"
+                className="nav-link"
+                // onClick={(e: React.MouseEvent<HTMLElement>) => {
+                //   handleReproNavigation(e, '/reports');
+                // }}
+              >
+                User Form
+              </NavLink>
               {blocker.state === 'blocked' && hasUnsavedChanges && (
                 <div>
                   <ConfirmModal

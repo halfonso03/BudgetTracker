@@ -140,4 +140,49 @@ public class UsersController : BaseApiController
 
         return Ok(new { message = "Password has been successfully reset." });
     }
+
+
+    // Inside Controllers/UsersController.cs
+
+    [HttpPatch("{id}/lockout")]
+    public async Task<IActionResult> ToggleLockout(string id, [FromBody] ToggleLockoutRequestDto request)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found." });
+        }
+
+        // Ensure lockout is enabled for this user
+        if (!await _userManager.GetLockoutEnabledAsync(user))
+        {
+            var enableLockoutResult = await _userManager.SetLockoutEnabledAsync(user, true);
+            if (!enableLockoutResult.Succeeded)
+            {
+                foreach (var error in enableLockoutResult.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+                return ValidationProblem(ModelState);
+            }
+        }
+
+        // Set lockout end date: Far future for locking, null for unlocking
+        DateTimeOffset? lockoutEnd = request.IsLocked
+            ? DateTimeOffset.UtcNow.AddYears(100)
+            : null;
+
+        var result = await _userManager.SetLockoutEndDateAsync(user, lockoutEnd);
+        if (!result.Succeeded)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+            return ValidationProblem(ModelState);
+        }
+
+        var actionMessage = request.IsLocked ? "locked" : "unlocked";
+        return Ok(new { message = $"User has been successfully {actionMessage}." });
+    }
 }

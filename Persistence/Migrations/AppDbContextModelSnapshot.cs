@@ -250,6 +250,9 @@ namespace Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("ForcePasswordChangeOnNextLogin")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -308,6 +311,7 @@ namespace Persistence.Migrations
                             Email = "hialfonso@nhac.org",
                             EmailConfirmed = false,
                             FirstName = "Hector",
+                            ForcePasswordChangeOnNextLogin = false,
                             LastName = "Alfonso",
                             LockoutEnabled = false,
                             NormalizedEmail = "HIALFONSO@NHAC.ORG",
