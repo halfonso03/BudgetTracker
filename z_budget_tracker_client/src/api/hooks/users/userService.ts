@@ -1,6 +1,6 @@
 // api/userService.ts
 
-import agent from "./agent";
+import agent from "../../agent";
 
 
 
@@ -17,3 +17,4 @@ export async function updateUser(id: string, data: UpdateUserRequest): Promise<U
 export async function resetPassword(id: string, data: ResetPasswordRequest): Promise<void> {
   await agent.post(`/users/${id}/reset-password`, data);
 }
+

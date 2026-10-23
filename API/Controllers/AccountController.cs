@@ -33,6 +33,12 @@ namespace API.Controllers
 
             signInManager.AuthenticationScheme = IdentityConstants.ApplicationScheme;
 
+            // Example inside a Login Endpoint
+            if (user.ForcePasswordChangeOnNextLogin)
+            {
+                // Return a specific status or claim telling the frontend to redirect them to a change-password screen
+                return BadRequest(new { message = "Password reset required.", requirePasswordChange = true });
+            }
 
             // 2. Check password and handle lockout policies securely via SignInManager
 
@@ -52,7 +58,7 @@ namespace API.Controllers
                     IsPersistent = true, // <-- Crucial! Tell the browser to save the cookie on disk, not just RAM
                     ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60)
                 };
-    
+
 
                 await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, claimsPrincipal, authProperties);
 
