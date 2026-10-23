@@ -207,7 +207,7 @@ const PayeeSearcher = ({
         </div>
       </div>
       <InfoModal
-        payeeId={selectedPayee?.id}
+        payee={selectedPayee}
         isOpen={infoWindowIsOpen}
         onCancel={() => {
           setInfoWindowIsOpen(false);

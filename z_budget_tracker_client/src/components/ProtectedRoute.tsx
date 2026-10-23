@@ -19,7 +19,7 @@ const ProtectedRoute = ({ children }: Props) => {
   useEffect(() => {
     if (serverUser && serverUserSuccess && !clientAuth.isLoggedIn()) {
       clientAuth.login(serverUser);
-      navigate(location.pathname);
+     // navigate(location.pathname);
       // console.log('location', location);
     }
   }, [clientAuth, location, navigate, serverUser, serverUserSuccess]);

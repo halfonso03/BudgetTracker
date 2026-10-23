@@ -1,7 +1,6 @@
 add check number for each payment line
 add a 2E link to the budget summary
 
-duplicate repro and payment creates two instead of one
 
  ? -- add delete budget when no reprogrammings and no expenses
 
@@ -17,5 +16,7 @@ DONE remove the $ from the payee line, only use the budget summary $
 DONE add budget audit
 DONE show comment modal when creating reprogramming from sumamry page
 DONE fix comments moda, not reverting comment to roginal when Cancel is clicked
+FIXED - duplicate repro and payment creates two instead of one
+
 
 BUG - when changing pages in search results, expanaded items stay open

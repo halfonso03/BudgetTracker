@@ -15,7 +15,7 @@ export function Pagination({ data, onPageNumberChange }: Props) {
   );
 
   return (
-    <div className="flex items-center justify-between mt-6 px-2  text-neutral-500 w-full">
+    <div className="flex items-center justify-between mt-2 px-2 text-neutral-500 w-full">
       <div>
         <span>
           Showing page{' '}
