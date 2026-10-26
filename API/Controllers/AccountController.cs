@@ -71,6 +71,9 @@ namespace API.Controllers
                     Roles = [.. roles]
                 };
 
+                user.LastLoginDate = DateTimeOffset.UtcNow;
+                await userManager.UpdateAsync(user);
+
                 return Ok(safeUserResponse);
             }
 
@@ -81,11 +84,11 @@ namespace API.Controllers
 
             if (result.IsNotAllowed)
             {
-                return BadRequest("Sign in is not allowed. Please confirm your email." );
+                return BadRequest("Sign in is not allowed. Please confirm your email.");
             }
 
             // Default fallback for incorrect password
-            return BadRequest("Invalid email or password." );
+            return BadRequest("Invalid email or password.");
         }
 
         [AllowAnonymous]

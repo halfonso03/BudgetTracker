@@ -10,7 +10,7 @@ namespace Application.DTOs.Budgets
         {
             get
             {
-                if (ItemType == Globals.ITEM_TYPE_BUDGET) return "Allocated";
+                if (ItemType == Globals.ITEM_TYPE_BUDGET) return "Budgeted";
                 if (ItemType == Globals.ITEM_TYPE_REPRO) return "Reprogramming";
                 if (ItemType == Globals.ITEM_TYPE_PAYMENT) return PayeeName ?? "";
                 return "";

@@ -8,11 +8,50 @@ using Microsoft.EntityFrameworkCore;
 public class UsersController : BaseApiController
 {
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IConfiguration _configuration;
 
-    public UsersController(UserManager<ApplicationUser> userManager)
+    public UsersController(UserManager<ApplicationUser> userManager, IConfiguration configuration)
     {
         _userManager = userManager;
+        _configuration = configuration;
     }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<UserListItemDto>>> GetUsers()
+    {
+        var users = await _userManager.Users.ToListAsync();
+
+        var userDtos = users.Select(u => new UserListItemDto
+        {
+            Id = u.Id,
+            FirstName = u.FirstName,
+            LastName = u.LastName,
+            Email = u.Email ?? string.Empty,
+            LastLoginDate = u.LastLoginDate,
+            IsLockoutEnabled = u.LockoutEnabled,
+            AccessFailedCount = u.AccessFailedCount,
+            IsLocked = u.LockoutEnd != null
+        }).ToList();
+
+        return Ok(userDtos);
+    }
+
+
+    [HttpGet("{id}", Name = "GetUserById")]
+    public async Task<ActionResult<UserResponseDto>> GetUserById(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null) return NotFound();
+
+        return Ok(new UserResponseDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email!
+        });
+    }
+
 
     [HttpPost]
     public async Task<ActionResult<CreateUserResponseDto>> CreateUser([FromBody] CreateUserRequestDto request)
@@ -45,6 +84,7 @@ public class UsersController : BaseApiController
 
         return CreatedAtAction(nameof(GetUserById), new { id = user.Id }, response);
     }
+
 
     [HttpPut("{id}")]
     public async Task<ActionResult<UpdateUserResponseDto>> UpdateUser(string id, [FromBody] UpdateUserRequestDto request)
@@ -82,24 +122,6 @@ public class UsersController : BaseApiController
         return Ok(response);
     }
 
-    // Helper method for CreatedAtAction routing
-    [HttpGet("{id}", Name = "GetUserById")]
-    public async Task<ActionResult<UpdateUserResponseDto>> GetUserById(string id)
-    {
-        var user = await _userManager.FindByIdAsync(id);
-        if (user == null) return NotFound();
-
-        return Ok(new UpdateUserResponseDto
-        {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email!
-        });
-    }
-
-
-    // Inside Controllers/UsersController.cs
 
     [HttpPost("{id}/reset-password")]
     public async Task<IActionResult> ResetPassword(string id, [FromBody] ResetPasswordRequestDto request)
@@ -142,9 +164,48 @@ public class UsersController : BaseApiController
     }
 
 
-    // Inside Controllers/UsersController.cs
+    [HttpPost("{id}/force-reset-password")]
+    public async Task<IActionResult> ForceResetPassword(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found." });
+        }
 
-    [HttpPatch("{id}/lockout")]
+        // 1. Remove the old password (bypasses requirement for knowing the old password)
+        var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+        if (!removePasswordResult.Succeeded)
+        {
+            foreach (var error in removePasswordResult.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+            return ValidationProblem(ModelState);
+        }
+
+        // 2. Add the new password provided by the admin
+        var addPasswordResult = await _userManager.AddPasswordAsync(user, _configuration.GetValue<string>("DefaultUserPassword")!);
+        if (!addPasswordResult.Succeeded)
+        {
+            foreach (var error in addPasswordResult.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+            return ValidationProblem(ModelState);
+        }
+
+        // 3. Handle "Force Password Reset on Next Login" flag if implemented
+        user.ForcePasswordChangeOnNextLogin = true;
+        await _userManager.UpdateAsync(user);
+
+        // Optional: Revoke current login sessions/tokens if using Refresh Tokens
+
+        return Ok(new { message = "Password has been successfully reset." });
+    }
+
+
+    [HttpPost("{id}/lockout")]
     public async Task<IActionResult> ToggleLockout(string id, [FromBody] ToggleLockoutRequestDto request)
     {
         var user = await _userManager.FindByIdAsync(id);
@@ -156,7 +217,7 @@ public class UsersController : BaseApiController
         // Ensure lockout is enabled for this user
         if (!await _userManager.GetLockoutEnabledAsync(user))
         {
-            var enableLockoutResult = await _userManager.SetLockoutEnabledAsync(user, true);
+            var enableLockoutResult = await _userManager.SetLockoutEnabledAsync(user, request.IsLocked);
             if (!enableLockoutResult.Succeeded)
             {
                 foreach (var error in enableLockoutResult.Errors)
@@ -184,24 +245,5 @@ public class UsersController : BaseApiController
 
         var actionMessage = request.IsLocked ? "locked" : "unlocked";
         return Ok(new { message = $"User has been successfully {actionMessage}." });
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserListItemDto>>> GetUsers()
-    {
-        var users = await _userManager.Users.ToListAsync();
-
-        var userDtos = users.Select(u => new UserListItemDto
-        {
-            Id = u.Id,
-            FirstName = u.FirstName,
-            LastName = u.LastName,
-            Email = u.Email ?? string.Empty,
-            LastLoginDate = u.LastLoginDate,
-            IsLockoutEnabled = u.LockoutEnabled,
-            AccessFailedCount = u.AccessFailedCount
-        }).ToList();
-
-        return Ok(userDtos);
     }
 }

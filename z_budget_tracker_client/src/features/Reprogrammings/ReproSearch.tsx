@@ -105,7 +105,7 @@ const ReproSearch = () => {
 
   const itemsXList: SelectedItem[] = useMemo(() => {
     return [];
-  }, [g, year]);
+  }, []);
 
   const [xSelectedIds, setXSelectedIds] = useState<SelectedItem[]>(itemsXList);
 

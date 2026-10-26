@@ -39,4 +39,5 @@ type UserListItem = {
   lastLoginDate: string | null; // ISO string format from backend API
   isLockoutEnabled: boolean;
   accessFailedCount: number;
+  isLocked: boolean
 }

@@ -63,7 +63,7 @@ const Summary = ({ year }: Props) => {
       >
         <div>Totals</div>
         <div></div>
-        <div className="text-end">Allocated</div>
+        <div className="text-end">Budgeted</div>
         <div className="text-end">Current</div>
         <div className="text-end">Spent</div>
         <div className="text-end">Remaining</div>
@@ -105,7 +105,7 @@ const Summary = ({ year }: Props) => {
       >
         <div>Initiative</div>
         <div>Grant</div>
-        <div className="text-end">Allocated </div>
+        <div className="text-end">Budgeted </div>
         <div className="text-end">Current </div>
         <div className="text-end">Spent </div>
         <div className="text-end">Remaining </div>

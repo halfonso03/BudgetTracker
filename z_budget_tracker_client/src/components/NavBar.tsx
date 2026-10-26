@@ -177,7 +177,7 @@ const NavBar = () => {
                 //   handleReproNavigation(e, '/reports');
                 // }}
               >
-                User Form
+                Users
               </NavLink>
               {blocker.state === 'blocked' && hasUnsavedChanges && (
                 <div>
