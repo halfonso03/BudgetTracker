@@ -33,6 +33,7 @@ export default function useServerAuth() {
       return loginResponse;
     },
     onSuccess: (response: LoginResponse) => {
+      console.log('response', response);
       if (hasUnsavedChanges) {
         setHasUnsavedChanges(false);
       }
@@ -43,18 +44,41 @@ export default function useServerAuth() {
       navigate('/');
     },
     onError: (error: AxiosError) => {
+      console.log('error', error);
       if (error.response) {
         if (error.response.status !== 401) {
           console.log(error.response);
 
           // The server responded with a status code outside the 2xx range (e.g., 400)
           const errorData = error.response.data;
-          console.log('loginUser mutation error.response:', error.response); // 400
+
+          console.log(
+            'loginUser mutation error.response:',
+            error.response.data,
+          ); // 400
+
           console.log(
             'loginUser mutation error.response.data:',
             error.response.data,
           ); // { message: "Invalid payload", ... }
-          setErrorMessage(errorData as string);
+
+          if (errorData) {
+            const responseText = error.request.responseText as string;
+
+            if (responseText.indexOf('requirePasswordChange') !== -1) {
+              const data: { requirePasswordChange: boolean; userId: number } =
+                JSON.parse(responseText);
+
+              navigate(`/resetPasswordAdmin/${data.userId}`);
+            } else {
+
+              if (errorData) {
+                setErrorMessage(errorData as string);
+                toast.error(error.message);
+              }
+              
+            }
+          }
         } else {
           console.log('123', 123);
         }
@@ -64,8 +88,8 @@ export default function useServerAuth() {
           error.message,
         );
         setErrorMessage(error.message as string);
+        toast.error(error.message);
       }
-      toast.error(error.message);
     },
   });
 

@@ -1,6 +1,6 @@
 // hooks/useUserMutations.ts
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { createUser, resetPassword, updateUser, changeAccountLockStatus, forceResetPassword } from './userService';
+import { createUser, resetPassword, updateUser, changeAccountLockStatus, forceResetPassword, userResetPassword } from './userService';
 
 export function useUserMutations() {
     const queryClient = useQueryClient();
@@ -43,11 +43,16 @@ export function useUserMutations() {
         mutationFn: (id: string) => forceResetPassword(id),
     });
 
+    const userResetPasswordMutation = useMutation({
+        mutationFn: (data: { id: string, newPassword: string }) => userResetPassword(data.id, data.newPassword),
+    });
+
     return {
         createUser: createMutation,
         updateUser: updateMutation,
         resetPassword: resetPasswordMutation,
         changeAccountLockStatus: changeAccountLockStatusMutation,
-        forceResetPassword: forceResetPasswordMutation
+        forceResetPassword: forceResetPasswordMutation,
+        userResetPassword: userResetPasswordMutation
     };
 }

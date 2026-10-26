@@ -25,6 +25,8 @@ import ReproDuplicate from '../../features/Reprogrammings/ReproDuplicate';
 import EncHome from '../../features/Encumberance/EncHome';
 import PaymnentDuplicate from '../../features/Payments/PaymentDuplicate';
 import { UserList } from '../../features/Users/UserList';
+import { UserForm } from '../../features/Users/UserForm';
+import { ResetPasswordAdmin } from '../../features/Auth/ResetPasswordAdmin';
 
 export const routes: RouteObject[] = [
   {
@@ -227,6 +229,18 @@ export const routes: RouteObject[] = [
             <UserList></UserList>
           </ProtectedRoute>
         ),
+      },
+      {
+        path: '/users/:id',
+        element: (
+          <ProtectedRoute>
+            <UserForm></UserForm>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/resetPasswordAdmin/:id',
+        element: <ResetPasswordAdmin></ResetPasswordAdmin>,
       },
       {
         path: '/enc',

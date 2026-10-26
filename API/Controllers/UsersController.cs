@@ -2,6 +2,7 @@
 using API.Controllers;
 using Application.DTOs.Users;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -246,4 +247,48 @@ public class UsersController : BaseApiController
         var actionMessage = request.IsLocked ? "locked" : "unlocked";
         return Ok(new { message = $"User has been successfully {actionMessage}." });
     }
+
+    [AllowAnonymous]
+    [HttpPost("{id}/user-reset-password")]
+    public async Task<IActionResult> UserResetPassword(string id, [FromBody] ResetPasswordRequestDto request)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found." });
+        }
+
+        // 1. Remove the old password (bypasses requirement for knowing the old password)
+        var removePasswordResult = await _userManager.RemovePasswordAsync(user);
+        if (!removePasswordResult.Succeeded)
+        {
+            foreach (var error in removePasswordResult.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+            return ValidationProblem(ModelState);
+        }
+
+        // 2. Add the new password provided by the admin
+        var addPasswordResult = await _userManager.AddPasswordAsync(user, request.NewPassword);
+        if (!addPasswordResult.Succeeded)
+        {
+            foreach (var error in addPasswordResult.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+            return ValidationProblem(ModelState);
+        }
+
+        // 3. Handle "Force Password Reset on Next Login" flag if implemented
+        user.ForcePasswordChangeOnNextLogin = false;
+        await _userManager.UpdateAsync(user);
+
+        // Optional: Revoke current login sessions/tokens if using Refresh Tokens
+
+        return Ok(new { message = "Password has been successfully reset." });
+    }
+
+
+
 }

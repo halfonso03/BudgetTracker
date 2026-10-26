@@ -67,9 +67,9 @@ const PayeePaymentsList = ({
 
   return (
     <div className="flex flex-col justify-between  ">
-      <div className="border border-neutral-200 rounded-sm rounded-b-none">
+      <div className="border border-neutral-200 ">
         <div
-          className="bg-neutral-100 text-neutral-500 border-b border-neutral-200  
+          className="bg-neutral-50 text-neutral-500 border-b border-neutral-200  
             grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr] gap-4  "
         >
           <div className="px-4 py-1">
@@ -81,35 +81,35 @@ const PayeePaymentsList = ({
           </div>
           <div className=" py-1">
             <SortBySelector
-              label="Year"
+              label="YEAR"
               value="YEAR"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
           <div className=" py-1">
             <SortBySelector
-              label="Initiative"
+              label="INITIATIVE"
               value="INITIATIVE"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
           <div className=" flex justify-center">
             <SortBySelector
-              label="Award"
+              label="AWARD"
               value="GRANT"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
           <div className=" flex justify-center">
             <SortBySelector
-              label="Amount"
+              label="AMOUNT"
               value="AMOUNT"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
           <div className=" flex justify-center">
             <SortBySelector
-              label="Posted Date"
+              label="POSTED DATE"
               value="POSTEDDATE"
               currentSortValue={sortByValue}
             ></SortBySelector>
@@ -117,7 +117,7 @@ const PayeePaymentsList = ({
 
           <div className=" flex justify-center">
             <SortBySelector
-              label="Posted By"
+              label="POSTED BY"
               value="POSTEDBY"
               currentSortValue={sortByValue}
             ></SortBySelector>

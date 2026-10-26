@@ -37,7 +37,7 @@ namespace API.Controllers
             if (user.ForcePasswordChangeOnNextLogin)
             {
                 // Return a specific status or claim telling the frontend to redirect them to a change-password screen
-                return BadRequest(new { message = "Password reset required.", requirePasswordChange = true });
+                return BadRequest(new { message = "Password reset required.", requirePasswordChange = true, userId = user.Id });
             }
 
             // 2. Check password and handle lockout policies securely via SignInManager

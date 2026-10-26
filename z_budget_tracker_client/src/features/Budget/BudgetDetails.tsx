@@ -413,18 +413,18 @@ const BudgetDetails = () => {
           Edit Budget
         </div>
         <div className="grid grid-cols-[.15fr_.4fr_.3fr_1fr_.5fr_.075fr] mb-2 py-2 border-b border-b-neutral-200 ">
-          <div className="entity-label">Year</div>
-          <div className="entity-label">Initiative</div>
-          <div className="entity-label">Grant</div>
+          <div className="entity-label">YEAR</div>
+          <div className="entity-label">INITIATIVE</div>
+          <div className="entity-label">AWARD</div>
           <div></div>
           <div className="grid grid-cols-[1fr_1fr] justify-end gap-4 text-sm">
             {budget.lastUpdatedDate && (
               <>
                 <div className="font-medium text-neutral-500/90 text-end animate-repro-fade-in">
-                  Updated On
+                  UPDATED ON
                 </div>
                 <div className="font-medium text-neutral-500/90 text-end">
-                  Updated By
+                  UPDATED BY
                 </div>
               </>
             )}

@@ -21,7 +21,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-5 h-auto w-full  bg-neutral-50 border-t border-t-neutral-300 ">
+    <div className="fixed inset-0 z-5 h-auto w-full  bg-white border-t border-t-neutral-300 ">
       <div className="relative ">
         <NavBar></NavBar>
         <div className="w-full flex justify-between pt-2 pr-4 mt-4 mb-4">

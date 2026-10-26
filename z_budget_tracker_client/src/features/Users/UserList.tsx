@@ -4,14 +4,13 @@ import { useUsersQuery } from '../../api/hooks/users/useUsersQuery';
 import MenuIdProvider from '../../contexts/MenuIdContext';
 import Menus from '../../components/menus/Menus';
 import { EllipsisVertical } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUserMutations } from '../../api/hooks/users/useUserMutations';
 import toast from 'react-hot-toast';
 
 export const UserList: React.FC = () => {
   const { data: users, isLoading, error } = useUsersQuery();
-
-
+  const navigate = useNavigate();
   const { changeAccountLockStatus, forceResetPassword } = useUserMutations();
 
   async function onLockAccountStatus(id: number, locked: boolean) {
@@ -71,9 +70,13 @@ export const UserList: React.FC = () => {
               <th></th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-200 ">
             {users?.map((user) => (
-              <tr key={user.id}>
+              <tr
+                key={user.id}
+                className="hover:bg-neutral-200 cursor-pointer transition-all duration-200"
+                onClick={() => navigate(`${user.id.toString()}`)}
+              >
                 <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                   {user.firstName} {user.lastName}
                 </td>
@@ -118,9 +121,7 @@ export const UserList: React.FC = () => {
                             onLockAccountStatus(user.id, user.isLocked)
                           }
                         >
-                          {user.isLocked
-                            ? 'Unlock Account'
-                            : 'Lock Account'}
+                          {user.isLocked ? 'Unlock Account' : 'Lock Account'}
                         </div>
                       </Menus.MenuItem>
                       <Menus.MenuItem>

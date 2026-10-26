@@ -33,8 +33,9 @@ const Label = styled.label`
 `;
 
 const Error = styled.div`
-  font-size: 1.5rem;
-  color: var(--color-red-500);
+  font-size: 1.2rem;
+  font-weight: medium;
+  color: var(--color-red-600);
 `;
 
 const StackedFormRow: FC<FormRowProps> = ({
@@ -55,13 +56,13 @@ const StackedFormRow: FC<FormRowProps> = ({
               textWrap: 'wrap',
               overflowWrap: 'break-word',
             }}
-            className='text-gray-800 dark:text-neutral-200 text-lg'
+            className='text-gray-600 dark:text-neutral-200 text-lg '
           >
             {label}
           </Label>
         </div>
       )}
-      <div className="flex">
+      <div className="flex flex-col gap-1">
         <div className='flex-1'>{children}</div>
         <div className="flex-0 pl-1 mr-2">
           {error && useMessage && <Error>{error.toString()}</Error>}
