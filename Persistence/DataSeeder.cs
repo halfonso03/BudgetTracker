@@ -30,7 +30,24 @@ namespace Persistence
             // Pass the prepared data into HasData
             builder.Entity<ApplicationUser>().HasData(adminUser);
 
+            var adminRole = new ApplicationRole
+            {
+                Id = 1,
+                Name = "ADMIN",
+                NormalizedName = "ADMIN",
+                ConcurrencyStamp = "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3",
+            };
 
+            builder.Entity<ApplicationRole>().HasData(adminRole);
+
+
+            var userAdminRole = new ApplicationUserRole
+            {
+                RoleId = 1,
+                UserId = 1
+            };
+
+            builder.Entity<ApplicationUserRole>().HasData(userAdminRole);
 
 
 

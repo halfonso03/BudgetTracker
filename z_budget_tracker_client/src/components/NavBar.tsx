@@ -27,7 +27,6 @@ const NavBar = () => {
   );
 
   const { user: user, isLoggedIn } = useClientAuth();
-
   const blocker = useBlocker(
     useCallback(
       ({ currentLocation, nextLocation }) =>
@@ -170,15 +169,18 @@ const NavBar = () => {
               >
                 Reports
               </NavLink>
-              <NavLink
-                to="/users"
-                className="nav-link"
-                // onClick={(e: React.MouseEvent<HTMLElement>) => {
-                //   handleReproNavigation(e, '/reports');
-                // }}
-              >
-                Users
-              </NavLink>
+              {user.roles!.some((x) => x === 'ADMIN') && (
+                <NavLink
+                  to="/users"
+                  className="nav-link"
+                  // onClick={(e: React.MouseEvent<HTMLElement>) => {
+                  //   handleReproNavigation(e, '/reports');
+                  // }}
+                >
+                  Admin
+                </NavLink>
+              )}
+
               {blocker.state === 'blocked' && hasUnsavedChanges && (
                 <div>
                   <ConfirmModal

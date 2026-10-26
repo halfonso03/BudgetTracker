@@ -12,7 +12,6 @@ import { useUserQuery } from '../../api/hooks/users/useUserQuery';
 import toast from 'react-hot-toast';
 
 interface UserFormProps {
-  initialData?: { firstName: string; lastName: string; email: string };
   onSuccess?: () => void;
 }
 
@@ -24,10 +23,7 @@ interface FormData {
   confirmPassword?: string;
 }
 
-export const UserForm: React.FC<UserFormProps> = ({
-  initialData,
-  onSuccess,
-}) => {
+export const UserForm: React.FC<UserFormProps> = ({ onSuccess }) => {
   const { id } = useParams<{ id?: string }>();
   const navigate = useNavigate();
 
@@ -77,9 +73,9 @@ export const UserForm: React.FC<UserFormProps> = ({
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      firstName: initialData?.firstName || '',
-      lastName: initialData?.lastName || '',
-      email: initialData?.email || '',
+      firstName: '',
+      lastName: '',
+      email: '',
       password: '',
       confirmPassword: '',
     },
@@ -125,6 +121,7 @@ export const UserForm: React.FC<UserFormProps> = ({
                 {
                   onSuccess: () => {
                     if (onSuccess) onSuccess();
+                    toast.success('User updated.');
                   },
                 },
               );
@@ -187,6 +184,7 @@ export const UserForm: React.FC<UserFormProps> = ({
         id="firstName"
         label="First Name"
         error={errors?.firstName?.message}
+        useMessage={true}
       >
         <Input {...register('firstName')} />
       </StackedFormRow>
@@ -195,11 +193,17 @@ export const UserForm: React.FC<UserFormProps> = ({
         id="lastName"
         label="Last Name"
         error={errors?.lastName?.message}
+        useMessage={true}
       >
         <Input {...register('lastName')} />
       </StackedFormRow>
 
-      <StackedFormRow id="email" label="Email" error={errors?.email?.message}>
+      <StackedFormRow
+        id="email"
+        label="Email"
+        error={errors?.email?.message}
+        useMessage={true}
+      >
         <Input type="email" {...register('email')} />
       </StackedFormRow>
 
@@ -208,6 +212,7 @@ export const UserForm: React.FC<UserFormProps> = ({
         id="password"
         label={isEditing ? 'New Password (Optional)' : 'Password'}
         error={errors?.password?.message}
+        useMessage={true}
       >
         <Input type="password" {...register('password')} />
       </StackedFormRow>
@@ -217,6 +222,7 @@ export const UserForm: React.FC<UserFormProps> = ({
         id="confirmPassword"
         label="Confirm Password"
         error={errors?.confirmPassword?.message}
+        useMessage={true}
       >
         <Input type="password" {...register('confirmPassword')} />
       </StackedFormRow>

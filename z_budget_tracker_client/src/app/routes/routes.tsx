@@ -27,6 +27,7 @@ import PaymnentDuplicate from '../../features/Payments/PaymentDuplicate';
 import { UserList } from '../../features/Users/UserList';
 import { UserForm } from '../../features/Users/UserForm';
 import { ResetPasswordAdmin } from '../../features/Auth/ResetPasswordAdmin';
+import Administration from '../../features/Administration/Administration';
 
 export const routes: RouteObject[] = [
   {
@@ -223,21 +224,36 @@ export const routes: RouteObject[] = [
         ),
       },
       {
-        path: '/users',
-        element: (
-          <ProtectedRoute>
-            <UserList></UserList>
-          </ProtectedRoute>
-        ),
+        path: '/admin',
+        element: <Administration></Administration>,
+        children: [
+          {
+            path: 'users',
+            element: (
+              <ProtectedRoute>
+                <UserList></UserList>
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'users/:id',
+            element: (
+              <ProtectedRoute>
+                <UserForm></UserForm>
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'users/new',
+            element: (
+              <ProtectedRoute>
+                <UserForm></UserForm>
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
-      {
-        path: '/users/:id',
-        element: (
-          <ProtectedRoute>
-            <UserForm></UserForm>
-          </ProtectedRoute>
-        ),
-      },
+
       {
         path: '/resetPasswordAdmin/:id',
         element: <ResetPasswordAdmin></ResetPasswordAdmin>,

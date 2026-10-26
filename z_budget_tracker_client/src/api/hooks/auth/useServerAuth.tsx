@@ -33,7 +33,6 @@ export default function useServerAuth() {
       return loginResponse;
     },
     onSuccess: (response: LoginResponse) => {
-      console.log('response', response);
       if (hasUnsavedChanges) {
         setHasUnsavedChanges(false);
       }

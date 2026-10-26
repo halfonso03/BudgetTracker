@@ -7,6 +7,8 @@ import { EllipsisVertical } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUserMutations } from '../../api/hooks/users/useUserMutations';
 import toast from 'react-hot-toast';
+import Button from '../../components/Button';
+import useMenuId from '../../components/menus/useMenus';
 
 export const UserList: React.FC = () => {
   const { data: users, isLoading, error } = useUsersQuery();
@@ -30,6 +32,7 @@ export const UserList: React.FC = () => {
       },
     );
   }
+  const { close } = useMenuId();
 
   async function onForceResetPassword(id: number) {
     await forceResetPassword.mutateAsync(id.toString(), {
@@ -47,7 +50,18 @@ export const UserList: React.FC = () => {
     return <p className="text-red-600">Error loading users: {error.message}</p>;
 
   return (
-    <MenuIdProvider>
+    <>
+      <div className="mb-8 flex justify-end">
+        <Button
+          buttonSize="small"
+          additionalclasses="py-2"
+          variation="primary"
+          onClick={() => navigate('new')}
+        >
+          Create User
+        </Button>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 border border-neutral-200">
           <thead className="bg-gray-50">
@@ -117,9 +131,11 @@ export const UserList: React.FC = () => {
                       <Menus.MenuItem>
                         <div
                           className="px-1"
-                          onClick={() =>
-                            onLockAccountStatus(user.id, user.isLocked)
-                          }
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            close();
+                            onLockAccountStatus(user.id, user.isLocked);
+                          }}
                         >
                           {user.isLocked ? 'Unlock Account' : 'Lock Account'}
                         </div>
@@ -127,7 +143,10 @@ export const UserList: React.FC = () => {
                       <Menus.MenuItem>
                         <div
                           className="px-1"
-                          onClick={() => onForceResetPassword(user.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onForceResetPassword(user.id);
+                          }}
                         >
                           Force Password Reset
                         </div>
@@ -140,6 +159,6 @@ export const UserList: React.FC = () => {
           </tbody>
         </table>
       </div>
-    </MenuIdProvider>
+    </>
   );
 };
