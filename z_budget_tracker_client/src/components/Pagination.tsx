@@ -5,7 +5,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { usePagination } from '../contexts/pagination/usePagination';
-import { memo, useState } from 'react';
+import { memo } from 'react';
 
 type Props = {
   data: PaginationData;
@@ -37,7 +37,16 @@ export function Pagination({ data, onPageNumberChange }: Props) {
       </div>
       <div className="flex justify-end items-center gap-1 cursor-pointer">
         <div>
-          <ChevronFirst size={20} className="cursor-pointer"></ChevronFirst>
+          <button
+            onClick={() => {
+              onPageNumberChange(1);
+              setPageNumber(1);
+            }}
+            disabled={data?.currentPage === 1}
+            className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+          >
+            <ChevronFirst size={20} className="cursor-pointer"></ChevronFirst>
+          </button>
         </div>
         <div>
           <button
@@ -91,6 +100,19 @@ export function Pagination({ data, onPageNumberChange }: Props) {
         >
           <ChevronRight size={20} className="cursor-pointer" />
         </button>
+        <div>
+          <button
+            onClick={() => {
+              onPageNumberChange(pageNumbers.length);
+              setPageNumber(pageNumbers.length);
+            }}
+            disabled={data?.currentPage >= pageNumbers[pageNumbers.length - 1] || data?.totalPages < 12 }
+            // disabled={data?.currentPage === pageNumbers[pageNumbers.length]}
+            className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+          >
+            <ChevronLast size={20} className="cursor-pointer"></ChevronLast>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -108,7 +130,8 @@ const Pager = memo(
     let firstPageNumber = 0;
     // eslint-disable-next-line no-useless-assignment
     let lastPageNumber = 0;
-    let showEllipses = false;
+    let showLeftEllipses = false;
+    let showRightEllipses = false;
 
     if ((pageNumbers.length ?? 0) < 6) {
       firstPageNumber = 1;
@@ -116,7 +139,8 @@ const Pager = memo(
     } else {
       firstPageNumber = currentPage - 3;
       lastPageNumber = currentPage + 3;
-      showEllipses = true;
+      showLeftEllipses = true;
+      showRightEllipses = true;
       if (lastPageNumber > pageNumbers[pageNumbers.length - 1]) {
         lastPageNumber = pageNumbers[pageNumbers.length - 1];
       }
@@ -127,7 +151,11 @@ const Pager = memo(
       lastPageNumber = 6;
     }
 
-    if (firstPageNumber === 1) showEllipses = false;
+    if (lastPageNumber - currentPage  <= 2) {
+      showRightEllipses = false;
+    }
+
+    if (firstPageNumber === 1) showLeftEllipses = false;
 
     const currentPageNumbers: number[] = [];
 
@@ -137,7 +165,7 @@ const Pager = memo(
 
     return (
       <div className="flex items-center ">
-        {showEllipses && <div className="text-lg tracking-widest">...</div>}
+        {showLeftEllipses && <div className="text-lg tracking-widest">...</div>}
         {currentPageNumbers.map((p) => (
           <div
             key={p}
@@ -158,7 +186,9 @@ const Pager = memo(
             </div>
           </div>
         ))}
-        {showEllipses && <div className="text-lg tracking-widest">...</div>}
+        {showRightEllipses && (
+          <div className="text-lg tracking-widest">...</div>
+        )}
       </div>
     );
   },
