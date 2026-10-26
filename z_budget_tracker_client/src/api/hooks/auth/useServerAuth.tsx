@@ -51,18 +51,28 @@ export default function useServerAuth() {
           // The server responded with a status code outside the 2xx range (e.g., 400)
           const errorData = error.response.data;
 
-          console.log(
-            'loginUser mutation error.response:',
-            error.response.data,
-          ); // 400
+          // console.log('errorData', errorData)
 
-          console.log(
-            'loginUser mutation error.response.data:',
-            error.response.data,
-          ); // { message: "Invalid payload", ... }
+          // console.log(
+          //   'loginUser mutation error.response:',
+          //   error.response.data,
+          // ); // 400
 
-          if (errorData) {
+          // console.log(
+          //   'loginUser mutation error.response.data:',
+          //   error.response.data,
+          // ); // { message: "Invalid payload", ... }
+
+          if (error.response.status === 423) {
+            const errObject: { message: string } = error.response.data as {
+              message: string;
+            };
+
+            setErrorMessage(errObject.message);
+          } else if (errorData) {
             const responseText = error.request.responseText as string;
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
             if (responseText.indexOf('requirePasswordChange') !== -1) {
               const data: { requirePasswordChange: boolean; userId: number } =
@@ -70,12 +80,10 @@ export default function useServerAuth() {
 
               navigate(`/resetPasswordAdmin/${data.userId}`);
             } else {
-
               if (errorData) {
                 setErrorMessage(errorData as string);
                 toast.error(error.message);
               }
-              
             }
           }
         } else {

@@ -170,15 +170,18 @@ const NavBar = () => {
                 Reports
               </NavLink>
               {user.roles!.some((x) => x === 'ADMIN') && (
-                <NavLink
-                  to="/users"
-                  className="nav-link"
-                  // onClick={(e: React.MouseEvent<HTMLElement>) => {
-                  //   handleReproNavigation(e, '/reports');
-                  // }}
-                >
-                  Admin
-                </NavLink>
+                <>
+                  <NavLink
+                    to="/admin"
+                    className="nav-link"
+                    // onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    //   handleReproNavigation(e, '/reports');
+                    // }}
+                  >
+                    Admin
+                  </NavLink>
+                 
+                </>
               )}
 
               {blocker.state === 'blocked' && hasUnsavedChanges && (

@@ -29,13 +29,16 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 });
 
 // 3. Identity Setup
+// 3. Identity Setup
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
     opt.Stores.MaxLengthForKeys = 450; 
 })
 .AddRoles<ApplicationRole>()
-.AddEntityFrameworkStores<AppDbContext>();
+// Add identity stores explicitly passing your User, Role, DbContext, and Key type
+.AddEntityFrameworkStores<AppDbContext>() 
+.AddDefaultTokenProviders();
 
 // FIX: Tells controllers to validate the Identity Cookie instead of checking for a Bearer token
 builder.Services.AddAuthentication(options =>

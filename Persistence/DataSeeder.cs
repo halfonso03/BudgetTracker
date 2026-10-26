@@ -11,8 +11,6 @@ namespace Persistence
 
             var hasher = new PasswordHasher<ApplicationUser>();
 
-            // Console.WriteLine(hasher.HashPassword(null, "Password#1"));
-
             var adminUser = new ApplicationUser
             {
                 Id = 1, // HasData requires explicit IDs
@@ -26,9 +24,21 @@ namespace Persistence
                 PasswordHash = "AQAAAAIAAYagAAAAEMretS6tJQofnGHE6J8YK9Nl9rrAKYe1lzklwWTDO5tyKZaolQg1ViAEkCVTg+Tl7g=="
             };
 
+            var user = new ApplicationUser
+            {
+                Id = 2,// HasData requires explicit IDs
+                FirstName = "Bob",
+                LastName = "Stevens",
+                UserName = "bstevens",
+                NormalizedEmail = "BS@NHAC.ORG",
+                Email = "bs@nhac.org",
+                ConcurrencyStamp = "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3",
+                SecurityStamp = "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3",
+                PasswordHash = "AQAAAAIAAYagAAAAEMretS6tJQofnGHE6J8YK9Nl9rrAKYe1lzklwWTDO5tyKZaolQg1ViAEkCVTg+Tl7g=="
+            };
 
-            // Pass the prepared data into HasData
             builder.Entity<ApplicationUser>().HasData(adminUser);
+            builder.Entity<ApplicationUser>().HasData(user);
 
             var adminRole = new ApplicationRole
             {

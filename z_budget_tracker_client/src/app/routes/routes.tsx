@@ -24,10 +24,12 @@ import PaymentPreload from '../../features/Payments/PaymentPreload';
 import ReproDuplicate from '../../features/Reprogrammings/ReproDuplicate';
 import EncHome from '../../features/Encumberance/EncHome';
 import PaymnentDuplicate from '../../features/Payments/PaymentDuplicate';
-import { UserList } from '../../features/Users/UserList';
 import { UserForm } from '../../features/Users/UserForm';
 import { ResetPasswordAdmin } from '../../features/Auth/ResetPasswordAdmin';
 import Administration from '../../features/Administration/Administration';
+import AdminHome from '../../features/Administration/AdminHome';
+import Initiatives from '../../features/Administration/Initiatives';
+import { UserList } from '../../features/Users/UserList';
 
 export const routes: RouteObject[] = [
   {
@@ -228,6 +230,14 @@ export const routes: RouteObject[] = [
         element: <Administration></Administration>,
         children: [
           {
+            path: '',
+            element: (
+              <ProtectedRoute>
+                <AdminHome></AdminHome>
+              </ProtectedRoute>
+            ),
+          },
+          {
             path: 'users',
             element: (
               <ProtectedRoute>
@@ -251,9 +261,24 @@ export const routes: RouteObject[] = [
               </ProtectedRoute>
             ),
           },
+          {
+            path: 'initiatives',
+            element: (
+              <ProtectedRoute>
+                <Initiatives></Initiatives>
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'initiatives:/id',
+            element: (
+              <ProtectedRoute>
+                <Initiatives></Initiatives>
+              </ProtectedRoute>
+            ),
+          },
         ],
       },
-
       {
         path: '/resetPasswordAdmin/:id',
         element: <ResetPasswordAdmin></ResetPasswordAdmin>,

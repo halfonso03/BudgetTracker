@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
-    public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int>
+    public class AppDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int, ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>
     {
         public required DbSet<AuthorizedUser> AuthorizedUsers { get; set; }
         public required DbSet<Initiative> Initiatives { get; set; }
@@ -40,22 +40,51 @@ namespace Persistence
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<ApplicationUser>().ToTable("Auth.tblUsers");
-            builder.Entity<ApplicationRole>().ToTable("Auth.tblRoles");
-            builder.Entity<IdentityUserRole<int>>().ToTable("Auth.tblUserRoles");
-            builder.Entity<IdentityUserClaim<int>>().ToTable("Auth.tblUserClaims");
-            builder.Entity<IdentityUserLogin<int>>().ToTable("Auth.tblUserLogins");
-            builder.Entity<IdentityRoleClaim<int>>().ToTable("Auth.tblRoleClaims");
-            builder.Entity<IdentityUserToken<int>>().ToTable("Auth.tblUserTokens");
+            const string identityScheme = "Auth";
 
-           
-            builder.Entity<ApplicationUser>().ToTable("tblUsers", "Auth");
-            builder.Entity<ApplicationRole>().ToTable("tblRoles", "Auth");
-            builder.Entity<ApplicationUserRole>().ToTable("tblUserRoles", "Auth");
-            builder.Entity<ApplicationUserClaim>().ToTable("tblUserClaims", "Auth");
-            builder.Entity<ApplicationUserLogin>().ToTable("tblUserLogins", "Auth");
-            builder.Entity<ApplicationRoleClaim>().ToTable("tblRoleClaims", "Auth");
-            builder.Entity<ApplicationUserToken>().ToTable("tblUserTokens", "Auth");
+            // Rename tables and assign schema
+            builder.Entity<ApplicationUser>(b =>
+            {
+                b.ToTable("tblUsers", identityScheme);
+            });
+
+            builder.Entity<ApplicationRole>(b =>
+            {
+                b.ToTable("tblRoles", identityScheme);
+            });
+
+            builder.Entity<ApplicationUserClaim>(b =>
+            {
+                b.ToTable("tblUserClaims", identityScheme);
+            });
+
+            builder.Entity<ApplicationUserLogin>(b =>
+            {
+                b.ToTable("tblUserLogins", identityScheme);
+            });
+
+            builder.Entity<ApplicationUserRole>(b =>
+            {
+                b.ToTable("tblUserRoles", identityScheme);
+            });
+
+            builder.Entity<ApplicationUserToken>(b =>
+            {
+                b.ToTable("tblUserTokens", identityScheme);
+            });
+
+            builder.Entity<ApplicationRoleClaim>(b =>
+            {
+                b.ToTable("tblRoleClaims", identityScheme);
+            });
+
+            // builder.Entity<ApplicationUser>().ToTable("tblUsers", "Auth");
+            // builder.Entity<ApplicationRole>().ToTable("tblRoles", "Auth");
+            // builder.Entity<ApplicationUserRole>().ToTable("tblUserRoles", "Auth");
+            // builder.Entity<ApplicationUserClaim>().ToTable("tblUserClaims", "Auth");
+            // builder.Entity<ApplicationUserLogin>().ToTable("tblUserLogins", "Auth");
+            // builder.Entity<ApplicationRoleClaim>().ToTable("tblRoleClaims", "Auth");
+            // builder.Entity<ApplicationUserToken>().ToTable("tblUserTokens", "Auth");
 
             builder.Entity<Category>()
                 .HasMany(x => x.Accounts)

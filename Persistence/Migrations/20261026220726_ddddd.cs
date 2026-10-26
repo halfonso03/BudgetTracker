@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class ddddd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -130,6 +130,8 @@ namespace Persistence.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ForcePasswordChangeOnNextLogin = table.Column<bool>(type: "bit", nullable: false),
+                    LastLoginDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -197,7 +199,8 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Auth.tblRoleClaims",
+                name: "tblRoleClaims",
+                schema: "Auth",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -208,102 +211,12 @@ namespace Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Auth.tblRoleClaims", x => x.Id);
+                    table.PrimaryKey("PK_tblRoleClaims", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Auth.tblRoleClaims_tblRoles_RoleId",
+                        name: "FK_tblRoleClaims_tblRoles_RoleId",
                         column: x => x.RoleId,
                         principalSchema: "Auth",
                         principalTable: "tblRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Auth.tblUserClaims",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Auth.tblUserClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Auth.tblUserClaims_tblUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "Auth",
-                        principalTable: "tblUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Auth.tblUserLogins",
-                columns: table => new
-                {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Auth.tblUserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                    table.ForeignKey(
-                        name: "FK_Auth.tblUserLogins_tblUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "Auth",
-                        principalTable: "tblUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Auth.tblUserRoles",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Auth.tblUserRoles", x => new { x.UserId, x.RoleId });
-                    table.ForeignKey(
-                        name: "FK_Auth.tblUserRoles_tblRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalSchema: "Auth",
-                        principalTable: "tblRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Auth.tblUserRoles_tblUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "Auth",
-                        principalTable: "tblUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Auth.tblUserTokens",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Auth.tblUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                    table.ForeignKey(
-                        name: "FK_Auth.tblUserTokens_tblUsers_UserId",
-                        column: x => x.UserId,
-                        principalSchema: "Auth",
-                        principalTable: "tblUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -423,6 +336,100 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tblUserClaims",
+                schema: "Auth",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblUserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tblUserClaims_tblUsers_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Auth",
+                        principalTable: "tblUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblUserLogins",
+                schema: "Auth",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_tblUserLogins_tblUsers_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Auth",
+                        principalTable: "tblUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblUserRoles",
+                schema: "Auth",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_tblUserRoles_tblRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalSchema: "Auth",
+                        principalTable: "tblRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblUserRoles_tblUsers_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Auth",
+                        principalTable: "tblUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tblUserTokens",
+                schema: "Auth",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tblUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_tblUserTokens_tblUsers_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "Auth",
+                        principalTable: "tblUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tblBudget",
                 schema: "Audit",
                 columns: table => new
@@ -438,7 +445,7 @@ namespace Persistence.Migrations
                     created_by = table.Column<int>(type: "int", nullable: false),
                     create_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     additional_information = table.Column<string>(type: "VARCHAR(1000)", nullable: true),
-                    version = table.Column<string>(type: "VARCHAR(10)", nullable: false)
+                    version = table.Column<string>(type: "VARCHAR(20)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -574,100 +581,6 @@ namespace Persistence.Migrations
                         principalSchema: "Report",
                         principalTable: "tblReport",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tblRoleClaims",
-                schema: "Auth",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tblRoleClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tblRoleClaims_Auth.tblRoleClaims_Id",
-                        column: x => x.Id,
-                        principalTable: "Auth.tblRoleClaims",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tblUserClaims",
-                schema: "Auth",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tblUserClaims", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tblUserClaims_Auth.tblUserClaims_Id",
-                        column: x => x.Id,
-                        principalTable: "Auth.tblUserClaims",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tblUserLogins",
-                schema: "Auth",
-                columns: table => new
-                {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tblUserLogins", x => new { x.LoginProvider, x.ProviderKey });
-                    table.ForeignKey(
-                        name: "FK_tblUserLogins_Auth.tblUserLogins_LoginProvider_ProviderKey",
-                        columns: x => new { x.LoginProvider, x.ProviderKey },
-                        principalTable: "Auth.tblUserLogins",
-                        principalColumns: new[] { "LoginProvider", "ProviderKey" },
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tblUserRoles",
-                schema: "Auth",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tblUserRoles", x => new { x.UserId, x.RoleId });
-                    table.ForeignKey(
-                        name: "FK_tblUserRoles_Auth.tblUserRoles_UserId_RoleId",
-                        columns: x => new { x.UserId, x.RoleId },
-                        principalTable: "Auth.tblUserRoles",
-                        principalColumns: new[] { "UserId", "RoleId" },
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tblUserTokens",
-                schema: "Auth",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tblUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
-                    table.ForeignKey(
-                        name: "FK_tblUserTokens_Auth.tblUserTokens_UserId_LoginProvider_Name",
-                        columns: x => new { x.UserId, x.LoginProvider, x.Name },
-                        principalTable: "Auth.tblUserTokens",
-                        principalColumns: new[] { "UserId", "LoginProvider", "Name" },
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -944,9 +857,19 @@ namespace Persistence.Migrations
 
             migrationBuilder.InsertData(
                 schema: "Auth",
+                table: "tblRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { 1, "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3", "ADMIN", "ADMIN" });
+
+            migrationBuilder.InsertData(
+                schema: "Auth",
                 table: "tblUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { 1, 0, "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3", "hialfonso@nhac.org", false, "Hector", "Alfonso", false, null, "HIALFONSO@NHAC.ORG", null, "AQAAAAIAAYagAAAAEMretS6tJQofnGHE6J8YK9Nl9rrAKYe1lzklwWTDO5tyKZaolQg1ViAEkCVTg+Tl7g==", null, false, "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3", false, "hialfonso" });
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "ForcePasswordChangeOnNextLogin", "LastLoginDate", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { 1, 0, "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3", "hialfonso@nhac.org", false, "Hector", false, null, "Alfonso", false, null, "HIALFONSO@NHAC.ORG", null, "AQAAAAIAAYagAAAAEMretS6tJQofnGHE6J8YK9Nl9rrAKYe1lzklwWTDO5tyKZaolQg1ViAEkCVTg+Tl7g==", null, false, "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3", false, "hialfonso" },
+                    { 2, 0, "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3", "bs@nhac.org", false, "Bob", false, null, "Stevens", false, null, "BS@NHAC.ORG", null, "AQAAAAIAAYagAAAAEMretS6tJQofnGHE6J8YK9Nl9rrAKYe1lzklwWTDO5tyKZaolQg1ViAEkCVTg+Tl7g==", null, false, "b0c0b6fc-6995-44b7-ba34-ac6e8c33a9d3", false, "bstevens" }
+                });
 
             migrationBuilder.InsertData(
                 table: "tblAccount",
@@ -981,7 +904,9 @@ namespace Persistence.Migrations
                 values: new object[,]
                 {
                     { 1, 1, null, null },
-                    { 2, 1, null, null }
+                    { 3, 1, null, null },
+                    { 1, 2, null, null },
+                    { 3, 2, null, null }
                 });
 
             migrationBuilder.InsertData(
@@ -993,6 +918,12 @@ namespace Persistence.Migrations
                     { 1, (byte)1, "GrantBalanceByInitiativeAndAR", true, "Grant Balance By Initiative and AR", "/GrantBalanceByInitiativeAndAR" },
                     { 2, (byte)1, "BudgetDetail", true, "Budget Detail", "/BudgetDetail" }
                 });
+
+            migrationBuilder.InsertData(
+                schema: "Auth",
+                table: "tblUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { 1, 1 });
 
             migrationBuilder.InsertData(
                 table: "tblBudget",
@@ -1008,8 +939,7 @@ namespace Persistence.Migrations
                     { 9, 8, null, 400m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 2, "B", null, null, (short)2025 },
                     { 10, 5, null, 750m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 1, "B", null, null, (short)2026 },
                     { 11, 8, null, 250m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 2, "B", null, null, (short)2026 },
-                    { 12, 8, null, 250m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 2, "B", null, null, (short)2026 },
-                    { 13, 1, null, -50m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 1, 1, "D", null, null, (short)2025 }
+                    { 12, 8, null, 250m, null, null, new DateTime(2026, 7, 31, 8, 0, 0, 0, DateTimeKind.Unspecified), 1, 3, 2, "B", null, null, (short)2026 }
                 });
 
             migrationBuilder.InsertData(
@@ -1061,26 +991,6 @@ namespace Persistence.Migrations
                     { 4, "checkboxlist", "aiYear", true, "Grant", "avcGrants", 2, (byte)2 },
                     { 5, "dropdownlist", null, true, "Budget Category", "aiBudgetCat", 2, (byte)3 }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Auth.tblRoleClaims_RoleId",
-                table: "Auth.tblRoleClaims",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Auth.tblUserClaims_UserId",
-                table: "Auth.tblUserClaims",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Auth.tblUserLogins_UserId",
-                table: "Auth.tblUserLogins",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Auth.tblUserRoles_RoleId",
-                table: "Auth.tblUserRoles",
-                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblAccount_category_id",
@@ -1313,12 +1223,30 @@ namespace Persistence.Migrations
                 column: "updated_by");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tblRoleClaims_RoleId",
+                schema: "Auth",
+                table: "tblRoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 schema: "Auth",
                 table: "tblRoles",
                 column: "NormalizedName",
                 unique: true,
                 filter: "[NormalizedName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblUserClaims_UserId",
+                schema: "Auth",
+                table: "tblUserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tblUserLogins_UserId",
+                schema: "Auth",
+                table: "tblUserLogins",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblUserRoles_RoleId",
@@ -1401,19 +1329,8 @@ namespace Persistence.Migrations
                 name: "tblRepro");
 
             migrationBuilder.DropTable(
-                name: "Auth.tblRoleClaims");
-
-            migrationBuilder.DropTable(
-                name: "Auth.tblUserClaims");
-
-            migrationBuilder.DropTable(
-                name: "Auth.tblUserLogins");
-
-            migrationBuilder.DropTable(
-                name: "Auth.tblUserRoles");
-
-            migrationBuilder.DropTable(
-                name: "Auth.tblUserTokens");
+                name: "tblRoles",
+                schema: "Auth");
 
             migrationBuilder.DropTable(
                 name: "tblReportCategory",
@@ -1427,10 +1344,6 @@ namespace Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "tblBudgetItemType");
-
-            migrationBuilder.DropTable(
-                name: "tblRoles",
-                schema: "Auth");
 
             migrationBuilder.DropTable(
                 name: "tblCategory");
