@@ -48,9 +48,9 @@ const ReproGrantSummary = ({ lines }: Props) => {
   console.log('grantTotals', grantTotals);
 
   return (
-    <div className="w-[40%] mx-auto  p-1 mb-18">
+    <div className="w-[40%] mx-auto p-1 mb-18">
       <div className="font-semibold text-neutral-500 text-center text-[1.1rem] mb-1">Grant Summary</div>
-      <div className="border border-neutral-200/80">
+      <div className="border border-neutral-300/60">
         <div className="grid grid-cols-[.5fr_.5fr.5fr] ">
           <div className="font-semibold text-neutral-600 bg-neutral-100 py-2 pl-1 text-center">
             Grant

@@ -1,5 +1,5 @@
-import { Check, X, DollarSign } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Check, X } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { formatNumber, formatDate } from '../../app/util';
 import SearchTermMarker from '../../components/SearchTermMarker';
 import { usePagination } from '../../contexts/pagination/usePagination';

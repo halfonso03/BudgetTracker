@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BUDGET_CUMULATIVE_TOTAL_EXCEEDED,
   DUP_LINES,
@@ -686,11 +686,14 @@ const PaymentForm = ({
   }
 
   function getOverBudgetClassName(
+    paymentHeader: PaymentHeader,
     payments: PaymentLineItem[],
     initiativeId: number,
     grantId: number,
     accountId: number,
   ) {
+    if (paymentHeader.status === POSTED) return false;
+
     const available =
       distinctBudgets.filter(
         (x) =>
@@ -829,22 +832,22 @@ const PaymentForm = ({
 
         {distinctBudgets && lines.length > 0 && (
           <div>
-            <div >
+            <div>
               <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr]  ">
-                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2">
+                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-neutral-300/60 border-r-0">
                   Initiative
                 </div>
-                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2">
+                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-neutral-300/60 border-r-0">
                   Grant
                 </div>
-                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2">
+                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-neutral-300/60 border-r-0">
                   Category
                 </div>
-                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2">
+                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-neutral-300/60 border-r-0">
                   Account
                 </div>
-                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-50 py-2 pl-1">
-                  Available
+                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-50 py-2  border border-neutral-300/60">
+                  {paymentHeader.status !== POSTED && 'Available'}
                 </div>
               </div>
             </div>
@@ -856,19 +859,27 @@ const PaymentForm = ({
                   x.accountId === i.accountId,
               );
               return (
-                <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] mb-10  pt-1 border-t border-t-neutral-200 ">
-                  <div className="p-1 font-semibold mb-4">
+                <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] ">
+                  <div className="font-medium p-2 self-center border border-neutral-300/60 border-r-0 border-t-0">
                     {i.initiativeName}
                   </div>
-                  <div className="py-1 pl-1">{i.grantName}</div>
-                  <div className="py-1 pl-1">{i.categoryName}</div>
-                  <div className="py-1 pl-1">{i.accountName}</div>
-                  <div className="text-center font-semibold py-1 pl-1">
-                    {i.available && formatCurrency(i.available)}
+                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 border-t-0">
+                    {i.grantName}
                   </div>
-                  <div className="col-span-5 flex justify-end  mt-3 ">
+                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 border-t-0">
+                    {i.categoryName}
+                  </div>
+                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 border-t-0">
+                    {i.accountName}
+                  </div>
+                  <div className="text-center font-semibold p-2  border border-neutral-300/60  border-t-0">
+                    {paymentHeader.status !== POSTED &&
+                      i.available &&
+                      formatCurrency(i.available)}
+                  </div>
+                  <div className="col-span-5 flex justify-end  mt-10 ">
                     <div className="w-full">
-                      <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] ">
+                      <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr]">
                         <div className="col-span-3">
                           <Button
                             variation="secondary"
@@ -885,27 +896,24 @@ const PaymentForm = ({
                             <Plus></Plus>Add Payee
                           </Button>
                         </div>
-                        <div className="p-2 text-neutral-600/90 bg-neutral-50 font-semibold border-b-neutral-300/90 border-b">
+                        <div className="p-2 text-neutral-600/90 bg-neutral-50 font-semibold border-neutral-300/60  border border-r-0">
                           Payments
                         </div>
-                        <div className="p-2 text-center text-neutral-600/90 bg-neutral-50 font-semibold border-b-neutral-300/90 border-b"></div>
+                        <div className="p-2 text-center text-neutral-600/90 bg-neutral-50 font-semibold  border-neutral-300/60  border "></div>
                       </div>
-                      <div>
+                      <div className="grid grid-cols-[3fr_2fr]">
                         {payments.map((p, i) => {
                           return (
-                            <div className="grid grid-cols-[3fr_2fr] py-[.15rem]">
+                            <Fragment key={i}>
                               <div></div>
-                              <div
-                                className={`py-2 flex ${i === payments.length - 1 ? '' : 'border-b border-b-neutral-300/50'}`}
-                              >
-                                <div className="flex-1 pl-2  ">
-                                  {p.payeeName}
-                                </div>
-                                <div className="flex-1 text-center relative  ">
+                              <div className="grid grid-cols-[1fr_1fr]">
+                                <div className="p-2  border-l  border-neutral-300/60 border-b ">{p.payeeName}</div>
+                                <div className="p-2 text-center border-l border-r border-neutral-300/60  border-b relative">
                                   {formatCurrency(+p.paymentAmount)}
+
                                   {paymentHeader.status !== POSTED && (
-                                    <div className="flex absolute right-0 top-0 ">
-                                      <div className="flex gap-4 pr-2">
+                                    <div className="flex absolute right-0 top-0  py-2  ">
+                                      <div className="flex gap-4 pr-2 ">
                                         <Pencil
                                           size={20}
                                           className={`${p.comment !== '' ? 'text-blue-500' : 'text-neutral-400'} cursor-pointer  hover:text-blue-500 duration-200 transition-all hover:scale-125`}
@@ -934,29 +942,29 @@ const PaymentForm = ({
                                   )}
                                 </div>
                               </div>
-                            </div>
+                            </Fragment>
                           );
                         })}
                       </div>
-                      <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] ">
+                      <div className="grid grid-cols-[3fr_2fr] ">
                         <div></div>
-                        <div></div>
-                        <div></div>
-                        <div className="p-2 font-semibold text-neutral-600/90 bg-neutral-50 border-t-neutral-300/90 border-t">
-                          Total
-                        </div>
-                        <div
-                          className={`${getOverBudgetClassName(payments, i.initiativeId, i.grantId, i.accountId) && 'text-red-600/70'} flex justify-center gap-2 items-center p-2 pr-1 font-semibold text-center text-neutral-600 bg-neutral-50 border-t-neutral-300/90 border-t`}
-                        >
-                          {formatCurrency(
-                            +payments
-                              .map((x) =>
-                                parseFormattedNumber(
-                                  x.paymentAmount.toString(),
-                                ),
-                              )
-                              .reduce((acc, cur) => acc + cur, 0),
-                          )}
+                        <div className='grid grid-cols-[1fr_1fr]'>
+                          <div className="p-2 font-semibold text-neutral-600/90 bg-neutral-50  border-neutral-300/60  border border-r-0 border-t-0">
+                            Total
+                          </div>
+                          <div
+                            className={`${getOverBudgetClassName(paymentHeader, payments, i.initiativeId, i.grantId, i.accountId) && 'text-red-600/70'} flex justify-center gap-2 items-center p-2 pr-1 font-semibold text-center text-neutral-800 bg-neutral-50 border-neutral-300/60  border border-t-0`}
+                          >
+                            {formatCurrency(
+                              +payments
+                                .map((x) =>
+                                  parseFormattedNumber(
+                                    x.paymentAmount.toString(),
+                                  ),
+                                )
+                                .reduce((acc, cur) => acc + cur, 0),
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
