@@ -720,7 +720,7 @@ const PaymentForm = ({
 
   return (
     <MenuIdProvider>
-      {/* <pre>{JSON.stringify(distinctBudgets)}</pre> */}
+      {/* <pre>{JSON.stringify(lines)}</pre> */}
       <div>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           {/* opacity-0 cursor-none */}
@@ -791,7 +791,7 @@ const PaymentForm = ({
           ></IdHeader>
 
           {paymentHeader.status === POSTED && (
-            <div className="flex gap-12 mr-4  ">
+            <div className="mr-4 flex gap-8">
               <div className="flex gap-3 font-semibold">
                 <div className=" text-neutral-500">POSTED ON</div>
                 <div>
@@ -812,7 +812,6 @@ const PaymentForm = ({
           <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 mt-12">
             <div className="">Total</div>
             <div className="text-neutral-900">{getPaymentTotal()}</div>
-            <div></div>
           </div>
         )}
 
@@ -832,25 +831,6 @@ const PaymentForm = ({
 
         {distinctBudgets && lines.length > 0 && (
           <div>
-            <div>
-              <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr]  ">
-                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-neutral-300/60 border-r-0">
-                  Initiative
-                </div>
-                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-neutral-300/60 border-r-0">
-                  Grant
-                </div>
-                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-neutral-300/60 border-r-0">
-                  Category
-                </div>
-                <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-neutral-300/60 border-r-0">
-                  Account
-                </div>
-                <div className="font-semibold text-neutral-600/90 text-center bg-neutral-50 py-2  border border-neutral-300/60">
-                  {paymentHeader.status !== POSTED && 'Available'}
-                </div>
-              </div>
-            </div>
             {distinctBudgets.map((i: PaymentSummary) => {
               const payments = lines.filter(
                 (x) =>
@@ -858,113 +838,149 @@ const PaymentForm = ({
                   x.grantId == i.grantId &&
                   x.accountId === i.accountId,
               );
+
+              const remaining =
+                i.available! -
+                payments
+                  .map((p) => parseFormattedNumber(p.paymentAmount.toString()))
+                  .reduce((acc, cur) => acc + cur, 0);
+
               return (
-                <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr] ">
-                  <div className="font-medium p-2 self-center border border-neutral-300/60 border-r-0 border-t-0">
+                <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr_1fr_.75fr_.75fr] mb-14 ">
+                  <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r-0">
+                    Initiative
+                  </div>
+                  <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r-0">
+                    Grant
+                  </div>
+                  <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r-0">
+                    Category
+                  </div>
+                  <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r-0">
+                    Account
+                  </div>
+                  <div className="font-semibold text-neutral-600/90 text-center bg-neutral-50 py-2  border border-b-0 border-neutral-300/60 border-r-0">
+                    {paymentHeader.status !== POSTED && 'Available'}
+                  </div>
+                  <div className="text-center font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r-0">
+                    Total Paid
+                  </div>
+                  <div className="text-center font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r ">
+                    Remaining
+                  </div>
+                  <div className="font-medium p-2 self-center border border-neutral-300/60 border-r-0 ">
                     {i.initiativeName}
                   </div>
-                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 border-t-0">
+                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 ">
                     {i.grantName}
                   </div>
-                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 border-t-0">
+                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 ">
                     {i.categoryName}
                   </div>
-                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 border-t-0">
+                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 ">
                     {i.accountName}
                   </div>
-                  <div className="text-center font-semibold p-2  border border-neutral-300/60  border-t-0">
+                  <div className="text-center font-medium p-2  border border-neutral-300/60 bg-neutral-50 border-r-0  ">
                     {paymentHeader.status !== POSTED &&
                       i.available &&
                       formatCurrency(i.available)}
                   </div>
-                  <div className="col-span-5 flex justify-end  mt-10 ">
-                    <div className="w-full">
-                      <div className="grid grid-cols-[1fr_1fr_1fr_1fr_1fr]">
-                        <div className="col-span-3">
-                          <Button
-                            variation="secondary"
-                            buttonSize={'small'}
-                            onClick={() =>
-                              onAddPaymentToBudget(
-                                i.initiativeId,
-                                i.grantId,
-                                i.categoryId,
-                                i.accountId,
-                              )
-                            }
-                          >
-                            <Plus></Plus>Add Payee
-                          </Button>
-                        </div>
+                  <div className="text-center self-center p-2 border border-neutral-300/60 border-r-0 bg-neutral-50">
+                    {formatCurrency(
+                      payments
+                        .map((x) =>
+                          parseFormattedNumber(x.paymentAmount.toString()),
+                        )
+                        .reduce((acc, cur) => acc + cur, 0),
+                    )}
+                  </div>
+                  <div
+                    className={`text-center self-center p-2 border border-neutral-300/60 bg-neutral-50 font-medium ${remaining < 0 && 'text-red-500 '}`}
+                  >
+                    {formatCurrency(remaining)}
+                  </div>
+                  <div className="col-span-7 flex justify-end mt-10 ">
+                    <div className=" w-full grid grid-cols-[2fr_3fr_2fr] ">
+                      <div>
+                        <Button
+                          variation="secondary"
+                          buttonSize={'small'}
+                          onClick={() =>
+                            onAddPaymentToBudget(
+                              i.initiativeId,
+                              i.grantId,
+                              i.categoryId,
+                              i.accountId,
+                            )
+                          }
+                        >
+                          <Plus></Plus>Add Payee
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-[1fr_1fr] w-full ">
                         <div className="p-2 text-neutral-600/90 bg-neutral-50 font-semibold border-neutral-300/60  border border-r-0">
                           Payments
                         </div>
-                        <div className="p-2 text-center text-neutral-600/90 bg-neutral-50 font-semibold  border-neutral-300/60  border "></div>
-                      </div>
-                      <div className="grid grid-cols-[3fr_2fr]">
+                        <div className="p-2 text-center text-neutral-600/90 bg-neutral-50 font-semibold  border-neutral-300/60  border ">
+                          Amount
+                        </div>
                         {payments.map((p, i) => {
                           return (
                             <Fragment key={i}>
-                              <div></div>
-                              <div className="grid grid-cols-[1fr_1fr]">
-                                <div className="p-2  border-l  border-neutral-300/60 border-b ">{p.payeeName}</div>
-                                <div className="p-2 text-center border-l border-r border-neutral-300/60  border-b relative">
-                                  {formatCurrency(+p.paymentAmount)}
+                              <div className="p-2  border-l  border-neutral-300/60 border-b ">
+                                {p.payeeName}
+                              </div>
+                              <div className="p-2 text-center border-l border-r border-neutral-300/60  border-b relative">
+                                {formatCurrency(+p.paymentAmount)}
 
-                                  {paymentHeader.status !== POSTED && (
-                                    <div className="flex absolute right-0 top-0  py-2  ">
-                                      <div className="flex gap-4 pr-2 ">
-                                        <Pencil
-                                          size={20}
-                                          className={`${p.comment !== '' ? 'text-blue-500' : 'text-neutral-400'} cursor-pointer  hover:text-blue-500 duration-200 transition-all hover:scale-125`}
-                                          onClick={() => handleEditRow(p.uuid)}
-                                        ></Pencil>
-                                        <TrashIcon
-                                          className="text-red-600 opacity-60 cursor-pointer duration-200 transition-all hover:scale-125 hover:opacity-100"
-                                          size={20}
-                                          onClick={() => {
-                                            setDeleteRowConfirm((prev) => ({
-                                              ...prev,
-                                              isOpen: true,
-                                              payeeName: p.payeeName,
-                                              rowUuid: p.uuid,
-                                              paymentAmount: formatCurrency(
-                                                parseFormattedNumber(
-                                                  p.paymentAmount?.toString() ??
-                                                    '0.00',
-                                                ),
+                                {paymentHeader.status !== POSTED && (
+                                  <div className="flex absolute right-0 top-0  py-2  ">
+                                    <div className="flex gap-4 pr-2 ">
+                                      <Pencil
+                                        size={20}
+                                        className={`text-neutral-400 cursor-pointer  hover:text-blue-500 duration-200 transition-all hover:scale-125`}
+                                        onClick={() => handleEditRow(p.uuid)}
+                                      ></Pencil>
+                                      <TrashIcon
+                                        className="text-red-600 opacity-60 cursor-pointer duration-200 transition-all hover:scale-125 hover:opacity-100"
+                                        size={20}
+                                        onClick={() => {
+                                          setDeleteRowConfirm((prev) => ({
+                                            ...prev,
+                                            isOpen: true,
+                                            payeeName: p.payeeName,
+                                            rowUuid: p.uuid,
+                                            paymentAmount: formatCurrency(
+                                              parseFormattedNumber(
+                                                p.paymentAmount?.toString() ??
+                                                  '0.00',
                                               ),
-                                            }));
-                                          }}
-                                        ></TrashIcon>
-                                      </div>
+                                            ),
+                                          }));
+                                        }}
+                                      ></TrashIcon>
                                     </div>
-                                  )}
-                                </div>
+                                  </div>
+                                )}
                               </div>
                             </Fragment>
                           );
                         })}
-                      </div>
-                      <div className="grid grid-cols-[3fr_2fr] ">
-                        <div></div>
-                        <div className='grid grid-cols-[1fr_1fr]'>
-                          <div className="p-2 font-semibold text-neutral-600/90 bg-neutral-50  border-neutral-300/60  border border-r-0 border-t-0">
-                            Total
-                          </div>
-                          <div
-                            className={`${getOverBudgetClassName(paymentHeader, payments, i.initiativeId, i.grantId, i.accountId) && 'text-red-600/70'} flex justify-center gap-2 items-center p-2 pr-1 font-semibold text-center text-neutral-800 bg-neutral-50 border-neutral-300/60  border border-t-0`}
-                          >
-                            {formatCurrency(
-                              +payments
-                                .map((x) =>
-                                  parseFormattedNumber(
-                                    x.paymentAmount.toString(),
-                                  ),
-                                )
-                                .reduce((acc, cur) => acc + cur, 0),
-                            )}
-                          </div>
+                        <div className="p-2 font-semibold text-neutral-600/90 bg-neutral-50  border-neutral-300/60  border border-r-0 border-t-0">
+                          Total
+                        </div>
+                        <div
+                          className={`${getOverBudgetClassName(paymentHeader, payments, i.initiativeId, i.grantId, i.accountId) && 'text-red-600/70'} flex justify-center gap-2 items-center p-2 pr-1 font-semibold text-center text-neutral-800 bg-neutral-50 border-neutral-300/60  border border-t-0`}
+                        >
+                          {formatCurrency(
+                            +payments
+                              .map((x) =>
+                                parseFormattedNumber(
+                                  x.paymentAmount.toString(),
+                                ),
+                              )
+                              .reduce((acc, cur) => acc + cur, 0),
+                          )}
                         </div>
                       </div>
                     </div>

@@ -46,7 +46,6 @@ const NumericInputReactHookForm = ({
 
   return (
     <input
-      tabIndex={5}
       type="text"
       maxLength={10}
       ref={ref}

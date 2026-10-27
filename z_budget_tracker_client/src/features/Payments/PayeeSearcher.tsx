@@ -153,7 +153,7 @@ const PayeeSearcher = ({
               <Spinner></Spinner>
             </div>
           )}
-          <button type="button" onClick={() => setAddNewPayeeModalIsOpen(true)}>
+          <button type="button" onClick={() => setAddNewPayeeModalIsOpen(true)} tabIndex={-1}>
             <Plus className="border border-transparent hover:border-neutral-400 hover:bg-neutral-300/60 rounded-sm mr-1 text-neutral-500 hover:text-neutral-600 duration-200 transition-all cursor-pointer"></Plus>
           </button>
 

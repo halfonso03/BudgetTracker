@@ -647,7 +647,7 @@ const PaymentLineModal = (props: Props) => {
                   </div>
                   <textarea
                     {...register('comment')}
-                    className="p-2 border border-neutral-300 rounded-sm"
+                    className="p-2 border border-neutral-300 rounded-sm focus:outline-0 focus:border-blue-500"
                     rows={3}
                   ></textarea>
                 </div>

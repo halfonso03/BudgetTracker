@@ -72,7 +72,7 @@ const PaymentEntryInput = ({
               register.onChange(e);
               // setPaymentAmount(e.target.value);
             }}
-            className="w-full text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-300 
+            className="w-full text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-blue-500 disabled:bg-neutral-300 
             focus:dark:border-gray-100 dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-neutral-800 dark:border-gray-500"
           ></NumericInputReactHookForm>
           {/* <div>
