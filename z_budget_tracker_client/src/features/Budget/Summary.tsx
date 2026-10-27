@@ -31,7 +31,6 @@ const Summary = ({ year }: Props) => {
     return { ...x, account_balances: ac };
   });
 
-
   const budgetSummaries: BudgetSummary[] = activeAccounts.map((b) => {
     return {
       initiative_id: b.initiative_id,
@@ -260,7 +259,7 @@ function CategorySummary({
               key={index}
             >
               <div
-                className={` py-3 pl-8 font-bold col-span-2  ${cateoryRedClass}`}
+                className={` py-3 pl-8 font-semibold col-span-2  ${cateoryRedClass}`}
                 key={index}
               >
                 {c.category}
@@ -354,21 +353,19 @@ function CategorySummary({
                         <div
                           className={`italic text-end ${i.current_amount + i.spent_amount < 0 ? 'text-red-600' : ''}`}
                         >
-                          {i.current_amount + i.spent_amount !== 0 ? (
-                            formatCurrency(i.current_amount + i.spent_amount)
-                          ) : (
-                            <span className="text-neutral-400">-</span>
-                          )}
+                          {formatCurrency(i.current_amount + i.spent_amount)}
                         </div>
                       </div>
-                      <div className="flex justify-around text-blue-500 text-[.9rem] cursor-pointer">
-                        <Link
+                      <div className="flex justify-around text-blue-500 text-[.9rem]   ">
+                        <Link className='cursor-pointer'
                           to={`/reprogramming/${year}/${initiativeId}/${grantId}/${i.category_id}/${i.account_id}`}
                         >
                           <ArrowLeftRight></ArrowLeftRight>
                         </Link>
                         <DollarSign
+                          className={`cursor-pointer ${i.current_amount + i.spent_amount <= 0 ? 'text-neutral-300' : ''}`}
                           onClick={() => {
+                            if (i.current_amount + i.spent_amount <= 0 ) return false;
                             navigate(
                               `/payments/${year}/${initiativeId}/${grantId}/${i.category_id}/${i.account_id}`,
                             );

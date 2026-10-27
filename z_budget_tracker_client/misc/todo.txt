@@ -1,3 +1,6 @@
+paymentlinemodel add zero found message when search returnes nothing
+budget details category summary no adding expenses its subtracting
+
 add check number for each payment line
 add a 2E link to the budget summary
 
@@ -6,6 +9,7 @@ add a 2E link to the budget summary
 
 when user locked out must not navigate away
 role assignment
+
 
 
 DONE show "Editing' in the payment form

@@ -455,9 +455,9 @@ const BudgetDetails = () => {
             )}
           </div>
 
-          <div className="entity-name">{grant?.year}</div>
-          <div className="entity-name">{initiative?.name}</div>
-          <div className="entity-name">
+          <div className="font-semibold">{grant?.year}</div>
+          <div className="font-semibold">{initiative?.name}</div>
+          <div className="font-semibold">
             {grant?.name} - {grant?.fiduciary}
           </div>
           <div></div>

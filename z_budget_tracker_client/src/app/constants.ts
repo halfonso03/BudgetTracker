@@ -24,6 +24,6 @@ export const POSTED = 3;
 
 
 export const BUDGET_AUDIT_INITIAL_VERSION = "initial_value"
-export const BUDGET_AUDIT_OLD_VERSION = "old_value"
-export const BUDGET_AUDIT_NEW_VERSION = "new_value"
+export const BUDGET_AUDIT_OLD_VERSION = "OLD_VALUE"
+export const BUDGET_AUDIT_NEW_VERSION = "NEW_VALUE"
 
