@@ -18,7 +18,7 @@ begin
      last_payment_amount (payee_id, days_since_last_payment, last_payment_amount, last_payment_date)
     AS
     (
-      SELECT l.payee_id, DATEDIFF(d, GETDATE(), l.entry_date), l.amount, l.entry_date
+      SELECT l.payee_id, DATEDIFF(d, l.entry_date, GETDATE()), l.amount, l.entry_date
       FROM tblDisbLineItem l JOIN last_payment lp ON l.payee_id = lp.payee_id AND l.disb_id = lp.last_id
         JOIN tblDisb d ON d.id = l.disb_id
        WHERE d.year = CASE WHEN @year !=  0 THEN @year ELSE d.year END

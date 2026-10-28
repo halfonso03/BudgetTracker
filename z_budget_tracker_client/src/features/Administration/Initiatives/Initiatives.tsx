@@ -1,6 +1,6 @@
 const Initiatives = () => {
   return (
-    <div>Initiatives</div>
+    <div>Initiatives List</div>
   )
 }
 export default Initiatives

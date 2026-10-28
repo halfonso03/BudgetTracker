@@ -1,4 +1,3 @@
-paymentlinemodel add zero found message when search returnes nothing
 budget details category summary no adding expenses its subtracting
 
 add check number for each payment line
@@ -11,7 +10,7 @@ when user locked out must not navigate away
 role assignment
 
 
-
+DONE paymentlinemodel add zero found message when search returnes nothing
 DONE show "Editing' in the payment form
 DONE payments - amounts went 'NAN' when switch back to screen <- seems to happen when a payment is duplicated. happens when number with comma is entered for the 
 DONE repro form - went NaN when duplicated a line?? due to thousands seperator

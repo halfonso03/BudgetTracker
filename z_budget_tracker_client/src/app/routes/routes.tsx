@@ -24,12 +24,13 @@ import PaymentPreload from '../../features/Payments/PaymentPreload';
 import ReproDuplicate from '../../features/Reprogrammings/ReproDuplicate';
 import EncHome from '../../features/Encumberance/EncHome';
 import PaymnentDuplicate from '../../features/Payments/PaymentDuplicate';
-import { UserForm } from '../../features/Users/UserForm';
+import { UserForm } from '../../features/Administration/Users/UserForm';
 import { ResetPasswordAdmin } from '../../features/Auth/ResetPasswordAdmin';
 import Administration from '../../features/Administration/Administration';
 import AdminHome from '../../features/Administration/AdminHome';
-import Initiatives from '../../features/Administration/Initiatives';
-import { UserList } from '../../features/Users/UserList';
+import Initiatives from '../../features/Administration/Initiatives/Initiatives';
+import { UserList } from '../../features/Administration/Users/UserList';
+import Awards from '../../features/Administration/Awards';
 
 export const routes: RouteObject[] = [
   {
@@ -274,6 +275,14 @@ export const routes: RouteObject[] = [
             element: (
               <ProtectedRoute>
                 <Initiatives></Initiatives>
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: 'awards',
+            element: (
+              <ProtectedRoute>
+                <Awards></Awards>
               </ProtectedRoute>
             ),
           },

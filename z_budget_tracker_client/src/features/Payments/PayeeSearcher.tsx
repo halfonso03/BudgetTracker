@@ -153,9 +153,20 @@ const PayeeSearcher = ({
               <Spinner></Spinner>
             </div>
           )}
-          <button type="button" onClick={() => setAddNewPayeeModalIsOpen(true)} tabIndex={-1}>
-            <Plus className="border border-transparent hover:border-neutral-400 hover:bg-neutral-300/60 rounded-sm mr-1 text-neutral-500 hover:text-neutral-600 duration-200 transition-all cursor-pointer"></Plus>
-          </button>
+          {suggestions && suggestions.length === 0 && (
+            <div className="mr-3 w-[45%] italic text-end text-neutral-400 ">
+              no results found
+            </div>
+          )}
+          <div className=' flex items-center mr-1'>
+            <button
+              type="button"
+              onClick={() => setAddNewPayeeModalIsOpen(true)}
+              tabIndex={-1}
+            >
+              <Plus className="border border-transparent hover:border-neutral-400 hover:bg-neutral-300/60 rounded-sm  text-neutral-500 hover:text-neutral-600 duration-200 transition-all cursor-pointer"></Plus>
+            </button>
+          </div>
 
           {/* <div className="absolute  w-80 right-0 top-0 z-30000 menu border border-red-700 p-2  bg-red-500">
             <div className="border border-blue-300 w-full p-2 ">N</div>
@@ -165,7 +176,7 @@ const PayeeSearcher = ({
       <div className="relative bg-white opacity-100">
         <div className="w-full rounded-sm pt-1 absolute z-1000">
           {suggestions && suggestions.length > 0 && searching && (
-            <ScrollableDiv className="relative bg-white border border-neutral-300/55 rounded-sm w-full shadow-md ">
+            <ScrollableDiv className=" bg-white border border-neutral-300/55 rounded-sm w-full shadow-md ">
               {suggestions?.map((item, index) => (
                 // Render each suggestion as a clickable list item
                 <div

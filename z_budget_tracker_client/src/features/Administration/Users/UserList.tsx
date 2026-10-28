@@ -1,14 +1,12 @@
 // components/UserList.tsx
 import React from 'react';
-import { useUsersQuery } from '../../api/hooks/users/useUsersQuery';
-import MenuIdProvider from '../../contexts/MenuIdContext';
-import Menus from '../../components/menus/Menus';
+import { useUsersQuery } from '../../../api/hooks/users/useUsersQuery';
+import Menus from '../../../components/menus/Menus';
 import { EllipsisVertical } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useUserMutations } from '../../api/hooks/users/useUserMutations';
+import {  useNavigate } from 'react-router-dom';
+import { useUserMutations } from '../../../api/hooks/users/useUserMutations';
 import toast from 'react-hot-toast';
-import Button from '../../components/Button';
-import useMenuId from '../../components/menus/useMenus';
+import Button from '../../../components/Button';
 
 export const UserList: React.FC = () => {
   const { data: users, isLoading, error } = useUsersQuery();
@@ -32,7 +30,7 @@ export const UserList: React.FC = () => {
       },
     );
   }
-  const { close } = useMenuId();
+  // const { close } = useMenuId();
 
   async function onForceResetPassword(id: number) {
     await forceResetPassword.mutateAsync(id.toString(), {
@@ -124,9 +122,13 @@ export const UserList: React.FC = () => {
                       id={user.id.toString()}
                     >
                       <Menus.MenuItem>
-                        <Link to={`${user.id}`} className="px-1">
-                          Details
-                        </Link>
+                        <div className='pl-1'
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(user.id.toString());
+                          }}
+                        ></div>
+                        Details
                       </Menus.MenuItem>
                       <Menus.MenuItem>
                         <div

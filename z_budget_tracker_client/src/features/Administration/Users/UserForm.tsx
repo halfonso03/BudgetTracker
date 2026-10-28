@@ -4,11 +4,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { useUserMutations } from '../../api/hooks/users/useUserMutations';
-import Button from '../../components/Button';
-import Input from '../../components/Input';
-import StackedFormRow from '../../ui/StackedFormRow';
-import { useUserQuery } from '../../api/hooks/users/useUserQuery';
+import { useUserMutations } from '../../../api/hooks/users/useUserMutations';
+import Button from '../../../components/Button';
+import Input from '../../../components/Input';
+import StackedFormRow from '../../../ui/StackedFormRow';
+import { useUserQuery } from '../../../api/hooks/users/useUserQuery';
 import toast from 'react-hot-toast';
 
 interface UserFormProps {
