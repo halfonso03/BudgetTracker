@@ -781,8 +781,8 @@ const PaymentForm = ({
         )}
 
         {lines.length > 0 && paymentHeader.status === POSTED && (
-          <div className="flex px-3 py-1 border-b border-neutral-200 mb-16 text-neutral-500 font-semibold">
-            <div className="flex-4">Total Payment</div>
+          <div className="mx-3 grid grid-cols-[1.5fr_1fr_1fr_1fr_1fr_.75fr_.75fr] py-1 border-b border-neutral-200 mb-16 text-neutral-500 font-semibold">
+            <div className="flex-4 col-span-5">Total Payment</div>
             <div className="flex-3 items-center justify-center ">
               <input
                 readOnly={true}
@@ -845,12 +845,12 @@ const PaymentForm = ({
                   <div className="self-center p-2 border border-neutral-300/60 border-r-0 ">
                     {i.accountName}
                   </div>
-                  <div className="text-center font-medium p-2 border border-neutral-300/60 bg-neutral-50 border-r-0  ">
+                  <div className="text-center font-medium text-neutral-800 p-2 border border-neutral-300/60 bg-neutral-50 border-r-0  ">
                     {paymentHeader.status !== POSTED &&
                       i.available &&
                       formatCurrency(i.available)}
                   </div>
-                  <div className="text-center self-center p-2 border border-neutral-300/60 border-r-0 bg-neutral-50">
+                  <div className="text-center font-medium text-blue-600 self-center p-2 border border-neutral-300/60 border-r-0 bg-neutral-50">
                     {formatCurrency(
                       payments
                         .map((x) =>
@@ -860,7 +860,7 @@ const PaymentForm = ({
                     )}
                   </div>
                   <div
-                    className={`text-center p-2 border border-neutral-300/60 bg-neutral-50 font-medium ${remaining < 0 && 'text-red-500 '}`}
+                    className={`text-center p-2 border font-medium text-neutral-800 border-neutral-300/60 bg-neutral-50  ${remaining < 0 && 'text-red-500 '}`}
                   >
                     {paymentHeader.status !== POSTED &&
                       formatCurrency(remaining)}

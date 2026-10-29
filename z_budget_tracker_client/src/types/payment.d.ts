@@ -54,6 +54,8 @@ type PaymentLineItem = {
     comment?: string
     lastPaymentDate?: Date | null
     numberOfPayments?: number
+    invoiceDate?: Date | null
+    invoiceNumber?: string | null
 }
 
 

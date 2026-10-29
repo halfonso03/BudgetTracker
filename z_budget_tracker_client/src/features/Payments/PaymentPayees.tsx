@@ -1,5 +1,4 @@
-import { Pencil, Plus, TrashIcon } from 'lucide-react';
-import { Fragment } from 'react/jsx-runtime';
+import { AlertCircle, Pencil, Plus, TrashIcon } from 'lucide-react';
 import { POSTED } from '../../app/constants';
 import {
   formatCurrency,
@@ -7,6 +6,7 @@ import {
   parseFormattedNumber,
 } from '../../app/util';
 import Button from '../../components/Button';
+import InvoiceEditor from './InvoiceEditor';
 
 type Props = {
   payments: PaymentLineItem[];
@@ -28,6 +28,7 @@ const PaymentPayees = ({
 }: Props) => {
   return (
     <div className=" w-full grid grid-cols-[2fr_3fr_2fr] ">
+      {isOverBudget && <AlertCircle></AlertCircle>}
       <div>
         {paymentHeader.status !== POSTED && (
           <Button
@@ -51,15 +52,13 @@ const PaymentPayees = ({
         {payments.map((p, i) => (
           <div
             key={i}
-            className="border-b border-b-neutral-200 pb-2 last:border-0 bg-neutral-200/70 p-2 rounded-sm"
+            className="border-b border-b-neutral-200 pb-2 last:border-0 bg-neutral-200/80 p-2 rounded-sm  shadow-lg"
           >
             <div className="flex">
               <div className="flex flex-col gap-4 flex-1 bg-neutral-50 p-2 rounded-sm px-3">
                 <div className="rounded-sm ">
                   <div className="flex mb-2">
-                    <div className="flex-1  text-neutral-500">
-                      Payee Name
-                    </div>
+                    <div className="flex-1  text-neutral-500">Payee Name</div>
                     <div className="flex-2  text-end  font-medium">
                       {p.payeeName}
                     </div>
@@ -67,7 +66,7 @@ const PaymentPayees = ({
 
                   <div className="flex">
                     <div className="flex-1  text-neutral-500">
-                      Amount
+                      Payment Amount
                     </div>
                     <div className="flex-1  text-end ">
                       {formatCurrency(
@@ -77,23 +76,9 @@ const PaymentPayees = ({
                   </div>
                 </div>
 
-                <div className="bg-neutral-300/40 rounded-sm p-2 px-3">
-                  <div className="flex ">
-                    <div className="flex-1  text-neutral-500 ">
-                      Invoice No.
-                    </div>
-                    <div className="flex-1  text-end  text-neutral-950">3</div>
-                  </div>
-                  <div className="flex">
-                    <div className="flex-1  text-neutral-500">
-                      Invoice Date
-                    </div>
-                    <div className="flex-1  text-end text-neutral-950">
-                      8/4/26
-                    </div>
-                  </div>
-                </div>
+                <InvoiceEditor p={p}></InvoiceEditor>
               </div>
+
               <div className="flex flex-col justify-between gap-1 flex-1 items-end ">
                 <div className="w-[75%]  rounded-sm p-2">
                   <div className="flex ">
