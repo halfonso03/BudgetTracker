@@ -145,7 +145,7 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess }) => {
           if (onSuccess) {
             onSuccess();
           } else {
-            navigate('/users');
+            navigate('users');
           }
         },
       });

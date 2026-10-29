@@ -259,7 +259,7 @@ const BudgetDetails = () => {
       .filter((x) => x.categoryId == categoryId && x.accountId !== 999)
       .map(() => {
         i += 1;
-        const value = getValues(`rows.${startIndex + i}.amount`);
+        const value = getValues(`rows.${startIndex + i}.current_amount`);
         if (!value) return 0;
         return parseFormattedNumber(value);
       })
@@ -274,7 +274,7 @@ const BudgetDetails = () => {
 
     setValue(
       `rows.${totalsIndex}.remaining_amount`,
-      formatNumber(categoryTotal - totalSpent),
+      formatNumber(categoryTotal + totalSpent),
     );
     calculateTotals();
   }

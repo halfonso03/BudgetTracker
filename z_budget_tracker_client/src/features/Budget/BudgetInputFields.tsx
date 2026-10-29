@@ -142,6 +142,12 @@ const BudgetInputFields = ({
               const newRemaining = formatNumber(
                 budgeted + reprogrammed + spentParsed,
               );
+
+              console.log(budgeted);
+              console.log(reprogrammed);
+              console.log(spentParsed);
+              console.log(newRemaining);
+
               setRemaining(newRemaining);
               setError(budgeted + reprogrammed + spentParsed < 0);
               onBlur(
@@ -269,7 +275,7 @@ const BudgetInputFields = ({
             onClick={() => onOpenComments()}
           >
             <Pencil
-              size={comment?.text ? 24 : 20}
+              size={comment?.text ? 24 : 22}
               className={`hover:scale-120 transition-all duration-200 ${comment?.text ? 'text-blue-400' : 'text-neutral-400/60 '}`}
             ></Pencil>
           </button>
