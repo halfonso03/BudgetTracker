@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BUDGET_CUMULATIVE_TOTAL_EXCEEDED,
   DUP_LINES,
@@ -22,10 +22,8 @@ import {
   AlertTriangle,
   BookOpenText,
   CheckCircle2,
-  Pencil,
   Plus,
   Save,
-  TrashIcon,
 } from 'lucide-react';
 import Button from '../../components/Button';
 import useClientAuth from '../../contexts/useClientAuth';
@@ -38,6 +36,7 @@ import { usePaymentMutations } from '../../api/hooks/payments/usePaymentMutation
 import ConfirmModal from '../../components/ConfirmModal';
 import IdHeader from '../Common/IdHeader';
 import { useLocation } from 'react-router-dom';
+import PaymentPayees from './PaymentPayees';
 
 type DeletePayeeInfo = {
   isOpen: boolean;
@@ -214,7 +213,6 @@ const PaymentForm = ({
 
     if (x.length > 0) {
       errors.push(BUDGET_CUMULATIVE_TOTAL_EXCEEDED);
-      console.log('x', x);
     }
 
     // if (hasNegativeRemainingBalances(lines) && !overrideNeg) {
@@ -318,18 +316,6 @@ const PaymentForm = ({
     paymentEdited();
   }
 
-  // function handleDuplicateRow(uuid: string) {
-  //   const duplicatedLine: PaymentLineItem = {
-  //     ...lines.filter((x) => x.uuid === uuid)[0],
-  //     paymentAmount: 0,
-  //     rowId: lines.length,
-  //     uuid: crypto.randomUUID(),
-  //   };
-
-  //   setLines([...lines, duplicatedLine]);
-  //   onIsDirty(true);
-  // }
-
   function onAddRow() {
     setEditSelections(null);
     setPaymentLineModalIsOpen(true);
@@ -395,38 +381,6 @@ const PaymentForm = ({
     onIsDirty(true);
   }
 
-  // function handleSaveComment(uuid: string, comment: string | null | undefined) {
-  //   setLines((prev) =>
-  //     prev.map((line) => ({
-  //       ...line,
-  //       comment: line.uuid === uuid ? (comment ?? '') : line.comment,
-  //     })),
-  //   );
-
-  //   onIsDirty(true);
-  // }
-
-  // function paymentAmountOnBlur(uuid: string) {
-  //   const newLines = lines.map((line: PaymentLineItem, index: number) => {
-  //     if (uuid !== line.uuid) return line;
-
-  //     const paymentAmount = parseFormattedNumber(
-  //       getValues(`rows.${index}.paymentAmount`) as string,
-  //     );
-
-  //     const updatedLine: PaymentLineItem = {
-  //       ...line,
-  //       paymentAmount: formatNumber(paymentAmount),
-  //       newAvailableAmount: line.availableAmount - paymentAmount,
-  //     };
-
-  //     return updatedLine;
-  //   });
-
-  //   setLines(newLines);
-  //   onIsDirty(true);
-  // }
-
   function canPost() {
     return lines.length > 0 && noDupLines(lines);
   }
@@ -437,6 +391,14 @@ const PaymentForm = ({
     result = result && noDupLines(lines);
 
     result = result && paymentHeader.status !== POSTED;
+
+    const x = distinctBudgets.filter(
+      (x) => (x?.available ?? 0) - (x?.totalPaid ?? 0) < 0,
+    );
+
+    if (x.length > 0) {
+      result = result && false
+    }
 
     // result =
     //   result &&
@@ -588,7 +550,6 @@ const PaymentForm = ({
           }),
         );
 
-        console.log('123', 123);
         onServerUpdateSuccess(posted, posted ? postedDate : null);
         onSaved?.();
       },
@@ -729,35 +690,39 @@ const PaymentForm = ({
             className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : ''}`}
           >
             {/* <pre className="w-[20%]">{JSON.stringify(editSelections)}</pre> */}
-            {payment !== undefined && (
+            {payment !== undefined && paymentHeader.status !== POSTED && (
               <Button buttonSize="small" onClick={onAddRow}>
                 <Plus></Plus>
                 Add Line
               </Button>
             )}
-            <Button
-              buttonSize="small"
-              disabled={!canSave() || !user}
-              onClick={savePaymentButtonClick}
-            >
-              <Save className="mr-1"></Save>
-              Save
-            </Button>
-            <Button
-              buttonSize="small"
-              disabled={
-                !canPost() ||
-                getErrors().length > 0 ||
-                paymentHeader.status === Number(POSTED) ||
-                !user
-              }
-              onClick={() => {
-                setConfirmPostModal(true);
-              }}
-            >
-              <BookOpenText className="mr-1"></BookOpenText>
-              Post
-            </Button>
+            {payment !== undefined && paymentHeader.status !== POSTED && (
+              <>
+                <Button
+                  buttonSize="small"
+                  disabled={!canSave() || !user}
+                  onClick={savePaymentButtonClick}
+                >
+                  <Save className="mr-1"></Save>
+                  Save
+                </Button>
+                <Button
+                  buttonSize="small"
+                  disabled={
+                    !canPost() ||
+                    getErrors().length > 0 ||
+                    paymentHeader.status === Number(POSTED) ||
+                    !user
+                  }
+                  onClick={() => {
+                    setConfirmPostModal(true);
+                  }}
+                >
+                  <BookOpenText className="mr-1"></BookOpenText>
+                  Post
+                </Button>
+              </>
+            )}
           </div>
 
           <Button
@@ -866,7 +831,7 @@ const PaymentForm = ({
                     Total Paid
                   </div>
                   <div className="text-center font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r ">
-                    Remaining
+                    {paymentHeader.status !== POSTED && 'Remaining'}
                   </div>
                   <div className="font-medium p-2 self-center border border-neutral-300/60 border-r-0 ">
                     {i.initiativeName}
@@ -880,7 +845,7 @@ const PaymentForm = ({
                   <div className="self-center p-2 border border-neutral-300/60 border-r-0 ">
                     {i.accountName}
                   </div>
-                  <div className="text-center font-medium p-2  border border-neutral-300/60 bg-neutral-50 border-r-0  ">
+                  <div className="text-center font-medium p-2 border border-neutral-300/60 bg-neutral-50 border-r-0  ">
                     {paymentHeader.status !== POSTED &&
                       i.available &&
                       formatCurrency(i.available)}
@@ -895,95 +860,39 @@ const PaymentForm = ({
                     )}
                   </div>
                   <div
-                    className={`text-center self-center p-2 border border-neutral-300/60 bg-neutral-50 font-medium ${remaining < 0 && 'text-red-500 '}`}
+                    className={`text-center p-2 border border-neutral-300/60 bg-neutral-50 font-medium ${remaining < 0 && 'text-red-500 '}`}
                   >
-                    {formatCurrency(remaining)}
+                    {paymentHeader.status !== POSTED &&
+                      formatCurrency(remaining)}
                   </div>
                   <div className="col-span-7 flex justify-end mt-10 ">
-                    <div className=" w-full grid grid-cols-[2fr_3fr_2fr] ">
-                      <div>
-                        <Button
-                          variation="secondary"
-                          buttonSize={'small'}
-                          onClick={() =>
-                            onAddPaymentToBudget(
-                              i.initiativeId,
-                              i.grantId,
-                              i.categoryId,
-                              i.accountId,
-                            )
-                          }
-                        >
-                          <Plus></Plus>Add Payee
-                        </Button>
-                      </div>
-                      <div className="grid grid-cols-[1fr_1fr] w-full ">
-                        <div className="p-2 text-neutral-600/90 bg-neutral-50 font-semibold border-neutral-300/60  border border-r-0">
-                          Payments
-                        </div>
-                        <div className="p-2 text-center text-neutral-600/90 bg-neutral-50 font-semibold  border-neutral-300/60  border ">
-                          Amount
-                        </div>
-                        {payments.map((p, i) => {
-                          return (
-                            <Fragment key={i}>
-                              <div className="p-2  border-l  border-neutral-300/60 border-b ">
-                                {p.payeeName}
-                              </div>
-                              <div className="p-2 text-center border-l border-r border-neutral-300/60  border-b relative">
-                                {formatCurrency(+p.paymentAmount)}
-
-                                {paymentHeader.status !== POSTED && (
-                                  <div className="flex absolute right-0 top-0  py-2  ">
-                                    <div className="flex gap-4 pr-2 ">
-                                      <Pencil
-                                        size={20}
-                                        className={`text-neutral-400 cursor-pointer  hover:text-blue-500 duration-200 transition-all hover:scale-125`}
-                                        onClick={() => handleEditRow(p.uuid)}
-                                      ></Pencil>
-                                      <TrashIcon
-                                        className="text-red-600 opacity-60 cursor-pointer duration-200 transition-all hover:scale-125 hover:opacity-100"
-                                        size={20}
-                                        onClick={() => {
-                                          setDeleteRowConfirm((prev) => ({
-                                            ...prev,
-                                            isOpen: true,
-                                            payeeName: p.payeeName,
-                                            rowUuid: p.uuid,
-                                            paymentAmount: formatCurrency(
-                                              parseFormattedNumber(
-                                                p.paymentAmount?.toString() ??
-                                                  '0.00',
-                                              ),
-                                            ),
-                                          }));
-                                        }}
-                                      ></TrashIcon>
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            </Fragment>
-                          );
-                        })}
-                        <div className="p-2 font-semibold text-neutral-600/90 bg-neutral-50  border-neutral-300/60  border border-r-0 border-t-0">
-                          Total
-                        </div>
-                        <div
-                          className={`${getOverBudgetClassName(paymentHeader, payments, i.initiativeId, i.grantId, i.accountId) && 'text-red-600/70'} flex justify-center gap-2 items-center p-2 pr-1 font-semibold text-center text-neutral-800 bg-neutral-50 border-neutral-300/60  border border-t-0`}
-                        >
-                          {formatCurrency(
-                            +payments
-                              .map((x) =>
-                                parseFormattedNumber(
-                                  x.paymentAmount.toString(),
-                                ),
-                              )
-                              .reduce((acc, cur) => acc + cur, 0),
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                    <PaymentPayees
+                      i={i}
+                      isOverBudget={getOverBudgetClassName(
+                        paymentHeader,
+                        payments,
+                        i.initiativeId,
+                        i.grantId,
+                        i.accountId,
+                      )}
+                      payments={payments}
+                      paymentHeader={paymentHeader}
+                      onEditRow={handleEditRow}
+                      onAddPaymentToBudget={onAddPaymentToBudget}
+                      onDeleteRow={(p) => {
+                        setDeleteRowConfirm((prev) => ({
+                          ...prev,
+                          isOpen: true,
+                          payeeName: p.payeeName,
+                          rowUuid: p.uuid,
+                          paymentAmount: formatCurrency(
+                            parseFormattedNumber(
+                              p.paymentAmount?.toString() ?? '0.00',
+                            ),
+                          ),
+                        }));
+                      }}
+                    ></PaymentPayees>
                   </div>
                 </div>
               );
@@ -1057,8 +966,58 @@ const PaymentForm = ({
           }}
           message={`Delete Payment to ${deleteRowConfirm.payeeName} for ${deleteRowConfirm.paymentAmount}?`}
         ></ConfirmModal>
+      </div>
+    </MenuIdProvider>
+  );
+};
 
-        {distinctBudgets && lines && lines.length > 1000 && (
+function noNegativeBalances(lines: PaymentLineItem[]): boolean {
+  const lines2 = lines
+    .map((l) => ({
+      availableAmount: l.availableAmount,
+      amount: +(l.paymentAmount ?? 0),
+    }))
+    .map((l) => l.availableAmount - l.amount);
+
+  return !lines2.some((x) => x < 0);
+}
+
+function noZeroOnlyLines(lines: PaymentLineItem[]): boolean {
+  const lines2 = lines.map((l) => ({
+    amount: +(l.paymentAmount ?? 0),
+  }));
+
+  return !lines2.some((x) => x.amount === 0);
+}
+
+function noDupLines(lines: PaymentLineItem[]): boolean {
+  const counts: { name: string; count: number }[] = [];
+
+  lines.map((l) => {
+    const entity =
+      l.initiativeName +
+      '--' +
+      l.grantName +
+      '--' +
+      l.categoryName +
+      '--' +
+      l.accountId.toString() +
+      '--' +
+      l.payeeId.toString();
+    if (counts.some((x) => x.name === entity)) {
+      const currCount = counts.filter((x) => x.name === entity)[0];
+      currCount.count += 1;
+    } else {
+      counts.push({ name: entity, count: 1 });
+    }
+  });
+  return !counts.some((x) => x.count > 1);
+}
+
+export default PaymentForm;
+
+{
+  /* {distinctBudgets && lines && lines.length > 1000 && (
           <>
             <div className="font-semibold text-neutral-500 text-center text-[1.1rem] mb-1">
               Payment Totals Summary
@@ -1121,53 +1080,5 @@ const PaymentForm = ({
               ))}
             </div>
           </>
-        )}
-      </div>
-    </MenuIdProvider>
-  );
-};
-
-function noNegativeBalances(lines: PaymentLineItem[]): boolean {
-  const lines2 = lines
-    .map((l) => ({
-      availableAmount: l.availableAmount,
-      amount: +(l.paymentAmount ?? 0),
-    }))
-    .map((l) => l.availableAmount - l.amount);
-
-  return !lines2.some((x) => x < 0);
+        )} */
 }
-
-function noZeroOnlyLines(lines: PaymentLineItem[]): boolean {
-  const lines2 = lines.map((l) => ({
-    amount: +(l.paymentAmount ?? 0),
-  }));
-
-  return !lines2.some((x) => x.amount === 0);
-}
-
-function noDupLines(lines: PaymentLineItem[]): boolean {
-  const counts: { name: string; count: number }[] = [];
-
-  lines.map((l) => {
-    const entity =
-      l.initiativeName +
-      '--' +
-      l.grantName +
-      '--' +
-      l.categoryName +
-      '--' +
-      l.accountId.toString() +
-      '--' +
-      l.payeeId.toString();
-    if (counts.some((x) => x.name === entity)) {
-      const currCount = counts.filter((x) => x.name === entity)[0];
-      currCount.count += 1;
-    } else {
-      counts.push({ name: entity, count: 1 });
-    }
-  });
-  return !counts.some((x) => x.count > 1);
-}
-
-export default PaymentForm;

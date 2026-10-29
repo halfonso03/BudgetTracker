@@ -9,10 +9,10 @@ type Payee = {
     additionalInformation?: string
     daysSinceLastPayment?: number | null
     lastPaymentAmount?: number | null
-    lastPaymentDate?: Date | null
     totalPaid?: number | null
     categoryName?: string
     payeeType?: string
+    lastPaymentDate?: Date | null
     numberOfPayments: number
 }
 

@@ -1,7 +1,7 @@
 import { Fragment } from 'react/jsx-runtime';
 import Menus from '../../components/menus/Menus';
 import { Copy, Edit, EllipsisVertical, Trash } from 'lucide-react';
-import CommentToggler from './CommentToggler';
+import CommentToggler from '../Common/CommentToggler';
 
 type Props = {
   lineItem: PaymentLineItem;

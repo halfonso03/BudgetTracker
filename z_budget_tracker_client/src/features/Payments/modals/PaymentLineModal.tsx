@@ -129,6 +129,7 @@ const PaymentLineModal = (props: Props) => {
       shouldTouch: true,
       shouldValidate: true,
     };
+
     setPayee(payee);
     setValue('payeeId', payee.id, options);
 
@@ -172,6 +173,8 @@ const PaymentLineModal = (props: Props) => {
         newAvailableAmount:
           availableAmount - parseFormattedNumber(getValues('paymentAmount')),
         comment: data.comment,
+        lastPaymentDate: payee?.lastPaymentDate,
+        numberOfPayments: payee?.numberOfPayments,
       };
 
       props.onLineAdded(newLine);
@@ -691,10 +694,7 @@ const PaymentLineModal = (props: Props) => {
                     0
                     disabled={!allSelections() || !remIsvalid}
                      */}
-              <Button
-                type="submit"
-                
-              >
+              <Button type="submit">
                 {!fromRedirect && props.uuid ? 'Update Payment' : 'Add Payment'}
               </Button>
               <Button variation="secondary" onClick={closeModal}>
