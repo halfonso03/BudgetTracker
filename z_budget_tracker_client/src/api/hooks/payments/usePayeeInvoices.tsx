@@ -21,9 +21,9 @@ const usePayeeInvoices = (id: number | undefined, invoiceNumber: string | null |
     isPending,
     isFetched,
   } = useQuery<string[]>({
-    queryKey: ['payee_invoices', id],
+    queryKey: ['payee_invoices', id, invoiceNumber],
     queryFn: () => fetchRepro(id ?? 0, invoiceNumber ?? ''),
-    staleTime: 1 * 1000 * 60,
+    staleTime: 0,
     enabled:
       !!id &&
       invoiceNumber !== undefined &&

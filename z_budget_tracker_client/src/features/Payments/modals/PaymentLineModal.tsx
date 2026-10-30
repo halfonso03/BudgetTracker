@@ -67,8 +67,6 @@ const PaymentLineModal = (props: Props) => {
   const [selections, setSelections] =
     useState<PaymentLineItemSelections | null>(props.selections);
 
-  const [searchingInvoices, setSearchingInvoices] = useState(false);
-
   const { data: selectedEditPayee } = useSelectedPayeeInfo(selections?.payeeId);
 
   // const { data: balances, loadingBalances } = useCurrentAccountBalances(
@@ -114,7 +112,13 @@ const PaymentLineModal = (props: Props) => {
     isSuccess: foundSuccess,
     isLoading: foundIsLoading,
     isFetching: foundIsFetching,
-  } = usePayeeInvoices(selections?.payeeId, getValues('invoiceNumber'));
+  } = usePayeeInvoices(
+    selections?.invoiceNumber !== props.selections?.invoiceNumber
+      ? selections?.payeeId
+      : 0,
+    selections?.invoiceNumber,
+  );
+
   const {
     data: remainingAccountBalances,
     isLoading: loadingRemainingAccountBalances,
@@ -322,6 +326,7 @@ const PaymentLineModal = (props: Props) => {
         isOpen={true}
         onCancel={closeModal}
       >
+        {selections?.invoiceNumber}
         <form
           onSubmit={handleSubmit(onSubmit)}
           onKeyDown={checkKeyDown}
@@ -553,15 +558,32 @@ const PaymentLineModal = (props: Props) => {
                             {...register('invoiceNumber')}
                             additionalclasses="bg-white"
                             onBlur={(e) => {
-                              if (e.target.value.trim()) {
-                                if (searchingInvoices === false)
-                                  setSearchingInvoices(true);
-                              } else {
-                                if (searchingInvoices === true)
-                                  setSearchingInvoices(false);
-                              }
+                              if (
+                                selections?.invoiceNumber !==
+                                  e.target.value.trim() &&
+                                props.selections?.invoiceNumber !==
+                                  e.target.value.trim()
+                              )
+                                setSelections((prev) => ({
+                                  ...prev,
+                                  invoiceNumber: e.target.value.trim(),
+                                }));
                             }}
                           ></Input>
+                          {props.selections?.invoiceNumber}
+                          {found ? (
+                            <span>found one</span>
+                          ) : (
+                            <span>did not fund one</span>
+                          )}
+                          {/* {searchingInvoices && <span>seaRCHING...</span>} */}
+                          <br />
+                          {foundIsFetching && <span>fetching</span>}
+                          <br />
+                          {foundIsLoading && <span>loading</span>}
+                          <br />
+                          {foundSuccess && <span>found completed</span>}
+                          <br />
                         </div>
                       </div>
                     </div>
@@ -645,7 +667,8 @@ const PaymentLineModal = (props: Props) => {
               <Button
                 type="submit"
                 disabled={
-                  searchingInvoices && getValues('invoiceNumber') !== ''
+                  (foundIsFetching || foundIsLoading) &&
+                  getValues('invoiceNumber') !== ''
                 }
               >
                 {!fromRedirect && props.uuid ? 'Update Payment' : 'Add Payment'}

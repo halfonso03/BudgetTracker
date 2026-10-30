@@ -58,7 +58,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("invoices")]
+        [HttpGet("invoices/{payeeId}")]
         public async Task<IActionResult> Invoices(int payeeId, [FromQuery] string invoiceNumber)
         {
             var invoices = await payeeService.GetPayeeInvoices(payeeId, invoiceNumber);
