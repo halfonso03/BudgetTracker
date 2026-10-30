@@ -33,5 +33,11 @@ namespace Application.DTOs.Payment
         [Required]
         public int PayeeId { get; set; }
 
+        [MaxLength(100)]
+        public string? InvoiceNumber { get; set; }
+        
+        public DateTime? InvoiceDate { get; set; }
+        [MaxLength(100)]
+        public string? CheckNumber { get; set; }
     }
 }

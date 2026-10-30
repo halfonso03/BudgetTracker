@@ -1096,6 +1096,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("category_id");
 
+                    b.Property<string>("CheckNumber")
+                        .HasColumnType("VARCHAR(100)")
+                        .HasColumnName("check_number");
+
                     b.Property<string>("Comment")
                         .HasColumnType("VARCHAR(MAX)")
                         .HasColumnName("comment");
@@ -1115,6 +1119,14 @@ namespace Persistence.Migrations
                     b.Property<int>("InitiativeId")
                         .HasColumnType("int")
                         .HasColumnName("initiative_id");
+
+                    b.Property<DateTime?>("InvoiceDate")
+                        .HasColumnType("DATETIME2")
+                        .HasColumnName("invoice_date");
+
+                    b.Property<string>("InvoiceNumber")
+                        .HasColumnType("VARCHAR(100)")
+                        .HasColumnName("invoice_number");
 
                     b.Property<int>("PayeeId")
                         .HasColumnType("int")
@@ -1915,7 +1927,8 @@ namespace Persistence.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("DaysSinceLastPayment")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("days_since_last_payment");
 
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -1944,7 +1957,8 @@ namespace Persistence.Migrations
                         .HasColumnName("payee_type_id");
 
                     b.Property<decimal?>("TotalPaid")
-                        .HasColumnType("NUMERIC(15,2)");
+                        .HasColumnType("NUMERIC(15,2)")
+                        .HasColumnName("total_paid");
 
                     b.ToTable((string)null);
 

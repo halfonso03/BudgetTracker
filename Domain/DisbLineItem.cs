@@ -26,6 +26,10 @@ namespace Domain
         public DateTime? UpdateDate { get; set; }
         public int? UpdatedById { get; set; }
 
+        public string? InvoiceNumber { get; set; }
+        public DateTime? InvoiceDate { get; set; }
+        public string? CheckNumber { get; set; }
+
         [ForeignKey("UpdatedById")]
         public ApplicationUser? UpdatedBy { get; set; }
 

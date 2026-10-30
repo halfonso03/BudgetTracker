@@ -328,6 +328,9 @@ namespace Application.Services
                             lineFromDb.AccountId = req.AccountId;
                             lineFromDb.CategoryId = req.CategoryId;
                             lineFromDb.PayeeId = req.PayeeId;
+                            lineFromDb.CheckNumber = req.CheckNumber;
+                            lineFromDb.InvoiceDate = req.InvoiceDate;
+                            lineFromDb.InvoiceNumber = req.InvoiceNumber;
                             lineFromDb.Comment = string.IsNullOrEmpty(req.Comment) ? null
                             : req.Comment.Trim();
                         }
@@ -348,9 +351,12 @@ namespace Application.Services
                             Year = grant.Year,
                             EntryDate = DateTime.Now,
                             CategoryId = req.CategoryId,
-                            Comment = string.IsNullOrEmpty(req.Comment) ? null
-                            : req.Comment.Trim()
-                        };
+                            Comment = string.IsNullOrEmpty(req.Comment) ? null : req.Comment.Trim(),
+                            CheckNumber = req.CheckNumber,
+                            InvoiceDate = req.InvoiceDate,
+                            InvoiceNumber = req.InvoiceNumber,
+                        }
+                    ;
 
                         _dbContext.DisbLineItems.Add(newLineItem);
                     }
@@ -604,7 +610,10 @@ namespace Application.Services
                         CategoryName = x.Category!.Name,
                         PayeeName = x.Payee!.Name,
                         PayeeId = x.PayeeId,
-                        Comment = x.Comment
+                        Comment = x.Comment,
+                        InvoiceDate = x.InvoiceDate,
+                        InvoiceNumber = x.InvoiceNumber,
+                        CheckNumber = x.CheckNumber
                     })]
                 };
 
