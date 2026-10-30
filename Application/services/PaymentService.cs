@@ -168,6 +168,9 @@ namespace Application.Services
                             CategoryName = x.Category!.Name,
                             AccountName = x.Account!.Name,
                             Year = x.Year,
+                            CheckNumber = x.CheckNumber,
+                            InvoiceDate = x.InvoiceDate,
+                            InvoiceNumber = x.InvoiceNumber
                         })]
                 };
 

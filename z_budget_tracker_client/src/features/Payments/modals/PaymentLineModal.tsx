@@ -66,6 +66,8 @@ const PaymentLineModal = (props: Props) => {
   const [selections, setSelections] =
     useState<PaymentLineItemSelections | null>(props.selections);
 
+  const [searchingInvoices, setSearchingInvoices] = useState(false);
+
   const { data: selectedEditPayee } = useSelectedPayeeInfo(selections?.payeeId);
 
   // const { data: balances, loadingBalances } = useCurrentAccountBalances(
@@ -160,6 +162,7 @@ const PaymentLineModal = (props: Props) => {
 
   async function onSubmit(data: FormValues) {
     closeModal();
+
     if (!props.uuid || fromRedirect) {
       const newLine: PaymentLineItem = {
         ...data,
@@ -181,9 +184,7 @@ const PaymentLineModal = (props: Props) => {
         ),
         newAvailableAmount:
           availableAmount - parseFormattedNumber(getValues('paymentAmount')),
-        comment: data.comment,
-        lastPaymentDate: payee?.lastPaymentDate,
-        numberOfPayments: payee?.numberOfPayments,
+        comment: data.comment?.trim(),
       };
 
       props.onLineAdded(newLine);
@@ -207,7 +208,7 @@ const PaymentLineModal = (props: Props) => {
           getValues('paymentAmount').toString(),
         ),
         newAvailableAmount: availableAmount - +getValues('paymentAmount'),
-        comment: data.comment,
+        comment: data.comment?.trim(),
       };
       props.onLineUpdated(newLine);
     }
@@ -462,6 +463,11 @@ const PaymentLineModal = (props: Props) => {
                     }}
                     className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
                   ></Dropdown>
+                  {errors?.categoryId && (
+                    <div className="text-red-500 pl-1">
+                      <Asterisk size={18}></Asterisk>
+                    </div>
+                  )}
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center">
                   <div className="text-neutral-600/90 font-medium">Account</div>
@@ -481,6 +487,11 @@ const PaymentLineModal = (props: Props) => {
                     }}
                     className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
                   ></Dropdown>
+                  {errors?.accountId && (
+                    <div className="text-red-500 pl-1">
+                      <Asterisk size={18}></Asterisk>
+                    </div>
+                  )}
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full ">
                   <div className="text-neutral-600/90 font-medium">Payee</div>
@@ -535,6 +546,11 @@ const PaymentLineModal = (props: Props) => {
                           <Input
                             {...register('invoiceNumber')}
                             additionalclasses="bg-white"
+                            onBlur={(e) => {
+                              if (e.target.value.trim()) {
+                                setSearchingInvoices(true);
+                              }
+                            }}
                           ></Input>
                         </div>
                       </div>
@@ -560,7 +576,7 @@ const PaymentLineModal = (props: Props) => {
                                   field.value ? new Date(field.value) : null
                                 }
                                 dateFormat="MM/dd/yyyy"
-                                onBlur={field.onBlur} // Important for validation
+                                onBlur={field.onBlur}
                                 onChange={(date: Date | null) => {
                                   field.onChange(date);
                                 }}

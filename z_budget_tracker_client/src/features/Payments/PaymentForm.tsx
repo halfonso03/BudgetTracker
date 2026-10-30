@@ -347,16 +347,12 @@ const PaymentForm = ({
     }
 
     setEditSelections({
+      ...lineToEdit,
       uuid: uuid,
-      initiativeId: lineToEdit.initiativeId,
-      grantId: lineToEdit.grantId,
-      categoryId: lineToEdit.categoryId,
-      accountId: lineToEdit.accountId,
-      payeeId: lineToEdit.payeeId,
       amount: parseFormattedNumber(
         getValues(`rows.${index}.paymentAmount`).toString(),
       ),
-      comment: lineToEdit.comment,
+      comment: lineToEdit.comment ?? "",
     });
     setPaymentLineModalIsOpen(true);
   }
@@ -509,6 +505,7 @@ const PaymentForm = ({
       justification: paymentHeader.justification,
       lineItems: lineItems2,
     };
+    console.log('lineItems2', lineItems2)
 
     await updatePayment.mutateAsync(paymentToSave, {
       onSuccess: async () => {
@@ -680,7 +677,7 @@ const PaymentForm = ({
 
   return (
     <MenuIdProvider>
-      <pre>{JSON.stringify(lines)}</pre>
+      {/* <pre>{JSON.stringify(lines)}</pre> */}
       <div>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           {/* opacity-0 cursor-none */}

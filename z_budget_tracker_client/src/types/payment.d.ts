@@ -96,9 +96,9 @@ type PaymentLineItemModalInput = {
     payeeId?: number
     amount?: number
     comment?: string
-    invoiceNumber?: string;
+    invoiceNumber?: string | null | undefined;
     invoiceDate?: Date | null | undefined;
-    checkNumber?: string;
+    checkNumber?: string | null | undefined;
 
 };
 

@@ -9,8 +9,8 @@ const PaymentSearch = () => {
 
   return (
     <div>
-      {ids.map((x) => (
-        <div>
+      {ids.map((x, index) => (
+        <div key={index}>
           <Link to={`/payments/${x}`} className="text-blue-500 hover:underline">
             Id {x}
           </Link>

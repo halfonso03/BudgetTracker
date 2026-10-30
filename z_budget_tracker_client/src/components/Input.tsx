@@ -2,12 +2,13 @@ interface CustomInputProps extends React.ComponentPropsWithoutRef<'input'> {
   additionalclasses?: string;
 }
 
-const Input = (props: CustomInputProps) => {
+const Input = ({  ...props }: CustomInputProps) => {
   const defaultClasses = `w-full p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-neutral-400 disabled:bg-neutral-200/60 
     focus:dark:border-gray-100 dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-neutral-800 dark:border-gray-500`;
 
   return (
     <input
+      onBlur={props.onBlur}
       className={defaultClasses + ' ' + (props.additionalclasses ?? '')}
       {...props}
     />
