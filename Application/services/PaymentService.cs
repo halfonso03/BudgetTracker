@@ -222,7 +222,10 @@ namespace Application.Services
                         Year = grant.Year,
                         Comment = x.Comment,
                         BudgetLineItemId = null,
-                        PayeeId = x.PayeeId
+                        PayeeId = x.PayeeId,
+                        CheckNumber = x.CheckNumber,
+                        InvoiceDate = x.InvoiceDate,
+                        InvoiceNumber = x.InvoiceNumber
                     })]
                 };
 

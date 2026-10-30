@@ -35,8 +35,10 @@ namespace Application.DTOs.Payment
 
         [MaxLength(100)]
         public string? InvoiceNumber { get; set; }
-        
+
+
         public DateTime? InvoiceDate { get; set; }
+
         [MaxLength(100)]
         public string? CheckNumber { get; set; }
     }
