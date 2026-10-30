@@ -6,18 +6,18 @@ import Select from '../../../components/Select';
 
 type Props = {
   isOpen: boolean;
+  title: string;
+  onCancel: () => void;
   newReproJustification: string;
   onYearSelected: (e: { year: number; justification: string }) => void;
-  onCancel: () => void;
-  title: string;
 };
 
 const ChooseYearModal = ({ ...props }: Props) => {
+  const [animateOut, setAnimateOut] = useState(false);
   const [year, setYear] = useState<number>(0);
   const [justification, setJustification] = useState(
     props.newReproJustification,
   );
-  const [animateOut, setAnimateOut] = useState(false);
 
   function handleYearChange(e: ChangeEvent<HTMLSelectElement>) {
     if (+e.target.value !== 0) {

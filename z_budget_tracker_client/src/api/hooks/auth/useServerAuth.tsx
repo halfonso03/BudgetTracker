@@ -72,8 +72,6 @@ export default function useServerAuth() {
           } else if (errorData) {
             const responseText = error.request.responseText as string;
 
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-
             if (responseText.indexOf('requirePasswordChange') !== -1) {
               const data: { requirePasswordChange: boolean; userId: number } =
                 JSON.parse(responseText);

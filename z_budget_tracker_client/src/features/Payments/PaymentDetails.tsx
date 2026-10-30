@@ -1,7 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useState } from 'react';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
-import ConfirmModal from '../../components/ConfirmModal';
 import PaymentControls from './PaymentControls';
 import PaymentForm from './PaymentForm';
 import useGetPayment from '../../api/hooks/payments/useGetPayment';
@@ -14,7 +12,7 @@ const PaymentDetails = () => {
   const { id } = useParams();
   const { setHasUnsavedChanges } =
     useHasUnsavedChangesStore();
-  const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
+  // const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const paymentId = id !== undefined ? +id : undefined;
 
   const {
@@ -78,7 +76,7 @@ const PaymentDetails = () => {
         onSearchClick={handleSearchClick}
       ></PaymentControls>
       {body()}
-      <ConfirmModal
+      {/* <ConfirmModal
         isOpen={confirmModalIsOpen}
         onCancel={() => {
           setTimeout(() => {
@@ -90,7 +88,7 @@ const PaymentDetails = () => {
           navigate('/payments/search');
         }}
         message="Are you sure you wish to leave this page? Any changes made to this entry will be lost. Click OK to continue."
-      ></ConfirmModal>
+      ></ConfirmModal> */}
     </div>
   );
 };

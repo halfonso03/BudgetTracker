@@ -285,11 +285,12 @@ const PaymentLineModal = (props: Props) => {
       ? remainingAccountBalances!.map((b) => ({
           value: b.accountId,
           label: (
-            <div className="flex justify-between gap-2">
-              <div>{b.accountName}</div>
-              <div>{formatCurrency(b.availableAmount)}</div>
+            <div className='flex justify-between'>
+              <span>{b.accountName }</span>
+              <span className='mr-8 text-neutral-600'>Available:&nbsp;&nbsp;{formatCurrency(b.availableAmount)}</span>
             </div>
           ),
+          data: { balance: b.availableAmount },
         }))
       : [];
 
@@ -354,50 +355,6 @@ const PaymentLineModal = (props: Props) => {
                   <div className="text-neutral-600/90 font-medium">
                     Initiative
                   </div>
-
-                  {/* <Select
-                    {...register('initiativeId')}
-                    tabIndex={3}
-                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      register('initiativeId').onChange(e);
-
-                      const newSelections = {
-                        ...selections,
-                        initiativeId: +e.target.value,
-                      };
-
-                      if (!remIsvalid) {
-                        const availableAmount2 = getAvailable(
-                          newSelections.initiativeId!,
-                          newSelections.grantId!,
-                          newSelections.categoryId!,
-                          newSelections.accountId!,
-                        );
-
-                        if (
-                          availableAmount2 - +getValues('paymentAmount') >=
-                          0
-                        ) {
-                          setRemIsValid(true);
-                        }
-                      }
-
-                      setSelections(newSelections);
-                    }}
-                  >
-                    <option value={0} className="text-neutral-600">
-                      Select...
-                    </option>
-                    {initiatives?.map((i) => (
-                      <option
-                        value={i.id}
-                        key={i.id}
-                        className="text-neutral-900"
-                      >
-                        {i.name}
-                      </option>
-                    ))}
-                  </Select> */}
                   <Dropdown
                     options={initiativesForDropdown}
                     value={getValues('initiativeId')}
@@ -469,49 +426,7 @@ const PaymentLineModal = (props: Props) => {
                     }}
                     className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
                   ></Dropdown>
-                  {/* <Select
-                    {...register('grantId')}
-                    tabIndex={5}
-                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      register('grantId').onChange(e);
 
-                      const newSelections = {
-                        ...selections,
-                        grantId: +e.target.value,
-                      };
-
-                      if (!remIsvalid) {
-                        const availableAmount2 = getAvailable(
-                          newSelections.initiativeId!,
-                          newSelections.grantId!,
-                          newSelections.categoryId!,
-                          newSelections.accountId!,
-                        );
-
-                        if (
-                          availableAmount2 - +getValues('paymentAmount') >=
-                          0
-                        ) {
-                          setRemIsValid(true);
-                        }
-                      }
-
-                      setSelections(newSelections);
-                    }}
-                  >
-                    <option value={0} className="text-neutral-600">
-                      Select...
-                    </option>
-                    {grants?.map((i) => (
-                      <option
-                        value={i.id}
-                        key={i.id}
-                        className="text-neutral-900"
-                      >
-                        {i.name}
-                      </option>
-                    ))}
-                  </Select> */}
                   {errors?.grantId && (
                     <div className="text-red-500 pl-1">
                       <Asterisk size={18}></Asterisk>
@@ -538,34 +453,6 @@ const PaymentLineModal = (props: Props) => {
                     }}
                     className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
                   ></Dropdown>
-                  {/* 
-                  <Select
-                    {...register('categoryId')}
-                    tabIndex={0}
-                    onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                      register('categoryId').onChange(e);
-                      if (+e.target.value !== 0) {
-                        setSelections((prev) => ({
-                          ...prev,
-                          categoryId: +e.target.value,
-                        }));
-                        setValue('accountId', 0);
-                      }
-                    }}
-                  >
-                    <option value={0} className="text-neutral-600">
-                      Select...
-                    </option>
-                    {categories?.map((i) => (
-                      <option
-                        value={i.id}
-                        key={i.id}
-                        className="text-neutral-900"
-                      >
-                        {i.name}
-                      </option>
-                    ))}
-                  </Select> */}
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-3">
                   <div className="text-neutral-600/90 font-medium">Account</div>
@@ -579,54 +466,14 @@ const PaymentLineModal = (props: Props) => {
                         accountId: +option.value,
                       }));
                     }}
+                    renderOption={(option, { active, selected }) => (
+                      <div className="flex justify-between">
+                        <div>{option.label}</div>
+                        <div>{formatCurrency(+option.data!.balance!)}</div>
+                      </div>
+                    )}
                     className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
                   ></Dropdown>
-
-                  {/* <Select
-                  {...register('accountId')}
-                  tabIndex={2}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                    register('accountId').onChange(e);
-
-                    const newSelections = {
-                      ...selections,
-                      accountId: +e.target.value,
-                    };
-
-                    if (!remIsvalid) {
-                      const availableAmount2 = getAvailable(
-                        newSelections.initiativeId!,
-                        newSelections.grantId!,
-                        newSelections.categoryId!,
-                        newSelections.accountId!,
-                      );
-
-                      if (availableAmount2 - +getValues('paymentAmount') >= 0) {
-                        setRemIsValid(true);
-                      }
-                    }
-
-                    setSelections(newSelections);
-                  }}
-                >
-                  <option value={0} className="text-neutral-600">
-                    Select...
-                  </option>
-                  {accounts?.map((i) => (
-                    <option
-                      value={i.id}
-                      key={i.id}
-                      className="text-neutral-900"
-                    >
-                      {i.name}
-                    </option>
-                  ))}
-                </Select>
-                {errors?.accountId && (
-                  <div className="text-red-500 pl-1">
-                    <Asterisk size={18}></Asterisk>
-                  </div>
-                )} */}
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full mb-3">
                   <div className="text-neutral-600/90 font-medium">Payee</div>
@@ -651,7 +498,7 @@ const PaymentLineModal = (props: Props) => {
                   <textarea
                     {...register('comment')}
                     className="p-2 border border-neutral-300 rounded-sm focus:outline-0 focus:border-blue-500"
-                    rows={3}
+                    rows={1}
                   ></textarea>
                 </div>
                 {/* {loadingRemainingAccountBalances && <Spinner></Spinner>} */}

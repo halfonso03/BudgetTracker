@@ -2,18 +2,13 @@
 reports:
 
 
+payment invoice date and nunmber and check unmber
+
+
 grant balance by AR and initiative
 project budget vs actual budgeted
-
-
-
-budget details category summary no adding expenses its subtracting
-
-add check number for each payment line
 add a 2E link to the budget summary
 
-
-payment incoive date and nunmber
 
  ? -- add delete budget when no reprogrammings and no expenses
 

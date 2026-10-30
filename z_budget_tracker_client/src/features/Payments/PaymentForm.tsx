@@ -397,7 +397,7 @@ const PaymentForm = ({
     );
 
     if (x.length > 0) {
-      result = result && false
+      result = result && false;
     }
 
     // result =
@@ -847,8 +847,9 @@ const PaymentForm = ({
                   </div>
                   <div className="text-center font-medium text-neutral-800 p-2 border border-neutral-300/60 bg-neutral-50 border-r-0  ">
                     {paymentHeader.status !== POSTED &&
-                      i.available &&
-                      formatCurrency(i.available)}
+                      formatNumber(
+                        parseFormattedNumber((i.available ?? 0).toString()),
+                      )}
                   </div>
                   <div className="text-center font-medium text-blue-600 self-center p-2 border border-neutral-300/60 border-r-0 bg-neutral-50">
                     {formatCurrency(
@@ -867,7 +868,7 @@ const PaymentForm = ({
                   </div>
                   <div className="col-span-7 flex justify-end mt-10 ">
                     <PaymentPayees
-                      i={i}
+                      paymentSummary={i}
                       isOverBudget={getOverBudgetClassName(
                         paymentHeader,
                         payments,

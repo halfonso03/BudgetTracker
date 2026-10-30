@@ -186,12 +186,12 @@ const EditLineModal = ({ ...props }: Props) => {
 
           {balances?.map((b) => (
             <div
-              className={`rounded-sm inset-1 py-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300
+              className={`rounded-sm inset-1 py-1 pt-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300
                 ${
                   b.accountId == originalSlections.accountId &&
                   b.initiativeId == originalSlections.initiativeId &&
                   b.grantId == originalSlections.grantId &&
-                  'border-2 border-blue-500 bg-blue-100/30 '
+                  'border border-blue-500 bg-blue-100/30 '
                 }`}
               key={b.accountId}
               onClick={() => {

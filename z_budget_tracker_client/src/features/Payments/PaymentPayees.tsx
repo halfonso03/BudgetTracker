@@ -1,4 +1,4 @@
-import { AlertCircle, Pencil, Plus, TrashIcon } from 'lucide-react';
+import { Pencil, Plus, TrashIcon } from 'lucide-react';
 import { POSTED } from '../../app/constants';
 import {
   formatCurrency,
@@ -14,21 +14,22 @@ type Props = {
   onEditRow: (uuid: string) => void;
   onDeleteRow: (p: PaymentLineItem) => void;
   onAddPaymentToBudget: (i: number, g: number, c: number, a: number) => void;
-  i: PaymentSummary;
+  paymentSummary: PaymentSummary;
   isOverBudget: boolean;
 };
+
+  
+// isOverBudget,
 const PaymentPayees = ({
   onEditRow,
   onDeleteRow,
   payments,
   paymentHeader,
   onAddPaymentToBudget,
-  isOverBudget,
-  i,
+  paymentSummary,
 }: Props) => {
   return (
     <div className=" w-full grid grid-cols-[2fr_3fr_2fr] ">
-      {isOverBudget && <AlertCircle></AlertCircle>}
       <div>
         {paymentHeader.status !== POSTED && (
           <Button
@@ -36,10 +37,10 @@ const PaymentPayees = ({
             buttonSize={'small'}
             onClick={() =>
               onAddPaymentToBudget(
-                i.initiativeId,
-                i.grantId,
-                i.categoryId,
-                i.accountId,
+                paymentSummary.initiativeId,
+                paymentSummary.grantId,
+                paymentSummary.categoryId,
+                paymentSummary.accountId,
               )
             }
           >
@@ -59,7 +60,7 @@ const PaymentPayees = ({
                 <div className="rounded-sm ">
                   <div className="flex mb-2">
                     <div className="flex-1  text-neutral-500">Payee Name</div>
-                    <div className="flex-2  text-end  font-medium">
+                    <div className="flex-2  text-end  font-semibold">
                       {p.payeeName}
                     </div>
                   </div>
@@ -120,7 +121,6 @@ const PaymentPayees = ({
           </div>
         ))}
       </div>
-      <div></div>
     </div>
   );
 };

@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import PaymentForm from './PaymentForm';
 import PaymentControls from './PaymentControls';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
-import ConfirmModal from '../../components/ConfirmModal';
 
 const PaymentNew = () => {
   const navigate = useNavigate();
@@ -13,9 +12,8 @@ const PaymentNew = () => {
   const { user } = useClientAuth();
   const lineItems: PaymentLineItem[] = [];
   // const rowBalances: PaymentRowBalance[] = [];
-  const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-  const { hasUnsavedChanges, setHasUnsavedChanges } =
-    useHasUnsavedChangesStore();
+  // const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
+  const { setHasUnsavedChanges } = useHasUnsavedChangesStore();
 
   let initialYear = 0;
   let justification = '';
@@ -56,11 +54,7 @@ const PaymentNew = () => {
   }, []);
 
   function handleSearchClick() {
-    if (hasUnsavedChanges) {
-      setConfirmModalIsOpen(true);
-    } else {
-      navigate('/payments/search');
-    }
+    navigate('/payments/search');
   }
 
   const handleYearSelected = (year: number, justification: string) => {
@@ -118,7 +112,7 @@ const PaymentNew = () => {
       ></PaymentControls>
 
       {body()}
-      <ConfirmModal
+      {/* <ConfirmModal
         isOpen={confirmModalIsOpen}
         onCancel={() => {
           setTimeout(() => {
@@ -127,10 +121,10 @@ const PaymentNew = () => {
         }}
         onConfirm={() => {
           setHasUnsavedChanges(false);
-          navigate('/reprogramming/search');
+          navigate('/payments/search');
         }}
         message="There are unsaved changes in this reprogramming. Any changes made to this entry will be lost. Click OK to continue."
-      ></ConfirmModal>
+      ></ConfirmModal> */}
     </>
   );
 };
