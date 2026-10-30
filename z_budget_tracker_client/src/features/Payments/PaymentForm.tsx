@@ -795,7 +795,7 @@ const PaymentForm = ({
         )}
 
         {distinctBudgets && lines.length > 0 && (
-          <div>
+          <div className="mx-auto w-[90%] divide-y divide-neutral-200">
             {distinctBudgets.map((i: PaymentSummary) => {
               const payments = lines.filter(
                 (x) =>
@@ -804,69 +804,107 @@ const PaymentForm = ({
                   x.accountId === i.accountId,
               );
 
-              const remaining =
-                i.available! -
-                payments
-                  .map((p) => parseFormattedNumber(p.paymentAmount.toString()))
-                  .reduce((acc, cur) => acc + cur, 0);
+              // const remaining =
+              //   i.available! -
+              //   payments
+              //     .map((p) => parseFormattedNumber(p.paymentAmount.toString()))
+              //     .reduce((acc, cur) => acc + cur, 0);
 
               return (
-                <div className="grid grid-cols-[1.5fr_1fr_1fr_1fr_1fr_.75fr_.75fr] mb-14 ">
-                  <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r-0">
-                    Initiative
+                <div className="grid grid-cols-[1fr_1.4fr] pb-8 mt-8 ">
+                  <div>
+                    <div className="flex justify-between p-5 bg-neutral-200/50  self-start">
+                      <div>
+                        <div className="flex flex-col gap-4 ">
+                          <div className="flex flex-col items-start ">
+                            <div className=" text-neutral-600/90 text-center   ">
+                              Initiative
+                            </div>
+                            <div className=" font-medium text-center text-neutral-950">
+                              {i?.initiativeName}
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col items-start">
+                            <div className=" text-neutral-600/90 text-center   ">
+                              Grant
+                            </div>
+                            <div className="font-medium text-center text-neutral-950">
+                              {i.grantName}
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col items-start ">
+                            <div className=" text-neutral-600/90 text-center   ">
+                              Category
+                            </div>
+                            <div className="font-medium text-center text-neutral-950">
+                              {i?.categoryName}
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col items-start ">
+                            <div className=" text-neutral-600/90 text-center  ">
+                              Account
+                            </div>
+                            <div className="font-medium text-center text-neutral-950">
+                              {i?.accountName}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-4  ">
+                        <div>
+                          <div className="text-neutral-600/90 text-end">
+                            Available
+                          </div>
+                          <div className="font-medium text-end text-neutral-800">
+                            {formatCurrency(i?.available ?? 0)}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-end text-neutral-600/90">
+                            Total to Pay
+                          </div>
+                          <div className="text-end  font-medium text-blue-500  ">
+                            {formatCurrency(i?.totalPaid ?? 0)}
+                          </div>
+                        </div>
+                        <div>
+                          <div className="text-end text-neutral-600/90">
+                            Remaining
+                          </div>
+                          <div
+                            className={`text-end font-medium text-neutral-800 ${(i?.available ?? 0) - (i?.totalPaid ?? 0) < 0 && 'text-red-500 '}`}
+                          >
+                            {formatCurrency(
+                              (i?.available ?? 0) - (i?.totalPaid ?? 0),
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                     <div className="col-span-2 flex justify-end w-full mt-6">
+                        {paymentHeader.status !== POSTED && (
+                          <Button
+                            variation="secondary"
+                            buttonSize='medium'
+                            onClick={() =>
+                              onAddPaymentToBudget(
+                                i.initiativeId,
+                                i.grantId,
+                                i.categoryId,
+                                i.accountId,
+                              )
+                            }
+                          >
+                            <Plus></Plus>Add Payment
+                          </Button>
+                        )}
+                      </div>
                   </div>
-                  <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r-0">
-                    Grant
-                  </div>
-                  <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r-0">
-                    Category
-                  </div>
-                  <div className="font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r-0">
-                    Account
-                  </div>
-                  <div className="font-semibold text-neutral-600/90 text-center bg-neutral-50 py-2  border border-b-0 border-neutral-300/60 border-r-0">
-                    {paymentHeader.status !== POSTED && 'Available'}
-                  </div>
-                  <div className="text-center font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r-0">
-                    Total Paid
-                  </div>
-                  <div className="text-center font-semibold text-neutral-600/90 bg-neutral-50 py-2 px-2 border border-b-0 border-neutral-300/60 border-r ">
-                    {paymentHeader.status !== POSTED && 'Remaining'}
-                  </div>
-                  <div className="font-medium p-2 self-center border border-neutral-300/60 border-r-0 ">
-                    {i.initiativeName}
-                  </div>
-                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 ">
-                    {i.grantName}
-                  </div>
-                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 ">
-                    {i.categoryName}
-                  </div>
-                  <div className="self-center p-2 border border-neutral-300/60 border-r-0 ">
-                    {i.accountName}
-                  </div>
-                  <div className="text-center font-medium text-neutral-800 p-2 border border-neutral-300/60 bg-neutral-50 border-r-0  ">
-                    {paymentHeader.status !== POSTED &&
-                      formatNumber(
-                        parseFormattedNumber((i.available ?? 0).toString()),
-                      )}
-                  </div>
-                  <div className="text-center font-medium text-blue-600 self-center p-2 border border-neutral-300/60 border-r-0 bg-neutral-50">
-                    {formatCurrency(
-                      payments
-                        .map((x) =>
-                          parseFormattedNumber(x.paymentAmount.toString()),
-                        )
-                        .reduce((acc, cur) => acc + cur, 0),
-                    )}
-                  </div>
-                  <div
-                    className={`text-center p-2 border font-medium text-neutral-800 border-neutral-300/60 bg-neutral-50  ${remaining < 0 && 'text-red-500 '}`}
-                  >
-                    {paymentHeader.status !== POSTED &&
-                      formatCurrency(remaining)}
-                  </div>
-                  <div className="col-span-7 flex justify-end mt-10 ">
+                  <div className="flex justify-end ">
                     <PaymentPayees
                       paymentSummary={i}
                       isOverBudget={getOverBudgetClassName(

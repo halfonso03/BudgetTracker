@@ -56,6 +56,7 @@ type PaymentLineItem = {
     numberOfPayments?: number
     invoiceDate?: Date | null
     invoiceNumber?: string | null
+    checkNumber?:string|null
 }
 
 

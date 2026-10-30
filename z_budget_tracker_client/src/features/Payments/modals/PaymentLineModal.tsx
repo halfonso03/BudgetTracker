@@ -285,9 +285,11 @@ const PaymentLineModal = (props: Props) => {
       ? remainingAccountBalances!.map((b) => ({
           value: b.accountId,
           label: (
-            <div className='flex justify-between'>
-              <span>{b.accountName }</span>
-              <span className='mr-8 text-neutral-600'>Available:&nbsp;&nbsp;{formatCurrency(b.availableAmount)}</span>
+            <div className="flex justify-between">
+              <div>{b.accountName}</div>
+              <span className="mr-8 text-neutral-600">
+                Available:&nbsp;&nbsp;{formatCurrency(b.availableAmount)}
+              </span>
             </div>
           ),
           data: { balance: b.availableAmount },
@@ -397,7 +399,7 @@ const PaymentLineModal = (props: Props) => {
                   <div className="text-neutral-600/90 font-medium">Grant</div>
                   <Dropdown
                     options={grantsForDropdown}
-                    value={getValues('grantId')}
+                    value={getValues('grantId')}                    
                     onChange={(option: Option) => {
                       setValue('grantId', +option.value);
 
@@ -454,7 +456,7 @@ const PaymentLineModal = (props: Props) => {
                     className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
                   ></Dropdown>
                 </div>
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-3">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-3">
                   <div className="text-neutral-600/90 font-medium">Account</div>
                   <Dropdown
                     options={accountsForDropdown}
@@ -466,12 +468,11 @@ const PaymentLineModal = (props: Props) => {
                         accountId: +option.value,
                       }));
                     }}
-                    renderOption={(option, { active, selected }) => (
-                      <div className="flex justify-between">
-                        <div>{option.label}</div>
-                        <div>{formatCurrency(+option.data!.balance!)}</div>
-                      </div>
-                    )}
+                    renderOption={(option) => {
+
+                      console.log('option', option)
+                      return option.label;
+                    }}
                     className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
                   ></Dropdown>
                 </div>

@@ -1,11 +1,10 @@
-import { Pencil, Plus, TrashIcon } from 'lucide-react';
+import { Ellipsis, TrashIcon } from 'lucide-react';
 import { POSTED } from '../../app/constants';
 import {
   formatCurrency,
   formatDate,
   parseFormattedNumber,
 } from '../../app/util';
-import Button from '../../components/Button';
 import InvoiceEditor from './InvoiceEditor';
 
 type Props = {
@@ -18,36 +17,19 @@ type Props = {
   isOverBudget: boolean;
 };
 
-  
 // isOverBudget,
 const PaymentPayees = ({
   onEditRow,
   onDeleteRow,
   payments,
   paymentHeader,
-  onAddPaymentToBudget,
-  paymentSummary,
 }: Props) => {
+
+  function handleUpdatePayment() {
+    
+  }
   return (
-    <div className=" w-full grid grid-cols-[2fr_3fr_2fr] ">
-      <div>
-        {paymentHeader.status !== POSTED && (
-          <Button
-            variation="secondary"
-            buttonSize={'small'}
-            onClick={() =>
-              onAddPaymentToBudget(
-                paymentSummary.initiativeId,
-                paymentSummary.grantId,
-                paymentSummary.categoryId,
-                paymentSummary.accountId,
-              )
-            }
-          >
-            <Plus></Plus>Add Payee
-          </Button>
-        )}
-      </div>
+    <div className=" w-[80%] ">
 
       <div className="flex flex-col gap-6 text-[1.04rem]">
         {payments.map((p, i) => (
@@ -69,7 +51,7 @@ const PaymentPayees = ({
                     <div className="flex-1  text-neutral-500">
                       Payment Amount
                     </div>
-                    <div className="flex-1  text-end ">
+                    <div className="flex-1 text-blue-500 font-medium text-end ">
                       {formatCurrency(
                         parseFormattedNumber(p.paymentAmount.toString()),
                       )}
@@ -77,7 +59,7 @@ const PaymentPayees = ({
                   </div>
                 </div>
 
-                <InvoiceEditor p={p}></InvoiceEditor>
+                <InvoiceEditor paymentLineItem={p} onUpdatePayment={handleUpdatePayment}></InvoiceEditor>
               </div>
 
               <div className="flex flex-col justify-between gap-1 flex-1 items-end ">
@@ -101,20 +83,20 @@ const PaymentPayees = ({
                 </div>
 
                 <div className="flex items-end">
-                  {paymentHeader.status !== POSTED && (
-                    <div className="flex gap-4 p-1 ">
-                      <Pencil
-                        size={22}
-                        className={`text-neutral-500 cursor-pointer  hover:text-blue-500 duration-200 transition-all hover:scale-125`}
-                        onClick={() => onEditRow(p.uuid)}
-                      ></Pencil>
+                  <div className="flex gap-4 p-1 ">
+                    <Ellipsis
+                      size={22}
+                      className={`text-neutral-500 cursor-pointer  hover:text-blue-500 duration-200 transition-all hover:scale-125`}
+                      onClick={() => onEditRow(p.uuid)}
+                    ></Ellipsis>
+                    {paymentHeader.status !== POSTED && (
                       <TrashIcon
                         className="text-red-600 opacity-60 cursor-pointer duration-200 transition-all hover:scale-125 hover:opacity-100"
                         size={22}
                         onClick={() => onDeleteRow(p)}
                       ></TrashIcon>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
