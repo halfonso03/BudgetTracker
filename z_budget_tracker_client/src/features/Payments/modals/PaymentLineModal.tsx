@@ -21,6 +21,7 @@ import useRemainingAccountBalances from '../../../api/hooks/payments/useRemainin
 import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeInfo';
 import Dropdown, { type Option } from 'react-dropdown';
 import { useEscapeKey } from '../../../hooks/useEscapeKey';
+import Input from '../../../components/Input';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -30,6 +31,9 @@ type PaymentLineItemSelections = {
   payeeId?: number;
   amount?: number;
   comment?: string;
+  invoiceDate?: Date | null;
+  invoiceNumber?: string | null;
+  checkNumber?: string | null;
 };
 
 type Props = {
@@ -57,7 +61,6 @@ const PaymentLineModal = (props: Props) => {
   const { grants, grantsSuccess } = useGrants(paymentYear);
   const { initiatives, iSuccess: loadInitiativesSuccess } = useInitiatives();
   const { categories, catSuccess } = useCategories();
-
   const [selections, setSelections] =
     useState<PaymentLineItemSelections | null>(props.selections);
 
@@ -93,6 +96,9 @@ const PaymentLineModal = (props: Props) => {
         ? formatNumber(props.selections.amount)
         : '0.00',
       comment: props.selections ? props.selections.comment : '',
+      invoiceNumber: props.selections ? props.selections.invoiceNumber : '',
+      invoiceDate: props.selections ? props.selections.invoiceDate : null,
+      checkNumber: props.selections ? props.selections.checkNumber : '',
     },
   });
 
@@ -342,18 +348,16 @@ const PaymentLineModal = (props: Props) => {
           )}
 
           <div className="flex flex-col justify-between h-full mt-2">
-            <div className=" overflow-y-scroll h-[60dvh]">
-              <div className="flex flex-col justify-between p-3 px-4 ">
+            <div className=" overflow-y-scroll h-[69dvh]">
+              <div className="flex flex-col gap-4 justify-between p-3 px-4 ">
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <div className="text-neutral-600/90 font-medium">Year</div>
                   <div className="text-neutral-700/90 font-medium">
                     {paymentYear}
                   </div>
                 </div>
-                <div className="relative flex items-center mb-3"></div>
-                <div></div>
 
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center mb-3">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center">
                   <div className="text-neutral-600/90 font-medium">
                     Initiative
                   </div>
@@ -395,11 +399,11 @@ const PaymentLineModal = (props: Props) => {
                   )}
                 </div>
 
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-3 ">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center ">
                   <div className="text-neutral-600/90 font-medium">Grant</div>
                   <Dropdown
                     options={grantsForDropdown}
-                    value={getValues('grantId')}                    
+                    value={getValues('grantId')}
                     onChange={(option: Option) => {
                       setValue('grantId', +option.value);
 
@@ -436,7 +440,7 @@ const PaymentLineModal = (props: Props) => {
                   )}
                 </div>
 
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center  mb-3">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center">
                   <div className="text-neutral-600/90 font-medium">
                     Category
                   </div>
@@ -456,7 +460,7 @@ const PaymentLineModal = (props: Props) => {
                     className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
                   ></Dropdown>
                 </div>
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-3">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center">
                   <div className="text-neutral-600/90 font-medium">Account</div>
                   <Dropdown
                     options={accountsForDropdown}
@@ -469,14 +473,13 @@ const PaymentLineModal = (props: Props) => {
                       }));
                     }}
                     renderOption={(option) => {
-
-                      console.log('option', option)
+                      console.log('option', option);
                       return option.label;
                     }}
                     className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
                   ></Dropdown>
                 </div>
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full mb-3">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full ">
                   <div className="text-neutral-600/90 font-medium">Payee</div>
                   <PayeeSearcher
                     onPayeeSelected={handlePayeeSelected}
@@ -492,7 +495,7 @@ const PaymentLineModal = (props: Props) => {
                     )}
                   </div>
                 </div>
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center mb-7">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center ">
                   <div className="text-neutral-600/90 font-medium self-start">
                     Comment
                   </div>
@@ -505,7 +508,7 @@ const PaymentLineModal = (props: Props) => {
                 {/* {loadingRemainingAccountBalances && <Spinner></Spinner>} */}
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-                  <div className="col-span-2  ">
+                  <div className="col-span-2">
                     <PaymentEntryInput
                       getValues={getValues}
                       error={errors?.paymentAmount}
@@ -517,6 +520,58 @@ const PaymentLineModal = (props: Props) => {
                     ></PaymentEntryInput>
                   </div>
                   <div></div>
+                </div>
+                <div className="flex flex-col gap-3 bg-neutral-200/40 p-4 rounded-sm">
+                  <div className="grid grid-cols-[.35fr_1fr_.1fr]">
+                    <div className="grid grid-cols-[.37fr_1fr_.1fr] col-span-2">
+                      <div className="text-neutral-600/90 font-medium self-center">
+                        Invoice No.
+                      </div>
+                      <div>
+                        <div className="w-[50%]">
+                          <Input
+                            {...register('invoiceNumber')}
+                            additionalclasses="bg-white"
+                          ></Input>
+                        </div>
+                      </div>
+                    </div>
+                    <div></div>
+                  </div>
+
+                  <div className="grid grid-cols-[.35fr_1fr_.1fr]">
+                    <div className="grid grid-cols-[.37fr_1fr_.1fr] col-span-2">
+                      <div className="text-neutral-600/90 font-medium self-center">
+                        Invoice Date.
+                      </div>
+                      <div>
+                        <div className="w-[50%]">
+                          <Input
+                            {...register('invoiceDate')}
+                            additionalclasses="bg-white"
+                          ></Input>
+                        </div>
+                      </div>
+                    </div>
+                    <div></div>
+                  </div>
+
+                  <div className="grid grid-cols-[.35fr_1fr_.1fr]">
+                    <div className="grid grid-cols-[.37fr_1fr_.1fr] col-span-2">
+                      <div className="text-neutral-600/90 font-medium self-center">
+                        Check No.
+                      </div>
+                      <div>
+                        <div className="w-[50%]">
+                          <Input
+                            {...register('checkNumber')}
+                            additionalclasses="bg-white"
+                          ></Input>
+                        </div>
+                      </div>
+                    </div>
+                    <div></div>
+                  </div>
                 </div>
               </div>
             </div>

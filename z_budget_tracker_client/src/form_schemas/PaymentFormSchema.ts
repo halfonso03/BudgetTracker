@@ -28,6 +28,10 @@ export const PaymentFormSchema = Yup.object().shape({
             const parsed = parseFloat(val);
             return !isNaN(parsed) && parsed > 0;
         }),
+    checkNumber: Yup.string().optional().nullable(),
+    invoiceNumber: Yup.string().optional().nullable(),
+    invoiceDate: Yup.date().optional().nullable()
+
     // remainingAmount: Yup.number().required()
     //     .transform((_, originalValue) => {
     //         // Strip commas to convert "1,234.56" -> "1234.56" for safe parsing if needed

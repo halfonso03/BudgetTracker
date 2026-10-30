@@ -56,7 +56,7 @@ type PaymentLineItem = {
     numberOfPayments?: number
     invoiceDate?: Date | null
     invoiceNumber?: string | null
-    checkNumber?:string|null
+    checkNumber?: string | null
 }
 
 
@@ -87,7 +87,7 @@ type PaymentRemainingAccountBalance = {
 
 }
 
-type PaymentLineItemSelections = {
+type PaymentLineItemModalInput = {
     uuid: string;
     initiativeId?: number;
     grantId?: number;
@@ -96,6 +96,10 @@ type PaymentLineItemSelections = {
     payeeId?: number
     amount?: number
     comment?: string
+    invoiceNumber?: string;
+    invoiceDate?: Date | null | undefined;
+    checkNumber?: string;
+
 };
 
 type PaymentLineItemRequest = {

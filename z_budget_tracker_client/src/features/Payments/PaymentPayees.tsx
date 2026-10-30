@@ -5,7 +5,6 @@ import {
   formatDate,
   parseFormattedNumber,
 } from '../../app/util';
-import InvoiceEditor from './InvoiceEditor';
 
 type Props = {
   payments: PaymentLineItem[];
@@ -24,13 +23,8 @@ const PaymentPayees = ({
   payments,
   paymentHeader,
 }: Props) => {
-
-  function handleUpdatePayment() {
-    
-  }
   return (
     <div className=" w-[80%] ">
-
       <div className="flex flex-col gap-6 text-[1.04rem]">
         {payments.map((p, i) => (
           <div
@@ -59,7 +53,32 @@ const PaymentPayees = ({
                   </div>
                 </div>
 
-                <InvoiceEditor paymentLineItem={p} onUpdatePayment={handleUpdatePayment}></InvoiceEditor>
+                <div className="flex text-neutral-800">
+                  <div className="flex-1  text-neutral-500 ">Invoice No.</div>
+                  <div>
+                    {p.invoiceNumber && <div>{p.invoiceNumber}</div>}
+                    {!p.invoiceNumber && <div>-</div>}
+                  </div>
+                </div>
+                <div className="flex text-neutral-800">
+                  <div className="flex-1  text-neutral-500">Invoice Date</div>
+                  <div className="flex-1  flex justify-end  text-neutral-950">
+                    {p.invoiceDate && <div>{formatDate(p.invoiceDate)}</div>}
+                    {!p.invoiceDate && <div>-</div>}
+                  </div>
+                </div>
+                <div className="flex text-neutral-800">
+                  <div className="flex-1 text-neutral-500">Check No.</div>
+                  <div>
+                    {p.checkNumber && <div>{p.checkNumber}</div>}
+                    {!p.checkNumber && <div>-</div>}
+                  </div>
+                </div>
+
+                {/* <InvoiceEditor
+                  paymentLineItem={p}
+                  onUpdatePayment={handleUpdatePayment}
+                ></InvoiceEditor> */}
               </div>
 
               <div className="flex flex-col justify-between gap-1 flex-1 items-end ">

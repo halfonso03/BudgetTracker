@@ -60,7 +60,7 @@ const PaymentForm = ({
   onIsDirty,
   preloadedValues,
 }: Props) => {
-  let initialEditSelection: PaymentLineItemSelections | null = null;
+  let initialEditSelection: PaymentLineItemModalInput | null = null;
 
   const { user, loginId } = useClientAuth();
   const queryClient = useQueryClient();
@@ -82,7 +82,7 @@ const PaymentForm = ({
   }
 
   const [editSelections, setEditSelections] =
-    useState<PaymentLineItemSelections | null>(initialEditSelection);
+    useState<PaymentLineItemModalInput | null>(initialEditSelection);
 
   if (payment.year === 0) throw new Error('no year');
 
@@ -885,24 +885,24 @@ const PaymentForm = ({
                         </div>
                       </div>
                     </div>
-                     <div className="col-span-2 flex justify-end w-full mt-6">
-                        {paymentHeader.status !== POSTED && (
-                          <Button
-                            variation="secondary"
-                            buttonSize='medium'
-                            onClick={() =>
-                              onAddPaymentToBudget(
-                                i.initiativeId,
-                                i.grantId,
-                                i.categoryId,
-                                i.accountId,
-                              )
-                            }
-                          >
-                            <Plus></Plus>Add Payment
-                          </Button>
-                        )}
-                      </div>
+                    <div className="col-span-2 flex justify-end w-full mt-6">
+                      {paymentHeader.status !== POSTED && (
+                        <Button
+                          variation="secondary"
+                          buttonSize="medium"
+                          onClick={() =>
+                            onAddPaymentToBudget(
+                              i.initiativeId,
+                              i.grantId,
+                              i.categoryId,
+                              i.accountId,
+                            )
+                          }
+                        >
+                          <Plus></Plus>Add Payment
+                        </Button>
+                      )}
+                    </div>
                   </div>
                   <div className="flex justify-end ">
                     <PaymentPayees
