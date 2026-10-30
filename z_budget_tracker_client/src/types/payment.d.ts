@@ -51,10 +51,10 @@ type PaymentLineItem = {
     availableAmount: number
     paymentAmount: string | number
     newAvailableAmount: number
-    comment?: string
+    comment?: string | null
     lastPaymentDate?: Date | null
     numberOfPayments?: number
-    invoiceDate?: Date | null
+    invoiceDate?: Date | null | undefined;
     invoiceNumber?: string | null
     checkNumber?: string | null
 }

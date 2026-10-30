@@ -7,7 +7,7 @@ import PayeeSearcher from '../PayeeSearcher';
 import TallModal from '../../../components/TallModal';
 import { PaginationContextProvider } from '../../../contexts/pagination/PaginationContextProvider';
 import PaymentEntryInput from '../PaymentEntryInput';
-import { useForm, type Resolver } from 'react-hook-form';
+import { Controller, useForm, type Resolver } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { PaymentFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
@@ -22,6 +22,8 @@ import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeIn
 import Dropdown, { type Option } from 'react-dropdown';
 import { useEscapeKey } from '../../../hooks/useEscapeKey';
 import Input from '../../../components/Input';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -31,7 +33,7 @@ type PaymentLineItemSelections = {
   payeeId?: number;
   amount?: number;
   comment?: string;
-  invoiceDate?: Date | null;
+  invoiceDate?: Date | null | undefined;
   invoiceNumber?: string | null;
   checkNumber?: string | null;
 };
@@ -81,6 +83,7 @@ const PaymentLineModal = (props: Props) => {
     handleSubmit,
     setValue,
     reset,
+    control,
     getValues,
     watch,
     formState: { errors },
@@ -348,7 +351,7 @@ const PaymentLineModal = (props: Props) => {
           )}
 
           <div className="flex flex-col justify-between h-full mt-2">
-            <div className=" overflow-y-scroll h-[69dvh]">
+            <div className=" overflow-y-scroll h-[75dvh]">
               <div className="flex flex-col gap-4 justify-between p-3 px-4 ">
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <div className="text-neutral-600/90 font-medium">Year</div>
@@ -546,10 +549,26 @@ const PaymentLineModal = (props: Props) => {
                       </div>
                       <div>
                         <div className="w-[50%]">
-                          <Input
-                            {...register('invoiceDate')}
-                            additionalclasses="bg-white"
-                          ></Input>
+                          <Controller
+                            control={control}
+                            name="invoiceDate"
+                            render={({ field }) => (
+                              <DatePicker
+                                {...register('invoiceDate')}
+                                id="invoiceDate"
+                                selected={
+                                  field.value ? new Date(field.value) : null
+                                }
+                                dateFormat="MM/dd/yyyy"
+                                onBlur={field.onBlur} // Important for validation
+                                onChange={(date: Date | null) => {
+                                  field.onChange(date);
+                                }}
+                                wrapperClassName="w-full"
+                                className="p-2 rounded-sm bg-white w-full border border-gray-300 focus:outline-none focus:ring focus:ring-blue-50 "
+                              />
+                            )}
+                          ></Controller>
                         </div>
                       </div>
                     </div>

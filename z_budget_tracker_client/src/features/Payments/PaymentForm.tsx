@@ -293,7 +293,6 @@ const PaymentForm = ({
     setTimeout(() => {
       setEditSelections(null);
     }, 500);
-
     let index = -1;
 
     const newLines = lines.map((lineItem: PaymentLineItem, i: number) => {
@@ -681,7 +680,7 @@ const PaymentForm = ({
 
   return (
     <MenuIdProvider>
-      {/* <pre>{JSON.stringify(lines)}</pre> */}
+      <pre>{JSON.stringify(lines)}</pre>
       <div>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           {/* opacity-0 cursor-none */}

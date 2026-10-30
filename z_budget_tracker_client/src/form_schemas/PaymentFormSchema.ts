@@ -7,11 +7,11 @@ export const PaymentFormSchema = Yup.object().shape({
     accountId: Yup.number().notOneOf([0], '*').required("*"),
     initiativeId: Yup.number().notOneOf([0], '*').required("*"),
     grantId: Yup.number().notOneOf([0], '*').required("*"),
-    comment: Yup.string(),
+    comment: Yup.string().optional().nullable(),
     // amount: Yup.string().notOneOf([0], '*').required("*"),
     paymentAmount: Yup
         .string()
-        .required('This field is required')
+        .required('*')
         .matches(
             /^[0-9]{1,3}(,[0-9]{3})*(\.[0-9]+)?$|^[0-9]+(\.[0-9]+)?$/,
             'Must be a valid number with optional commas and decimal'
@@ -30,7 +30,7 @@ export const PaymentFormSchema = Yup.object().shape({
         }),
     checkNumber: Yup.string().optional().nullable(),
     invoiceNumber: Yup.string().optional().nullable(),
-    invoiceDate: Yup.date().optional().nullable()
+    invoiceDate: Yup.date().optional().nullable(),
 
     // remainingAmount: Yup.number().required()
     //     .transform((_, originalValue) => {
