@@ -24,6 +24,7 @@ import { useEscapeKey } from '../../../hooks/useEscapeKey';
 import Input from '../../../components/Input';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import usePayeeInvoices from '../../../api/hooks/payments/usePayeeInvoices';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -108,7 +109,12 @@ const PaymentLineModal = (props: Props) => {
   });
 
   // const categoryIdWatchValue = watch('categoryId') as number;
-
+  const {
+    data: found,
+    isSuccess: foundSuccess,
+    isLoading: foundIsLoading,
+    isFetching: foundIsFetching,
+  } = usePayeeInvoices(selections?.payeeId, getValues('invoiceNumber'));
   const {
     data: remainingAccountBalances,
     isLoading: loadingRemainingAccountBalances,
@@ -548,7 +554,11 @@ const PaymentLineModal = (props: Props) => {
                             additionalclasses="bg-white"
                             onBlur={(e) => {
                               if (e.target.value.trim()) {
-                                setSearchingInvoices(true);
+                                if (searchingInvoices === false)
+                                  setSearchingInvoices(true);
+                              } else {
+                                if (searchingInvoices === true)
+                                  setSearchingInvoices(false);
                               }
                             }}
                           ></Input>
@@ -632,7 +642,12 @@ const PaymentLineModal = (props: Props) => {
                     0
                     disabled={!allSelections() || !remIsvalid}
                      */}
-              <Button type="submit">
+              <Button
+                type="submit"
+                disabled={
+                  searchingInvoices && getValues('invoiceNumber') !== ''
+                }
+              >
                 {!fromRedirect && props.uuid ? 'Update Payment' : 'Add Payment'}
               </Button>
               <Button variation="secondary" onClick={closeModal}>

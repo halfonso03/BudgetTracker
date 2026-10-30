@@ -2,7 +2,7 @@
 dotnet add reference ../MyLibrary/MyLibrary.csproj
 
 
-dotnet ef migrations add ionvoice  -p Persistence -s API
+dotnet ef migrations add ionvoic2e  -p Persistence -s API
 dotnet ef database update -p Persistence -s API
 
 dotnet ef migrations remove -p Persistence -s API

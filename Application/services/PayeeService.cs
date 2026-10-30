@@ -189,7 +189,7 @@ namespace Application.Services
                 _ => payeeSummaries.OrderBy(x => x.Id)
             };
 
-            var payeesQueryResult =  payeesSummariesSorted.ToList();
+            var payeesQueryResult = payeesSummariesSorted.ToList();
 
             var mapped = mapper.Map<List<PayeeSearchPayeeResponseDto>>(payeesQueryResult);
 
@@ -283,6 +283,14 @@ namespace Application.Services
                 return Result<PayeeSearchPayeeResponseDto?>.Success(result);
             }
 
+        }
+
+        public async Task<Result<bool>> GetPayeeInvoices(int payeeId, string invoiceNumber)
+        {
+            var found = await dbContext.DisbLineItems
+                    .AnyAsync(x => x.PayeeId == payeeId && x.InvoiceNumber == invoiceNumber);
+
+            return Result<bool>.Success(found);
         }
 
 

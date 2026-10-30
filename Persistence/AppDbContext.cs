@@ -228,6 +228,9 @@ namespace Persistence
             builder.Entity<DisbLineItem>()
                         .HasIndex(a => new { a.DisbId, a.InitiativeId, a.GrantId, a.CategoryId, a.AccountId, a.PayeeId })
                         .IsUnique();
+            builder.Entity<DisbLineItem>()
+                    .HasIndex(a => new { a.PayeeId, a.InvoiceNumber })
+                    .IsUnique();
             builder.Entity<DisbLineItem>().Property(x => x.PayeeId).HasColumnName("payee_id");
             builder.Entity<DisbLineItem>().Property(x => x.InvoiceDate).HasColumnName("invoice_date").HasColumnType("DATETIME2");
             builder.Entity<DisbLineItem>().Property(x => x.InvoiceNumber).HasColumnName("invoice_number").HasColumnType("VARCHAR(100)");

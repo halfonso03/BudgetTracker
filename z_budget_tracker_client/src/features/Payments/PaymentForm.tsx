@@ -352,7 +352,7 @@ const PaymentForm = ({
       amount: parseFormattedNumber(
         getValues(`rows.${index}.paymentAmount`).toString(),
       ),
-      comment: lineToEdit.comment ?? "",
+      comment: lineToEdit.comment ?? '',
     });
     setPaymentLineModalIsOpen(true);
   }
@@ -408,6 +408,12 @@ const PaymentForm = ({
       const lineItems = lines.map((l) => ({
         ...l,
         amount: parseFormattedNumber(l.paymentAmount?.toString() ?? '0.00'),
+        invoiceNumber:
+          l.invoiceNumber?.trim() === '' ||
+          !l.invoiceNumber ||
+          l.invoiceNumber === undefined
+            ? null
+            : l.invoiceNumber.trim(),
       }));
 
       if (paymentHeader.id === 0) {
@@ -505,7 +511,7 @@ const PaymentForm = ({
       justification: paymentHeader.justification,
       lineItems: lineItems2,
     };
-    console.log('lineItems2', lineItems2)
+    console.log('lineItems2', lineItems2);
 
     await updatePayment.mutateAsync(paymentToSave, {
       onSuccess: async () => {
