@@ -123,7 +123,6 @@ const PayeeSearcher = ({
             containerClassName="flex-1 self-stretch"
           />
         )}
-        {loadginSelectedPayeeInfo && <Spinner></Spinner>}
         {selectedPayee && selectedPayeeInfoFromDb && (
           <div className="mb-2 pr-1 mt-1">
             <SelectedPayeeCard
@@ -152,7 +151,7 @@ const PayeeSearcher = ({
           ></input>
           {isFetching && (
             <div className="mr-2">
-              <Spinner></Spinner>
+              <Spinner color='neutral'></Spinner>
             </div>
           )}
           {suggestions && suggestions.length === 0 && (

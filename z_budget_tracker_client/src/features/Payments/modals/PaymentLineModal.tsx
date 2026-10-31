@@ -177,7 +177,7 @@ const PaymentLineModal = (props: Props) => {
       };
       props.onLineAdded(newLine);
     } else {
-      const newLine: PaymentLineItem = {
+      const updatedLine: PaymentLineItem = {
         ...data,
         rowId: -1,
         uuid: props.uuid,
@@ -200,9 +200,9 @@ const PaymentLineModal = (props: Props) => {
         numberOfPayments: payee?.numberOfPayments,
         comment: data.comment?.trim(),
       };
-      console.log('newLine', newLine);
+      console.log('newLine', updatedLine);
 
-      props.onLineUpdated(newLine);
+      props.onLineUpdated(updatedLine);
     }
   }
 

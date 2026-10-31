@@ -275,7 +275,6 @@ const PaymentForm = ({
   }, [getErrors, lines, paymentHeader.status]);
 
   function handleLineAdded(newLine: PaymentLineItem) {
-    // setTimeout(() => setAddLineModalIsOpen(false), 500);
     setTimeout(() => setPaymentLineModalIsOpen(false), 500);
     setLines([
       ...lines,
@@ -296,19 +295,22 @@ const PaymentForm = ({
     let index = -1;
 
     const newLines = lines.map((lineItem: PaymentLineItem, i: number) => {
-
-      console.log('lineItem', lineItem)
       if (lineItem.uuid !== updatedLine.uuid) return lineItem;
       const newLine: PaymentLineItem = {
         ...updatedLine,
         rowId: lineItem.rowId,
         availableAmount: updatedLine.availableAmount,
         paymentAmount: updatedLine.paymentAmount,
+        invoiceNumber: lineItem.invoiceNumber,
+        invoiceDate: lineItem.invoiceDate,
+        checkNumber: lineItem.checkNumber,
         newAvailableAmount:
           updatedLine.availableAmount -
           parseFormattedNumber(updatedLine.paymentAmount.toString()),
       };
       index = i;
+
+      console.log('newLine', newLine);
       return newLine;
     });
 

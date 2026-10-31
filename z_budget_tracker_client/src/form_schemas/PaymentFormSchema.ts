@@ -28,9 +28,7 @@ export const PaymentFormSchema = Yup.object().shape({
             const parsed = parseFloat(val);
             return !isNaN(parsed) && parsed > 0;
         }),
-    checkNumber: Yup.string().optional().nullable(),
-    invoiceNumber: Yup.string().optional().nullable(),
-    invoiceDate: Yup.date().optional().nullable(),
+
 
     // remainingAmount: Yup.number().required()
     //     .transform((_, originalValue) => {
