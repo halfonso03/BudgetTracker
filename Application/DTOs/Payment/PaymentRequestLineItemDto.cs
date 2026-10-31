@@ -41,5 +41,6 @@ namespace Application.DTOs.Payment
 
         [MaxLength(100)]
         public string? CheckNumber { get; set; }
+
     }
 }

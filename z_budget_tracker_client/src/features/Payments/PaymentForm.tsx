@@ -815,7 +815,7 @@ const PaymentForm = ({
               return (
                 <div className="grid grid-cols-[1fr_1.4fr] pb-8 mt-8 ">
                   <div>
-                    <div className="flex justify-between p-5 bg-neutral-200/50  self-start">
+                    <div className="flex justify-between p-5 bg-neutral-200/50 rounded-md shadow-lg self-start">
                       <div>
                         <div className="flex flex-col gap-4 ">
                           <div className="flex flex-col items-start ">

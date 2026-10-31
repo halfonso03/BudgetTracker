@@ -150,10 +150,8 @@ const PaymentLineModal = (props: Props) => {
       shouldTouch: true,
       shouldValidate: true,
     };
-
     setPayee(payee);
     setValue('payeeId', payee.id, options);
-
     if (+getValues('categoryId') === 0) {
       setValue('categoryId', payee.categoryId, options);
 
@@ -195,8 +193,9 @@ const PaymentLineModal = (props: Props) => {
         newAvailableAmount:
           availableAmount - parseFormattedNumber(getValues('paymentAmount')),
         comment: data.comment?.trim(),
+        lastPaymentDate: payee?.lastPaymentDate,
+        numberOfPayments: payee?.numberOfPayments,
       };
-
       props.onLineAdded(newLine);
     } else {
       const newLine: PaymentLineItem = {
@@ -218,8 +217,12 @@ const PaymentLineModal = (props: Props) => {
           getValues('paymentAmount').toString(),
         ),
         newAvailableAmount: availableAmount - +getValues('paymentAmount'),
+        lastPaymentDate: payee?.lastPaymentDate,
+        numberOfPayments: payee?.numberOfPayments,
         comment: data.comment?.trim(),
       };
+      console.log('newLine', newLine);
+
       props.onLineUpdated(newLine);
     }
   }

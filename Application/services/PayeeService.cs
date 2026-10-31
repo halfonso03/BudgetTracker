@@ -147,7 +147,7 @@ namespace Application.Services
             return Result<PayeePaymentStatsDto?>.Success(paymentsQuery ?? new PayeePaymentStatsDto());
         }
 
-        public async Task<Result<PayeeSearchResponseDto>> GetPayees(PaginationParams paginationParams, string searchTerm, string sortBy, int year = 0)
+        public async Task<Result<PayeeSearchResponseDto>> GetPayees(PaginationParams paginationParams, string searchTerm, string sortBy = "NAME", int year = 0)
         {
 
             // var payeeSummaries = dbContext.PayeeSummaries.AsQueryable();

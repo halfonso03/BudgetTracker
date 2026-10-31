@@ -24,6 +24,20 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(string filter)
+        {
+            var payeesFromDb = await payeeService.GetPayees(new PaginationParams
+            {
+                PageSize = 10000,
+                PageNumber = 1
+            }, filter);
+
+
+
+            return Ok(payeesFromDb.Value!.Items);
+        }
+
         [HttpGet("list")]
         public async Task<IActionResult> List([FromQuery] PaginationParams paginationParams, string searchTerm = "", string sortBy = "NAME", int year = 0)
         {
@@ -106,18 +120,7 @@ namespace API.Controllers
             }
         }
 
-        [HttpGet("search")]
-        public async Task<IActionResult> Search(string filter)
-        {
-            try
-            {
-                return HandleResult(await payeeService.Search(filter));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+
 
 
 

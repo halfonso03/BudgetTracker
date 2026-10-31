@@ -136,6 +136,21 @@ namespace Application.Services
                 }
 
 
+
+                var payeeIds = lineItems.Select(x => x.PayeeId).Distinct().ToList();
+
+
+                var summaries = await _dbContext.PayeeSummaries
+                            .Where(x => payeeIds.Contains(x.Id))
+                            .Select(x => new
+                            {
+                                x.Id,
+                                x.LastPaymentDate,
+                                x.Name
+                            })
+                            .ToListAsync();
+
+           
                 var response = new PaymentResponseDto
                 {
                     RowBalances = rowBalances,
@@ -170,7 +185,8 @@ namespace Application.Services
                             Year = x.Year,
                             CheckNumber = x.CheckNumber,
                             InvoiceDate = x.InvoiceDate,
-                            InvoiceNumber = x.InvoiceNumber
+                            InvoiceNumber = x.InvoiceNumber,
+                            LastPaymentDate = summaries.SingleOrDefault(y => y.Id == x.PayeeId)?.LastPaymentDate
                         })]
                 };
 

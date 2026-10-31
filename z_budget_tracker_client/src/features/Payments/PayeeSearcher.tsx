@@ -82,6 +82,8 @@ const PayeeSearcher = ({
       } else if (event.key === 'Enter') {
         if (suggestions && suggestions.length) {
           if (highlightedRow > -1) {
+
+           
             setSelectedPayee(suggestions[highlightedRow]);
             setSearching(false);
             setHighlightedRow(-1);

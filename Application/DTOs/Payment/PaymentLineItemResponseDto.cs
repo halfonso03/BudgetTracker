@@ -30,6 +30,8 @@ namespace Application.DTOs.Payment
         public string? InvoiceNumber { get; set; }
         public DateTime? InvoiceDate { get; set; }
         public string? CheckNumber { get; set; }
+
+        public DateTime? LastPaymentDate { get; set; }
         public bool? OverrideNegativeBalance { get; set; }
     }
 }

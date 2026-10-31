@@ -29,7 +29,7 @@ const PaymentPayees = ({
         {payments.map((p, i) => (
           <div
             key={i}
-            className="border-b border-b-neutral-200 pb-2 last:border-0 bg-neutral-200/80 p-2 rounded-sm  shadow-lg"
+            className="border-b border-b-neutral-200 pb-2 last:border-0 bg-neutral-200/80 p-2 rounded-sm shadow-md"
           >
             <div className="flex">
               <div className="flex flex-col gap-4 flex-1 bg-neutral-50 p-2 rounded-sm px-3">
@@ -82,23 +82,27 @@ const PaymentPayees = ({
               </div>
 
               <div className="flex flex-col justify-between gap-1 flex-1 items-end ">
-                <div className="w-[75%]  rounded-sm p-2">
-                  <div className="flex ">
-                    <div className="flex-5 text-end  text-neutral-500 text-[1rem]">
+                <div className="w-[99%]  rounded-sm p-2 ">
+                  <div className="flex w-full  ">
+                    <div className="flex-8 text-end  text-neutral-500 text-[1rem]">
                       Payment No.
                     </div>
-                    <div className="flex-2 text-end text-neutral-800">
+                    <div className="flex-5 text-end text-neutral-800">
                       {(p.numberOfPayments ?? 0) + 1}
                     </div>
                   </div>
-                  <div className="flex w-full ">
-                    <div className="flex-5 text-end  text-neutral-500 text-[1rem]">
-                      Last Payment Date
+                  {/* {paymentHeader.status !== POSTED && ( */}
+                    <div className="flex w-full ">
+                      <div className="flex-8 text-end  text-neutral-500 text-[1rem]">
+                        Last Payment Date
+                      </div>
+                      <div className="flex-5 text-end text-neutral-800 ">
+                        {p.lastPaymentDate
+                          ? formatDate(p.lastPaymentDate)
+                          : '-'}
+                      </div>
                     </div>
-                    <div className="flex-2 text-end text-neutral-800 ">
-                      {p.lastPaymentDate ? formatDate(p.lastPaymentDate) : '-'}
-                    </div>
-                  </div>
+                  {/* // )} */}
                 </div>
 
                 <div className="flex items-end">
