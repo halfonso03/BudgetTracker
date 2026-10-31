@@ -36,5 +36,12 @@ namespace API.Controllers
         {
             return HandleResult(await _paymentService.DuplicatePayment(data.Id, data.UserId));
         }
+
+
+        [HttpPut("invoice")]
+        public async Task<IActionResult> Put([FromBody] UpdateInvoiceRequestDto updateInvoiceRequestDto)
+        {
+            return HandleResult(await _paymentService.UpdateInvoice(updateInvoiceRequestDto));
+        }
     }
 }

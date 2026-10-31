@@ -34,6 +34,21 @@ export const usePaymentMutations = () => {
     },
   });
 
+  const {
+    mutate: updateInvoice,
+    isPending: isUpdatingInvoice,
+    isSuccess: updateInvoiceSuccess,
+  } = useMutation({
+    mutationFn: async (data: {
+      paymentLineId: number;
+      invoiceDate: Date;
+      invoiceNUmber: string;
+      checkNumber: string;
+    }) => {
+      const response = await agent.put(`/payment/invoice`, data);
+      return response.data;
+    },
+  });
   return {
     createPayment,
     updatePayment,
@@ -41,5 +56,8 @@ export const usePaymentMutations = () => {
     duplicatePayment,
     isDuplicating,
     duplicateSuccess,
+    updateInvoice,
+    isUpdatingInvoice,
+    updateInvoiceSuccess,
   };
 };

@@ -10,7 +10,7 @@ type Props = {
 
 const InfoModal = ({ ...props }: Props) => {
   return (
-    <Modal2 size="xl" title="Payee Information" animateOut={false} {...props}>
+    <Modal2 size="xl" title="Payee Information" animateOut={false}  {...props}>
       <div className="">
         <div className="flex my-2 mb-6 gap-3 ">
           <div className="text-neutral-700 font-semibold">Payee Name:</div>

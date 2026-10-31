@@ -243,9 +243,6 @@ namespace Application.Services
                         Comment = x.Comment,
                         BudgetLineItemId = null,
                         PayeeId = x.PayeeId,
-                        CheckNumber = x.CheckNumber,
-                        InvoiceDate = x.InvoiceDate,
-                        InvoiceNumber = x.InvoiceNumber
                     })]
                 };
 
@@ -351,9 +348,6 @@ namespace Application.Services
                             lineFromDb.AccountId = req.AccountId;
                             lineFromDb.CategoryId = req.CategoryId;
                             lineFromDb.PayeeId = req.PayeeId;
-                            lineFromDb.CheckNumber = req.CheckNumber;
-                            lineFromDb.InvoiceDate = req.InvoiceDate;
-                            lineFromDb.InvoiceNumber = req.InvoiceNumber;
                             lineFromDb.Comment = string.IsNullOrEmpty(req.Comment) ? null
                             : req.Comment.Trim();
                         }
@@ -375,9 +369,6 @@ namespace Application.Services
                             EntryDate = DateTime.Now,
                             CategoryId = req.CategoryId,
                             Comment = string.IsNullOrEmpty(req.Comment) ? null : req.Comment.Trim(),
-                            CheckNumber = req.CheckNumber,
-                            InvoiceDate = req.InvoiceDate,
-                            InvoiceNumber = req.InvoiceNumber,
                         }
                     ;
 
@@ -436,6 +427,41 @@ namespace Application.Services
             return Result<Unit>.Success(Unit.Value);
         }
 
+        public async Task<Result<Unit>> UpdateInvoice(UpdateInvoiceRequestDto updateInvoiceRequest)
+        {
+            try
+            {
+
+                var payment = await _dbContext.DisbLineItems.SingleOrDefaultAsync(x => x.Id == updateInvoiceRequest.DisbLineId);
+
+                if (payment != null)
+                {
+                    payment.InvoiceDate = updateInvoiceRequest.InvoiceDate;
+                    payment.InvoiceNumber = updateInvoiceRequest.InvoiceNumber;
+                    payment.CheckNumber = updateInvoiceRequest.CheckNumber;
+
+                    await _dbContext.SaveChangesAsync();
+
+                    return Result<Unit>.Success(Unit.Value);
+                }
+                else
+                {
+                    return Result<Unit>.Failure("Payment not found", 404);
+                }
+
+            }
+            catch (DbException ex)
+            {
+                return Result<Unit>.Failure($"DB Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 500);
+
+            }
+            catch (Exception ex)
+            {
+                return Result<Unit>.Failure(ex.Message, 500);
+
+            }
+
+        }
         private async Task<decimal?> CheckForOverBudgetRequest(List<PaymentRequestLineItemDto> lineItems)
         {
             var requested = from x in lineItems

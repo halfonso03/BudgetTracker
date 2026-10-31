@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
 import DatePicker from 'react-datepicker';
@@ -7,13 +7,21 @@ import Input from '../../../components/Input';
 import usePayeeInvoices from '../../../api/hooks/payments/usePayeeInvoices';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { formatCurrency } from '../../../app/util';
+import { usePaymentMutations } from '../../../api/hooks/payments/usePaymentMutations';
 
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
   uuid: string | null;
+  paymentLineId: number;
   payeeId: number;
+  payeeName: string;
+  amount: number;
   invoiceNumber?: string | null;
+  invoiceDate?: Date | null;
+  checkNumber?: string | null;
+  paymentNumber: number;
 };
 
 interface FormData {
@@ -26,9 +34,14 @@ interface FormData {
 const InvoiceInfoModal = ({
   isOpen,
   onCancel,
-  uuid,
+  amount,
+  payeeName,
   payeeId,
   invoiceNumber,
+  invoiceDate,
+  checkNumber,
+  paymentNumber,
+  paymentLineId,
 }: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
 
@@ -36,22 +49,26 @@ const InvoiceInfoModal = ({
     string | null
   >(invoiceNumber ?? null);
 
-  const schema = Yup.object({
+  const { updateInvoice, updateInvoiceSuccess, isUpdatingInvoice } =
+    usePaymentMutations();
+
+  const schema = Yup.object().shape({
     payeeId: Yup.number().required(),
     checkNumber: Yup.string().optional().nullable(),
     invoiceNumber: Yup.string().optional().nullable(),
     invoiceDate: Yup.date().optional().nullable(),
-  }).required();
-
-  const { register, handleSubmit, control, getValues } = useForm<FormData>({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      payeeId: payeeId,
-      invoiceNumber: '',
-      invoiceDate: null,
-      checkNumber: '',
-    },
   });
+
+  const { register, handleSubmit, control, getValues, reset } =
+    useForm<FormData>({
+      resolver: yupResolver(schema),
+      defaultValues: {
+        payeeId: payeeId,
+        invoiceNumber: '',
+        invoiceDate: null,
+        checkNumber: '',
+      },
+    });
 
   const {
     data: found,
@@ -62,37 +79,67 @@ const InvoiceInfoModal = ({
     invoiceNumber,
   );
 
+  useEffect(() => {
+    reset({
+      invoiceNumber: invoiceNumber,
+      invoiceDate: invoiceDate,
+      checkNumber: checkNumber,
+    });
+  }, [checkNumber, invoiceDate, invoiceNumber, reset]);
+
+  async function onSubmit(data: FormData) {
+    if (paymentLineId === 0) {
+      // send back the values to the parent
+    } else {
+      await updateInvoice.mu(
+        paymentLineId,
+        data.invoiceNumber,
+        data.invoiceDate,
+        data.checkNumber,
+      );
+    }
+  }
+
   function closeModal() {
     onCancel();
     setAnimateOut(true);
     setTimeout(() => {
       setAnimateOut(false);
+      reset();
     }, 500);
-  }
-
-  function onSubmit() {
-
-    console.log('uuid', uuid)
   }
 
   return (
     <Modal2
-      size="lg"
+      size="sm"
       title="Update Invoice Information"
       animateOut={animateOut}
       isOpen={isOpen}
-      onCancel={onCancel}
+      onCancel={closeModal}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-[1fr_1fr] mb-4 gap-4">
-          {/* <pre>{JSON.stringify(paymentLineItem)}</pre> */}
-          <div className="flex flex-col gap-3 bg-neutral-200/40 p-4 rounded-sm">
-            <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-              <div className="grid grid-cols-[.33fr_1fr_.1fr] col-span-3 ">
+        <div className="flex gap-1 justify-between mb-7">
+          <div>
+            <div className=" text-neutral-600">Payee Name</div>
+            <div className="font-medium">{payeeName}</div>
+          </div>
+          <div>
+            <div className="text-neutral-600 ">Payment Amount</div>
+            <div className="font-medium text-end">{formatCurrency(amount)}</div>
+          </div>
+          <div>
+            <div className=" text-neutral-600 text-end">Payment No.</div>
+            <div className="font-medium text-end">{paymentNumber}</div>
+          </div>
+        </div>
+        <div className=" mb-8  w-full ">
+          <div className="flex flex-col gap-3 w-full  ">
+            <div className=" w-full">
+              <div className=" ">
                 <div className="text-neutral-600/90 font-medium self-center">
                   Invoice No.
                 </div>
-                <div className="col-span-2 flex gap-2 w-[42%] items-center ">
+                <div className="  ">
                   <Input
                     {...register('invoiceNumber')}
                     additionalclasses="bg-white"
@@ -112,56 +159,48 @@ const InvoiceInfoModal = ({
               )}
             </div>
 
-            <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-              <div className="grid grid-cols-[.37fr_1fr_.1fr] col-span-2">
-                <div className="text-neutral-600/90 font-medium self-center">
-                  Invoice Date.
-                </div>
-                <div>
-                  <div className="w-[50%]">
-                    <Controller
-                      control={control}
-                      name="invoiceDate"
-                      render={({ field }) => (
-                        <DatePicker
-                          {...register('invoiceDate')}
-                          id="invoiceDate"
-                          selected={field.value ? new Date(field.value) : null}
-                          dateFormat="MM/dd/yyyy"
-                          onBlur={field.onBlur}
-                          onChange={(date: Date | null) => {
-                            field.onChange(date);
-                          }}
-                          wrapperClassName="w-full"
-                          className="p-2 rounded-sm bg-white w-full border border-gray-300 focus:outline-none focus:ring focus:ring-blue-50 "
-                        />
-                      )}
-                    ></Controller>
-                  </div>
-                </div>
+            <div className=" ">
+              <div className="text-neutral-600/90 font-medium self-center">
+                Invoice Date.
               </div>
-              <div></div>
+              <div>
+                <Controller
+                  control={control}
+                  name="invoiceDate"
+                  render={({ field }) => (
+                    <DatePicker
+                      {...register('invoiceDate')}
+                      id="invoiceDate"
+                      selected={field.value ? new Date(field.value) : null}
+                      dateFormat="MM/dd/yyyy"
+                      onBlur={field.onBlur}
+                      onChange={(date: Date | null) => {
+                        field.onChange(date);
+                      }}
+                      wrapperClassName="w-full"
+                      className="p-2 rounded-sm bg-white border w-full border-gray-300 focus:outline-none focus:ring focus:ring-blue-50 "
+                    />
+                  )}
+                ></Controller>
+              </div>
             </div>
 
-            <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-              <div className="grid grid-cols-[.37fr_1fr_.1fr] col-span-2">
-                <div className="text-neutral-600/90 font-medium self-center">
-                  Check No.
-                </div>
-                <div>
-                  <div className="w-[50%]">
-                    <Input
-                      {...register('checkNumber')}
-                      additionalclasses="bg-white"
-                    ></Input>
-                  </div>
+            <div className=" ">
+              <div className="text-neutral-600/90 font-medium self-center">
+                Check No.
+              </div>
+              <div>
+                <div className="">
+                  <Input
+                    {...register('checkNumber')}
+                    additionalclasses="bg-white"
+                  ></Input>
                 </div>
               </div>
-              <div></div>
             </div>
           </div>
         </div>
-        <div className="flex justify-end gap-3 pb-3">
+        <div className="flex justify-end gap-3 pb-1">
           <Button
             type="submit"
             disabled={

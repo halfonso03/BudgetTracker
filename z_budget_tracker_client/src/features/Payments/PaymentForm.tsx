@@ -513,7 +513,7 @@ const PaymentForm = ({
     };
     console.log('lineItems2', lineItems2);
 
-    await updatePayment.mutateAsync(paymentToSave, {
+    await .mutateAsync(paymentToSave, {
       onSuccess: async () => {
         if (posted) {
           await invalidateBalances();
@@ -798,6 +798,7 @@ const PaymentForm = ({
 
         {distinctBudgets && lines.length > 0 && (
           <div className="mx-auto w-[90%] divide-y divide-neutral-200">
+            
             {distinctBudgets.map((i: PaymentSummary) => {
               const payments = lines.filter(
                 (x) =>
@@ -815,6 +816,7 @@ const PaymentForm = ({
               return (
                 <div className="grid grid-cols-[1fr_1.4fr] pb-8 mt-8 ">
                   <div>
+                    <div className='my-2 font-medium text-neutral-600'>Pay From</div>
                     <div className="flex justify-between p-5 bg-neutral-200/50 rounded-md shadow-lg self-start">
                       <div>
                         <div className="flex flex-col gap-4 ">
@@ -906,7 +908,8 @@ const PaymentForm = ({
                       )}
                     </div>
                   </div>
-                  <div className="flex justify-end ">
+                  <div className="flex  flex-col items-end">
+                     <div className='my-2 font-medium text-neutral-600'>Pay To</div>
                     <PaymentPayees
                       paymentSummary={i}
                       isOverBudget={getOverBudgetClassName(

@@ -22,7 +22,6 @@ import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeIn
 import Dropdown, { type Option } from 'react-dropdown';
 import { useEscapeKey } from '../../../hooks/useEscapeKey';
 import 'react-datepicker/dist/react-datepicker.css';
-import usePayeeInvoices from '../../../api/hooks/payments/usePayeeInvoices';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -32,9 +31,6 @@ type PaymentLineItemSelections = {
   payeeId?: number;
   amount?: number;
   comment?: string;
-  invoiceDate?: Date | null | undefined;
-  invoiceNumber?: string | null;
-  checkNumber?: string | null;
 };
 
 type Props = {
@@ -97,23 +93,10 @@ const PaymentLineModal = (props: Props) => {
         ? formatNumber(props.selections.amount)
         : '0.00',
       comment: props.selections ? props.selections.comment : '',
-      invoiceNumber: props.selections ? props.selections.invoiceNumber : '',
-      invoiceDate: props.selections ? props.selections.invoiceDate : null,
-      checkNumber: props.selections ? props.selections.checkNumber : '',
     },
   });
 
   // const categoryIdWatchValue = watch('categoryId') as number;
-  const {
-    data: found,
-    isLoading: foundIsLoading,
-    isFetching: foundIsFetching,
-  } = usePayeeInvoices(
-    selections?.invoiceNumber !== props.selections?.invoiceNumber
-      ? selections?.payeeId
-      : 0,
-    selections?.invoiceNumber,
-  );
 
   const {
     data: remainingAccountBalances,
@@ -532,7 +515,6 @@ const PaymentLineModal = (props: Props) => {
                   </div>
                   <div></div>
                 </div>
-               
               </div>
             </div>
             <div className="flex justify-end gap-2 border-t border-t-neutral-300/90 p-4">
@@ -557,13 +539,7 @@ const PaymentLineModal = (props: Props) => {
                     0
                     disabled={!allSelections() || !remIsvalid}
                      */}
-              <Button
-                type="submit"
-                disabled={
-                  (foundIsFetching || foundIsLoading || found) &&
-                  getValues('invoiceNumber') !== ''
-                }
-              >
+              <Button type="submit">
                 {!fromRedirect && props.uuid ? 'Update Payment' : 'Add Payment'}
               </Button>
               <Button variation="secondary" onClick={closeModal}>
