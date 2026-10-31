@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BUDGET_CUMULATIVE_TOTAL_EXCEEDED,
-  DUP_LINES,
   EDITED,
   NEGATIVE_NEW_AVAILABLE_BALANCE,
   NO_AMOUNT_LINES,
   NO_JUSTIFICATION,
   POSTED,
   SAVED,
+  PAYMENT_DUP_LINES,
 } from '../../app/constants';
 import { useForm } from 'react-hook-form';
 import {
@@ -196,7 +196,7 @@ const PaymentForm = ({
     const errors: string[] = [];
 
     if (!noDupLines(lines)) {
-      errors.push(DUP_LINES);
+      errors.push(PAYMENT_DUP_LINES);
     }
 
     if (!noZeroOnlyLines(lines)) {

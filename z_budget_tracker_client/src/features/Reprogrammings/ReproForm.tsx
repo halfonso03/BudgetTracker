@@ -31,7 +31,7 @@ import ErrorsModal from '../Common/modals/ErrorsModal';
 import JustificaModal from '../Common/modals/JustificaModal';
 import CheckBox from '../../components/CheckBox';
 import {
-  DUP_LINES,
+  REPRO_DUP_LINES,
   NO_INC_AND_NO_DEC_LINES,
   HAS_VARIANCE,
   LINES_WITH_INC_AND_DEC,
@@ -158,7 +158,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
     const errors: string[] = [];
 
     if (!noDupLines(lines)) {
-      errors.push(DUP_LINES);
+      errors.push(REPRO_DUP_LINES);
     }
 
     if (!noZeroOnlyLines(lines)) {

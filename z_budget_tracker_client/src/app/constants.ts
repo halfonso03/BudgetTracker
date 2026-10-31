@@ -1,6 +1,6 @@
 //reprogrammings
-export const DUP_LINES =
-    'There are duplicate lines (Look for the duplicate selections for an Initiative, Grant, Category and Account)';
+export const REPRO_DUP_LINES =
+    'There are multiple lines with the same Initiative, Grant, Category, Account.';
 export const NO_INC_AND_NO_DEC_LINES =
     'There are lines with a $0 increase and a $0 decrease';
 export const HAS_VARIANCE = 'There is a variance in the reprogramming';
@@ -17,7 +17,7 @@ export const NEGATIVE_REMAINING_BALANCE =
 export const NO_AMOUNT_LINES = "There are lines with a $0 payment amount"
 export const NEGATIVE_NEW_AVAILABLE_BALANCE = "There is a negative available balance in one or more lines"
 export const BUDGET_CUMULATIVE_TOTAL_EXCEEDED = "The sum of all requested amounts for a one or more budget exceeds the total available for the budget."
-
+export const PAYMENT_DUP_LINES = 'There are multiple lines with the same Initiative, Grant, Category, Account and Payee.';
 export const EDITED = 1;
 export const SAVED = 2;
 export const POSTED = 3;
