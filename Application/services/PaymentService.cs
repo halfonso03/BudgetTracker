@@ -146,11 +146,11 @@ namespace Application.Services
                             {
                                 x.Id,
                                 x.LastPaymentDate,
-                                x.Name
+                                x.NumberOfPayments
                             })
                             .ToListAsync();
 
-           
+
                 var response = new PaymentResponseDto
                 {
                     RowBalances = rowBalances,
@@ -186,7 +186,8 @@ namespace Application.Services
                             CheckNumber = x.CheckNumber,
                             InvoiceDate = x.InvoiceDate,
                             InvoiceNumber = x.InvoiceNumber,
-                            LastPaymentDate = summaries.SingleOrDefault(y => y.Id == x.PayeeId)?.LastPaymentDate
+                            LastPaymentDate = summaries.SingleOrDefault(y => y.Id == x.PayeeId)?.LastPaymentDate,
+                            NumberOfPayments = summaries.SingleOrDefault(y => y.Id == x.PayeeId)?.NumberOfPayments
                         })]
                 };
 

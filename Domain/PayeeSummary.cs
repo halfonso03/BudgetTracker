@@ -27,7 +27,7 @@ namespace Domain.Views
         public required string PayeeType { get; set; }
 
         public DateTime? LastPaymentDate { get; set; }
-        
+
         public decimal? LastPaymentAmount { get; set; }
 
         [Column("days_since_last_payment")]
@@ -35,6 +35,8 @@ namespace Domain.Views
 
         [Column("total_paid")]
         public decimal? TotalPaid { get; set; }
+
+        public int? NumberOfPayments { get; set; }
 
     }
 }

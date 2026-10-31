@@ -34,8 +34,14 @@ namespace API.Controllers
             }, filter);
 
 
-
-            return Ok(payeesFromDb.Value!.Items);
+            if (payeesFromDb.Value != null)
+            {
+                return Ok(payeesFromDb.Value.Items);
+            }
+            else
+            {
+                return Ok(new List<PayeeSearchPayeeResponseDto>());
+            }
         }
 
         [HttpGet("list")]

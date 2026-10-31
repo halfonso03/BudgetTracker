@@ -32,6 +32,8 @@ namespace Application.DTOs.Payment
         public string? CheckNumber { get; set; }
 
         public DateTime? LastPaymentDate { get; set; }
+
+        public int? NumberOfPayments { get; set; }
         public bool? OverrideNegativeBalance { get; set; }
     }
 }
