@@ -39,7 +39,7 @@ namespace API.Controllers
 
 
         [HttpPut("invoice")]
-        public async Task<IActionResult> Put([FromBody] UpdateInvoiceRequestDto updateInvoiceRequestDto)
+        public async Task<IActionResult> Invoice([FromBody] UpdateInvoiceRequestDto updateInvoiceRequestDto)
         {
             return HandleResult(await _paymentService.UpdateInvoice(updateInvoiceRequestDto));
         }

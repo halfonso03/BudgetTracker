@@ -34,16 +34,12 @@ export const usePaymentMutations = () => {
     },
   });
 
-  const {
-    mutate: updateInvoice,
-    isPending: isUpdatingInvoice,
-    isSuccess: updateInvoiceSuccess,
-  } = useMutation({
+  const updateInvoiceMuation = useMutation({
     mutationFn: async (data: {
       paymentLineId: number;
-      invoiceDate: Date;
-      invoiceNUmber: string;
-      checkNumber: string;
+      invoiceDate: Date | null | undefined;
+      invoiceNumber: string | null | undefined;
+      checkNumber: string | null | undefined;
     }) => {
       const response = await agent.put(`/payment/invoice`, data);
       return response.data;
@@ -56,8 +52,6 @@ export const usePaymentMutations = () => {
     duplicatePayment,
     isDuplicating,
     duplicateSuccess,
-    updateInvoice,
-    isUpdatingInvoice,
-    updateInvoiceSuccess,
+    updateInvoice: updateInvoiceMuation,
   };
 };

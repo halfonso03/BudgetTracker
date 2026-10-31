@@ -35,6 +35,7 @@ type PaymentRowBalance = {
 };
 
 type PaymentLineItem = {
+    paymentLineId?: number | null | undefined
     rowId: number
     year?: number
     uuid: string

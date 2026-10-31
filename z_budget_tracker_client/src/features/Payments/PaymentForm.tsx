@@ -296,6 +296,8 @@ const PaymentForm = ({
     let index = -1;
 
     const newLines = lines.map((lineItem: PaymentLineItem, i: number) => {
+
+      console.log('lineItem', lineItem)
       if (lineItem.uuid !== updatedLine.uuid) return lineItem;
       const newLine: PaymentLineItem = {
         ...updatedLine,
@@ -511,9 +513,8 @@ const PaymentForm = ({
       justification: paymentHeader.justification,
       lineItems: lineItems2,
     };
-    console.log('lineItems2', lineItems2);
 
-    await .mutateAsync(paymentToSave, {
+    await updatePayment.mutateAsync(paymentToSave, {
       onSuccess: async () => {
         if (posted) {
           await invalidateBalances();
@@ -681,6 +682,25 @@ const PaymentForm = ({
     onIsDirty(true);
   }
 
+  function handleInvoiceUpdated(data: {
+    uuid: string;
+    invoiceNumber: string | null;
+    checkNumber: string | null;
+    invoiceDate: Date | null;
+  }) {
+    console.log('data', data);
+
+    const newLines = lines.map((lineItem) => {
+      if (lineItem.uuid !== data.uuid) return lineItem;
+      const newLine: PaymentLineItem = {
+        ...lineItem,
+        ...data,
+      };
+      return newLine;
+    });
+    setLines(newLines);
+  }
+
   return (
     <MenuIdProvider>
       {/* <pre>{JSON.stringify(lines)}</pre> */}
@@ -797,8 +817,7 @@ const PaymentForm = ({
         )}
 
         {distinctBudgets && lines.length > 0 && (
-          <div className="mx-auto w-[90%] divide-y divide-neutral-200">
-            
+          <div className="mx-auto w-full divide-y divide-neutral-200">
             {distinctBudgets.map((i: PaymentSummary) => {
               const payments = lines.filter(
                 (x) =>
@@ -814,9 +833,11 @@ const PaymentForm = ({
               //     .reduce((acc, cur) => acc + cur, 0);
 
               return (
-                <div className="grid grid-cols-[1fr_1.4fr] pb-8 mt-8 ">
+                <div className="grid grid-cols-[1fr_1.4fr] gap-10 pb-8 mt-8 ">
                   <div>
-                    <div className='my-2 font-medium text-neutral-600'>Pay From</div>
+                    <div className="my-2 font-medium text-neutral-600">
+                      Pay From
+                    </div>
                     <div className="flex justify-between p-5 bg-neutral-200/50 rounded-md shadow-lg self-start">
                       <div>
                         <div className="flex flex-col gap-4 ">
@@ -908,8 +929,10 @@ const PaymentForm = ({
                       )}
                     </div>
                   </div>
-                  <div className="flex  flex-col items-end">
-                     <div className='my-2 font-medium text-neutral-600'>Pay To</div>
+                  <div className="flex flex-col items-start">
+                    <div className="my-2 font-medium text-neutral-600">
+                      Pay To
+                    </div>
                     <PaymentPayees
                       paymentSummary={i}
                       isOverBudget={getOverBudgetClassName(
@@ -935,6 +958,9 @@ const PaymentForm = ({
                             ),
                           ),
                         }));
+                      }}
+                      onInvoiceUpdated={(d) => {
+                        handleInvoiceUpdated(d);
                       }}
                     ></PaymentPayees>
                   </div>

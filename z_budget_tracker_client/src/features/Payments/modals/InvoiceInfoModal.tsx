@@ -9,12 +9,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { formatCurrency } from '../../../app/util';
 import { usePaymentMutations } from '../../../api/hooks/payments/usePaymentMutations';
+import Spinner from '../../../components/Spinner';
 
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
-  uuid: string | null;
-  paymentLineId: number;
+  uuid: string;
+  paymentLineId: number | null | undefined;
   payeeId: number;
   payeeName: string;
   amount: number;
@@ -22,6 +23,12 @@ type Props = {
   invoiceDate?: Date | null;
   checkNumber?: string | null;
   paymentNumber: number;
+  onInvoiceUpdated: (data: {
+    uuid: string;
+    invoiceNumber: string | null;
+    checkNumber: string | null;
+    invoiceDate: Date | null;
+  }) => void;
 };
 
 interface FormData {
@@ -32,6 +39,7 @@ interface FormData {
 }
 
 const InvoiceInfoModal = ({
+  uuid,
   isOpen,
   onCancel,
   amount,
@@ -42,6 +50,7 @@ const InvoiceInfoModal = ({
   checkNumber,
   paymentNumber,
   paymentLineId,
+  onInvoiceUpdated,
 }: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
 
@@ -49,8 +58,23 @@ const InvoiceInfoModal = ({
     string | null
   >(invoiceNumber ?? null);
 
-  const { updateInvoice, updateInvoiceSuccess, isUpdatingInvoice } =
-    usePaymentMutations();
+  const { updateInvoice } = usePaymentMutations();
+  const {
+    mutateAsync,
+    isPending,
+    isSuccess,
+    reset: resetMutate,
+  } = updateInvoice;
+
+  const {
+    data: found,
+    isLoading: foundIsLoading,
+    isFetching: foundIsFetching,
+    isPending: foundIsPending,
+  } = usePayeeInvoices(
+    payeeId,
+    invoiceNumber == invoiceNumberEntered ? '' : invoiceNumberEntered,
+  );
 
   const schema = Yup.object().shape({
     payeeId: Yup.number().required(),
@@ -59,45 +83,58 @@ const InvoiceInfoModal = ({
     invoiceDate: Yup.date().optional().nullable(),
   });
 
-  const { register, handleSubmit, control, getValues, reset } =
-    useForm<FormData>({
-      resolver: yupResolver(schema),
-      defaultValues: {
-        payeeId: payeeId,
-        invoiceNumber: '',
-        invoiceDate: null,
-        checkNumber: '',
-      },
-    });
-
   const {
-    data: found,
-    isLoading: foundIsLoading,
-    isFetching: foundIsFetching,
-  } = usePayeeInvoices(
-    invoiceNumberEntered !== invoiceNumber ? payeeId : 0,
-    invoiceNumber,
-  );
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { isDirty },
+  } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      payeeId: payeeId,
+    },
+  });
 
   useEffect(() => {
     reset({
+      payeeId: payeeId,
       invoiceNumber: invoiceNumber,
       invoiceDate: invoiceDate,
       checkNumber: checkNumber,
     });
-  }, [checkNumber, invoiceDate, invoiceNumber, reset]);
+  }, [checkNumber, invoiceDate, invoiceNumber, payeeId, reset]);
 
   async function onSubmit(data: FormData) {
-    if (paymentLineId === 0) {
-      // send back the values to the parent
-    } else {
-      await updateInvoice.mu(
-        paymentLineId,
-        data.invoiceNumber,
-        data.invoiceDate,
-        data.checkNumber,
-      );
-    }
+    console.log('data', data);
+    console.log('paymentLineId', paymentLineId);
+
+    setTimeout(async () => {
+      if (!paymentLineId) {
+        // send back the values to the parent
+      } else {
+        // if posted
+        await mutateAsync(
+          {
+            paymentLineId: paymentLineId,
+            invoiceDate: data.invoiceDate,
+            invoiceNumber: data.invoiceNumber,
+            checkNumber: data.checkNumber,
+          },
+          {
+            onSuccess: () => {
+              setTimeout(closeModal, 500);
+              onInvoiceUpdated({
+                uuid: uuid,
+                invoiceNumber: data.invoiceNumber ?? null,
+                invoiceDate: data.invoiceDate ?? null,
+                checkNumber: data.checkNumber ?? null,
+              });
+            },
+          },
+        );
+      }
+    }, 10);
   }
 
   function closeModal() {
@@ -106,7 +143,24 @@ const InvoiceInfoModal = ({
     setTimeout(() => {
       setAnimateOut(false);
       reset();
+      resetMutate();
     }, 500);
+  }
+
+  let isDisabled = false;
+
+  if (
+    foundIsFetching ||
+    foundIsLoading ||
+    foundIsPending ||
+    isPending ||
+    Boolean(found)
+  ) {
+    isDisabled = true;
+  }
+
+  if (isDirty) {
+    isDisabled = false;
   }
 
   return (
@@ -118,6 +172,16 @@ const InvoiceInfoModal = ({
       onCancel={closeModal}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
+        {/* {errors.invoiceDate?.message}
+        {errors.invoiceNumber?.message}
+        {errors.checkNumber?.message}
+        {errors.payeeId?.message} */}
+        {/* {payeeId}
+        <br></br>
+        {invoiceNumberEntered}
+        <br></br>
+        {getValues('invoiceNumber')} */}
+        {found}
         <div className="flex gap-1 justify-between mb-7">
           <div>
             <div className=" text-neutral-600">Payee Name</div>
@@ -129,7 +193,7 @@ const InvoiceInfoModal = ({
           </div>
           <div>
             <div className=" text-neutral-600 text-end">Payment No.</div>
-            <div className="font-medium text-end">{paymentNumber}</div>
+            <div className="font-medium text-end">{paymentNumber + 1}</div>
           </div>
         </div>
         <div className=" mb-8  w-full ">
@@ -139,15 +203,13 @@ const InvoiceInfoModal = ({
                 <div className="text-neutral-600/90 font-medium self-center">
                   Invoice No.
                 </div>
-                <div className="  ">
-                  <Input
-                    {...register('invoiceNumber')}
-                    additionalclasses="bg-white"
-                    onBlur={(e) => {
-                      setInvoiceNumberEntered(e.target.value.trim());
-                    }}
-                  ></Input>
-                </div>
+                <Input
+                  {...register('invoiceNumber')}
+                  additionalclasses="bg-white"
+                  onBlur={(e) => {
+                    setInvoiceNumberEntered(e.target.value.trim());
+                  }}
+                ></Input>
               </div>
               {found && (
                 <>
@@ -201,14 +263,12 @@ const InvoiceInfoModal = ({
           </div>
         </div>
         <div className="flex justify-end gap-3 pb-1">
-          <Button
-            type="submit"
-            disabled={
-              (foundIsFetching || foundIsLoading || found) &&
-              getValues('invoiceNumber') !== ''
-            }
-          >
-            Save
+          <Button type="submit" disabled={isDisabled}>
+            {isPending || isSuccess ? (
+              <Spinner color="white"></Spinner>
+            ) : (
+              'Save'
+            )}
           </Button>
           <Button variation="secondary" onClick={closeModal}>
             Close

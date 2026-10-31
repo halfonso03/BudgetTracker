@@ -169,6 +169,7 @@ namespace Application.Services
                     LineItems = [.. lineItems.Select(x =>
                         new PaymentLineItemResponseDto
                         {
+                            PaymentLineId  = x.Id,
                             Comment = x.Comment,
                             RowId = x.RowId,
                             InitiativeId = x.InitiativeId,
@@ -432,8 +433,7 @@ namespace Application.Services
             try
             {
 
-                var payment = await _dbContext.DisbLineItems.SingleOrDefaultAsync(x => x.Id == updateInvoiceRequest.DisbLineId);
-
+                var payment = await _dbContext.DisbLineItems.SingleOrDefaultAsync(x => x.Id == updateInvoiceRequest.PaymentLineId);
                 if (payment != null)
                 {
                     payment.InvoiceDate = updateInvoiceRequest.InvoiceDate;
@@ -646,6 +646,7 @@ namespace Application.Services
                     RowBalances = rowBalances,
                     LineItems = [.. disbLineItems.Select(x => new PaymentLineItemResponseDto
                     {
+                        PaymentLineId = x.Id,
                         RowId = x.RowId,
                         Year = x.Year,
                         InitiativeId = x.InitiativeId,

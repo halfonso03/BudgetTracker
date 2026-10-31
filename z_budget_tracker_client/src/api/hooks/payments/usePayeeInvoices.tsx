@@ -11,7 +11,10 @@ const fetchRepro = async (
   return response.data ?? ([] as string[]);
 };
 
-const usePayeeInvoices = (id: number | undefined, invoiceNumber: string | null | undefined) => {
+const usePayeeInvoices = (
+  payeeId: number | undefined,
+  invoiceNumber: string | null | undefined,
+) => {
   const {
     data,
     isSuccess,
@@ -21,10 +24,13 @@ const usePayeeInvoices = (id: number | undefined, invoiceNumber: string | null |
     isPending,
     isFetched,
   } = useQuery<string[]>({
-    queryKey: ['payee_invoices', id, invoiceNumber],
-    queryFn: () => fetchRepro(id ?? 0, invoiceNumber ?? ''),
+    queryKey: ['payee_invoices', payeeId, invoiceNumber],
+    queryFn: () => fetchRepro(payeeId ?? 0, invoiceNumber ?? ''),
     enabled:
-      !!id 
+      !!payeeId &&
+      invoiceNumber != null &&
+      invoiceNumber !== undefined &&
+      invoiceNumber.trim() !== '',
   });
 
   return {

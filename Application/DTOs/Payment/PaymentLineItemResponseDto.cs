@@ -8,6 +8,8 @@ namespace Application.DTOs.Payment
 {
     public class PaymentLineItemResponseDto
     {
+
+        public required int PaymentLineId { get; set; }
         public required int RowId { get; set; }
 
         public required int InitiativeId { get; set; }

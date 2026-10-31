@@ -12,14 +12,27 @@ type Props = {
   paymentHeader: PaymentHeader;
   onEditRow: (uuid: string) => void;
   onDeleteRow: (p: PaymentLineItem) => void;
+  onInvoiceUpdated: (data: {
+    uuid: string;
+    invoiceNumber: string | null;
+    checkNumber: string | null;
+    invoiceDate: Date | null;
+  }) => void;
 };
 
-const PaymentPayee = ({ p, paymentHeader, onDeleteRow, onEditRow }: Props) => {
+const PaymentPayee = ({
+  p,
+  paymentHeader,
+  onDeleteRow,
+  onEditRow,
+  onInvoiceUpdated,
+}: Props) => {
   const [invoiceModalIsopen, setInvoiceModalIsOpen] = useState(false);
 
   function onEditInvoice() {
     setInvoiceModalIsOpen(true);
   }
+
   return (
     <div className="border-b border-b-neutral-200 pb-2 last:border-0 bg-neutral-200/80 p-2 rounded-sm shadow-md">
       <div className="flex">
@@ -72,8 +85,9 @@ const PaymentPayee = ({ p, paymentHeader, onDeleteRow, onEditRow }: Props) => {
           </div>
 
           <InvoiceInfoModal
+            key={crypto.randomUUID()}
             uuid={p.uuid}
-            paymentLineId={p.rowId}
+            paymentLineId={p.paymentLineId}
             payeeName={p.payeeName}
             amount={parseFormattedNumber(p.paymentAmount.toString())}
             isOpen={invoiceModalIsopen}
@@ -87,6 +101,7 @@ const PaymentPayee = ({ p, paymentHeader, onDeleteRow, onEditRow }: Props) => {
                 setInvoiceModalIsOpen(false);
               }, 500);
             }}
+            onInvoiceUpdated={onInvoiceUpdated}
           ></InvoiceInfoModal>
         </div>
         {paymentHeader.status !== POSTED && (

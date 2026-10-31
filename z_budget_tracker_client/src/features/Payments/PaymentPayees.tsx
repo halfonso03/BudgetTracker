@@ -8,6 +8,12 @@ type Props = {
   onAddPaymentToBudget: (i: number, g: number, c: number, a: number) => void;
   paymentSummary: PaymentSummary;
   isOverBudget: boolean;
+  onInvoiceUpdated: (data: {
+    uuid: string;
+    invoiceNumber: string | null;
+    checkNumber: string | null;
+    invoiceDate: Date | null;
+  }) => void;
 };
 
 // isOverBudget,
@@ -16,6 +22,7 @@ const PaymentPayees = ({
   onDeleteRow,
   payments,
   paymentHeader,
+  onInvoiceUpdated,
 }: Props) => {
   return (
     <div className=" w-[90%] ">
@@ -27,6 +34,9 @@ const PaymentPayees = ({
             paymentHeader={paymentHeader}
             onDeleteRow={onDeleteRow}
             onEditRow={onEditRow}
+            onInvoiceUpdated={(d) => {
+              onInvoiceUpdated(d);
+            }}
           ></PaymentPayee>
         ))}
       </div>
