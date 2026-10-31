@@ -7,22 +7,14 @@ import Input from '../../../components/Input';
 import usePayeeInvoices from '../../../api/hooks/payments/usePayeeInvoices';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { formatCurrency } from '../../../app/util';
+import { formatCurrency, parseFormattedNumber } from '../../../app/util';
 import { usePaymentMutations } from '../../../api/hooks/payments/usePaymentMutations';
 import Spinner from '../../../components/Spinner';
 
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
-  uuid: string;
-  paymentLineId: number | null | undefined;
-  payeeId: number;
-  payeeName: string;
-  amount: number;
-  invoiceNumber?: string | null;
-  invoiceDate?: Date | null;
-  checkNumber?: string | null;
-  paymentNumber: number;
+  paymentLineItem: PaymentLineItem;
   onInvoiceUpdated: (data: {
     uuid: string;
     invoiceNumber: string | null;
@@ -39,24 +31,16 @@ interface FormData {
 }
 
 const InvoiceInfoModal = ({
-  uuid,
   isOpen,
   onCancel,
-  amount,
-  payeeName,
-  payeeId,
-  invoiceNumber,
-  invoiceDate,
-  checkNumber,
-  paymentNumber,
-  paymentLineId,
+  paymentLineItem,
   onInvoiceUpdated,
 }: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
 
   const [invoiceNumberEntered, setInvoiceNumberEntered] = useState<
     string | null
-  >(invoiceNumber ?? null);
+  >(paymentLineItem.invoiceNumber ?? null);
 
   const { updateInvoice } = usePaymentMutations();
   const {
@@ -72,8 +56,10 @@ const InvoiceInfoModal = ({
     isFetching: foundIsFetching,
     isPending: foundIsPending,
   } = usePayeeInvoices(
-    payeeId,
-    invoiceNumber == invoiceNumberEntered ? '' : invoiceNumberEntered,
+    paymentLineItem.payeeId,
+    paymentLineItem.invoiceNumber == invoiceNumberEntered
+      ? ''
+      : invoiceNumberEntered,
   );
 
   const schema = Yup.object().shape({
@@ -92,31 +78,37 @@ const InvoiceInfoModal = ({
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      payeeId: payeeId,
+      payeeId: paymentLineItem.payeeId,
     },
   });
 
   useEffect(() => {
     reset({
-      payeeId: payeeId,
-      invoiceNumber: invoiceNumber,
-      invoiceDate: invoiceDate,
-      checkNumber: checkNumber,
+      payeeId: paymentLineItem.payeeId,
+      invoiceNumber: paymentLineItem.invoiceNumber,
+      invoiceDate: paymentLineItem.invoiceDate,
+      checkNumber: paymentLineItem.checkNumber,
     });
-  }, [checkNumber, invoiceDate, invoiceNumber, payeeId, reset]);
+  }, [
+    paymentLineItem.checkNumber,
+    paymentLineItem.invoiceDate,
+    paymentLineItem.invoiceNumber,
+    paymentLineItem.payeeId,
+    reset,
+  ]);
 
   async function onSubmit(data: FormData) {
     console.log('data', data);
-    console.log('paymentLineId', paymentLineId);
+    console.log('paymentLineId', paymentLineItem.paymentLineId);
 
     setTimeout(async () => {
-      if (!paymentLineId) {
+      if (!paymentLineItem.paymentLineId) {
         // send back the values to the parent
       } else {
         // if posted
         await mutateAsync(
           {
-            paymentLineId: paymentLineId,
+            paymentLineId: paymentLineItem.paymentLineId,
             invoiceDate: data.invoiceDate,
             invoiceNumber: data.invoiceNumber,
             checkNumber: data.checkNumber,
@@ -125,7 +117,7 @@ const InvoiceInfoModal = ({
             onSuccess: () => {
               setTimeout(closeModal, 500);
               onInvoiceUpdated({
-                uuid: uuid,
+                uuid: paymentLineItem.uuid,
                 invoiceNumber: data.invoiceNumber ?? null,
                 invoiceDate: data.invoiceDate ?? null,
                 checkNumber: data.checkNumber ?? null,
@@ -185,15 +177,19 @@ const InvoiceInfoModal = ({
         <div className="flex gap-1 justify-between mb-7">
           <div>
             <div className=" text-neutral-600">Payee Name</div>
-            <div className="font-medium">{payeeName}</div>
+            <div className="font-medium">{paymentLineItem.payeeName}</div>
           </div>
           <div>
             <div className="text-neutral-600 ">Payment Amount</div>
-            <div className="font-medium text-end">{formatCurrency(amount)}</div>
+            <div className="font-medium text-end">
+              {formatCurrency(parseFormattedNumber(paymentLineItem.paymentAmount.toString()))}
+            </div>
           </div>
           <div>
             <div className=" text-neutral-600 text-end">Payment No.</div>
-            <div className="font-medium text-end">{paymentNumber + 1}</div>
+            <div className="font-medium text-end">
+              {(paymentLineItem.numberOfPayments ?? 0) + 1}
+            </div>
           </div>
         </div>
         <div className=" mb-8  w-full ">

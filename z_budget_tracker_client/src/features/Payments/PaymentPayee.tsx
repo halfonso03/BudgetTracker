@@ -85,17 +85,9 @@ const PaymentPayee = ({
           </div>
 
           <InvoiceInfoModal
-            key={crypto.randomUUID()}
-            uuid={p.uuid}
-            paymentLineId={p.paymentLineId}
-            payeeName={p.payeeName}
-            amount={parseFormattedNumber(p.paymentAmount.toString())}
             isOpen={invoiceModalIsopen}
-            payeeId={p.payeeId}
-            paymentNumber={p.numberOfPayments ?? 0 + 1}
-            invoiceNumber={p.invoiceNumber}
-            invoiceDate={p.invoiceDate}
-            checkNumber={p.checkNumber}
+            key={crypto.randomUUID()}
+            paymentLineItem={p}           
             onCancel={() => {
               setTimeout(() => {
                 setInvoiceModalIsOpen(false);
