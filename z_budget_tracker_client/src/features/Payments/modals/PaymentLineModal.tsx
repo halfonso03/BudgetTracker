@@ -551,46 +551,31 @@ const PaymentLineModal = (props: Props) => {
                 </div>
                 <div className="flex flex-col gap-3 bg-neutral-200/40 p-4 rounded-sm">
                   <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-                    <div className="grid grid-cols-[.37fr_1fr_.1fr] col-span-2">
+                    <div className="grid grid-cols-[.33fr_1fr_.1fr] col-span-3 ">
                       <div className="text-neutral-600/90 font-medium self-center">
                         Invoice No.
                       </div>
-                      <div>
-                        <div className="w-[50%]">
-                          <Input
-                            {...register('invoiceNumber')}
-                            additionalclasses="bg-white"
-                            onBlur={(e) => {
-                              if (
-                                selections?.invoiceNumber !==
-                                  e.target.value.trim() &&
-                                props.selections?.invoiceNumber !==
-                                  e.target.value.trim()
-                              )
-                                setSelections((prev) => ({
-                                  ...prev,
-                                  invoiceNumber: e.target.value.trim(),
-                                }));
-                            }}
-                          ></Input>
-                          {props.selections?.invoiceNumber}
-                          {found ? (
-                            <span>found one</span>
-                          ) : (
-                            <span>did not fund one</span>
-                          )}
-                          {/* {searchingInvoices && <span>seaRCHING...</span>} */}
-                          <br />
-                          {foundIsFetching && <span>fetching</span>}
-                          <br />
-                          {foundIsLoading && <span>loading</span>}
-                          <br />
-                          {foundSuccess && <span>found completed</span>}
-                          <br />
-                        </div>
+                      <div className="col-span-2 flex gap-2 w-[42%] items-center ">
+                        <Input
+                          {...register('invoiceNumber')}
+                          additionalclasses="bg-white"
+                          onBlur={(e) => {
+                            setSelections((prev) => ({
+                              ...prev,
+                              invoiceNumber: e.target.value.trim(),
+                            }));
+                          }}
+                        ></Input>
                       </div>
                     </div>
-                    <div></div>
+                    {found && (
+                      <>
+                        <div></div>
+                        <div className="text-red-500 flex items-center gap-2 my-2">
+                          Entered invoice number already exists for this payee.
+                        </div>
+                      </>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-[.35fr_1fr_.1fr]">
@@ -670,7 +655,7 @@ const PaymentLineModal = (props: Props) => {
               <Button
                 type="submit"
                 disabled={
-                  (foundIsFetching || foundIsLoading) &&
+                  (foundIsFetching || foundIsLoading || found) &&
                   getValues('invoiceNumber') !== ''
                 }
               >
