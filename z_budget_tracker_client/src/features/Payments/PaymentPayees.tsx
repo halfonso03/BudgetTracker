@@ -5,6 +5,8 @@ import {
   formatDate,
   parseFormattedNumber,
 } from '../../app/util';
+import InvoiceInfoModal from './modals/InvoiceInfoModal';
+import { useState } from 'react';
 
 type Props = {
   payments: PaymentLineItem[];
@@ -23,6 +25,8 @@ const PaymentPayees = ({
   payments,
   paymentHeader,
 }: Props) => {
+  const [invoiceModalIsopen, setInvoiceModalIsOpen] = useState(false);
+
   return (
     <div className=" w-[80%] ">
       <div className="flex flex-col gap-6 text-[1.04rem]">
@@ -75,10 +79,17 @@ const PaymentPayees = ({
                   </div>
                 </div>
 
-                {/* <InvoiceEditor
-                  paymentLineItem={p}
-                  onUpdatePayment={handleUpdatePayment}
-                ></InvoiceEditor> */}
+                <InvoiceInfoModal
+                  uuid={p.uuid}
+                  isOpen={invoiceModalIsopen}
+                  payeeId={p.payeeId}
+                  invoiceNumber={p.invoiceNumber}
+                  onCancel={() => {
+                    setTimeout(() => {
+                      setInvoiceModalIsOpen(false);
+                    }, 500);
+                  }}
+                ></InvoiceInfoModal>
               </div>
 
               <div className="flex flex-col justify-between gap-1 flex-1 items-end ">
@@ -92,16 +103,14 @@ const PaymentPayees = ({
                     </div>
                   </div>
                   {/* {paymentHeader.status !== POSTED && ( */}
-                    <div className="flex w-full ">
-                      <div className="flex-8 text-end  text-neutral-500 text-[1rem]">
-                        Last Payment Date
-                      </div>
-                      <div className="flex-5 text-end text-neutral-800 ">
-                        {p.lastPaymentDate
-                          ? formatDate(p.lastPaymentDate)
-                          : '-'}
-                      </div>
+                  <div className="flex w-full ">
+                    <div className="flex-8 text-end  text-neutral-500 text-[1rem]">
+                      Last Payment Date
                     </div>
+                    <div className="flex-5 text-end text-neutral-800 ">
+                      {p.lastPaymentDate ? formatDate(p.lastPaymentDate) : '-'}
+                    </div>
+                  </div>
                   {/* // )} */}
                 </div>
 

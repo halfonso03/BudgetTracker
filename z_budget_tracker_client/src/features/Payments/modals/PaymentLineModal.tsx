@@ -7,7 +7,7 @@ import PayeeSearcher from '../PayeeSearcher';
 import TallModal from '../../../components/TallModal';
 import { PaginationContextProvider } from '../../../contexts/pagination/PaginationContextProvider';
 import PaymentEntryInput from '../PaymentEntryInput';
-import { Controller, useForm, type Resolver } from 'react-hook-form';
+import { useForm, type Resolver } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { PaymentFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
@@ -21,8 +21,6 @@ import useRemainingAccountBalances from '../../../api/hooks/payments/useRemainin
 import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeInfo';
 import Dropdown, { type Option } from 'react-dropdown';
 import { useEscapeKey } from '../../../hooks/useEscapeKey';
-import Input from '../../../components/Input';
-import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import usePayeeInvoices from '../../../api/hooks/payments/usePayeeInvoices';
 
@@ -84,7 +82,6 @@ const PaymentLineModal = (props: Props) => {
     handleSubmit,
     setValue,
     reset,
-    control,
     getValues,
     watch,
     formState: { errors },
@@ -109,7 +106,6 @@ const PaymentLineModal = (props: Props) => {
   // const categoryIdWatchValue = watch('categoryId') as number;
   const {
     data: found,
-    isSuccess: foundSuccess,
     isLoading: foundIsLoading,
     isFetching: foundIsFetching,
   } = usePayeeInvoices(
@@ -329,24 +325,11 @@ const PaymentLineModal = (props: Props) => {
         isOpen={true}
         onCancel={closeModal}
       >
-        {selections?.invoiceNumber}
         <form
           onSubmit={handleSubmit(onSubmit)}
           onKeyDown={checkKeyDown}
           className="self-center h-full w-full"
         >
-          {/* {props.fromRedirect && <div className="p-3">Redirectir</div>} */}
-
-          {/* payee id: {getValues('payeeId')} */}
-          {/* <br></br>
-          initiative id: {getValues('initiativeId')}
-          <br></br>
-          grant id: {getValues('grantId')}
-          <br></br>
-          category id: {getValues('categoryId')}
-          <br></br>
-          account id: {getValues('accountId')}
-          <br></br> */}
           {fromRedirect && redirectMessageIsOpen && (
             <div className="p-3  border border-blue-400 bg-blue-50 flex items-center relative">
               <div className="flex-1 ">
@@ -366,7 +349,7 @@ const PaymentLineModal = (props: Props) => {
           )}
 
           <div className="flex flex-col justify-between h-full mt-2">
-            <div className=" overflow-y-scroll h-[75dvh]">
+            <div className=" overflow-y-scroll h-[65dvh]">
               <div className="flex flex-col gap-4 justify-between p-3 px-4 ">
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <div className="text-neutral-600/90 font-medium">Year</div>
@@ -549,85 +532,7 @@ const PaymentLineModal = (props: Props) => {
                   </div>
                   <div></div>
                 </div>
-                <div className="flex flex-col gap-3 bg-neutral-200/40 p-4 rounded-sm">
-                  <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-                    <div className="grid grid-cols-[.33fr_1fr_.1fr] col-span-3 ">
-                      <div className="text-neutral-600/90 font-medium self-center">
-                        Invoice No.
-                      </div>
-                      <div className="col-span-2 flex gap-2 w-[42%] items-center ">
-                        <Input
-                          {...register('invoiceNumber')}
-                          additionalclasses="bg-white"
-                          onBlur={(e) => {
-                            setSelections((prev) => ({
-                              ...prev,
-                              invoiceNumber: e.target.value.trim(),
-                            }));
-                          }}
-                        ></Input>
-                      </div>
-                    </div>
-                    {found && (
-                      <>
-                        <div></div>
-                        <div className="text-red-500 flex items-center gap-2 my-2">
-                          Entered invoice number already exists for this payee.
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-                    <div className="grid grid-cols-[.37fr_1fr_.1fr] col-span-2">
-                      <div className="text-neutral-600/90 font-medium self-center">
-                        Invoice Date.
-                      </div>
-                      <div>
-                        <div className="w-[50%]">
-                          <Controller
-                            control={control}
-                            name="invoiceDate"
-                            render={({ field }) => (
-                              <DatePicker
-                                {...register('invoiceDate')}
-                                id="invoiceDate"
-                                selected={
-                                  field.value ? new Date(field.value) : null
-                                }
-                                dateFormat="MM/dd/yyyy"
-                                onBlur={field.onBlur}
-                                onChange={(date: Date | null) => {
-                                  field.onChange(date);
-                                }}
-                                wrapperClassName="w-full"
-                                className="p-2 rounded-sm bg-white w-full border border-gray-300 focus:outline-none focus:ring focus:ring-blue-50 "
-                              />
-                            )}
-                          ></Controller>
-                        </div>
-                      </div>
-                    </div>
-                    <div></div>
-                  </div>
-
-                  <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-                    <div className="grid grid-cols-[.37fr_1fr_.1fr] col-span-2">
-                      <div className="text-neutral-600/90 font-medium self-center">
-                        Check No.
-                      </div>
-                      <div>
-                        <div className="w-[50%]">
-                          <Input
-                            {...register('checkNumber')}
-                            additionalclasses="bg-white"
-                          ></Input>
-                        </div>
-                      </div>
-                    </div>
-                    <div></div>
-                  </div>
-                </div>
+               
               </div>
             </div>
             <div className="flex justify-end gap-2 border-t border-t-neutral-300/90 p-4">
