@@ -49,11 +49,7 @@ const PayeePaymentsList = ({
       </div>
     );
   } else if (loadingPayments) {
-    return (
-      <div>
-        <Spinner></Spinner>
-      </div>
-    );
+    return <Spinner></Spinner>;
   }
 
   if (loadingPaymentsSuccess && payments?.payments.length === 0) {

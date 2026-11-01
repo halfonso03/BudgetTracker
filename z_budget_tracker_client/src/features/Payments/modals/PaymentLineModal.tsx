@@ -381,12 +381,12 @@ const PaymentLineModal = (props: Props) => {
           <div className="flex flex-col justify-between h-full mt-2">
             <div className=" overflow-y-scroll h-[80dvh]">
               <div className="flex flex-col gap-4 justify-between p-3 px-4 ">
-                {/* <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <div className="text-neutral-600/90 font-medium">Year</div>
                   <div className="text-neutral-700/90 font-medium">
                     {paymentYear}
                   </div>
-                </div> */}
+                </div>
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center">
                   <div className="text-neutral-600/90 font-medium">

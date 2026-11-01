@@ -58,6 +58,7 @@ type PaymentLineItem = {
     invoiceNumber?: string | null
     checkNumber?: string | null
     paymentLineItemId?: number | null
+    paymentNumber?: number | null
 }
 
 

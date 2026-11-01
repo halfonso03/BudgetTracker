@@ -1,4 +1,4 @@
-import { AlertTriangle, Ellipsis, TrashIcon } from 'lucide-react';
+import { Ellipsis, TrashIcon } from 'lucide-react';
 import { POSTED } from '../../app/constants';
 import {
   formatCurrency,
@@ -69,8 +69,8 @@ const PaymentPayee = ({
                   <div>{paymentLineItem.invoiceNumber}</div>
                 )}
                 {!paymentLineItem.invoiceNumber && (
-                  <div>
-                    <AlertTriangle className="text-yellow-400"></AlertTriangle>
+                  <div className='text-neutral-400/70 font-bold'>
+                    -
                   </div>
                 )}
               </div>
@@ -82,8 +82,8 @@ const PaymentPayee = ({
                   <div>{formatDate(paymentLineItem.invoiceDate)}</div>
                 )}
                 {!paymentLineItem.invoiceDate && (
-                  <div>
-                    <AlertTriangle className="text-yellow-400"></AlertTriangle>
+                  <div className='text-neutral-400/70 font-bold'>
+                    -
                   </div>
                 )}
               </div>
@@ -95,8 +95,8 @@ const PaymentPayee = ({
                   <div>{paymentLineItem.checkNumber}</div>
                 )}
                 {!paymentLineItem.checkNumber && (
-                  <div>
-                    <AlertTriangle className="text-yellow-400"></AlertTriangle>
+                  <div className='text-neutral-400/70 font-bold'>
+                    -
                   </div>
                 )}
               </div>

@@ -235,6 +235,7 @@ namespace Persistence
             builder.Entity<DisbLineItem>().Property(x => x.InvoiceDate).HasColumnName("invoice_date").HasColumnType("DATETIME2");
             builder.Entity<DisbLineItem>().Property(x => x.InvoiceNumber).HasColumnName("invoice_number").HasColumnType("VARCHAR(100)");
             builder.Entity<DisbLineItem>().Property(x => x.CheckNumber).HasColumnName("check_number").HasColumnType("VARCHAR(100)");
+            builder.Entity<DisbLineItem>().Property(x => x.PaymentNumber).HasColumnName("payment_number");
 
 
 
