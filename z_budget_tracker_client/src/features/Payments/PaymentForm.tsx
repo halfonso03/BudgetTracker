@@ -687,8 +687,6 @@ const PaymentForm = ({
     checkNumber: string | null;
     invoiceDate: Date | null;
   }) {
-    console.log('data', data);
-
     const newLines = lines.map((lineItem) => {
       if (lineItem.uuid !== data.uuid) return lineItem;
       const newLine: PaymentLineItem = {
@@ -742,7 +740,7 @@ const PaymentForm = ({
           ) : (
             <div></div>
           )}
-          <div className='self-end'>
+          <div className="self-end">
             <Button
               className="flex gap-1 cursor-pointer hover:text-neutral-600 "
               onClick={() => setJustModalIsOpen(true)}

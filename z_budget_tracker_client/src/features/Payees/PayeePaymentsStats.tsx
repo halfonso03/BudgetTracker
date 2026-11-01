@@ -25,43 +25,43 @@ const PayeePaymentsStats = ({ payeeId }: Props) => {
 
         {paymentStats && paymentStats.lastPaymentDate && (
           <div className="border-b border-b-neutral-200 grid grid-cols-[1.3fr_.7fr_1fr_.7fr_.5fr_1fr_.5fr_1fr] gap-2">
-            <div className="text-neutral-400 font-medium ">
+            <div className="text-neutral-400 ">
               Last Payment Date
             </div>
-            <div className="text-neutral-800 font-medium">
+            <div className="text-neutral-800 ">
               {paymentStats.lastPaymentDate
                 ? formatDate(paymentStats!.lastPaymentDate!)
                 : '-'}
             </div>
 
-            <div className="text-neutral-400 font-medium">Average</div>
-            <div className="text-neutral-800 font-medium">
+            <div className="text-neutral-400 ">Average</div>
+            <div className="text-neutral-800 ">
               {paymentStats.averagePayment
                 ? formatCurrency(paymentStats!.averagePayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-400 font-medium">Smallest</div>
-            <div className=" text-neutral-800 font-medium">
+            <div className="text-neutral-400 ">Smallest</div>
+            <div className=" text-neutral-800 ">
               {paymentStats.lowestPayment
                 ? formatCurrency(paymentStats!.lowestPayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-400 font-medium">Largest</div>
-            <div className="text-neutral-800 font-medium">
+            <div className="text-neutral-400 ">Largest</div>
+            <div className="text-neutral-800 ">
               {paymentStats.highestPayment
                 ? formatCurrency(paymentStats!.highestPayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-400 font-medium">
+            <div className="text-neutral-400 ">
               Last Payment Amount
             </div>
-            <div className="text-neutral-800 font-medium">
+            <div className="text-neutral-800 ">
               {paymentStats.lastPaymentAmount
                 ? formatCurrency(paymentStats!.lastPaymentAmount!)
                 : '-'}
             </div>
-            <div className="text-neutral-400 font-medium">No. Payments</div>
-            <div className="text-neutral-800 font-medium ">
+            <div className="text-neutral-400 ">No. Payments</div>
+            <div className="text-neutral-800  ">
               {paymentStats.numberOfPayments}
             </div>
           </div>

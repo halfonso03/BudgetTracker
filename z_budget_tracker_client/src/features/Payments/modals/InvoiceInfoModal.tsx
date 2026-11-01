@@ -96,7 +96,7 @@ const InvoiceInfoModal = ({
       },
       {
         onSuccess: () => {
-          toast.success('Invoice updated');
+          toast.success('Updated successfull.');
           setTimeout(closeModal, 800);
           onInvoiceUpdated({
             uuid: paymentLineItem.uuid,
