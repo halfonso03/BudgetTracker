@@ -704,72 +704,70 @@ const PaymentForm = ({
     <MenuIdProvider>
       {/* <pre>{JSON.stringify(lines)}</pre> */}
       <div>
-        <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
+        <div className="flex mb-12 justify-between text-neutral-400 mr-3 ">
           {/* opacity-0 cursor-none */}
 
-          <div
-            className={`flex gap-2 cursor-default ${paymentHeader.status !== +POSTED ? '' : ''}`}
-          >
-            {/* <pre className="w-[20%]">{JSON.stringify(editSelections)}</pre> */}
-            {payment !== undefined && paymentHeader.status !== POSTED && (
+          {paymentHeader.status !== POSTED ? (
+            <div
+              className={`flex gap-2 cursor-default mt-10 ${paymentHeader.status !== +POSTED ? '' : ''}`}
+            >
               <Button buttonSize="small" onClick={onAddRow}>
                 <Plus></Plus>
                 Add Line
               </Button>
-            )}
-            {payment !== undefined && paymentHeader.status !== POSTED && (
-              <>
-                <Button
-                  buttonSize="small"
-                  disabled={!canSave() || !user}
-                  onClick={savePaymentButtonClick}
-                >
-                  <Save className="mr-1"></Save>
-                  Save
-                </Button>
-                <Button
-                  buttonSize="small"
-                  disabled={
-                    !canPost() ||
-                    getErrors().length > 0 ||
-                    paymentHeader.status === Number(POSTED) ||
-                    !user
-                  }
-                  onClick={() => {
-                    setConfirmPostModal(true);
-                  }}
-                >
-                  <BookOpenText className="mr-1"></BookOpenText>
-                  Post
-                </Button>
-              </>
-            )}
+              <Button
+                buttonSize="small"
+                disabled={!canSave() || !user}
+                onClick={savePaymentButtonClick}
+              >
+                <Save className="mr-1"></Save>
+                Save
+              </Button>
+              <Button
+                buttonSize="small"
+                disabled={
+                  !canPost() ||
+                  getErrors().length > 0 ||
+                  paymentHeader.status === Number(POSTED) ||
+                  !user
+                }
+                onClick={() => {
+                  setConfirmPostModal(true);
+                }}
+              >
+                <BookOpenText className="mr-1"></BookOpenText>
+                Post
+              </Button>
+            </div>
+          ) : (
+            <div></div>
+          )}
+          <div className='self-end'>
+            <Button
+              className="flex gap-1 cursor-pointer hover:text-neutral-600 "
+              onClick={() => setJustModalIsOpen(true)}
+            >
+              {paymentHeader.status === Number(POSTED) ? (
+                <div className="self-center">View Justification</div>
+              ) : (
+                <div className="self-center">Justification</div>
+              )}
+              {paymentHeader.justification?.trim() === '' ? (
+                <AlertTriangle
+                  className="self-center text-orange-300"
+                  size={17}
+                ></AlertTriangle>
+              ) : (
+                <CheckCircle2
+                  className="self-center text-green-500"
+                  size={19}
+                ></CheckCircle2>
+              )}
+            </Button>
           </div>
-
-          <Button
-            className="flex gap-1 cursor-pointer hover:text-neutral-600 "
-            onClick={() => setJustModalIsOpen(true)}
-          >
-            {paymentHeader.status === Number(POSTED) ? (
-              <div className="self-center">View Justification</div>
-            ) : (
-              <div className="self-center">Justification</div>
-            )}
-            {paymentHeader.justification?.trim() === '' ? (
-              <AlertTriangle
-                className="self-center text-orange-300"
-                size={17}
-              ></AlertTriangle>
-            ) : (
-              <CheckCircle2
-                className="self-center text-green-500"
-                size={19}
-              ></CheckCircle2>
-            )}
-          </Button>
         </div>
 
-        <div className="flex justify-between mb-16 border-b border-b-neutral-200 pb-2 ">
+        <div className="flex justify-between mb-10 border-b border-b-neutral-200 pb-2 ">
           <IdHeader
             id={paymentHeader.id}
             status={paymentHeader.status}
@@ -778,7 +776,7 @@ const PaymentForm = ({
 
           {paymentHeader.status === POSTED && (
             <div className="mr-4 flex gap-8">
-              <div className="flex gap-3 font-semibold">
+              <div className="flex gap-3 font-medium">
                 <div className=" text-neutral-500">POSTED ON</div>
                 <div>
                   {paymentHeader.postedDate
@@ -786,7 +784,7 @@ const PaymentForm = ({
                     : ''}
                 </div>
               </div>
-              <div className="flex gap-3 font-semibold">
+              <div className="flex gap-3 font-medium">
                 <div className=" text-neutral-500">POSTED BY</div>
                 <div>{paymentHeader.postedBy}</div>
               </div>
@@ -794,26 +792,26 @@ const PaymentForm = ({
           )}
         </div>
 
-        {paymentHeader.status !== POSTED && (
-          <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 mt-12">
-            <div className="">Total</div>
-            <div className="text-neutral-900">{getPaymentTotal()}</div>
+        <div className="flex gap-10 items-center py-1 border-b border-neutral-200  text-neutral-500 font-medium">
+          <div className="">TOTAL PAYMENT</div>
+          <div>
+            {paymentHeader.status !== POSTED && (
+              <div className="text-neutral-800 font-semibold ">
+                {getPaymentTotal()}
+              </div>
+            )}
+            {lines.length > 0 && paymentHeader.status === POSTED && (
+              <div>
+                <input
+                  readOnly={true}
+                  value={getPaymentTotal()}
+                  disabled={true}
+                  className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full focus:outline-none focus:ring-0 focus:ring-offset-0"
+                ></input>
+              </div>
+            )}
           </div>
-        )}
-
-        {lines.length > 0 && paymentHeader.status === POSTED && (
-          <div className="mx-3 grid grid-cols-[1.5fr_1fr_1fr_1fr_1fr_.75fr_.75fr] py-1 border-b border-neutral-200 mb-16 text-neutral-500 font-semibold">
-            <div className="flex-4 col-span-5">Total Payment</div>
-            <div className="flex-3 items-center justify-center ">
-              <input
-                readOnly={true}
-                value={getPaymentTotal()}
-                disabled={true}
-                className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-center focus:outline-none focus:ring-0 focus:ring-offset-0"
-              ></input>
-            </div>
-          </div>
-        )}
+        </div>
 
         {distinctBudgets && lines.length > 0 && (
           <div className="mx-auto w-full divide-y divide-neutral-200">

@@ -260,8 +260,8 @@ namespace Application.Services
                         InvoiceNumber = x.InvoiceNumber,
                         InvoiceDate = x.InvoiceDate,
                         CheckNumber = x.CheckNumber,
-                        PaymentNumber = payeePayments.Any(x => x.payeeId == x.payeeId)
-                                ?  payeePayments.First(x => x.payeeId == x.payeeId).paymentCount
+                        PaymentNumber = payeePayments.Any(y => y.payeeId == x.PayeeId)
+                                ?  payeePayments.First(y => y.payeeId == x.PayeeId).paymentCount + 1
                                 : 1
                     })]
                 };
@@ -349,7 +349,7 @@ namespace Application.Services
 
                 var payeeIds = disbRequestDto.LineItems.Select(x => x.PayeeId).Distinct().ToList();
                 var payeePayments = await _dbContext.DisbLineItems
-                                    .Where(x => payeeIds.Contains(x.PayeeId))
+                                    .Where(x => payeeIds.Contains(x.PayeeId) && x.BudgetLineItemId != null)
                                     .GroupBy(x => x.PayeeId)
                                     .Select(x => new
                                     {
@@ -358,6 +358,11 @@ namespace Application.Services
                                     })
                                     .ToListAsync();
 
+                foreach (var p in payeePayments)
+                {
+                    Console.WriteLine($"{p.payeeId} {p.paymentCount}");
+                }
+
                 foreach (var req in disbRequestDto.LineItems)
                 {
                     //  update existing records
@@ -365,15 +370,15 @@ namespace Application.Services
                     {
                         var lineFromDb = lineItemsFromDb.First(x => x.RowId == req.RowId);
 
-                        if (lineFromDb.Amount != req.Amount ||
-                            lineFromDb.InitiativeId != req.InitiativeId ||
-                            lineFromDb.GrantId != req.GrantId ||
-                            lineFromDb.AccountId != req.AccountId ||
-                            lineFromDb.PayeeId != req.PayeeId ||
-                            lineFromDb.Comment != req.Comment ||
-                            lineFromDb.InvoiceNumber != req.InvoiceNumber ||
-                            lineFromDb.InvoiceDate != req.InvoiceDate ||
-                            lineFromDb.CheckNumber != req.CheckNumber)
+                        // if (lineFromDb.Amount != req.Amount ||
+                        //     lineFromDb.InitiativeId != req.InitiativeId ||
+                        //     lineFromDb.GrantId != req.GrantId ||
+                        //     lineFromDb.AccountId != req.AccountId ||
+                        //     lineFromDb.PayeeId != req.PayeeId ||
+                        //     lineFromDb.Comment != req.Comment ||
+                        //     lineFromDb.InvoiceNumber != req.InvoiceNumber ||
+                        //     lineFromDb.InvoiceDate != req.InvoiceDate ||
+                        //     lineFromDb.CheckNumber != req.CheckNumber || 1 == 1)
                         {
                             lineFromDb.UpdateDate = DateTime.Now;
                             lineFromDb.UpdatedById = disbRequestDto.UpdatedById;
@@ -388,8 +393,8 @@ namespace Application.Services
                             lineFromDb.CheckNumber = req.CheckNumber;
                             lineFromDb.InvoiceDate = req.InvoiceDate;
                             lineFromDb.InvoiceNumber = req.InvoiceNumber;
-                            lineFromDb.PaymentNumber = payeePayments.Any(x => x.payeeId == x.payeeId)
-                                ? payeePayments.First(x => x.payeeId == x.payeeId).paymentCount
+                            lineFromDb.PaymentNumber = payeePayments.Any(x => x.payeeId == req.PayeeId)
+                                ? payeePayments.First(x => x.payeeId == req.PayeeId).paymentCount + 1
                                 : 1;
                         }
                     }
@@ -413,8 +418,8 @@ namespace Application.Services
                             InvoiceNumber = req.InvoiceNumber,
                             InvoiceDate = req.InvoiceDate,
                             CheckNumber = req.CheckNumber,
-                            PaymentNumber = payeePayments.Any(x => x.payeeId == x.payeeId)
-                                ? payeePayments.First(x => x.payeeId == x.payeeId).paymentCount
+                            PaymentNumber = payeePayments.Any(x => x.payeeId == req.PayeeId)
+                                ? payeePayments.First(x => x.payeeId == req.PayeeId).paymentCount + 1
                                 : 1
                         }
                     ;

@@ -69,9 +69,7 @@ const PaymentPayee = ({
                   <div>{paymentLineItem.invoiceNumber}</div>
                 )}
                 {!paymentLineItem.invoiceNumber && (
-                  <div className='text-neutral-400/70 font-bold'>
-                    -
-                  </div>
+                  <div className="text-neutral-400/70 font-bold">-</div>
                 )}
               </div>
             </div>
@@ -82,9 +80,7 @@ const PaymentPayee = ({
                   <div>{formatDate(paymentLineItem.invoiceDate)}</div>
                 )}
                 {!paymentLineItem.invoiceDate && (
-                  <div className='text-neutral-400/70 font-bold'>
-                    -
-                  </div>
+                  <div className="text-neutral-400/70 font-bold">-</div>
                 )}
               </div>
             </div>
@@ -95,9 +91,7 @@ const PaymentPayee = ({
                   <div>{paymentLineItem.checkNumber}</div>
                 )}
                 {!paymentLineItem.checkNumber && (
-                  <div className='text-neutral-400/70 font-bold'>
-                    -
-                  </div>
+                  <div className="text-neutral-400/70 font-bold">-</div>
                 )}
               </div>
             </div>
@@ -123,7 +117,7 @@ const PaymentPayee = ({
                 Payment No.
               </div>
               <div className="flex-5 text-end text-neutral-800">
-                {(paymentLineItem.numberOfPayments ?? 0) + 1}
+                {paymentLineItem.paymentNumber || (paymentLineItem?.numberOfPayments ?? 0) + 1}
               </div>
             </div>
             <div className="flex w-full ">

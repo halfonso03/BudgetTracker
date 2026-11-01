@@ -1132,7 +1132,7 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("payee_id");
 
-                    b.Property<int?>("PaymentNumber")
+                    b.Property<int>("PaymentNumber")
                         .HasColumnType("int")
                         .HasColumnName("payment_number");
 
