@@ -64,3 +64,42 @@ export const PaymentFormSchema = Yup.object().shape({
             }
         ),
 });
+
+
+
+export const InvoiceInfoFormSchema = Yup.object().shape({
+    checkNumber: Yup.string().optional().nullable(),
+    invoiceDate: Yup.date().optional().nullable(),
+    invoiceNumber: Yup
+        .string()
+        .optional()
+        .nullable()
+        .test(
+            'checkInvoicelUnique',
+            'This invoice number is already taken',
+            async (value, testContext) => {
+
+                const { payload } = testContext.options.context || {}
+                const { priorInvoiceNumber, payeeId } = payload;
+                console.log('payload', payload)
+
+                if (!payload || !payeeId || value?.length === 0) return true
+                if (!payeeId) return true
+                if (priorInvoiceNumber && value && priorInvoiceNumber === value.trim()) {
+                    return true;
+                }
+
+                try {
+                    const response = await agent.get<string[]>(
+                        `/payee/invoices/${payeeId}?invoiceNumber=${value}`,
+                    );
+
+                    const x = Boolean(response.data);
+                    return !x;
+                } catch (error) {
+                    console.error("Remote validation failed", error);
+                    return false;
+                }
+            }
+        ),
+});

@@ -592,7 +592,7 @@ const PaymentLineModal = (props: Props) => {
                   </div>
                   <div></div>
                 </div>
-                <div className="grid grid-cols-[.32fr_1fr] ">
+                <div className="grid grid-cols-[.32fr_1fr] items-center">
                   <div className="text-neutral-600/90 font-medium self-center">
                     Invoice No.
                   </div>
@@ -614,7 +614,7 @@ const PaymentLineModal = (props: Props) => {
                   </div>
                   <div></div>
                 </div>
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] items-center">
                   <div className="text-neutral-600/90 font-medium self-center">
                     Check No.
                   </div>

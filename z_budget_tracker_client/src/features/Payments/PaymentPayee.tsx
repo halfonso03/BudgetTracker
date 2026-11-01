@@ -25,7 +25,6 @@ const PaymentPayee = ({
   paymentHeader,
   onDeleteRow,
   onEditRow,
-  onInvoiceUpdated,
 }: Props) => {
   const [invoiceModalIsopen, setInvoiceModalIsOpen] = useState(false);
 
@@ -105,7 +104,6 @@ const PaymentPayee = ({
                 setInvoiceModalIsOpen(false);
               }, 500);
             }}
-            onInvoiceUpdated={onInvoiceUpdated}
           ></InvoiceInfoModal>
         </div>
 
