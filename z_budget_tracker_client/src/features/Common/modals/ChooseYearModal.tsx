@@ -38,7 +38,7 @@ const ChooseYearModal = ({ ...props }: Props) => {
             <option value="2025">2025</option>
           </Select>
         </div>
-        <div className="">
+        <div className="mb-4">
           <div className="entity-label">Enter a Justification</div>
           <TextArea
             value={justification}

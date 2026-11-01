@@ -245,6 +245,9 @@ namespace Application.Services
                         Comment = x.Comment,
                         BudgetLineItemId = null,
                         PayeeId = x.PayeeId,
+                        InvoiceNumber = x.InvoiceNumber,
+                        InvoiceDate = x.InvoiceDate,
+                        CheckNumber = x.CheckNumber
                     })]
                 };
 
@@ -340,7 +343,10 @@ namespace Application.Services
                             lineFromDb.GrantId != req.GrantId ||
                             lineFromDb.AccountId != req.AccountId ||
                             lineFromDb.PayeeId != req.PayeeId ||
-                            lineFromDb.Comment != req.Comment)
+                            lineFromDb.Comment != req.Comment ||
+                            lineFromDb.InvoiceNumber != req.InvoiceNumber ||
+                            lineFromDb.InvoiceDate != req.InvoiceDate ||
+                            lineFromDb.CheckNumber != req.CheckNumber)
                         {
                             lineFromDb.UpdateDate = DateTime.Now;
                             lineFromDb.UpdatedById = disbRequestDto.UpdatedById;
@@ -470,7 +476,7 @@ namespace Application.Services
             }
 
         }
-        
+
         private async Task<decimal?> CheckForOverBudgetRequest(List<PaymentRequestLineItemDto> lineItems)
         {
             var requested = from x in lineItems

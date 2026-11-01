@@ -298,20 +298,14 @@ const PaymentForm = ({
     const newLines = lines.map((lineItem: PaymentLineItem, i: number) => {
       if (lineItem.uuid !== updatedLine.uuid) return lineItem;
 
-      console.log('updatedLine2', updatedLine);
       const newLine: PaymentLineItem = {
         ...updatedLine,
         rowId: lineItem.rowId,
-        availableAmount: updatedLine.availableAmount,
-        paymentAmount: updatedLine.paymentAmount,
-        invoiceNumber: updatedLine.invoiceNumber,
         newAvailableAmount:
           updatedLine.availableAmount -
           parseFormattedNumber(updatedLine.paymentAmount.toString()),
       };
       index = i;
-
-      console.log('newLine', newLine);
       return newLine;
     });
 

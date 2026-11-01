@@ -41,10 +41,13 @@ export const PaymentFormSchema = Yup.object().shape({
             async (value, testContext) => {
 
                 const { payload } = testContext.options.context || {}
-                const { currentInvoiceNumber, payeeId } = payload;
+                const { priorInvoiceNumber, payeeId } = payload;
+                console.log('payload', payload)
 
-                if (value) {
-                    if (currentInvoiceNumber === value.trim()) return true;
+                if (!payload || !payeeId || value?.length === 0) return true
+                if (!payeeId) return true
+                if (priorInvoiceNumber && value && priorInvoiceNumber === value.trim()) {
+                    return true;
                 }
 
                 try {
@@ -52,19 +55,12 @@ export const PaymentFormSchema = Yup.object().shape({
                         `/payee/invoices/${payeeId}?invoiceNumber=${value}`,
                     );
 
-
                     const x = Boolean(response.data);
-                    console.log('payload', payload)
-                    console.log('response.data', response.data)
-                    console.log('x', Boolean(response.data))
-
                     return !x;
                 } catch (error) {
-                    // Fallback behavior if the API is down (true to allow submission, or false to block)
                     console.error("Remote validation failed", error);
                     return false;
                 }
             }
         ),
-
 });

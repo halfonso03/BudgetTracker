@@ -24,6 +24,7 @@ import { useEscapeKey } from '../../../hooks/useEscapeKey';
 import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import Input from '../../../components/Input';
+import Spinner from '../../../components/Spinner';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -86,14 +87,14 @@ const PaymentLineModal = (props: Props) => {
     getValues,
     control,
     watch,
-    formState: { errors, isValidating, isSubmitting },
+    formState: { errors, isValidating, isSubmitting, isValid, dirtyFields },
   } = useForm<FormValues>({
     resolver: yupResolver(PaymentFormSchema) as Resolver<FormValues>,
     mode: 'onBlur',
     context: {
       payload: {
         payeeId: selections?.payeeId,
-        currentInvoiceNumber: selections?.invoiceNumber,
+        priorInvoiceNumber: selections?.invoiceNumber,
       }, // Pass your external value here
     },
     defaultValues: {
@@ -182,11 +183,15 @@ const PaymentLineModal = (props: Props) => {
   }
 
   async function onSubmit(data: FormValues) {
-    if (isValidating || isSubmitting) return false;
-
-    setTimeout(() => {
+    if (isValidating || isSubmitting) {
+      if (isValid) {
+        setTimeout(() => {
+          raiseAddOrUpdateEvents(data);
+        }, 200);
+      }
+    } else {
       raiseAddOrUpdateEvents(data);
-    }, 200);
+    }
   }
 
   function raiseAddOrUpdateEvents(data: FormValues) {
@@ -599,7 +604,12 @@ const PaymentLineModal = (props: Props) => {
                       ></Input>
                     </div>
                     <div className="flex-1  w-full text-red-500">
-                      {errors.invoiceNumber?.message}
+                      {isValidating && dirtyFields.invoiceNumber && (
+                        <div className="ml-2">
+                          <Spinner color="neutral"></Spinner>
+                        </div>
+                      )}
+                      {!isValidating && errors.invoiceNumber?.message}
                     </div>
                   </div>
                   <div></div>
