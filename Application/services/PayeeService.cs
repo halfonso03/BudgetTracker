@@ -289,6 +289,9 @@ namespace Application.Services
         {
             var found = await dbContext.DisbLineItems
                     .AnyAsync(x => x.PayeeId == payeeId && x.InvoiceNumber == invoiceNumber);
+            Console.WriteLine(payeeId);
+            Console.WriteLine(invoiceNumber);
+            Console.WriteLine(found);
 
             return Result<bool>.Success(found);
         }

@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+import agent from '../api/agent';
 
 
 export const PaymentFormSchema = Yup.object().shape({
@@ -28,14 +29,42 @@ export const PaymentFormSchema = Yup.object().shape({
             const parsed = parseFloat(val);
             return !isNaN(parsed) && parsed > 0;
         }),
+    checkNumber: Yup.string().optional().nullable(),
+    invoiceDate: Yup.date().optional().nullable(),
+    invoiceNumber: Yup
+        .string()
+        .optional()
+        .nullable()
+        .test(
+            'checkInvoicelUnique',
+            'This invoice number is already taken',
+            async (value, testContext) => {
+
+                const { payload } = testContext.options.context || {}
+                const { currentInvoiceNumber, payeeId } = payload;
+
+                if (value) {
+                    if (currentInvoiceNumber === value.trim()) return true;
+                }
+
+                try {
+                    const response = await agent.get<string[]>(
+                        `/payee/invoices/${payeeId}?invoiceNumber=${value}`,
+                    );
 
 
-    // remainingAmount: Yup.number().required()
-    //     .transform((_, originalValue) => {
-    //         // Strip commas to convert "1,234.56" -> "1234.56" for safe parsing if needed
-    //         return parseFormattedNumber(originalValue.toString());
-    //     })
-    //     .test('is-valid-rem-amount', 'rem amount must be greater than 0', (val) => {
-    //         return val > 0;
-    //     }),
+                    const x = Boolean(response.data);
+                    console.log('payload', payload)
+                    console.log('response.data', response.data)
+                    console.log('x', Boolean(response.data))
+
+                    return !x;
+                } catch (error) {
+                    // Fallback behavior if the API is down (true to allow submission, or false to block)
+                    console.error("Remote validation failed", error);
+                    return false;
+                }
+            }
+        ),
+
 });

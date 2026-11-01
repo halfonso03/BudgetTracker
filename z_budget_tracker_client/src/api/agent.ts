@@ -87,7 +87,7 @@ agent.interceptors.response.use(
                     // console.log('error', error)
 
                     if (error.response.data) {
-                        // toast.error(error.response.data, { duration: 2000 })
+                        toast.error(error.response.data, { duration: 2000 })
 
                     }
                     else if (error.response) {

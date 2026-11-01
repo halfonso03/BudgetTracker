@@ -4,16 +4,18 @@ import Modal2 from '../../../components/Modal2';
 import DatePicker from 'react-datepicker';
 import { Controller, useForm } from 'react-hook-form';
 import Input from '../../../components/Input';
-import usePayeeInvoices from '../../../api/hooks/payments/usePayeeInvoices';
+import usePayeeInvoices from '../../../api/hooks/payees/usePayeeInvoices';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { formatCurrency, parseFormattedNumber } from '../../../app/util';
 import { usePaymentMutations } from '../../../api/hooks/payments/usePaymentMutations';
 import Spinner from '../../../components/Spinner';
+import { POSTED } from '../../../app/constants';
 
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
+  paymentHeader: PaymentHeader;
   paymentLineItem: PaymentLineItem;
   onInvoiceUpdated: (data: {
     uuid: string;
@@ -33,6 +35,7 @@ interface FormData {
 const InvoiceInfoModal = ({
   isOpen,
   onCancel,
+  paymentHeader,
   paymentLineItem,
   onInvoiceUpdated,
 }: Props) => {
@@ -99,16 +102,17 @@ const InvoiceInfoModal = ({
 
   async function onSubmit(data: FormData) {
     console.log('data', data);
-    console.log('paymentLineId', paymentLineItem.paymentLineId);
+    console.log('paymentLineId', paymentLineItem.paymentLineItemId);
 
-    setTimeout(async () => {
-      if (!paymentLineItem.paymentLineId) {
-        // send back the values to the parent
-      } else {
+    const paymentLineItemId = !paymentLineItem.paymentLineItemId
+      ? 0
+      : paymentLineItem.paymentLineItemId;
+    if (paymentHeader.status === POSTED) {
+      setTimeout(async () => {
         // if posted
         await mutateAsync(
           {
-            paymentLineId: paymentLineItem.paymentLineId,
+            paymentLineId: paymentLineItemId,
             invoiceDate: data.invoiceDate,
             invoiceNumber: data.invoiceNumber,
             checkNumber: data.checkNumber,
@@ -125,8 +129,8 @@ const InvoiceInfoModal = ({
             },
           },
         );
-      }
-    }, 10);
+      }, 10);
+    }
   }
 
   function closeModal() {
@@ -139,7 +143,7 @@ const InvoiceInfoModal = ({
     }, 500);
   }
 
-  let isDisabled = false;
+  let saveIsDisabled = false;
 
   if (
     foundIsFetching ||
@@ -148,11 +152,11 @@ const InvoiceInfoModal = ({
     isPending ||
     Boolean(found)
   ) {
-    isDisabled = true;
+    saveIsDisabled = true;
   }
 
   if (isDirty) {
-    isDisabled = false;
+    saveIsDisabled = false;
   }
 
   return (
@@ -182,7 +186,9 @@ const InvoiceInfoModal = ({
           <div>
             <div className="text-neutral-600 ">Payment Amount</div>
             <div className="font-medium text-end">
-              {formatCurrency(parseFormattedNumber(paymentLineItem.paymentAmount.toString()))}
+              {formatCurrency(
+                parseFormattedNumber(paymentLineItem.paymentAmount.toString()),
+              )}
             </div>
           </div>
           <div>
@@ -259,7 +265,7 @@ const InvoiceInfoModal = ({
           </div>
         </div>
         <div className="flex justify-end gap-3 pb-1">
-          <Button type="submit" disabled={isDisabled}>
+          <Button type="submit" disabled={saveIsDisabled}>
             {isPending || isSuccess ? (
               <Spinner color="white"></Spinner>
             ) : (

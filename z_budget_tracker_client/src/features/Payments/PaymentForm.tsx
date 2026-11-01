@@ -37,6 +37,7 @@ import ConfirmModal from '../../components/ConfirmModal';
 import IdHeader from '../Common/IdHeader';
 import { useLocation } from 'react-router-dom';
 import PaymentPayees from './PaymentPayees';
+import PaymentPayFrom from './PaymentPayFrom';
 
 type DeletePayeeInfo = {
   isOpen: boolean;
@@ -296,14 +297,14 @@ const PaymentForm = ({
 
     const newLines = lines.map((lineItem: PaymentLineItem, i: number) => {
       if (lineItem.uuid !== updatedLine.uuid) return lineItem;
+
+      console.log('updatedLine2', updatedLine);
       const newLine: PaymentLineItem = {
         ...updatedLine,
         rowId: lineItem.rowId,
         availableAmount: updatedLine.availableAmount,
         paymentAmount: updatedLine.paymentAmount,
-        invoiceNumber: lineItem.invoiceNumber,
-        invoiceDate: lineItem.invoiceDate,
-        checkNumber: lineItem.checkNumber,
+        invoiceNumber: updatedLine.invoiceNumber,
         newAvailableAmount:
           updatedLine.availableAmount -
           parseFormattedNumber(updatedLine.paymentAmount.toString()),
@@ -515,6 +516,8 @@ const PaymentForm = ({
       justification: paymentHeader.justification,
       lineItems: lineItems2,
     };
+
+    console.log('paymentToSave', paymentToSave.lineItems);
 
     await updatePayment.mutateAsync(paymentToSave, {
       onSuccess: async () => {
@@ -820,12 +823,12 @@ const PaymentForm = ({
 
         {distinctBudgets && lines.length > 0 && (
           <div className="mx-auto w-full divide-y divide-neutral-200">
-            {distinctBudgets.map((i: PaymentSummary) => {
+            {distinctBudgets.map((paymentSummary: PaymentSummary) => {
               const payments = lines.filter(
                 (x) =>
-                  x.initiativeId == i.initiativeId &&
-                  x.grantId == i.grantId &&
-                  x.accountId === i.accountId,
+                  x.initiativeId == paymentSummary.initiativeId &&
+                  x.grantId == paymentSummary.grantId &&
+                  x.accountId === paymentSummary.accountId,
               );
 
               // const remaining =
@@ -835,83 +838,15 @@ const PaymentForm = ({
               //     .reduce((acc, cur) => acc + cur, 0);
 
               return (
-                <div className="grid grid-cols-[1fr_1.4fr] gap-10 pb-8 mt-8 ">
+                <div className="grid grid-cols-[1fr_1.25fr] gap-10 pb-8 mt-8 ">
                   <div>
                     <div className="my-2 font-medium text-neutral-600">
                       Pay From
                     </div>
-                    <div className="flex justify-between p-5 bg-neutral-200/50 rounded-md shadow-lg self-start">
-                      <div>
-                        <div className="flex flex-col gap-4 ">
-                          <div className="flex flex-col items-start ">
-                            <div className=" text-neutral-600/90 text-center   ">
-                              Initiative
-                            </div>
-                            <div className=" font-medium text-center text-neutral-950">
-                              {i?.initiativeName}
-                            </div>
-                          </div>
+                    <PaymentPayFrom
+                      paymentSummary={paymentSummary}
+                    ></PaymentPayFrom>
 
-                          <div className="flex flex-col items-start">
-                            <div className=" text-neutral-600/90 text-center   ">
-                              Grant
-                            </div>
-                            <div className="font-medium text-center text-neutral-950">
-                              {i.grantName}
-                            </div>
-                          </div>
-
-                          <div className="flex flex-col items-start ">
-                            <div className=" text-neutral-600/90 text-center   ">
-                              Category
-                            </div>
-                            <div className="font-medium text-center text-neutral-950">
-                              {i?.categoryName}
-                            </div>
-                          </div>
-
-                          <div className="flex flex-col items-start ">
-                            <div className=" text-neutral-600/90 text-center  ">
-                              Account
-                            </div>
-                            <div className="font-medium text-center text-neutral-950">
-                              {i?.accountName}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col gap-4  ">
-                        <div>
-                          <div className="text-neutral-600/90 text-end">
-                            Available
-                          </div>
-                          <div className="font-medium text-end text-neutral-800">
-                            {formatCurrency(i?.available ?? 0)}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-end text-neutral-600/90">
-                            Total to Pay
-                          </div>
-                          <div className="text-end  font-medium text-blue-500  ">
-                            {formatCurrency(i?.totalPaid ?? 0)}
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-end text-neutral-600/90">
-                            Remaining
-                          </div>
-                          <div
-                            className={`text-end font-medium text-neutral-800 ${(i?.available ?? 0) - (i?.totalPaid ?? 0) < 0 && 'text-red-500 '}`}
-                          >
-                            {formatCurrency(
-                              (i?.available ?? 0) - (i?.totalPaid ?? 0),
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                     <div className="col-span-2 flex justify-end w-full mt-6">
                       {paymentHeader.status !== POSTED && (
                         <Button
@@ -919,10 +854,10 @@ const PaymentForm = ({
                           buttonSize="medium"
                           onClick={() =>
                             onAddPaymentToBudget(
-                              i.initiativeId,
-                              i.grantId,
-                              i.categoryId,
-                              i.accountId,
+                              paymentSummary.initiativeId,
+                              paymentSummary.grantId,
+                              paymentSummary.categoryId,
+                              paymentSummary.accountId,
                             )
                           }
                         >
@@ -936,13 +871,13 @@ const PaymentForm = ({
                       Pay To
                     </div>
                     <PaymentPayees
-                      paymentSummary={i}
+                      paymentSummary={paymentSummary}
                       isOverBudget={getOverBudgetClassName(
                         paymentHeader,
                         payments,
-                        i.initiativeId,
-                        i.grantId,
-                        i.accountId,
+                        paymentSummary.initiativeId,
+                        paymentSummary.grantId,
+                        paymentSummary.accountId,
                       )}
                       payments={payments}
                       paymentHeader={paymentHeader}
@@ -976,7 +911,7 @@ const PaymentForm = ({
             year={payment.year}
             onLineAdded={handleLineAdded}
             onLineUpdated={handleLineUpdated}
-            selections={editSelections}
+            paymentLineItemSelections={editSelections}
             uuid={editSelections?.uuid || null}
             fromRedirect={initialEditSelection !== null}
             onCancel={closeLineModal}

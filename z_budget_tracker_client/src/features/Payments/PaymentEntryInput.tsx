@@ -50,7 +50,7 @@ const PaymentEntryInput = ({
         <div className="text-neutral-600/90 font-medium self-start pt-2">
           Payment Amount
         </div>
-        <div className="flex items-center w-[50%]">
+        <div className="flex items-center w-[42%]">
           <NumericInputReactHookForm
             register={register}
             readOnly={false}
@@ -83,14 +83,12 @@ const PaymentEntryInput = ({
               </div>
             )}
           </div> */}
-            {error && (
-          <div className="text-red-500 pl-1">
-            <Asterisk size={18}></Asterisk>
-          </div>
-        )}
+          {error && (
+            <div className="text-red-500 pl-1">
+              <Asterisk size={18}></Asterisk>
+            </div>
+          )}
         </div>
-
-      
       </div>
       {/* <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center ">
         <div className="text-neutral-600/90 font-medium">Remaining</div>

@@ -7,7 +7,7 @@ import PayeeSearcher from '../PayeeSearcher';
 import TallModal from '../../../components/TallModal';
 import { PaginationContextProvider } from '../../../contexts/pagination/PaginationContextProvider';
 import PaymentEntryInput from '../PaymentEntryInput';
-import { useForm, type Resolver } from 'react-hook-form';
+import { Controller, useForm, type Resolver } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { PaymentFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
@@ -22,6 +22,8 @@ import useSelectedPayeeInfo from '../../../api/hooks/payments/useSelectedPayeeIn
 import Dropdown, { type Option } from 'react-dropdown';
 import { useEscapeKey } from '../../../hooks/useEscapeKey';
 import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
+import Input from '../../../components/Input';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -31,11 +33,14 @@ type PaymentLineItemSelections = {
   payeeId?: number;
   amount?: number;
   comment?: string;
+  invoiceDate?: Date | null | undefined;
+  invoiceNumber?: string | null;
+  checkNumber?: string | null;
 };
 
 type Props = {
   year: number;
-  selections: PaymentLineItemSelections | null;
+  paymentLineItemSelections: PaymentLineItemSelections | null;
   uuid: string | null;
   onLineAdded: (lineItem: PaymentLineItem) => void;
   onLineUpdated: (lineItem: PaymentLineItem) => void;
@@ -59,7 +64,7 @@ const PaymentLineModal = (props: Props) => {
   const { initiatives, iSuccess: loadInitiativesSuccess } = useInitiatives();
   const { categories, catSuccess } = useCategories();
   const [selections, setSelections] =
-    useState<PaymentLineItemSelections | null>(props.selections);
+    useState<PaymentLineItemSelections | null>(props.paymentLineItemSelections);
 
   const { data: selectedEditPayee } = useSelectedPayeeInfo(selections?.payeeId);
 
@@ -79,20 +84,49 @@ const PaymentLineModal = (props: Props) => {
     setValue,
     reset,
     getValues,
+    control,
     watch,
-    formState: { errors },
+    formState: { errors, isValidating, isSubmitting },
   } = useForm<FormValues>({
     resolver: yupResolver(PaymentFormSchema) as Resolver<FormValues>,
+    mode: 'onBlur',
+    context: {
+      payload: {
+        payeeId: selections?.payeeId,
+        currentInvoiceNumber: selections?.invoiceNumber,
+      }, // Pass your external value here
+    },
     defaultValues: {
-      initiativeId: props.selections ? props.selections.initiativeId : 0,
-      grantId: props.selections ? props.selections.grantId : 0,
-      categoryId: props.selections ? props.selections.categoryId : 0,
-      accountId: props.selections ? props.selections.accountId : 0,
-      payeeId: props.selections ? props.selections.payeeId : 0,
-      paymentAmount: props?.selections?.amount
-        ? formatNumber(props.selections.amount)
+      initiativeId: props.paymentLineItemSelections
+        ? props.paymentLineItemSelections.initiativeId
+        : 0,
+      grantId: props.paymentLineItemSelections
+        ? props.paymentLineItemSelections.grantId
+        : 0,
+      categoryId: props.paymentLineItemSelections
+        ? props.paymentLineItemSelections.categoryId
+        : 0,
+      accountId: props.paymentLineItemSelections
+        ? props.paymentLineItemSelections.accountId
+        : 0,
+      payeeId: props.paymentLineItemSelections
+        ? props.paymentLineItemSelections.payeeId
+        : 0,
+      paymentAmount: props?.paymentLineItemSelections?.amount
+        ? formatNumber(props.paymentLineItemSelections.amount)
         : '0.00',
-      comment: props.selections ? props.selections.comment : '',
+      comment: props.paymentLineItemSelections
+        ? props.paymentLineItemSelections.comment
+        : '',
+      invoiceDate: props.paymentLineItemSelections
+        ? props.paymentLineItemSelections.invoiceDate
+        : null,
+      checkNumber: props.paymentLineItemSelections
+        ? props.paymentLineItemSelections.checkNumber
+        : '',
+      invoiceNumber: props.paymentLineItemSelections
+        ? props.paymentLineItemSelections.invoiceNumber
+        : '',
     },
   });
 
@@ -148,6 +182,14 @@ const PaymentLineModal = (props: Props) => {
   }
 
   async function onSubmit(data: FormValues) {
+    if (isValidating || isSubmitting) return false;
+
+    setTimeout(() => {
+      raiseAddOrUpdateEvents(data);
+    }, 200);
+  }
+
+  function raiseAddOrUpdateEvents(data: FormValues) {
     closeModal();
 
     if (!props.uuid || fromRedirect) {
@@ -200,7 +242,7 @@ const PaymentLineModal = (props: Props) => {
         numberOfPayments: payee?.numberOfPayments,
         comment: data.comment?.trim(),
       };
-      console.log('newLine', updatedLine);
+      // console.log('updatedLine', updatedLine);
 
       props.onLineUpdated(updatedLine);
     }
@@ -332,14 +374,14 @@ const PaymentLineModal = (props: Props) => {
           )}
 
           <div className="flex flex-col justify-between h-full mt-2">
-            <div className=" overflow-y-scroll h-[65dvh]">
+            <div className=" overflow-y-scroll h-[80dvh]">
               <div className="flex flex-col gap-4 justify-between p-3 px-4 ">
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
+                {/* <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <div className="text-neutral-600/90 font-medium">Year</div>
                   <div className="text-neutral-700/90 font-medium">
                     {paymentYear}
                   </div>
-                </div>
+                </div> */}
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center">
                   <div className="text-neutral-600/90 font-medium">
@@ -490,15 +532,14 @@ const PaymentLineModal = (props: Props) => {
                   </div>
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center ">
-                  <div className="text-neutral-600/90 font-medium self-start">
-                    Comment
-                  </div>
+                  <div className="text-neutral-600/90 font-medium">Comment</div>
                   <textarea
                     {...register('comment')}
                     className="p-2 border border-neutral-300 rounded-sm focus:outline-0 focus:border-blue-500"
                     rows={1}
                   ></textarea>
                 </div>
+
                 {/* {loadingRemainingAccountBalances && <Spinner></Spinner>} */}
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]">
@@ -515,6 +556,68 @@ const PaymentLineModal = (props: Props) => {
                   </div>
                   <div></div>
                 </div>
+
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center">
+                  <div className="text-neutral-600/90 font-medium">
+                    Invoice Date.
+                  </div>
+                  <div>
+                    <div className=" ">
+                      <Controller
+                        control={control}
+                        name="invoiceDate"
+                        render={({ field }) => (
+                          <DatePicker
+                            {...register('invoiceDate')}
+                            id="invoiceDate"
+                            selected={
+                              field.value ? new Date(field.value) : null
+                            }
+                            dateFormat="MM/dd/yyyy"
+                            onBlur={field.onBlur}
+                            onChange={(date: Date | null) => {
+                              field.onChange(date);
+                            }}
+                            wrapperClassName="w-full border border-blue-500"
+                            className="p-2 rounded-sm  bg-white border border-gray-300 focus:outline-none focus:ring focus:ring-blue-50 "
+                          />
+                        )}
+                      ></Controller>
+                    </div>
+                  </div>
+                  <div></div>
+                </div>
+                <div className="grid grid-cols-[.32fr_1fr] ">
+                  <div className="text-neutral-600/90 font-medium self-center">
+                    Invoice No.
+                  </div>
+                  <div className="flex items-center gap-1 w-full">
+                    <div>
+                      <Input
+                        {...register('invoiceNumber')}
+                        additionalclasses="bg-white"
+                      ></Input>
+                    </div>
+                    <div className="flex-1  w-full text-red-500">
+                      {errors.invoiceNumber?.message}
+                    </div>
+                  </div>
+                  <div></div>
+                </div>
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]">
+                  <div className="text-neutral-600/90 font-medium self-center">
+                    Check No.
+                  </div>
+                  <div>
+                    <div className="w-[38%]">
+                      <Input
+                        {...register('checkNumber')}
+                        additionalclasses="bg-white"
+                      ></Input>
+                    </div>
+                  </div>
+                </div>
+                <div></div>
               </div>
             </div>
             <div className="flex justify-end gap-2 border-t border-t-neutral-300/90 p-4">

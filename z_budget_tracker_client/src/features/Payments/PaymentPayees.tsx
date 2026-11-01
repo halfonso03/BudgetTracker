@@ -1,4 +1,4 @@
-import PaymentPayee from './PaymentPayee';
+import PaymentPayee from "./PaymentPayee";
 
 type Props = {
   payments: PaymentLineItem[];

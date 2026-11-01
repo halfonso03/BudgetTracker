@@ -5,6 +5,7 @@ using Application.Interfaces;
 using Domain;
 using InternalVisibleTo;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Persistence;
 
 namespace Application.Services
@@ -351,6 +352,9 @@ namespace Application.Services
                             lineFromDb.PayeeId = req.PayeeId;
                             lineFromDb.Comment = string.IsNullOrEmpty(req.Comment) ? null
                             : req.Comment.Trim();
+                            lineFromDb.CheckNumber = req.CheckNumber;
+                            lineFromDb.InvoiceDate = req.InvoiceDate;
+                            lineFromDb.InvoiceNumber = req.InvoiceNumber;
                         }
                     }
                     else
@@ -370,6 +374,9 @@ namespace Application.Services
                             EntryDate = DateTime.Now,
                             CategoryId = req.CategoryId,
                             Comment = string.IsNullOrEmpty(req.Comment) ? null : req.Comment.Trim(),
+                            InvoiceNumber = req.InvoiceNumber,
+                            InvoiceDate = req.InvoiceDate,
+                            CheckNumber = req.CheckNumber
                         }
                     ;
 
@@ -434,6 +441,7 @@ namespace Application.Services
             {
 
                 var payment = await _dbContext.DisbLineItems.SingleOrDefaultAsync(x => x.Id == updateInvoiceRequest.PaymentLineId);
+
                 if (payment != null)
                 {
                     payment.InvoiceDate = updateInvoiceRequest.InvoiceDate;
@@ -462,6 +470,7 @@ namespace Application.Services
             }
 
         }
+        
         private async Task<decimal?> CheckForOverBudgetRequest(List<PaymentRequestLineItemDto> lineItems)
         {
             var requested = from x in lineItems
