@@ -12,8 +12,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261030204313_ionvoic2e")]
-    partial class ionvoic2e
+    [Migration("20261101190453_pn")]
+    partial class pn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1135,6 +1135,10 @@ namespace Persistence.Migrations
                         .HasColumnType("int")
                         .HasColumnName("payee_id");
 
+                    b.Property<int?>("PaymentNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("payment_number");
+
                     b.Property<int>("RowId")
                         .HasColumnType("int")
                         .HasColumnName("row_id");
@@ -1951,6 +1955,9 @@ namespace Persistence.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NumberOfPayments")
+                        .HasColumnType("int");
 
                     b.Property<string>("PayeeType")
                         .IsRequired()

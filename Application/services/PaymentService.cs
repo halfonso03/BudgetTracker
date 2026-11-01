@@ -189,7 +189,8 @@ namespace Application.Services
                             InvoiceDate = x.InvoiceDate,
                             InvoiceNumber = x.InvoiceNumber,
                             LastPaymentDate = summaries.SingleOrDefault(y => y.Id == x.PayeeId)?.LastPaymentDate,
-                            NumberOfPayments = summaries.SingleOrDefault(y => y.Id == x.PayeeId)?.NumberOfPayments
+                            NumberOfPayments = summaries.SingleOrDefault(y => y.Id == x.PayeeId)?.NumberOfPayments,
+                            PaymentNumber = x.PaymentNumber
                         })]
                 };
 
@@ -220,6 +221,17 @@ namespace Application.Services
             {
                 var grant = await _dbContext.Grants.FirstAsync(x => x.Id == disbRequestDto.LineItems.First().GrantId);
 
+                var payeeIds = disbRequestDto.LineItems.Select(x => x.PayeeId).Distinct().ToList();
+                var payeePayments = await _dbContext.DisbLineItems
+                                    .Where(x => payeeIds.Contains(x.PayeeId))
+                                    .GroupBy(x => x.PayeeId)
+                                    .Select(x => new
+                                    {
+                                        paymentCount = x.Count(),
+                                        payeeId = x.Key
+                                    })
+                                    .ToListAsync();
+
                 var newDisb = new Disb()
                 {
                     Id = 0,
@@ -247,7 +259,10 @@ namespace Application.Services
                         PayeeId = x.PayeeId,
                         InvoiceNumber = x.InvoiceNumber,
                         InvoiceDate = x.InvoiceDate,
-                        CheckNumber = x.CheckNumber
+                        CheckNumber = x.CheckNumber,
+                        PaymentNumber = payeePayments.Any(x => x.payeeId == x.payeeId)
+                                ?  payeePayments.First(x => x.payeeId == x.payeeId).paymentCount
+                                : 1
                     })]
                 };
 
@@ -331,6 +346,18 @@ namespace Application.Services
                 var db_count = lineItemsFromDb.Count;
                 var dto_count = disbRequestDto.LineItems.Count;
 
+
+                var payeeIds = disbRequestDto.LineItems.Select(x => x.PayeeId).Distinct().ToList();
+                var payeePayments = await _dbContext.DisbLineItems
+                                    .Where(x => payeeIds.Contains(x.PayeeId))
+                                    .GroupBy(x => x.PayeeId)
+                                    .Select(x => new
+                                    {
+                                        paymentCount = x.Count(),
+                                        payeeId = x.Key
+                                    })
+                                    .ToListAsync();
+
                 foreach (var req in disbRequestDto.LineItems)
                 {
                     //  update existing records
@@ -361,6 +388,9 @@ namespace Application.Services
                             lineFromDb.CheckNumber = req.CheckNumber;
                             lineFromDb.InvoiceDate = req.InvoiceDate;
                             lineFromDb.InvoiceNumber = req.InvoiceNumber;
+                            lineFromDb.PaymentNumber = payeePayments.Any(x => x.payeeId == x.payeeId)
+                                ? payeePayments.First(x => x.payeeId == x.payeeId).paymentCount
+                                : 1;
                         }
                     }
                     else
@@ -382,7 +412,10 @@ namespace Application.Services
                             Comment = string.IsNullOrEmpty(req.Comment) ? null : req.Comment.Trim(),
                             InvoiceNumber = req.InvoiceNumber,
                             InvoiceDate = req.InvoiceDate,
-                            CheckNumber = req.CheckNumber
+                            CheckNumber = req.CheckNumber,
+                            PaymentNumber = payeePayments.Any(x => x.payeeId == x.payeeId)
+                                ? payeePayments.First(x => x.payeeId == x.payeeId).paymentCount
+                                : 1
                         }
                     ;
 
@@ -416,7 +449,7 @@ namespace Application.Services
                             PayeeId = x.PayeeId,
                             Amount = x.Amount,
                             EntryDate = DateTime.Now,
-
+                            PaymentNumber = 0
                         })
                         .ToList();
 
@@ -621,7 +654,8 @@ namespace Application.Services
                         Year = grant.Year,
                         PayeeId = x.PayeeId,
                         Comment = x.Comment,
-                        BudgetLineItemId = null
+                        BudgetLineItemId = null,
+                        PaymentNumber = x.PaymentNumber + 1
                     })]
                 };
 
@@ -678,7 +712,8 @@ namespace Application.Services
                         Comment = x.Comment,
                         InvoiceDate = x.InvoiceDate,
                         InvoiceNumber = x.InvoiceNumber,
-                        CheckNumber = x.CheckNumber
+                        CheckNumber = x.CheckNumber,
+                        PaymentNumber = x.PaymentNumber
                     })]
                 };
 

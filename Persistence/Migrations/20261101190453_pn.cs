@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class ddddd : Migration
+    public partial class pn : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -669,6 +669,10 @@ namespace Persistence.Migrations
                     entry_date = table.Column<DateTime>(type: "DATETIME2", nullable: false),
                     update_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
                     updated_by = table.Column<int>(type: "int", nullable: true),
+                    invoice_number = table.Column<string>(type: "VARCHAR(100)", nullable: true),
+                    invoice_date = table.Column<DateTime>(type: "DATETIME2", nullable: true),
+                    check_number = table.Column<string>(type: "VARCHAR(100)", nullable: true),
+                    payment_number = table.Column<int>(type: "int", nullable: true),
                     comment = table.Column<string>(type: "VARCHAR(MAX)", nullable: true),
                     budget_line_id = table.Column<int>(type: "int", nullable: true)
                 },
@@ -1144,9 +1148,11 @@ namespace Persistence.Migrations
                 column: "initiative_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblDisbLineItem_payee_id",
+                name: "IX_tblDisbLineItem_payee_id_invoice_number",
                 table: "tblDisbLineItem",
-                column: "payee_id");
+                columns: new[] { "payee_id", "invoice_number" },
+                unique: true,
+                filter: "[invoice_number] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_tblDisbLineItem_updated_by",

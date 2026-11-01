@@ -29,7 +29,7 @@ namespace Domain
         public string? InvoiceNumber { get; set; }
         public DateTime? InvoiceDate { get; set; }
         public string? CheckNumber { get; set; }
-        public int? PaymentNumber { get; set; }
+        public required int PaymentNumber { get; set; } = 0;
 
         [ForeignKey("UpdatedById")]
         public ApplicationUser? UpdatedBy { get; set; }

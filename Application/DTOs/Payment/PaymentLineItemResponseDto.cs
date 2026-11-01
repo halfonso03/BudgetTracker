@@ -28,6 +28,7 @@ namespace Application.DTOs.Payment
         public required decimal PaymentAmount { get; set; }
         public required int Year { get; set; }
         public string? Comment { get; set; }
+        public required int PaymentNumber { get; set; }
 
         public string? InvoiceNumber { get; set; }
         public DateTime? InvoiceDate { get; set; }
