@@ -64,6 +64,7 @@ const BudgetDetails = () => {
   const [selectedAccountName, setSelectedAccountName] = useState('');
   const [selectedInitiativeId, setSelectedInitiativeId] = useState(0);
   const [selectedGrantId, setSelectedGrantId] = useState(0);
+  const [selectedAccountId, setSelectedAccountId] = useState(0);
   const [changesModalIsOpen, setChangesModalIsOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [negativeAccounts, setNegativeAccounts] = useState<
@@ -382,12 +383,14 @@ const BudgetDetails = () => {
     accountName: string,
     initiativeId: number,
     grantId: number,
+    accountId: number,
   ) {
     setMiniDetailsIsOpen(true);
     setSelectedId({ itemType, id });
     setSelectedAccountName(accountName);
     setSelectedInitiativeId(initiativeId);
     setSelectedGrantId(grantId);
+    setSelectedAccountId(accountId)
   }
 
   useEffect(() => {
@@ -731,6 +734,7 @@ const BudgetDetails = () => {
             accountName={selectedAccountName}
             initiativeId={selectedInitiativeId}
             grantId={selectedGrantId}
+            accountId={selectedAccountId}
             isOpen={miniDetailsIsOpen}
             onCancel={() => {
               setMiniDetailsIsOpen(false);

@@ -1,4 +1,4 @@
-import { Ellipsis, TrashIcon } from 'lucide-react';
+import { AlertTriangle, Ellipsis, TrashIcon } from 'lucide-react';
 import { POSTED } from '../../app/constants';
 import {
   formatCurrency,
@@ -29,9 +29,11 @@ const PaymentPayee = ({
 }: Props) => {
   const [invoiceModalIsopen, setInvoiceModalIsOpen] = useState(false);
 
-  function onEditInvoice() {
+  function onEditRowClick(uuid: string) {
     if (paymentHeader.status === POSTED) {
       setInvoiceModalIsOpen(true);
+    } else {
+      onEditRow(uuid);
     }
   }
 
@@ -58,30 +60,37 @@ const PaymentPayee = ({
           </div>
 
           <div className="flex flex-col gap-2">
-            {/* <Ellipsis
-              size={22}
-              className={`self-start text-neutral-500 cursor-pointer hover:text-blue-500 duration-200 transition-all hover:scale-125`}
-              onClick={() => onEditInvoice()}
-            ></Ellipsis> */}
             <div className="flex text-neutral-800">
               <div className="flex-1  text-neutral-500 ">Invoice No.</div>
               <div>
                 {p.invoiceNumber && <div>{p.invoiceNumber}</div>}
-                {!p.invoiceNumber && <div>-</div>}
+                {!p.invoiceNumber && (
+                  <div>
+                    <AlertTriangle className="text-yellow-400"></AlertTriangle>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex text-neutral-800">
               <div className="flex-1  text-neutral-500">Invoice Date</div>
               <div className="flex-1  flex justify-end  text-neutral-950">
                 {p.invoiceDate && <div>{formatDate(p.invoiceDate)}</div>}
-                {!p.invoiceDate && <div>-</div>}
+                {!p.invoiceDate && (
+                  <div>
+                    <AlertTriangle className="text-yellow-400"></AlertTriangle>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex text-neutral-800">
               <div className="flex-1 text-neutral-500">Check No.</div>
               <div>
                 {p.checkNumber && <div>{p.checkNumber}</div>}
-                {!p.checkNumber && <div>-</div>}
+                {!p.checkNumber && (
+                  <div>
+                    <AlertTriangle className="text-yellow-400"></AlertTriangle>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -125,7 +134,7 @@ const PaymentPayee = ({
               <Ellipsis
                 size={22}
                 className={`text-neutral-500 cursor-pointer  hover:text-blue-500 duration-200 transition-all hover:scale-125`}
-                onClick={() => onEditRow(p.uuid)}
+                onClick={() => onEditRowClick(p.uuid)}
               ></Ellipsis>
               {paymentHeader.status !== POSTED && (
                 <TrashIcon

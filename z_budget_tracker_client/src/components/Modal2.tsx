@@ -45,7 +45,7 @@ const Modal2 = ({
   } else if (size === 'lg') {
     modalStyles += 'min-w-4xl max-w-4xl ';
   } else if (size === 'xl') {
-    modalStyles += 'min-w-5xl max-w-5xl  ';
+    modalStyles += 'min-w-6xl max-w-6xl  ';
   }
 
   return createPortal(

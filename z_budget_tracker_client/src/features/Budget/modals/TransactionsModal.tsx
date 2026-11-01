@@ -18,6 +18,7 @@ type Props = {
     accountName: string,
     initiativeId: number,
     grantId: number,
+    accountId: number,
   ) => void;
 };
 
@@ -63,9 +64,7 @@ const TransactionsModal = (props: Props) => {
             <div className="text-center font-medium text-neutral-500">
               AMOUNT
             </div>
-            <div className="text-end font-medium text-neutral-500">
-              BALANCE
-            </div>
+            <div className="text-end font-medium text-neutral-500">BALANCE</div>
           </div>
           {data?.map((t, i) => {
             if (i > 0) remaining += data[i].amount;
@@ -87,6 +86,7 @@ const TransactionsModal = (props: Props) => {
                             props.accountName,
                             props.initiativeId,
                             props.grantId,
+                            props.accountId,
                           );
                         }}
                       >
@@ -100,9 +100,10 @@ const TransactionsModal = (props: Props) => {
                           props.onSelectedId(
                             'd',
                             t.id,
-                            props.accountName,
+                            t.payeeName,
                             props.initiativeId,
                             props.grantId,
+                            props.accountId,
                           );
                         }}
                       >
