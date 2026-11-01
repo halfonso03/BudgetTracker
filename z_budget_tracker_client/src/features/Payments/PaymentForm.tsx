@@ -940,7 +940,7 @@ const PaymentForm = ({
               setConfirmPostModal(false);
             }, 500);
           }}
-          message="This payment wil be posted. Click OK to continue."
+          message="WARNING! All payments wil be posted. Click OK to continue."
         ></ConfirmModal>
         <ConfirmModal
           isOpen={deleteRowConfirm.isOpen}

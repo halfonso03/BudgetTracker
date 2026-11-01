@@ -25,7 +25,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
       <div className="relative ">
         <NavBar></NavBar>
         <div className="w-full flex justify-between pt-2 pr-4 mt-4 mb-4">
-          <div className="font-bold text-xl text-neutral-800 pl-16">
+          <div className="font-bold text-xl text-neutral-800 pl-7">
             {payee.id === 0 ? (
               <div className="">Add Payee</div>
             ) : (
@@ -39,8 +39,8 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
             onClick={onClose}
           ></X>
         </div>
-        <div className="w-[93%] mx-auto">
-          <div className="flex gap-14 w-full">
+        <div className="w-[97%] mx-auto">
+          <div className="flex gap-5 w-full">
             <div className="flex-5">
               <PayeeForm
                 payee={payee}

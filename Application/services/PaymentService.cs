@@ -94,7 +94,7 @@ namespace Application.Services
 
             if (paymentFromDb is null)
             {
-                return Result<PaymentResponseDto>.Failure($"Reprogramming not found", 400);
+                return Result<PaymentResponseDto>.Failure($"Payment not found", 400);
             }
 
             try

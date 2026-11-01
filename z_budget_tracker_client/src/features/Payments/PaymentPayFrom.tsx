@@ -2,7 +2,7 @@ import { formatCurrency } from '../../app/util';
 type Props = {
   paymentSummary: PaymentSummary;
 };
-const PaymentPayFrom = ({paymentSummary}: Props) => {
+const PaymentPayFrom = ({ paymentSummary }: Props) => {
   return (
     <div className="flex justify-between p-5 bg-neutral-200/50 rounded-md shadow-lg self-start">
       <div>
@@ -48,7 +48,7 @@ const PaymentPayFrom = ({paymentSummary}: Props) => {
         </div>
         <div>
           <div className="text-end text-neutral-600/90">Total to Pay</div>
-          <div className="text-end  font-medium text-blue-500  ">
+          <div className="text-end text-blue-500 font-medium  ">
             {formatCurrency(paymentSummary?.totalPaid ?? 0)}
           </div>
         </div>
@@ -57,7 +57,10 @@ const PaymentPayFrom = ({paymentSummary}: Props) => {
           <div
             className={`text-end font-medium text-neutral-800 ${(paymentSummary?.available ?? 0) - (paymentSummary?.totalPaid ?? 0) < 0 && 'text-red-500 '}`}
           >
-            {formatCurrency((paymentSummary?.available ?? 0) - (paymentSummary?.totalPaid ?? 0))}
+            {formatCurrency(
+              (paymentSummary?.available ?? 0) -
+                (paymentSummary?.totalPaid ?? 0),
+            )}
           </div>
         </div>
       </div>

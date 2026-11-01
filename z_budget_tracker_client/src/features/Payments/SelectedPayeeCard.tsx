@@ -41,14 +41,7 @@ const SelectedPayeeCard = ({
               <span className="text-neutral-700">
                 {selectedPayeeInfo?.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}
               </span>
-              ]<br></br>
-              {/* [Charge Account:{' '}
-              <span className="text-neutral-700">
-                {selectedPayeeInfo.categoryName +
-                  ' - ' +
-                  selectedPayeeInfo.accountName}
-              </span>
-              ]<br></br> */}
+              ]<br />
               {selectedPayeeInfo?.lastPaymentDate && (
                 <>
                   [Last Payment:{' '}
@@ -82,7 +75,7 @@ const SelectedPayeeCard = ({
               )}
               {!selectedPayeeInfo?.lastPaymentDate && (
                 <div className="italic">
-                  No payments have been made to this payee
+                  No payments have been posted for this payee
                 </div>
               )}
             </div>

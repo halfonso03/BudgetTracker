@@ -16,9 +16,9 @@ export default function SortBySelector({
 
   return (
     <div className="flex items-center hover:text-neutral-900 transition-colors duration-150">
-      <div className="flex items-center py-1">
+      <div className="flex items-center ">
         <button
-          className=" cursor-pointer font-medium  capitalize select-none"
+          className=" cursor-pointer font-medium capitalize select-none"
           onClick={() => {
             const sortDir =
               currentSortValue.indexOf('desc') === -1 ? 'desc' : '';

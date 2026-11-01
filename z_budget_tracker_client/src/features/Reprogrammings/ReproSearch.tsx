@@ -348,7 +348,7 @@ const ReproSearch = () => {
               setDeleteConfirmModalIsOpen(false);
             }, 500);
           }}
-          message={`Reprogramming ID ${idToDelete} will be deleted. Click OK to continue.`}
+          message={`WARNING: Reprogramming ID ${idToDelete} will be deleted! Click OK to continue.`}
           isOpen={deleteConfirmModalIsOpen}
           onConfirm={() => {
             setTimeout(() => {

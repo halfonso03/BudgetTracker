@@ -66,54 +66,75 @@ const PayeePaymentsList = ({
       <div className="border border-neutral-200 ">
         <div
           className="bg-neutral-50 text-neutral-500 border-b border-neutral-200  
-            grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr] gap-4  "
+            grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-2 gap-4 "
         >
-          <div className="px-4 py-1">
+          <div className="pl-3 self-center">
             <SortBySelector
               label="ID"
               value="ID"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
-          <div className=" py-1">
+          <div className="  self-center">
             <SortBySelector
               label="YEAR"
               value="YEAR"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
-          <div className=" py-1">
+          <div className="  self-center">
             <SortBySelector
               label="INITIATIVE"
               value="INITIATIVE"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
-          <div className=" flex justify-center">
+          <div className="  self-center ">
             <SortBySelector
               label="AWARD"
               value="GRANT"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
-          <div className=" flex justify-center">
+          <div className=" flex justify-center self-center ">
             <SortBySelector
               label="AMOUNT"
               value="AMOUNT"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
-          <div className=" flex justify-center">
+          <div className=" flex justify-center self-center">
             <SortBySelector
-              label="POSTED DATE"
+              label="POST DATE"
               value="POSTEDDATE"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
 
-          <div className=" flex justify-center">
+          <div className=" flex justify-center self-center">
             <SortBySelector
               label="POSTED BY"
+              value="POSTEDBY"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
+          <div className=" flex justify-center self-center">
+            <SortBySelector
+              label="INV. NO."
+              value="POSTEDBY"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
+          <div className=" flex justify-center self-center">
+            <SortBySelector
+              label="INV. DATE"
+              value="POSTEDBY"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
+          <div className=" flex justify-center self-center">
+            <SortBySelector
+              label="CHECK NO."
               value="POSTEDBY"
               currentSortValue={sortByValue}
             ></SortBySelector>
@@ -124,19 +145,23 @@ const PayeePaymentsList = ({
           {payments.payments.map((p) => (
             <div
               key={p.id}
-              className={` ${onPaymentRowClicked != null ? 'cursor-pointer ' : ''} grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr]  gap-4  hover:bg-neutral-100 duration-200 transition-all border-b border-b-neutral-200 last:border-0`}
+              className={` ${onPaymentRowClicked != null ? 'cursor-pointer ' : ''} 
+              grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr]  gap-4  hover:bg-neutral-100 duration-200 transition-all border-b border-b-neutral-200 last:border-0`}
             >
-              <div className="py-2 px-4 ">{p.id}</div>
-              <div className="py-2 ">{p.year}</div>
-              <div className="py-2 ">{p.initiative}</div>
-              <div className="  py-2  text-center">{p.grant}</div>
-              <div className=" py-2  text-center">
+              <div className="py-1 px-4 self-center ">{p.id}</div>
+              <div className="py-1 self-center">{p.year}</div>
+              <div className="py-1 self-center">{p.initiative}</div>
+              <div className="  py-1 self-center text-center">{p.grant}</div>
+              <div className=" py-1 self-center text-center">
                 {formatCurrency(p.amount)}
               </div>
-              <div className="py-2  text-center">
+              <div className="py-1 self-center text-center">
                 {formatDate(p.postedDate)}
               </div>
-              <div className="  py-2  text-center">{p.postedBy}</div>
+              <div className="  py-1 self-center text-center">{p.postedBy}</div>
+              <div className="self-center"></div>
+              <div className="self-center"></div>
+              <div className="self-center"></div>
             </div>
           ))}
         </div>

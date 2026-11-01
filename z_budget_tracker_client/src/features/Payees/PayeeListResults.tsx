@@ -1,5 +1,5 @@
-import { Check, X } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Check, CircleX } from 'lucide-react';
+// import { useNavigate } from 'react-router-dom';
 import { formatNumber, formatDate } from '../../app/util';
 import SearchTermMarker from '../../components/SearchTermMarker';
 import { usePagination } from '../../contexts/pagination/usePagination';
@@ -14,7 +14,7 @@ type Props = {
 const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
   const { searchTerm } = usePagination();
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   if (loadingPayees)
     return (
@@ -79,7 +79,7 @@ const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
               {v.isActive ? (
                 <Check className="text-green-600"></Check>
               ) : (
-                <X className="text-neutral-400"></X>
+                <CircleX className="text-neutral-500"></CircleX>
               )}
             </div>
 
