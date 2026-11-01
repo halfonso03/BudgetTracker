@@ -36,7 +36,7 @@ export const usePaymentMutations = () => {
 
   const updateInvoiceMuation = useMutation({
     mutationFn: async (data: {
-      paymentLineId: number;
+      paymentLineItemId: number;
       invoiceDate: Date | null | undefined;
       invoiceNumber: string | null | undefined;
       checkNumber: string | null | undefined;

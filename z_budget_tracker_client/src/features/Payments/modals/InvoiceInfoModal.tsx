@@ -15,8 +15,13 @@ import toast from 'react-hot-toast';
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
-  paymentHeader: PaymentHeader;
   paymentLineItem: PaymentLineItem;
+  onInvoiceUpdated: (data: {
+    uuid: string;
+    invoiceNumber: string | null;
+    checkNumber: string | null;
+    invoiceDate: Date | null;
+  }) => void;
 };
 
 interface FormData {
@@ -24,9 +29,15 @@ interface FormData {
   invoiceNumber?: string | null;
   checkNumber?: string | null;
 }
+
 type FormValues = Yup.InferType<typeof InvoiceInfoFormSchema>;
 
-const InvoiceInfoModal = ({ isOpen, onCancel, paymentLineItem }: Props) => {
+const InvoiceInfoModal = ({
+  isOpen,
+  onCancel,
+  paymentLineItem,
+  onInvoiceUpdated,
+}: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
 
   const { updateInvoice } = usePaymentMutations();
@@ -74,23 +85,28 @@ const InvoiceInfoModal = ({ isOpen, onCancel, paymentLineItem }: Props) => {
 
   async function onSubmit(data: FormData) {
     console.log('data', data);
-    console.log('paymentLineId', paymentLineItem.paymentLineItemId);
+    console.log('paymentLineId2', paymentLineItem.paymentLineItemId);
 
-    setTimeout(async () => {
-      await mutateAsync(
-        {
-          paymentLineId: paymentLineItem.paymentLineItemId!,
-          invoiceDate: data.invoiceDate,
-          invoiceNumber: data.invoiceNumber,
-          checkNumber: data.checkNumber,
+    await mutateAsync(
+      {
+        paymentLineItemId: paymentLineItem.paymentLineItemId!,
+        invoiceDate: data.invoiceDate,
+        invoiceNumber: data.invoiceNumber,
+        checkNumber: data.checkNumber,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Invoice updated');
+          setTimeout(closeModal, 800);
+          onInvoiceUpdated({
+            uuid: paymentLineItem.uuid,
+            invoiceDate: data.invoiceDate ?? null,
+            invoiceNumber: data.invoiceNumber ?? null,
+            checkNumber: data.checkNumber ?? null,
+          });
         },
-        {
-          onSuccess: () => {
-            toast.success('Invoice updated');
-          },
-        },
-      );
-    }, 10);
+      },
+    );
   }
 
   function closeModal() {
@@ -171,11 +187,16 @@ const InvoiceInfoModal = ({ isOpen, onCancel, paymentLineItem }: Props) => {
               <div className="text-neutral-600/90 font-medium self-center">
                 Invoice No.
               </div>
-              <div className="flex items-center gap-1 w-full">
+              <div className="flex flex-col items-center gap-1 w-full ">
                 <Input
                   {...register('invoiceNumber')}
                   additionalclasses="bg-white "
                 ></Input>
+                {!isValidating && (
+                  <div className='text-red-500'>
+                    {errors.invoiceNumber?.message}
+                  </div>
+                )}
               </div>
               <div className="flex-1  w-full text-red-500">
                 {isValidating && dirtyFields.invoiceNumber && (
@@ -183,7 +204,6 @@ const InvoiceInfoModal = ({ isOpen, onCancel, paymentLineItem }: Props) => {
                     <Spinner color="neutral"></Spinner>
                   </div>
                 )}
-                {!isValidating && errors.invoiceNumber?.message}
               </div>
             </div>
             <div className="grid grid-cols-[.45fr_1fr_.5fr] items-center ">
@@ -198,7 +218,7 @@ const InvoiceInfoModal = ({ isOpen, onCancel, paymentLineItem }: Props) => {
           </div>
         </div>
         <div className="flex justify-end gap-3 pb-1">
-          <Button type="submit">
+          <Button type="submit" disabled={isPending || isSuccess}>
             {isPending || isSuccess ? (
               <Spinner color="white"></Spinner>
             ) : (

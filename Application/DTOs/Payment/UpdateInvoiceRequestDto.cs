@@ -9,7 +9,7 @@ namespace Application.DTOs.Payment
     public class UpdateInvoiceRequestDto
     {
         [Required]
-        public int PaymentLineId { get; set; }
+        public int PaymentLineItemId { get; set; }
 
         [MaxLength(100)]
         public string? InvoiceNumber { get; set; }

@@ -8,7 +8,7 @@ import {
 import InvoiceInfoModal from './modals/InvoiceInfoModal';
 import { useState } from 'react';
 type Props = {
-  p: PaymentLineItem;
+  paymentLineItem: PaymentLineItem;
   paymentHeader: PaymentHeader;
   onEditRow: (uuid: string) => void;
   onDeleteRow: (p: PaymentLineItem) => void;
@@ -21,10 +21,11 @@ type Props = {
 };
 
 const PaymentPayee = ({
-  p,
+  paymentLineItem,
   paymentHeader,
   onDeleteRow,
   onEditRow,
+  onInvoiceUpdated,
 }: Props) => {
   const [invoiceModalIsopen, setInvoiceModalIsOpen] = useState(false);
 
@@ -44,7 +45,7 @@ const PaymentPayee = ({
             <div className="flex mb-2">
               <div className="flex-1  text-neutral-500">Payee Name</div>
               <div className="flex-2 text-end  font-semibold">
-                {p.payeeName}
+                {paymentLineItem.payeeName}
               </div>
             </div>
 
@@ -52,7 +53,9 @@ const PaymentPayee = ({
               <div className="flex-1  text-neutral-500">Payment Amount</div>
               <div className="flex-1 text-blue-500 font-medium text-end ">
                 {formatCurrency(
-                  parseFormattedNumber(p.paymentAmount.toString()),
+                  parseFormattedNumber(
+                    paymentLineItem.paymentAmount.toString(),
+                  ),
                 )}
               </div>
             </div>
@@ -62,8 +65,10 @@ const PaymentPayee = ({
             <div className="flex text-neutral-800">
               <div className="flex-1  text-neutral-500 ">Invoice No.</div>
               <div>
-                {p.invoiceNumber && <div>{p.invoiceNumber}</div>}
-                {!p.invoiceNumber && (
+                {paymentLineItem.invoiceNumber && (
+                  <div>{paymentLineItem.invoiceNumber}</div>
+                )}
+                {!paymentLineItem.invoiceNumber && (
                   <div>
                     <AlertTriangle className="text-yellow-400"></AlertTriangle>
                   </div>
@@ -73,8 +78,10 @@ const PaymentPayee = ({
             <div className="flex text-neutral-800">
               <div className="flex-1  text-neutral-500">Invoice Date</div>
               <div className="flex-1  flex justify-end  text-neutral-950">
-                {p.invoiceDate && <div>{formatDate(p.invoiceDate)}</div>}
-                {!p.invoiceDate && (
+                {paymentLineItem.invoiceDate && (
+                  <div>{formatDate(paymentLineItem.invoiceDate)}</div>
+                )}
+                {!paymentLineItem.invoiceDate && (
                   <div>
                     <AlertTriangle className="text-yellow-400"></AlertTriangle>
                   </div>
@@ -84,8 +91,10 @@ const PaymentPayee = ({
             <div className="flex text-neutral-800">
               <div className="flex-1 text-neutral-500">Check No.</div>
               <div>
-                {p.checkNumber && <div>{p.checkNumber}</div>}
-                {!p.checkNumber && (
+                {paymentLineItem.checkNumber && (
+                  <div>{paymentLineItem.checkNumber}</div>
+                )}
+                {!paymentLineItem.checkNumber && (
                   <div>
                     <AlertTriangle className="text-yellow-400"></AlertTriangle>
                   </div>
@@ -97,13 +106,13 @@ const PaymentPayee = ({
           <InvoiceInfoModal
             isOpen={invoiceModalIsopen}
             key={crypto.randomUUID()}
-            paymentHeader={paymentHeader}
-            paymentLineItem={p}
+            paymentLineItem={paymentLineItem}
             onCancel={() => {
               setTimeout(() => {
                 setInvoiceModalIsOpen(false);
               }, 500);
             }}
+            onInvoiceUpdated={onInvoiceUpdated}
           ></InvoiceInfoModal>
         </div>
 
@@ -114,7 +123,7 @@ const PaymentPayee = ({
                 Payment No.
               </div>
               <div className="flex-5 text-end text-neutral-800">
-                {(p.numberOfPayments ?? 0) + 1}
+                {(paymentLineItem.numberOfPayments ?? 0) + 1}
               </div>
             </div>
             <div className="flex w-full ">
@@ -122,7 +131,9 @@ const PaymentPayee = ({
                 Last Payment Date
               </div>
               <div className="flex-5 text-end text-neutral-800 ">
-                {p.lastPaymentDate ? formatDate(p.lastPaymentDate) : '-'}
+                {paymentLineItem.lastPaymentDate
+                  ? formatDate(paymentLineItem.lastPaymentDate)
+                  : '-'}
               </div>
             </div>
           </div>
@@ -132,13 +143,13 @@ const PaymentPayee = ({
               <Ellipsis
                 size={22}
                 className={`text-neutral-500 cursor-pointer  hover:text-blue-500 duration-200 transition-all hover:scale-125`}
-                onClick={() => onEditRowClick(p.uuid)}
+                onClick={() => onEditRowClick(paymentLineItem.uuid)}
               ></Ellipsis>
               {paymentHeader.status !== POSTED && (
                 <TrashIcon
                   className="text-red-600 opacity-60 cursor-pointer duration-200 transition-all hover:scale-125 hover:opacity-100"
                   size={22}
-                  onClick={() => onDeleteRow(p)}
+                  onClick={() => onDeleteRow(paymentLineItem)}
                 ></TrashIcon>
               )}
             </div>

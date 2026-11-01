@@ -170,7 +170,7 @@ namespace Application.Services
                     LineItems = [.. lineItems.Select(x =>
                         new PaymentLineItemResponseDto
                         {
-                            PaymentLineId  = x.Id,
+                            PaymentLineItemId  = x.Id,
                             Comment = x.Comment,
                             RowId = x.RowId,
                             InitiativeId = x.InitiativeId,
@@ -446,7 +446,7 @@ namespace Application.Services
             try
             {
 
-                var payment = await _dbContext.DisbLineItems.SingleOrDefaultAsync(x => x.Id == updateInvoiceRequest.PaymentLineId);
+                var payment = await _dbContext.DisbLineItems.SingleOrDefaultAsync(x => x.Id == updateInvoiceRequest.PaymentLineItemId);
 
                 if (payment != null)
                 {
@@ -661,7 +661,7 @@ namespace Application.Services
                     RowBalances = rowBalances,
                     LineItems = [.. disbLineItems.Select(x => new PaymentLineItemResponseDto
                     {
-                        PaymentLineId = x.Id,
+                        PaymentLineItemId = x.Id,
                         RowId = x.RowId,
                         Year = x.Year,
                         InitiativeId = x.InitiativeId,

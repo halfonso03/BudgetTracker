@@ -30,7 +30,7 @@ const PaymentPayees = ({
         {payments.map((p, i) => (
           <PaymentPayee
             key={i}
-            p={p}
+            paymentLineItem={p}
             paymentHeader={paymentHeader}
             onDeleteRow={onDeleteRow}
             onEditRow={onEditRow}
