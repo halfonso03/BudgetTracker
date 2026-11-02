@@ -35,32 +35,29 @@ const PaymentMiniDetailsModal = ({ paymentId, ...props }: Props) => {
     <Modal2 size="xl" title="Payment Details" animateOut={false} {...props}>
       <div className="mt-2 gap-4">
         <div className="grid grid-cols-[.2fr_1fr] mb-8 gap-2">
-          <div className="font-semibold text-neutral-600 w-20">ID</div>
-          <div className="font-semibold">{items?.id}</div>
-          <div className="font-semibold text-neutral-600 w-20">Posted By</div>
-          <div className="font-semibold">{items?.postedBy}</div>
-          <div className="font-semibold text-neutral-600">Date</div>
-          <div className="font-semibold">
+          <div className="font-medium text-neutral-600 w-20">ID</div>
+          <div className="font-medium">{items?.id}</div>
+          <div className="font-medium text-neutral-600 w-20">Posted By</div>
+          <div className="font-medium">{items?.postedBy}</div>
+          <div className="font-medium text-neutral-600">Date</div>
+          <div className="font-medium">
             {items?.postedDate && formatDate(items.postedDate)}
           </div>
         </div>
-
-        <div className="gap-1 grid grid-cols-[1fr_.6fr_.5fr_.5fr_.4fr_.4fr] border-b mb-2 py-2 border-b-neutral-300">
-          <div>
-            <div className="text-neutral-600 font-semibold">Pay From</div>
-          </div>
-          <div className="text-neutral-600 font-semibold">Pay To</div>
-          <div className="text-neutral-600 font-semibold">Invoice No.</div>
-          <div className="text-neutral-600 font-semibold">Invoice Data</div>
-          <div className="text-neutral-600 font-semibold">Check No.</div>
-          <div className="text-neutral-600 font-semibold text-end">Amount</div>
+        <div className="gap-1 grid grid-cols-[1fr_.6fr_.5fr_.5fr_.5fr_.5fr] border-b py-2 border-b-neutral-300">
+          <div className="text-neutral-600 font-medium">Pay From</div>
+          <div className="text-neutral-600 font-medium">Pay To</div>
+          <div className="text-neutral-600 font-medium">Invoice No.</div>
+          <div className="text-neutral-600 font-medium">Invoice Date</div>
+          <div className="text-neutral-600 font-medium">Check No.</div>
+          <div className="text-neutral-600 font-medium text-end">Amount</div>
         </div>
         {matchingItems?.map((item, index) => (
           <div
             key={index}
-            className={`gap-3 grid grid-cols-[1fr_.6fr_.5fr_.5fr_.4fr_.4fr] mb-3 py-2`}
+            className={`gap-2 grid grid-cols-[1fr_.6fr_.5fr_.5fr_.5fr_.5fr] mb-3  `}
           >
-            <div className='grid grid-cols-[.6fr_1fr] gap-3 bg-neutral-200/40 rounded-md p-2 '>
+            <div className="grid grid-cols-[.6fr_1fr] gap-3 border-r border-r-neutral-300  p-2 ">
               <div className="text-neutral-600 ">Initiative</div>
               <div>{item.initiativeName}</div>
               <div className="text-neutral-600 ">Award</div>
@@ -70,14 +67,13 @@ const PaymentMiniDetailsModal = ({ paymentId, ...props }: Props) => {
               <div className="text-neutral-600 ">Account</div>
               <div>{item.accountName}</div>
             </div>
-
-            <div className="font-semibold">{item.payeeName}</div>
-            <div>{item.invoiceNumber}</div>
-            <div>
+            <div className="font-semibold pt-2 ">{item.payeeName}</div>
+            <div className="pt-2">{item.invoiceNumber}</div>
+            <div className="pt-2">
               {item.invoiceDate && formatDateForCalendar(item.invoiceDate)}
             </div>
-            <div>{item.checkNumber}</div>
-            <div className=" text-end">
+            <div className="pt-2">{item.checkNumber}</div>
+            <div className=" text-end pt-2">
               {formatCurrency(
                 parseFormattedNumber(item.paymentAmount.toString()),
               )}

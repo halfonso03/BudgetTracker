@@ -25,7 +25,7 @@ const PayeePaymentsStats = ({ payeeId }: Props) => {
 
         {paymentStats && paymentStats.lastPaymentDate && (
           <div className="border-b border-b-neutral-200 grid grid-cols-[1.3fr_.7fr_1fr_.7fr_.5fr_1fr_.5fr_1fr] gap-2">
-            <div className="text-neutral-400 ">
+            <div className="text-neutral-500 ">
               Last Payment Date
             </div>
             <div className="text-neutral-800 ">
@@ -34,25 +34,25 @@ const PayeePaymentsStats = ({ payeeId }: Props) => {
                 : '-'}
             </div>
 
-            <div className="text-neutral-400 ">Average</div>
+            <div className="text-neutral-500 ">Average</div>
             <div className="text-neutral-800 ">
               {paymentStats.averagePayment
                 ? formatCurrency(paymentStats!.averagePayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-400 ">Smallest</div>
+            <div className="text-neutral-500 ">Smallest</div>
             <div className=" text-neutral-800 ">
               {paymentStats.lowestPayment
                 ? formatCurrency(paymentStats!.lowestPayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-400 ">Largest</div>
+            <div className="text-neutral-500 ">Largest</div>
             <div className="text-neutral-800 ">
               {paymentStats.highestPayment
                 ? formatCurrency(paymentStats!.highestPayment!)
                 : '-'}
             </div>
-            <div className="text-neutral-400 ">
+            <div className="text-neutral-500 ">
               Last Payment Amount
             </div>
             <div className="text-neutral-800 ">
@@ -60,7 +60,7 @@ const PayeePaymentsStats = ({ payeeId }: Props) => {
                 ? formatCurrency(paymentStats!.lastPaymentAmount!)
                 : '-'}
             </div>
-            <div className="text-neutral-400 ">No. Payments</div>
+            <div className="text-neutral-500 ">No. Payments</div>
             <div className="text-neutral-800  ">
               {paymentStats.numberOfPayments}
             </div>

@@ -70,25 +70,43 @@ const TransactionsModal = (props: Props) => {
             if (i > 0) remaining += data[i].amount;
             return (
               <div
-                className="grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 rounded-sm p-2 hover:bg-neutral-200/40 duration-200 transition-all"
+                className="cursor-pointer grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 p-2 hover:bg-neutral-200/50 duration-200 transition-all"
                 key={i}
+                onClick={() => {
+                  if (t.typeName === 'Reprogramming') {
+                    props.onSelectedId(
+                      'r',
+                      t.id,
+                      props.accountName,
+                      props.initiativeId,
+                      props.grantId,
+                      props.accountId,
+                    );
+                  }
+                  if (t.payeeName) {
+                    props.onSelectedId(
+                      'd',
+                      t.id,
+                      t.payeeName,
+                      props.initiativeId,
+                      props.grantId,
+                      props.accountId,
+                    );
+                  }
+                }}
               >
                 <div className="flex justify-between gap-2 ">
-                  <div className="font-medium">{t.typeName}</div>
+                  <div className="font-medium">
+                    {t.typeName}{' '}
+                    {t.typeName === 'Reprogramming' && (
+                      <span>- &nbsp;{t.id}</span>
+                    )}
+                  </div>
                   <div>
-                    {t.typeName == 'Reprogramming' ? (
+                    {/* {t.typeName == 'Reprogramming' ? (
                       <button
                         className="cursor-pointer underline underline-offset-3 text-blue-600"
-                        onClick={() => {
-                          props.onSelectedId(
-                            'r',
-                            t.id,
-                            props.accountName,
-                            props.initiativeId,
-                            props.grantId,
-                            props.accountId,
-                          );
-                        }}
+                        onClick={() => {}}
                       >
                         {t.id}
                       </button>
@@ -109,7 +127,7 @@ const TransactionsModal = (props: Props) => {
                       >
                         {t.id}
                       </button>
-                    ) : null}
+                    ) : null} */}
                   </div>
                 </div>
                 <div className="text-center font-medium text-neutral-700">

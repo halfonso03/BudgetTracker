@@ -13,7 +13,7 @@ const InfoModal = ({ ...props }: Props) => {
     <Modal2 size="xl" title="Payee Information" animateOut={false}  {...props}>
       <div className="">
         <div className="flex my-2 mb-6 gap-3 ">
-          <div className="text-neutral-700 font-semibold">Payee Name:</div>
+          <div className="text-neutral-700 font-medium">Payee Name:</div>
           <div className=" font-semibold">{props.payee?.name}</div>
         </div>
         <div className=" mb-4 gap-4">

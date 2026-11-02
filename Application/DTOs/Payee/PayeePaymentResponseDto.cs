@@ -14,5 +14,8 @@ namespace Application.DTOs.Payee
         public required string Grant { get; set; }
         public decimal Amount { get; set; }
         public required string PostedBy { get; set; }
+        public string? InvoiceNumber { get; set; }
+        public DateTime? InvoiceDate { get; set; }
+        public string? CheckNumber { get; set; }
     }
 }

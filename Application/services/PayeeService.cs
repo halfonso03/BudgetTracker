@@ -86,7 +86,10 @@ namespace Application.Services
                                            PostedDate = Convert.ToDateTime(d.PostedDate),
                                            Year = l.Year,
                                            Initiative = i.Name,
-                                           Grant = g.Name
+                                           Grant = g.Name,
+                                           InvoiceDate = l.InvoiceDate,
+                                           InvoiceNumber = l.InvoiceNumber,
+                                           CheckNumber = l.CheckNumber
                                        }).ToListAsync();
 
 

@@ -193,7 +193,7 @@ const InvoiceInfoModal = ({
                   additionalclasses="bg-white "
                 ></Input>
                 {!isValidating && (
-                  <div className='text-red-500'>
+                  <div className="text-red-500">
                     {errors.invoiceNumber?.message}
                   </div>
                 )}
@@ -219,11 +219,7 @@ const InvoiceInfoModal = ({
         </div>
         <div className="flex justify-end gap-3 pb-1">
           <Button type="submit" disabled={isPending || isSuccess}>
-            {isPending || isSuccess ? (
-              <Spinner color="white"></Spinner>
-            ) : (
-              'Save'
-            )}
+            Save
           </Button>
           <Button variation="secondary" onClick={closeModal}>
             Close

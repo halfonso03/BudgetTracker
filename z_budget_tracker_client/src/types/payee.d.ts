@@ -24,6 +24,9 @@ type PayeePayment = {
     postedBy: string
     initiative: string
     grant: string
+    invoiceNumber?: string
+    invoiceDate?: Date
+    checkNumber?: string
 }
 
 type PayeePaymentStats = {

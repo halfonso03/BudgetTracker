@@ -159,9 +159,11 @@ const PayeePaymentsList = ({
                 {formatDate(p.postedDate)}
               </div>
               <div className="  py-1 self-center text-center">{p.postedBy}</div>
-              <div className="self-center"></div>
-              <div className="self-center"></div>
-              <div className="self-center"></div>
+              <div className="text-center">{p.invoiceNumber}</div>
+              <div className="text-center">
+                {p.invoiceDate && formatDate(p.invoiceDate)}
+              </div>
+              <div className="text-center">{p.checkNumber}</div>
             </div>
           ))}
         </div>
