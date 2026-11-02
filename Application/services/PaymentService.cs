@@ -279,7 +279,7 @@ namespace Application.Services
 
                 await transaction.CommitAsync();
 
-                newRowIds = newDisb.Items.OrderBy(x => x.RowId).Select(x => x.Id).ToList();
+                newRowIds = [.. newDisb.Items.OrderBy(x => x.RowId).Select(x => x.Id)];
             }
             catch (DbException ex)
             {
@@ -295,8 +295,10 @@ namespace Application.Services
             return Result<CreatePaymentResponseDto>.Success(CreatePaymentResponseDto.Create(newId, newRowIds));
         }
 
-        public async Task<Result<Unit>> UpdatePayment(UpdatePaymentRequestDto disbRequestDto)
+        public async Task<Result<CreatePaymentResponseDto>> UpdatePayment(UpdatePaymentRequestDto disbRequestDto)
         {
+            var newRowIds = new List<int>();
+            
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
             try
@@ -305,7 +307,7 @@ namespace Application.Services
 
                 if (disbFromDb is null)
                 {
-                    return Result<Unit>.Failure($"Disb not found", 400);
+                    return Result<CreatePaymentResponseDto>.Failure($"Disb not found", 400);
                 }
 
                 if (disbFromDb.Posted)
@@ -466,19 +468,22 @@ namespace Application.Services
 
                 await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
+
+                newRowIds = [.. disbFromDb.Items.OrderBy(x => x.RowId).Select(x => x.Id)];
+
             }
             catch (DbException ex)
             {
                 await transaction.RollbackAsync();
-                return Result<Unit>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+                return Result<CreatePaymentResponseDto>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                return Result<Unit>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+                return Result<CreatePaymentResponseDto>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
 
-            return Result<Unit>.Success(Unit.Value);
+            return Result<CreatePaymentResponseDto>.Success(CreatePaymentResponseDto.Create(disbRequestDto.Id, newRowIds));
         }
 
         public async Task<Result<Unit>> UpdateInvoice(UpdateInvoiceRequestDto updateInvoiceRequest)
