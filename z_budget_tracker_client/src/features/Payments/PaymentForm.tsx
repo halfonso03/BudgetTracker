@@ -442,17 +442,18 @@ const PaymentForm = ({
     };
 
     await createPayment.mutateAsync(paymentToSave, {
-      onSuccess: async (id) => {
+      onSuccess: async (data: { newId: number; rowIds: number[] }) => {
         const postedDate = new Date();
         const createDate = new Date();
 
         if (posted) {
           await invalidateBalances();
         }
+        console.log('data', data);
 
-        queryClient.setQueryData<Payment>(['payment', id], () => ({
+        queryClient.setQueryData<Payment>(['payment', data.newId], () => ({
           ...paymentToSave,
-          id: id,
+          id: data.newId,
           year: payment.year,
           justification: paymentHeader.justification,
           createdBy: loginId!,
@@ -470,6 +471,7 @@ const PaymentForm = ({
           lineItems: lines.map((l) => {
             return {
               ...l,
+              paymentLineItemId: data.rowIds[l.rowId],
               comment: l.comment ?? '',
               availableAmount: l.availableAmount,
               paymentAmount: l.paymentAmount,
@@ -480,11 +482,11 @@ const PaymentForm = ({
 
         onServerCreateSuccess(
           posted,
-          id,
+          data.newId,
           createDate,
           posted ? postedDate : null,
         );
-        onInitialSave?.(id);
+        onInitialSave?.(data.newId);
         onSaved?.();
       },
       onError: (error) => {
@@ -700,7 +702,7 @@ const PaymentForm = ({
 
   return (
     <MenuIdProvider>
-      {/* <pre>{JSON.stringify(lines)}</pre> */}
+      <pre>{JSON.stringify(lines)}</pre>
       <div>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 ">
           {/* opacity-0 cursor-none */}

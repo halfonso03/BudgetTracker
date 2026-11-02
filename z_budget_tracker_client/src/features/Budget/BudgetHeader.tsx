@@ -11,33 +11,33 @@ const BudgetHeader = ({ bRef, cRef, rRef, totalSpent }: Props) => {
       <div className="pl-3 py-2 bg-neutral-100 text-neutral-600 font-bold">
         Totals
       </div>
-      <div className="pl-3 py-2 text-end bg-neutral-100 text-neutral-600 font-bold">
+      <div className="pl-3 py-2 text-end bg-neutral-100 text-neutral-600 font-semibold">
         Budgeted
       </div>
-      <div className="pl-3 py-2 text-end bg-neutral-100 text-neutral-600 font-bold">
+      <div className="pl-3 py-2 text-end bg-neutral-100 text-neutral-600 font-semibold">
         Current
       </div>
-      <div className="pl-3 py-2 text-end bg-neutral-100 text-neutral-600 font-bold">
+      <div className="pl-3 py-2 text-end bg-neutral-100 text-neutral-600 font-semibold">
         Spent
       </div>
-      <div className="pl-3 py-2 text-end bg-neutral-100 text-neutral-600 font-bold">
+      <div className="pl-3 py-2 text-end bg-neutral-100 text-neutral-600 font-semibold">
         Remaining
       </div>
       <div className="col-span-2 bg-neutral-100"></div>
       <div></div>
       <div
-        className="text-end text-neutral-800 font-bold py-2"
+        className="text-end text-neutral-800 font-semibold py-2"
         ref={bRef}
       ></div>
       <div
-        className="text-end text-neutral-800 font-bold py-2"
+        className="text-end text-neutral-800 font-semibold py-2"
         ref={cRef}
       ></div>
-      <div className="text-end text-neutral-800 font-bold py-2">
+      <div className="text-end text-neutral-800 font-semibold py-2">
         {totalSpent}
       </div>
       <div
-        className="text-end text-neutral-800 font-bold py-2"
+        className="text-end text-neutral-800 font-semibold py-2"
         ref={rRef}
       ></div>
       <div></div>

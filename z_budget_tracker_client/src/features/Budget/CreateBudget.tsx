@@ -220,9 +220,9 @@ const CreateBudget = () => {
         <div className="entity-label">Year</div>
         <div className="entity-label">Initiative</div>
         <div className="entity-label">Grant</div>
-        <div className="entity-name">{year}</div>
-        <div className="entity-name">{initiative?.name}</div>
-        <div className="entity-name">
+        <div className="font-semibold">{year}</div>
+        <div className="font-semibold">{initiative?.name}</div>
+        <div className="font-semibold">
           {grant?.name} - {grant?.fiduciary}
         </div>
       </div>
@@ -244,7 +244,7 @@ const CreateBudget = () => {
           return (
             <div className="border border-neutral-200 mb-7" key={c.id}>
               <div className="flex justify-between bg-neutral-100 ">
-                <div className="pl-3 py-2 font-bold">{c.name}</div>
+                <div className="pl-3 py-2 font-semibold">{c.name}</div>
                 <div className="self-center mr-2">
                   <ChevronDownSquare
                     className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
@@ -267,10 +267,10 @@ const CreateBudget = () => {
                 <div className="pl-3 py-2 bg-neutral-100 entity-name">
                   Account
                 </div>
-                <div className="py-2 text-end bg-neutral-100 text-neutral-600 font-bold">
+                <div className="py-2 text-end bg-neutral-100 text-neutral-600 font-semibold">
                   Budgeted
                 </div>
-                <div className="text-center py-2 bg-neutral-100 text-neutral-600 font-bold">
+                <div className="text-center py-2 bg-neutral-100 text-neutral-600 font-semibold">
                   Comments
                 </div>
 

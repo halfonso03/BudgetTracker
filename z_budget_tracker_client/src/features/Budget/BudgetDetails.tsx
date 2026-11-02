@@ -390,7 +390,7 @@ const BudgetDetails = () => {
     setSelectedAccountName(accountName);
     setSelectedInitiativeId(initiativeId);
     setSelectedGrantId(grantId);
-    setSelectedAccountId(accountId)
+    setSelectedAccountId(accountId);
   }
 
   useEffect(() => {
@@ -449,7 +449,7 @@ const BudgetDetails = () => {
                 >
                   <Menus.MenuItem onClick={() => setChangesModalIsOpen(true)}>
                     <div className="flex gap-1 items-center">
-                      <Shield className="text-neutral-700" size={16}></Shield>{' '}
+                      <Shield className="text-neutral-700" size={16}></Shield>
                       View Changes
                     </div>
                   </Menus.MenuItem>
@@ -458,9 +458,9 @@ const BudgetDetails = () => {
             )}
           </div>
 
-          <div className="font-semibold">{grant?.year}</div>
-          <div className="font-semibold">{initiative?.name}</div>
-          <div className="font-semibold">
+          <div className="font-medium">{grant?.year}</div>
+          <div className="font-medium">{initiative?.name}</div>
+          <div className="font-medium">
             {grant?.name} - {grant?.fiduciary}
           </div>
           <div></div>
@@ -510,7 +510,7 @@ const BudgetDetails = () => {
             return (
               <div className="border border-neutral-200 mb-7" key={c.id}>
                 <div className="flex justify-between bg-neutral-100 ">
-                  <div className={`pl-3 py-2 font-bold ${categoryRedClass}`}>
+                  <div className={`pl-3 py-2 font-semibold ${categoryRedClass}`}>
                     {c.name}
                   </div>
                   <div className="self-center mr-2">
@@ -533,25 +533,25 @@ const BudgetDetails = () => {
                   className={`  grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200' : ''}`}
                   key={c.id}
                 >
-                  <div className="pl-3 py-2 font-bold bg-neutral-100 text-neutral-600 border-b border-b-neutral-200">
+                  <div className="pl-3 py-2 font-semibold bg-neutral-100 text-neutral-600 border-b border-b-neutral-200">
                     Account
                   </div>
-                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
                     Budgeted
                   </div>
-                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
                     Current
                   </div>
-                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
                     Spent
                   </div>
-                  <div className="py-2 text-end bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
                     Remaining
                   </div>
-                  <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                  <div className="text-center py-2 bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
                     Comments
                   </div>
-                  <div className="text-center py-2 bg-neutral-100 font-bold text-neutral-600 border-b border-b-neutral-200">
+                  <div className="text-center py-2 bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
                     Actions
                   </div>
                   {amountFieldsForCategory.map((field) => {
@@ -696,6 +696,7 @@ const BudgetDetails = () => {
             }, 500);
           }}
         ></ErrorsModal>
+        {changesModalIsOpen && <div>123</div>}
         {changesModalIsOpen &&
           initiative &&
           grant &&
@@ -714,7 +715,6 @@ const BudgetDetails = () => {
               }}
             ></ChangesModal>
           )}
-
         {selectedId && selectedId.id !== 0 && selectedId.itemType === 'r' && (
           <ReproMiniDetailsModal
             reproId={selectedId.id}
@@ -727,7 +727,6 @@ const BudgetDetails = () => {
             }}
           ></ReproMiniDetailsModal>
         )}
-
         {selectedId && selectedId.id !== 0 && selectedId.itemType === 'd' && (
           <PaymentMiniDetailsModal
             paymentId={selectedId.id}
@@ -754,11 +753,11 @@ export default BudgetDetails;
 //             <table className="border w-200" key={c.id}>
 //               <thead>
 //                 <tr>
-//                   <td className="font-bold w-100">{c.name}</td>
+//                   <td className="font-semibold w-100">{c.name}</td>
 //                 </tr>
 //                 <tr>
 //                   <td className="text-start w-100"></td>
-//                   <td className="text-start font-bold w-100">Amount</td>
+//                   <td className="text-start font-semibold w-100">Amount</td>
 //                 </tr>
 //               </thead>
 //               <tbody>
@@ -822,7 +821,7 @@ export default BudgetDetails;
                           className={
                             `p-[.1rem] w-35 border text-end ` +
                             (index == categoryFields.length - 1
-                              ? 'font-bold'
+                              ? 'font-semibold'
                               : '')
                           }
                           onFocus={(e: React.FocusEvent<HTMLInputElement>) => {

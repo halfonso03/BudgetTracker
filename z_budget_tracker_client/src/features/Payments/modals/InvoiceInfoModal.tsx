@@ -83,6 +83,7 @@ const InvoiceInfoModal = ({
     reset,
   ]);
 
+  console.log('paymentLineItem', paymentLineItem)
   async function onSubmit(data: FormData) {
     console.log('data', data);
     console.log('paymentLineId2', paymentLineItem.paymentLineItemId);

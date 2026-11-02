@@ -116,10 +116,10 @@ const Summary = ({ year }: Props) => {
           <div
             className={`grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 py-3 `}
           >
-            <div className="pl-3 entity-name self-center">
+            <div className="pl-3 font-medium self-center">
               {budget.initiative_name}
             </div>
-            <div className="entity-name self-center">{budget.grant_name}</div>
+            <div className="font-medium self-center">{budget.grant_name}</div>
             <div className="text-end self-center">
               <Link
                 to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
@@ -259,7 +259,7 @@ function CategorySummary({
               key={index}
             >
               <div
-                className={` py-3 pl-8 font-semibold col-span-2  ${cateoryRedClass}`}
+                className={` py-3 pl-8 font-medium col-span-2  ${cateoryRedClass}`}
                 key={index}
               >
                 {c.category}

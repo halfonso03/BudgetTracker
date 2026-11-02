@@ -202,12 +202,12 @@ namespace Application.Services
             }
         }
 
-        public async Task<Result<int>> CreatePayment(CreatePaymentRequestDto disbRequestDto)
+        public async Task<Result<CreatePaymentResponseDto>> CreatePayment(CreatePaymentRequestDto disbRequestDto)
         {
             var newId = 0;
+            var newRowIds = new List<int>();
 
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
-
 
             decimal? totalRequested = await CheckForOverBudgetRequest(disbRequestDto.LineItems);
 
@@ -278,19 +278,21 @@ namespace Application.Services
                 newId = newDisb.Id;
 
                 await transaction.CommitAsync();
+
+                newRowIds = newDisb.Items.OrderBy(x => x.RowId).Select(x => x.Id).ToList();
             }
             catch (DbException ex)
             {
                 await transaction.RollbackAsync();
-                return Result<int>.Failure($"DB Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+                return Result<CreatePaymentResponseDto>.Failure($"DB Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                return Result<int>.Failure($"Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+                return Result<CreatePaymentResponseDto>.Failure($"Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
 
-            return Result<int>.Success(newId);
+            return Result<CreatePaymentResponseDto>.Success(CreatePaymentResponseDto.Create(newId, newRowIds));
         }
 
         public async Task<Result<Unit>> UpdatePayment(UpdatePaymentRequestDto disbRequestDto)

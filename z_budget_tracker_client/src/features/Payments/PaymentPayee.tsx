@@ -96,7 +96,7 @@ const PaymentPayee = ({
               </div>
             </div>
           </div>
-
+          {paymentLineItem.paymentLineItemId}
           <InvoiceInfoModal
             isOpen={invoiceModalIsopen}
             key={crypto.randomUUID()}
@@ -117,7 +117,8 @@ const PaymentPayee = ({
                 Payment No.
               </div>
               <div className="flex-5 text-end text-neutral-800">
-                {paymentLineItem.paymentNumber || (paymentLineItem?.numberOfPayments ?? 0) + 1}
+                {paymentLineItem.paymentNumber ||
+                  (paymentLineItem?.numberOfPayments ?? 0) + 1}
               </div>
             </div>
             <div className="flex w-full ">
