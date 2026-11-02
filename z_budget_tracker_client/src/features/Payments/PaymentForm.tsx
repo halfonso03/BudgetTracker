@@ -301,6 +301,7 @@ const PaymentForm = ({
       const newLine: PaymentLineItem = {
         ...updatedLine,
         rowId: lineItem.rowId,
+        paymentLineItemId: lineItem.paymentLineItemId,
         newAvailableAmount:
           updatedLine.availableAmount -
           parseFormattedNumber(updatedLine.paymentAmount.toString()),
@@ -521,7 +522,7 @@ const PaymentForm = ({
           await invalidateBalances();
         }
         const postedDate = new Date();
-
+console.log('data', data)
         queryClient.setQueryData<Payment>(
           ['payment', paymentHeader.id],
           () => ({
@@ -549,7 +550,7 @@ const PaymentForm = ({
                 availableAmount: l.availableAmount,
                 paymentAmount: l.paymentAmount,
                 newAvailableAmount: l.newAvailableAmount,
-                paymentLineItemId: !l.paymentLineItemId ? data.rowIds[l.rowId] :  l.paymentLineItemId,
+                paymentLineItemId: data.rowIds[l.rowId],
               };
             }),
           }),
@@ -816,87 +817,92 @@ const PaymentForm = ({
 
         {distinctBudgets && lines.length > 0 && (
           <div className="mx-auto w-full divide-y divide-neutral-200">
-            {distinctBudgets.map((paymentSummary: PaymentSummary) => {
-              const payments = lines.filter(
-                (x) =>
-                  x.initiativeId == paymentSummary.initiativeId &&
-                  x.grantId == paymentSummary.grantId &&
-                  x.accountId === paymentSummary.accountId,
-              );
+            {distinctBudgets.map(
+              (paymentSummary: PaymentSummary, i: number) => {
+                const payments = lines.filter(
+                  (x) =>
+                    x.initiativeId == paymentSummary.initiativeId &&
+                    x.grantId == paymentSummary.grantId &&
+                    x.accountId === paymentSummary.accountId,
+                );
 
-              // const remaining =
-              //   i.available! -
-              //   payments
-              //     .map((p) => parseFormattedNumber(p.paymentAmount.toString()))
-              //     .reduce((acc, cur) => acc + cur, 0);
+                // const remaining =
+                //   i.available! -
+                //   payments
+                //     .map((p) => parseFormattedNumber(p.paymentAmount.toString()))
+                //     .reduce((acc, cur) => acc + cur, 0);
 
-              return (
-                <div className="grid grid-cols-[1fr_1.25fr] gap-10 pb-8 mt-8 ">
-                  <div>
-                    <div className="my-2 font-medium text-neutral-600">
-                      Pay From
-                    </div>
-                    <PaymentPayFrom
-                      paymentSummary={paymentSummary}
-                    ></PaymentPayFrom>
+                return (
+                  <div
+                    className="grid grid-cols-[1fr_1.25fr] gap-10 pb-8 mt-8 "
+                    key={i}
+                  >
+                    <div>
+                      <div className="my-2 font-medium text-neutral-600">
+                        Pay From
+                      </div>
+                      <PaymentPayFrom
+                        paymentSummary={paymentSummary}
+                      ></PaymentPayFrom>
 
-                    <div className="col-span-2 flex justify-end w-full mt-6">
-                      {paymentHeader.status !== POSTED && (
-                        <Button
-                          variation="secondary"
-                          buttonSize="medium"
-                          onClick={() =>
-                            onAddPaymentToBudget(
-                              paymentSummary.initiativeId,
-                              paymentSummary.grantId,
-                              paymentSummary.categoryId,
-                              paymentSummary.accountId,
-                            )
-                          }
-                        >
-                          <Plus></Plus>Add Payment
-                        </Button>
-                      )}
+                      <div className="col-span-2 flex justify-end w-full mt-6">
+                        {paymentHeader.status !== POSTED && (
+                          <Button
+                            variation="secondary"
+                            buttonSize="medium"
+                            onClick={() =>
+                              onAddPaymentToBudget(
+                                paymentSummary.initiativeId,
+                                paymentSummary.grantId,
+                                paymentSummary.categoryId,
+                                paymentSummary.accountId,
+                              )
+                            }
+                          >
+                            <Plus></Plus>Add Payment
+                          </Button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex flex-col items-start">
-                    <div className="my-2 font-medium text-neutral-600">
-                      Pay To
-                    </div>
-                    <PaymentPayees
-                      paymentSummary={paymentSummary}
-                      isOverBudget={getOverBudgetClassName(
-                        paymentHeader,
-                        payments,
-                        paymentSummary.initiativeId,
-                        paymentSummary.grantId,
-                        paymentSummary.accountId,
-                      )}
-                      payments={payments}
-                      paymentHeader={paymentHeader}
-                      onEditRow={handleEditRow}
-                      onAddPaymentToBudget={onAddPaymentToBudget}
-                      onDeleteRow={(p) => {
-                        setDeleteRowConfirm((prev) => ({
-                          ...prev,
-                          isOpen: true,
-                          payeeName: p.payeeName,
-                          rowUuid: p.uuid,
-                          paymentAmount: formatCurrency(
-                            parseFormattedNumber(
-                              p.paymentAmount?.toString() ?? '0.00',
+                    <div className="flex flex-col items-start">
+                      <div className="my-2 font-medium text-neutral-600">
+                        Pay To
+                      </div>
+                      <PaymentPayees
+                        paymentSummary={paymentSummary}
+                        isOverBudget={getOverBudgetClassName(
+                          paymentHeader,
+                          payments,
+                          paymentSummary.initiativeId,
+                          paymentSummary.grantId,
+                          paymentSummary.accountId,
+                        )}
+                        payments={payments}
+                        paymentHeader={paymentHeader}
+                        onEditRow={handleEditRow}
+                        onAddPaymentToBudget={onAddPaymentToBudget}
+                        onDeleteRow={(p) => {
+                          setDeleteRowConfirm((prev) => ({
+                            ...prev,
+                            isOpen: true,
+                            payeeName: p.payeeName,
+                            rowUuid: p.uuid,
+                            paymentAmount: formatCurrency(
+                              parseFormattedNumber(
+                                p.paymentAmount?.toString() ?? '0.00',
+                              ),
                             ),
-                          ),
-                        }));
-                      }}
-                      onInvoiceUpdated={(d) => {
-                        handleInvoiceUpdated(d);
-                      }}
-                    ></PaymentPayees>
+                          }));
+                        }}
+                        onInvoiceUpdated={(d) => {
+                          handleInvoiceUpdated(d);
+                        }}
+                      ></PaymentPayees>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              },
+            )}
           </div>
         )}
         {paymentLineModalIsOpen && (

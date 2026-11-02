@@ -298,7 +298,7 @@ namespace Application.Services
         public async Task<Result<CreatePaymentResponseDto>> UpdatePayment(UpdatePaymentRequestDto disbRequestDto)
         {
             var newRowIds = new List<int>();
-            
+
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
             try
@@ -374,15 +374,15 @@ namespace Application.Services
                     {
                         var lineFromDb = lineItemsFromDb.First(x => x.RowId == req.RowId);
 
-                        // if (lineFromDb.Amount != req.Amount ||
-                        //     lineFromDb.InitiativeId != req.InitiativeId ||
-                        //     lineFromDb.GrantId != req.GrantId ||
-                        //     lineFromDb.AccountId != req.AccountId ||
-                        //     lineFromDb.PayeeId != req.PayeeId ||
-                        //     lineFromDb.Comment != req.Comment ||
-                        //     lineFromDb.InvoiceNumber != req.InvoiceNumber ||
-                        //     lineFromDb.InvoiceDate != req.InvoiceDate ||
-                        //     lineFromDb.CheckNumber != req.CheckNumber || 1 == 1)
+                        if (lineFromDb.Amount != req.Amount ||
+                            lineFromDb.InitiativeId != req.InitiativeId ||
+                            lineFromDb.GrantId != req.GrantId ||
+                            lineFromDb.AccountId != req.AccountId ||
+                            lineFromDb.PayeeId != req.PayeeId ||
+                            lineFromDb.Comment != req.Comment ||
+                            lineFromDb.InvoiceNumber != req.InvoiceNumber ||
+                            lineFromDb.InvoiceDate != req.InvoiceDate ||
+                            lineFromDb.CheckNumber != req.CheckNumber || 1 == 1)
                         {
                             lineFromDb.UpdateDate = DateTime.Now;
                             lineFromDb.UpdatedById = disbRequestDto.UpdatedById;
@@ -397,10 +397,11 @@ namespace Application.Services
                             lineFromDb.CheckNumber = req.CheckNumber;
                             lineFromDb.InvoiceDate = req.InvoiceDate;
                             lineFromDb.InvoiceNumber = req.InvoiceNumber;
-                            lineFromDb.PaymentNumber = payeePayments.Any(x => x.payeeId == req.PayeeId)
-                                ? payeePayments.First(x => x.payeeId == req.PayeeId).paymentCount + 1
-                                : 1;
                         }
+
+                        lineFromDb.PaymentNumber = payeePayments.Any(x => x.payeeId == req.PayeeId)
+                              ? payeePayments.First(x => x.payeeId == req.PayeeId).paymentCount + 1
+                              : 1;
                     }
                     else
                     {

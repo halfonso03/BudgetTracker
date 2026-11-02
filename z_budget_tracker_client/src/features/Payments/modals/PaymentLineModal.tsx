@@ -224,11 +224,10 @@ const PaymentLineModal = (props: Props) => {
       };
       props.onLineAdded(newLine);
     } else {
-    
-    
       // payentLinewItemId is being removed on update of row
 
-
+      console.log('data', data);
+      
       const updatedLine: PaymentLineItem = {
         ...data,
         rowId: -1,
@@ -251,7 +250,6 @@ const PaymentLineModal = (props: Props) => {
         lastPaymentDate: payee?.lastPaymentDate,
         numberOfPayments: payee?.numberOfPayments,
         comment: data.comment?.trim(),
-        
       };
       // console.log('updatedLine', updatedLine);
 
