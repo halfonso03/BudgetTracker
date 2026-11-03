@@ -97,7 +97,7 @@ const PaymentPayee = ({
               </div>
             </div>
           </div>
-          {paymentLineItem.paymentLineItemId}
+          {/* {paymentLineItem.paymentLineItemId} */}
           <InvoiceInfoModal
             isOpen={invoiceModalIsopen}
             key={crypto.randomUUID()}

@@ -40,7 +40,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
           ></X>
         </div>
         <div className="w-[97%] mx-auto">
-          <div className="flex gap-5 w-full">
+          <div className="flex gap-12 w-full">
             <div className="flex-5">
               <PayeeForm
                 payee={payee}
@@ -48,7 +48,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
               ></PayeeForm>
             </div>
 
-            <div className="flex-8">
+            <div className="flex-11">
               {payee.id !== 0 && (
                 <PayeePayments payeeId={payee.id}></PayeePayments>
               )}

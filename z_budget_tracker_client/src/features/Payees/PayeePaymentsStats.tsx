@@ -11,7 +11,7 @@ const PayeePaymentsStats = ({ payeeId }: Props) => {
 
   return (
     <div>
-      <div className="mb-9 gap-4 w-full ">
+      <div className="mb-3 gap-4 w-full ">
         {loadingPaymentStats && (
           <div className="mb-1">
             <Skeleton
@@ -24,7 +24,7 @@ const PayeePaymentsStats = ({ payeeId }: Props) => {
         )}
 
         {paymentStats && paymentStats.lastPaymentDate && (
-          <div className="border-b border-b-neutral-200 grid grid-cols-[1.3fr_.7fr_1fr_.7fr_.5fr_1fr_.5fr_1fr] gap-2">
+          <div className=" grid grid-cols-[1.3fr_.7fr_1fr_.7fr_.5fr_1fr_.5fr_1fr] gap-2">
             <div className="text-neutral-500 ">
               Last Payment Date
             </div>

@@ -585,7 +585,7 @@ namespace Application.Services
                     CreateDate = DateTime.Now,
                     CreatedBy = userId,
                     Year = disbLines.First().Year,
-                    AdditionalInformation = $"Payment to Payee Id {line.PayeeId}"
+                    AdditionalInformation = $"Payment to Payee Id {line.PayeeId}."
                 };
 
                 postedBudgetLineItems.Add(budgetLineItem);
@@ -673,30 +673,14 @@ namespace Application.Services
                 var payeePayments = await _dbContext.DisbLineItems
                                     .Where(x => payeeIds.Contains(x.PayeeId) && x.BudgetLineItemId != null)
                                     .GroupBy(x => x.PayeeId)
-                                    .Select(x => new
+                                    .Select(x => new PayeePaymentCount
                                     {
-                                        payeeId = x.Key,
-                                        paymentCount = x.Count()
+                                        PayeeId = x.Key,
+                                        PaymentCount = x.Count()
                                     })
                                     .ToListAsync();
 
-                var usedNos = new Dictionary<int, int>();
-
-                foreach (var p in newDisb.Items.Select(x => x.PayeeId).Distinct())
-                {
-                    usedNos[p] = payeePayments.Any(x => x.payeeId == p)
-                                ? payeePayments.First(x => x.payeeId == p).paymentCount + 1
-                                : 1;
-                }
-
-                foreach (var line in newDisb.Items.OrderBy(x => x.RowId))
-                {
-                    if (usedNos.TryGetValue(line.PayeeId, out int value))
-                    {
-                        line.PaymentNumber = value;
-                        usedNos[line.PayeeId] = value + 1;
-                    }
-                }
+                UpdatePaymentNumbers(newDisb.Items, payeePayments);
 
                 _dbContext.Disbs.Add(newDisb);
 
