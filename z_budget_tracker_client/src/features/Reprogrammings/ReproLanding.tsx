@@ -10,7 +10,7 @@ const ReproLanding = () => {
     <div>
       <ReproProvider>
         <PaginationContextProvider>
-          <SortingProvider>
+          <SortingProvider defaultSortOrder='ID'>
             <Outlet></Outlet>
           </SortingProvider>
         </PaginationContextProvider>

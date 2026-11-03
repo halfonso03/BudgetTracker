@@ -9,7 +9,7 @@ export const usePayeePayments = (payeeId: number) => {
   const { sortByValue } = useSortingContext();
 
   const { data, isLoading, isSuccess } = useQuery<{
-    payments: PayeePayment[];
+    items: PayeePayment[];
     pagination: PaginationData | undefined;
   }>({
     queryKey: ['payee', 'payments', payeeId, pageNumber, sortByValue],
@@ -22,7 +22,7 @@ export const usePayeePayments = (payeeId: number) => {
       );
 
       // console.log('response', response.data)
-      const payments = response.data.items;
+      const items = response.data.items;
       // const payments = response.data;
       const paginationHeader = response.headers['pagination'];
 
@@ -31,12 +31,12 @@ export const usePayeePayments = (payeeId: number) => {
         : null;
 
       // return payments;
-      return { payments, pagination };
+      return { items, pagination };
     },
   });
 
   return {
-    payments: data,
+    data,
     loadingPayments: isLoading,
     loadingPaymentsSuccess: isSuccess,
   };

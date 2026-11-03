@@ -5,7 +5,7 @@ import PayeeList from './PayeeList';
 const PayeeHome = () => {
   return (
     <PaginationContextProvider>
-      <SortingProvider>
+      <SortingProvider defaultSortOrder='ID'>
         <PayeeList></PayeeList>
       </SortingProvider>
     </PaginationContextProvider>

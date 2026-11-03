@@ -6,7 +6,7 @@ const PaymentLanding = () => {
   // ReproProvider is not used anywhere
   return (
     <div>
-        <SortingProvider>
+        <SortingProvider defaultSortOrder='ID'>
           <Outlet></Outlet>
         </SortingProvider>
     </div>

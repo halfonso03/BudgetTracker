@@ -5,6 +5,7 @@ export type SortingContextType = {
   setSortByValue: (state: string) => void;
   sortById: string;
   setSortById: (state: string) => void;
+  getSortByValue: () => string;
 };
 
 export const SortingContext = createContext<SortingContextType | null>(null);

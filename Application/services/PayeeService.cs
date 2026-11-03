@@ -97,8 +97,8 @@ namespace Application.Services
 
             var paymentsQuerySorted = sortBy switch
             {
-                "ID" => paymentsQuery.OrderBy(x => x.Id),
-                "IDdesc" => paymentsQuery.OrderByDescending(x => x.Id),
+                "PAYMENTNUMBER" => paymentsQuery.OrderBy(x => x.PaymentNumber),
+                "PAYMENTNUMBERdesc" => paymentsQuery.OrderByDescending(x => x.PaymentNumber),
                 "YEAR" => paymentsQuery.OrderBy(x => x.Year),
                 "YEARdesc" => paymentsQuery.OrderByDescending(x => x.Year),
                 "INITIATIVE" => paymentsQuery.OrderBy(x => x.Initiative),
@@ -111,14 +111,21 @@ namespace Application.Services
                 "POSTEDDATEdesc" => paymentsQuery.OrderByDescending(x => x.PostedDate),
                 "POSTEDBY" => paymentsQuery.OrderBy(x => x.PostedBy),
                 "POSTEDBYdesc" => paymentsQuery.OrderByDescending(x => x.PostedBy),
-                _ => paymentsQuery.OrderBy(x => x.Id)
+                "INVOICENO" => paymentsQuery.OrderBy(x => x.InvoiceNumber),
+                "INVOICENOdesc" => paymentsQuery.OrderByDescending(x => x.InvoiceNumber),
+                "INVOICEDATE" => paymentsQuery.OrderBy(x => x.InvoiceDate),
+                "INVOICEDATEdesc" => paymentsQuery.OrderByDescending(x => x.InvoiceDate),
+                "CHECKNO" => paymentsQuery.OrderBy(x => x.CheckNumber),
+                "CHECKNOdesc" => paymentsQuery.OrderByDescending(x => x.CheckNumber),
+                _ => paymentsQuery.OrderBy(x => x.PaymentNumber)
             };
 
 
             var pagedItemsList =
                        PagedList<PayeePaymentResponseDto>.ToPagedList(paymentsQuerySorted.AsQueryable(), paginationParams.PageNumber, paginationParams.PageSize);
 
-
+            Console.WriteLine(pagedItemsList.Count);
+            
 
             var response = new PaymentSearchResponseDto
             {

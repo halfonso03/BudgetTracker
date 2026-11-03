@@ -6,6 +6,7 @@ import SortBySelector from '../../components/SortBySelector';
 import { usePagination } from '../../contexts/pagination/usePagination';
 import { useSortingContext } from '../../contexts/useSortingContext';
 import Spinner from '../../components/Spinner';
+import { useEffect } from 'react';
 
 type Props = {
   payeeId: number;
@@ -17,23 +18,19 @@ const PayeePaymentsList = ({
   showSkeleton = true,
   onPaymentRowClicked,
 }: Props) => {
-  const { payments, loadingPayments, loadingPaymentsSuccess } =
+  const { data, loadingPayments, loadingPaymentsSuccess } =
     usePayeePayments(payeeId);
 
   const { setPageNumber } = usePagination();
-  const { sortByValue } = useSortingContext();
+  const { sortByValue, setSortByValue } = useSortingContext();
 
   function handlePageNumberChange(pageNumber: number) {
     setPageNumber(pageNumber);
   }
 
-  // useEffect(() => {
-  //   if (!sortInitialSet) {
-  //     // setSortByValue('ID');
-  //     // // eslint-disable-next-line react-hooks/set-state-in-effect
-  //     // setSortInitialSet(true);
-  //   }
-  // }, [setSortByValue, sortInitialSet]);
+  useEffect(() => {
+    setSortByValue('PAYMENTNUMBER');
+  }, [setSortByValue]);
 
   if (loadingPayments && showSkeleton) {
     return (
@@ -52,26 +49,26 @@ const PayeePaymentsList = ({
     return <Spinner></Spinner>;
   }
 
-  if (loadingPaymentsSuccess && payments?.payments.length === 0) {
+  if (loadingPaymentsSuccess && data?.items.length === 0) {
     return (
       <div className="font-semibold text-neutral-600">
         There are no payments to this payee.
       </div>
     );
   }
-  if (!payments) return <div>There are no payments</div>;
+  if (!data) return <div>There are no payments</div>;
 
   return (
     <div className="flex flex-col justify-between  ">
       <div className="border border-neutral-200 ">
         <div
           className="bg-neutral-50 text-neutral-500 border-b border-neutral-200  
-            grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-2 gap-4 "
+            grid grid-cols-[.44fr_.25fr_1fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-2 gap-4 "
         >
           <div className="pl-3 self-center">
             <SortBySelector
-              label="ID"
-              value="ID"
+              label="PMT. NO."
+              value="PAYMENTNUMBER"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
@@ -121,44 +118,44 @@ const PayeePaymentsList = ({
           <div className=" flex justify-center self-center">
             <SortBySelector
               label="INVOICE. NO."
-              value="POSTEDBY"
+              value="INVOICENO"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
           <div className=" flex justify-center self-center">
             <SortBySelector
               label="INV. DATE"
-              value="POSTEDBY"
+              value="INVOICEDATE"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
           <div className=" flex justify-center self-center">
             <SortBySelector
               label="CHECK NO."
-              value="POSTEDBY"
+              value="CHECKNO"
               currentSortValue={sortByValue}
             ></SortBySelector>
           </div>
         </div>
 
         <div>
-          {payments.payments.map((p) => (
+          {data.items.map((p, i) => (
             <div
-              key={p.id}
+              key={i}
               className={` ${onPaymentRowClicked != null ? 'cursor-pointer ' : ''} 
-              grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-1  gap-4  hover:bg-neutral-100 duration-200 transition-all border-b border-b-neutral-200 last:border-0`}
+              grid grid-cols-[.44fr_.25fr_1fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-1  gap-4  hover:bg-neutral-100 duration-200 transition-all border-b border-b-neutral-200 last:border-0`}
             >
-              <div className="py-1 px-4 self-center ">{p.paymentNumber}</div>
+              <div className="py-1 px-4 self-center text-center ">{p.paymentNumber}</div>
               <div className="py-1 self-center">{p.year}</div>
               <div className="py-1 self-center">{p.initiative}</div>
-              <div className="  py-1 self-center text-center">{p.grant}</div>
-              <div className=" py-1 self-center text-center">
+              <div className="py-1 self-center text-center">{p.grant}</div>
+              <div className="py-1 self-center text-center">
                 {formatCurrency(p.amount)}
               </div>
               <div className="py-1 self-center text-center">
                 {formatDate(p.postedDate)}
               </div>
-              <div className="  py-1 self-center text-center">{p.postedBy}</div>
+              <div className="py-1 self-center text-center">{p.postedBy}</div>
               <div className="text-center">{p.invoiceNumber}</div>
               <div className="text-center">
                 {p.invoiceDate && formatDate(p.invoiceDate)}
@@ -169,9 +166,9 @@ const PayeePaymentsList = ({
         </div>
       </div>
 
-      {payments?.pagination && (
+      {data?.pagination && (
         <Pagination
-          data={payments?.pagination}
+          data={data?.pagination}
           onPageNumberChange={handlePageNumberChange}
         ></Pagination>
       )}

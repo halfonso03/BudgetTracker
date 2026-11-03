@@ -15,7 +15,7 @@ const PayeePayments = ({ payeeId }: Props) => {
       </div>
 
       <PayeePaymentsStats payeeId={payeeId}></PayeePaymentsStats>
-      <SortingProvider>
+      <SortingProvider defaultSortOrder="PAYMENTNUMBER">
         <PayeePaymentsList payeeId={payeeId}></PayeePaymentsList>
       </SortingProvider>
     </div>
