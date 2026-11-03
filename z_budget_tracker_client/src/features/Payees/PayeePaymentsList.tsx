@@ -120,7 +120,7 @@ const PayeePaymentsList = ({
           </div>
           <div className=" flex justify-center self-center">
             <SortBySelector
-              label="INV. NO."
+              label="INVOICE. NO."
               value="POSTEDBY"
               currentSortValue={sortByValue}
             ></SortBySelector>

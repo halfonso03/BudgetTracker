@@ -1,15 +1,19 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Domain
 {
     [Table("tblDisbLineItem")]
     public class DisbLineItem
     {
+
+        [SetsRequiredMembers]
+        public DisbLineItem()
+        {
+            PaymentNumber = 1;
+        }
+        
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -44,6 +48,11 @@ namespace Domain
         public int? BudgetLineItemId { get; set; }
         public BudgetLineItem? BudgetLineItem { get; set; }
         public Payee? Payee { get; set; }
+
+        public override string ToString()
+        {
+            return $"Payee Id: {this.PayeeId} Payment No. {this.PaymentNumber}";
+        }
 
     }
 }

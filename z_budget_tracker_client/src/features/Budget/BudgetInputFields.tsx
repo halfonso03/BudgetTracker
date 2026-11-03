@@ -233,24 +233,14 @@ const BudgetInputFields = ({
           </div>
         )}
         {!isLastRow ? (
-          parseFormattedNumber(remaining) == 0 ? (
-            <span className="text-neutral-400 pr-1">-</span>
-          ) : (
-            <div
-              onClick={() =>
-                showAccountHistory(
-                  3,
-                  initiativeId,
-                  grantId,
-                  accountId,
-                  fieldName,
-                )
-              }
-              className={`text-blue-600 hover:underline underline-offset-5 cursor-pointer`}
-            >
-              {formatCurrency(parseFormattedNumber(remaining))}
-            </div>
-          )
+          <div
+            onClick={() =>
+              showAccountHistory(3, initiativeId, grantId, accountId, fieldName)
+            }
+            className={`text-blue-600 hover:underline underline-offset-5 cursor-pointer`}
+          >
+            {formatCurrency(parseFormattedNumber(remaining))}
+          </div>
         ) : (
           <>
             <input
@@ -284,28 +274,32 @@ const BudgetInputFields = ({
         )}
       </div>
       <div
-        className={`flex py-1 justify-around cursor-pointer text-blue-500 self-center ${isLastRow ? 'bg-neutral-100' : ''}`}
+        className={`flex py-1 justify-around text-blue-500 self-center ${isLastRow ? 'bg-neutral-100' : ''}`}
       >
-        {!isLastRow && parseFormattedNumber(remaining) > 0 ? (
-          <>
-            <Link
-              to={`/reprogramming/${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`}
-              tabIndex={-1}
-            >
-              <ArrowLeftRight></ArrowLeftRight>
-            </Link>
-
-            <DollarSign
-              onClick={() => {
-                navigate(
-                  `/payments//${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`,
-                );
-              }}
-            ></DollarSign>
-          </>
-        ) : (
-          <div className={`${isLastRow && 'py-1'}`}>&nbsp;</div>
+        {!isLastRow && (
+          <Link
+            className="cursor-pointer"
+            to={`/reprogramming/${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`}
+            tabIndex={-1}
+          >
+            <ArrowLeftRight></ArrowLeftRight>
+          </Link>
         )}
+        {!isLastRow && parseFormattedNumber(remaining) > 0 && (
+          <DollarSign
+            className="cursor-pointer"
+            onClick={() => {
+              navigate(
+                `/payments//${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`,
+              );
+            }}
+          ></DollarSign>
+        )}
+
+        {!isLastRow && parseFormattedNumber(remaining) <= 0 && (
+          <DollarSign className="text-neutral-300"></DollarSign>
+        )}
+        {isLastRow && <div className="py-1">&nbsp; </div>}
       </div>
       <CommentsModal
         isOpen={commentsOpen}

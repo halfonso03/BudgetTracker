@@ -272,7 +272,7 @@ namespace Application.Services
 
                 if (newDisb.Posted)
                 {
-                    await PostDisb(newDisb.Items, newDisb.Id, disbRequestDto.CreatedById);
+                    await PostDisb(disbRequestDto.LineItems, newDisb.Id, disbRequestDto.CreatedById);
                 }
 
                 newId = newDisb.Id;
@@ -347,13 +347,9 @@ namespace Application.Services
 
                 var lineItemsFromDb = await _dbContext.DisbLineItems.Where(x => x.DisbId == disbRequestDto.Id).ToListAsync();
 
-                var db_count = lineItemsFromDb.Count;
-                var dto_count = disbRequestDto.LineItems.Count;
-
-
                 var payeeIds = disbRequestDto.LineItems.Select(x => x.PayeeId).Distinct().ToList();
                 var payeePayments = await _dbContext.DisbLineItems
-                                    .Where(x => payeeIds.Contains(x.PayeeId) && x.BudgetLineItemId != null)
+                                    .Where(x => payeeIds.Contains(x.PayeeId))
                                     .GroupBy(x => x.PayeeId)
                                     .Select(x => new
                                     {
@@ -366,6 +362,9 @@ namespace Application.Services
                 {
                     Console.WriteLine($"{p.payeeId} {p.paymentCount}");
                 }
+
+                var allLines = new List<DisbLineItem>();
+
 
                 foreach (var req in disbRequestDto.LineItems)
                 {
@@ -399,9 +398,9 @@ namespace Application.Services
                             lineFromDb.InvoiceNumber = req.InvoiceNumber;
                         }
 
-                        lineFromDb.PaymentNumber = payeePayments.Any(x => x.payeeId == req.PayeeId)
-                              ? payeePayments.First(x => x.payeeId == req.PayeeId).paymentCount + 1
-                              : 1;
+                        // lineFromDb.PaymentNumber = payeePayments.Any(x => x.payeeId == req.PayeeId)
+                        //         ? payeePayments.First(x => x.payeeId == req.PayeeId).paymentCount + 1
+                        //         : 1;
                     }
                     else
                     {
@@ -422,12 +421,13 @@ namespace Application.Services
                             Comment = string.IsNullOrEmpty(req.Comment) ? null : req.Comment.Trim(),
                             InvoiceNumber = req.InvoiceNumber,
                             InvoiceDate = req.InvoiceDate,
-                            CheckNumber = req.CheckNumber,
-                            PaymentNumber = payeePayments.Any(x => x.payeeId == req.PayeeId)
-                                ? payeePayments.First(x => x.payeeId == req.PayeeId).paymentCount + 1
-                                : 1
-                        }
-                    ;
+                            CheckNumber = req.CheckNumber
+                            // PaymentNumber = payeePayments.Any(x => x.payeeId == req.PayeeId)
+                            //     ? payeePayments.First(x => x.payeeId == req.PayeeId).paymentCount + 1
+                            //     : 1
+                        };
+
+                        allLines.Add(newLineItem);
 
                         _dbContext.DisbLineItems.Add(newLineItem);
                     }
@@ -446,26 +446,32 @@ namespace Application.Services
 
                 if (disbRequestDto.Posted)
                 {
-                    var disbLineItems =
-                        disbRequestDto.LineItems.Select(x => new DisbLineItem
-                        {
-                            RowId = x.RowId,
-                            DisbId = disbRequestDto.Id,
-                            Year = grant.Year,
-                            InitiativeId = x.InitiativeId,
-                            GrantId = x.GrantId,
-                            AccountId = x.AccountId,
-                            CategoryId = x.CategoryId,
-                            PayeeId = x.PayeeId,
-                            Amount = x.Amount,
-                            EntryDate = DateTime.Now,
-                            PaymentNumber = 0
-                        })
-                        .ToList();
-
-                    await PostDisb(disbLineItems, disbRequestDto.Id, disbRequestDto.UpdatedById);
+                    await PostDisb(disbRequestDto.LineItems, disbRequestDto.Id, disbRequestDto.UpdatedById);
                 }
 
+
+                // payeeId, paymentNo
+                var usedNos = new Dictionary<int, int>();
+
+                foreach (var p in allLines.Select(x => x.PayeeId).Distinct())
+                {
+                    var proposedPaymentNo = payeePayments.Any(x => x.payeeId == p)
+                                ? payeePayments.First(x => x.payeeId == p).paymentCount + 1
+                                : 1;
+
+                    usedNos[p] = proposedPaymentNo;
+                }
+
+                foreach (var line in allLines.OrderBy(x => x.RowId))
+                {
+                    if (usedNos.TryGetValue(line.PayeeId, out int value))
+                    {
+                        line.PaymentNumber = value;
+                        usedNos[line.PayeeId] = value + 1;
+                    }
+
+                    Console.WriteLine(line);
+                }
 
                 await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
@@ -553,10 +559,12 @@ namespace Application.Services
             return null;
         }
 
-        private async Task<bool> PostDisb(IList<DisbLineItem> items, int disbId, int userId)
+        private async Task<bool> PostDisb(IList<PaymentRequestLineItemDto> items, int disbId, int userId)
         {
 
             var postedBudgetLineItems = new List<BudgetLineItem>();
+
+            var disbLines = await _dbContext.DisbLineItems.Where(x => x.DisbId == disbId).Select(x => x).ToListAsync();
 
             foreach (var line in items)
             {
@@ -585,7 +593,7 @@ namespace Application.Services
                     ItemType = Globals.ITEM_TYPE_PAYMENT,
                     CreateDate = DateTime.Now,
                     CreatedBy = userId,
-                    Year = line.Year,
+                    Year = disbLines.First().Year,
                     AdditionalInformation = $"Payment to Payee Id {line.PayeeId}"
                 };
 
@@ -597,8 +605,6 @@ namespace Application.Services
             await _dbContext.SaveChangesAsync();
 
 
-
-            var disbLines = await _dbContext.DisbLineItems.Where(x => x.DisbId == disbId).Select(x => x).ToListAsync();
 
             var counter = 0;
 

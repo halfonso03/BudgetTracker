@@ -1,12 +1,7 @@
-
 reports:
-
-budgetsummary - when remaining is 0, show transactions link now shows -
-
 grant balance by AR and initiative
 project budget vs actual budgeted
 add a 2E link to the budget summary
-
 
  ? -- add delete budget when no reprogrammings and no expenses
 
@@ -14,6 +9,7 @@ when user locked out must not navigate away
 role assignment
 
 
+DONE budgetsummary - when remaining is 0, show transactions link now shows -
 DONE payment invoice date and nunmber and check unmber
 DONE paymentlinemodel add zero found message when search returnes nothing
 DONE show "Editing' in the payment form
