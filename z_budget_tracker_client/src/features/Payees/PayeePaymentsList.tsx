@@ -63,7 +63,7 @@ const PayeePaymentsList = ({
       <div className="border border-neutral-200 ">
         <div
           className="bg-neutral-50 text-neutral-500 border-b border-neutral-200  
-            grid grid-cols-[.44fr_.25fr_1.2fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-2 gap-4 "
+            grid grid-cols-[.46fr_.25fr_1.2fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-2 gap-4 "
         >
           <div className="pl-3 self-center">
             <SortBySelector
@@ -143,7 +143,7 @@ const PayeePaymentsList = ({
             <div
               key={i}
               className={` ${onPaymentRowClicked != null ? 'cursor-pointer ' : ''} 
-              grid grid-cols-[.44fr_.25fr_1.2fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-1  gap-4  hover:bg-neutral-100 duration-200 transition-all border-b border-b-neutral-200 last:border-0`}
+              grid grid-cols-[.46fr_.25fr_1.2fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-1  gap-4  hover:bg-neutral-100 duration-200 transition-all border-b border-b-neutral-200 last:border-0`}
             >
               <div className="py-1 px-4 self-center text-center ">{p.paymentNumber}</div>
               <div className="py-1 self-center">{p.year}</div>

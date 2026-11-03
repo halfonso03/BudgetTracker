@@ -6,7 +6,7 @@ using Application.PaginationHelpers;
 
 namespace Application.DTOs.Payee
 {
-    public class PaymentSearchResponseDto
+    public class PayeePaymentSearchResponseDto
     {
         public required List<PayeePaymentResponseDto> Items { get; set; } = [];
         public required int ItemCount { get; set; }

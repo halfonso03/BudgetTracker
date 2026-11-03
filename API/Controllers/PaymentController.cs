@@ -1,4 +1,6 @@
+using API.Extensions;
 using Application.DTOs.Payment;
+using Application.PaginationHelpers;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,5 +45,16 @@ namespace API.Controllers
         {
             return HandleResult(await _paymentService.UpdateInvoice(updateInvoiceRequestDto));
         }
+
+        [HttpPost("search")]
+        public async Task<IActionResult> Search([FromBody] PaymentSearchParams searchParams, [FromQuery] PaginationParams paginationParams, [FromQuery] string sortBy)
+        {
+            var result = await _paymentService.Search(searchParams, paginationParams, sortBy);
+
+            Response.AddPaginationHeader(result.Value!.MetaData);
+
+            return HandleResult(result);
+        }
+
     }
 }

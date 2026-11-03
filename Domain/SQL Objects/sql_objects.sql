@@ -1,105 +1,6 @@
 USE [BudgetTracker]
 GO
-/****** Object:  UserDefinedFunction [dbo].[fncSplit]    Script Date: 11/1/2026 2:00:00 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-
-CREATE FUNCTION [dbo].[fncSplit](@sText varchar(8000), @sDelim varchar(20) = ' ')
-RETURNS @retArray TABLE (idx smallint Primary Key, value varchar(8000))
-AS
-BEGIN
-DECLARE @idx smallint,
-	@value varchar(8000),
-	@bcontinue bit,
-	@iStrike smallint,
-	@iDelimlength tinyint
-
-IF @sDelim = 'Space'
-	BEGIN
-	SET @sDelim = ' '
-	END
-
-SET @idx = 0
-SET @sText = LTrim(RTrim(@sText))
-SET @iDelimlength = DATALENGTH(@sDelim)
-SET @bcontinue = 1
-
-IF NOT ((@iDelimlength = 0) or (@sDelim = 'Empty'))
-	BEGIN
-	WHILE @bcontinue = 1
-		BEGIN
-
---If you can find the delimiter in the text, retrieve the first element and
---insert it with its index into the return table.
- 
-		IF CHARINDEX(@sDelim, @sText)>0
-			BEGIN
-			SET @value = SUBSTRING(@sText,1, CHARINDEX(@sDelim,@sText)-1)
-				BEGIN
-				INSERT @retArray (idx, value)
-				VALUES (@idx, @value)
-				END
-			
---Trim the element and its delimiter from the front of the string.
-			--Increment the index and loop.
-SET @iStrike = DATALENGTH(@value) + @iDelimlength
-			SET @idx = @idx + 1
-			SET @sText = LTrim(Right(@sText,DATALENGTH(@sText) - @iStrike))
-		
-			END
-		ELSE
-			BEGIN
---If you can’t find the delimiter in the text, @sText is the last value in
---@retArray.
- SET @value = @sText
-				BEGIN
-				INSERT @retArray (idx, value)
-				VALUES (@idx, @value)
-				END
-			--Exit the WHILE loop.
-SET @bcontinue = 0
-			END
-		END
-	END
-ELSE
-	BEGIN
-	WHILE @bcontinue=1
-		BEGIN
-		--If the delimiter is an empty string, check for remaining text
-		--instead of a delimiter. Insert the first character into the
-		--retArray table. Trim the character from the front of the string.
---Increment the index and loop.
-		IF DATALENGTH(@sText)>1
-			BEGIN
-			SET @value = SUBSTRING(@sText,1,1)
-				BEGIN
-				INSERT @retArray (idx, value)
-				VALUES (@idx, @value)
-				END
-			SET @idx = @idx+1
-			SET @sText = SUBSTRING(@sText,2,DATALENGTH(@sText)-1)
-			
-			END
-		ELSE
-			BEGIN
-			--One character remains.
-			--Insert the character, and exit the WHILE loop.
-			INSERT @retArray (idx, value)
-			VALUES (@idx, @sText)
-			SET @bcontinue = 0	
-			END
-	END
-
-END
-
-RETURN
-END
-GO
-/****** Object:  View [Audit].[vwBudgets]    Script Date: 11/1/2026 2:00:00 PM ******/
+/****** Object:  View [Audit].[vwBudgets]    Script Date: 11/3/2026 4:03:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -120,7 +21,7 @@ join tblGrant g on g.id = b.grant_id
 join [Auth].[tblUsers] u on u.id = b.created_by
 
 GO
-/****** Object:  View [dbo].[vwBudgets]    Script Date: 11/1/2026 2:00:00 PM ******/
+/****** Object:  View [dbo].[vwBudgets]    Script Date: 11/3/2026 4:03:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -136,7 +37,7 @@ join tblAccount a on a.id = b.account_id
 join tblGrant g on g.id = b.grant_id
 
 GO
-/****** Object:  View [dbo].[vwPayeeSummary]    Script Date: 11/1/2026 2:00:00 PM ******/
+/****** Object:  View [dbo].[vwPayeeSummary]    Script Date: 11/3/2026 4:03:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -149,19 +50,19 @@ WITH max_p (payee_id, last_amount_paid, num_payments)
 AS (
     SELECT p.id payee_id, l.amount last_amount_paid, num_payments
     FROM tblPayee p  
-        JOIN tblDisbLineItem l ON p.id = l.payee_id
+        JOIN tblDisbLineItem l ON p.id = l.payee_id 
         JOIN (
-            SELECT p.id payee_id, MAX(d.id) max_d_id, COUNT(DISTINCT d.id) num_payments
+            SELECT p.id payee_id, MAX(d.id) max_d_id, MAX(l.payment_number) max_p_num, COUNT(DISTINCT d.id) num_payments
             FROM tblPayee p
                 JOIN tblDisbLineItem l ON p.id = l.payee_id
                 JOIN tblDisb d ON d.id = l.disb_id
             WHERE d.posted = 1
             GROUP BY p.id
     ) AS max_p ON
-   max_p.payee_id = p.id AND max_p.max_d_id = l.disb_id
+   max_p.payee_id = p.id AND max_p.max_d_id = l.disb_id AND l.payment_number = max_p.max_p_num
 )
 SELECT v.id, v.name, v.is_active, a.id accountId, c.id categoryId, a.name accountName, v.additional_information, v.payee_type_id,
-    CAST(MAX(d.posted_date) AS DATETIME2) lastpaymentdate, 
+    CAST(MAX(d.posted_date) AS DATE) lastpaymentdate, 
     max_p.last_amount_paid lastpaymentamount,
     DATEDIFF(d, MAX(d.posted_date), GETDATE()) days_since_last_payment, 
     CAST(SUM(l.amount) AS NUMERIC(15,2)) total_paid,
@@ -170,14 +71,16 @@ SELECT v.id, v.name, v.is_active, a.id accountId, c.id categoryId, a.name accoun
 FROM tblPayee v LEFT OUTER JOIN tblAccount a ON v.account_id = a.id
     LEFT OUTER JOIN tblCategory c ON c.id = a.category_id
     LEFT OUTER JOIN (SELECT l2.amount, l2.disb_id, l2.payee_id FROM tblDisb d2 JOIN tblDisbLineItem l2 ON d2.id = l2.disb_id  WHERE posted  = 1) l ON v.id = l.payee_id
-    LEFT OUTER JOIN (SELECT * FROM tblDisb WHERE posted  = 1) d ON d.id = l.disb_id
+    LEFT OUTER JOIN (SELECT id, posted_date FROM tblDisb WHERE posted  = 1) d ON d.id = l.disb_id
     LEFT OUTER JOIN max_p ON max_p.payee_id = v.id
 GROUP BY v.id, v.name, v.is_active, a.name, a.id, c.id, max_p.last_amount_paid, c.id, v.additional_information, v.payee_type_id,   max_p.num_payments
 GO
-/****** Object:  StoredProcedure [dbo].[spPayeeSummaries]    Script Date: 11/1/2026 2:00:00 PM ******/
-
-
-create procedure [dbo].[spPayeeSummaries]
+/****** Object:  StoredProcedure [dbo].[spPayeeSummaries]    Script Date: 11/3/2026 4:03:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE procedure [dbo].[spPayeeSummaries]
     @searchTerm VARCHAR(100) = 'ADP',
     @year INT = 0 
 as
@@ -185,22 +88,22 @@ begin
 
 
 
-    WITH last_payment (payee_id, last_id, num_payments)
+    WITH last_payment (payee_id, last_id,  num_payments)
     AS (
-        SELECT l.payee_id, MAX(l.disb_id) last_id, COUNT(DISTINCT l.id) num_payments
+        SELECT l.payee_id, MAX(l.disb_id) last_id,  COUNT(DISTINCT l.id) num_payments
         FROM tblDisbLineItem l JOIN tblDisb d ON l.disb_id = d.id
         WHERE d.posted_date IS NOT NULL
         GROUP BY l.payee_id
-      ) ,
+      ),
      last_payment_amount (payee_id, days_since_last_payment, last_payment_amount, last_payment_date, num_payments)
     AS
     (
-      SELECT l.payee_id, DATEDIFF(d, l.entry_date, GETDATE()), l.amount, CAST(l.entry_date AS DATE), lp.num_payments
-      FROM tblDisbLineItem l JOIN last_payment lp ON l.payee_id = lp.payee_id AND l.disb_id = lp.last_id
+      SELECT l.payee_id, DATEDIFF(d, l.entry_date, GETDATE()), l.amount, CAST(l.entry_date AS DATETIME), lp.num_payments
+      FROM tblDisbLineItem l JOIN last_payment lp ON l.payee_id = lp.payee_id AND l.disb_id = lp.last_id 
         JOIN tblDisb d ON d.id = l.disb_id
-       WHERE d.year = CASE WHEN @year !=  0 THEN @year ELSE d.year END
-  
+      WHERE d.year = CASE WHEN @year !=  0 THEN @year ELSE d.year END
     )
+
     SELECT 
         p.id,
         p.name,
@@ -217,19 +120,24 @@ begin
         lpa.last_payment_date lastpaymentdate,
         SUM(l.amount) total_paid,
         lpa.num_payments numberofpayments
-
     FROM tblPayee p LEFT OUTER JOIN last_payment_amount lpa ON p.id = lpa.payee_id 
         LEFT OUTER JOIN tblDisbLineItem l ON l.payee_id = lpa.payee_id
         LEFT OUTER JOIN tblDisb d ON d.id = l.disb_id
         LEFT OUTER JOIN tblAccount a ON p.account_id = a.id
         LEFT OUTER JOIN tblCategory c ON c.id = a.category_id
-   
+    WHERE p.name LIKE '%' + @searchTerm + '%'
     GROUP BY p.id, p.name, p.is_active, a.category_id, a.id, a.name, p.additional_information, p.payee_type_id, lpa.last_payment_amount, lpa.days_since_last_payment, lpa.payee_id, lpa.last_payment_date,lpa.num_payments 
 
 
 end
 
 GO
+/****** Object:  StoredProcedure [Report].[spBudgetDetail]    Script Date: 11/3/2026 4:03:15 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
 
 
 

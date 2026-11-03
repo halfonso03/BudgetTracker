@@ -1,7 +1,10 @@
 using System.Data.Common;
 using Application.Core;
+using Application.DTOs;
 using Application.DTOs.Payment;
+using Application.Extensions;
 using Application.Interfaces;
+using Application.PaginationHelpers;
 using Domain;
 using InternalVisibleTo;
 using Microsoft.EntityFrameworkCore;
@@ -751,6 +754,208 @@ namespace Application.Services
             {
                 return Result<PaymentResponseDto>.Failure(ex.Message, 500);
             }
+        }
+
+        public async Task<Result<PaymentSearchResponseDto>> Search(PaymentSearchParams searchParams, PaginationParams paginationParams, string sortBy)
+        {
+            var reproLineItems = _dbContext.DisbLineItems
+                                    .Where(x => x.Year == searchParams.Year)
+                                    .AsQueryable();
+
+            if (searchParams.InitiativeIds?.Count > 0)
+            {
+                reproLineItems = reproLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
+
+                if (searchParams.XInitiativeIds?.Count > 0)
+                {
+                    var removeIds = new List<int>();
+
+                    var reproIds = reproLineItems.Select(x => x.DisbId).Distinct();
+                    var repros = _dbContext.Repros
+                                            .Include(x => x.Items)
+                                            .Where(x => reproIds.Contains(x.Id));
+
+                    foreach (var reproId in reproIds)
+                    {
+                        foreach (var xIid in searchParams.XInitiativeIds)
+                        {
+                            if (!searchParams.InitiativeIds.Contains(xIid) || removeIds.Contains(reproId)) break;
+
+                            var exclusive = repros.First(x => x.Id == reproId).Items.Any(x => x.InitiativeId != xIid);
+                            removeIds.AddIfTrue(exclusive, reproId);
+                        }
+                    }
+
+                    reproLineItems = reproLineItems.Where(x => !removeIds.Contains(x.DisbId));
+                }
+                else
+                {
+                    reproLineItems = reproLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
+                }
+            }
+
+            if (searchParams.GrantIds?.Count > 0)
+            {
+                var grantsForYear = await _dbContext.Grants.Where(x => x.StartDate.Year == searchParams.Year).ToListAsync();
+
+                if (searchParams.XGrantIds?.Count > 0 && grantsForYear.Count != searchParams.XGrantIds.Count)
+                {
+                    var removeIds = new List<int>();
+
+                    foreach (var reproId in reproLineItems.Select(x => x.DisbId))
+                    {
+                        foreach (var xGid in searchParams.XGrantIds)
+                        {
+                            if (!searchParams.GrantIds.Contains(xGid) || removeIds.Contains(reproId)) break;
+
+                            removeIds.AddIfTrue(!reproLineItems.Where(x => x.DisbId == reproId).All(x => x.GrantId == xGid), reproId);
+                        }
+                    }
+
+                    reproLineItems = reproLineItems.Where(x => !removeIds.Contains(x.DisbId));
+                }
+                else
+                {
+                    reproLineItems = reproLineItems.Where(x => searchParams.GrantIds.Contains(x.GrantId));
+                }
+            }
+
+            if (searchParams.AccountIds?.Count > 0)
+            {
+                if (searchParams.XAccountIds?.Count > 0)
+                {
+                    var removeIds = new List<int>();
+
+                    foreach (var reproId in reproLineItems.Select(x => x.DisbId))
+                    {
+                        foreach (var xAid in searchParams.XAccountIds)
+                        {
+                            if (!searchParams.XAccountIds.Contains(xAid) || removeIds.Contains(reproId)) break;
+
+                            removeIds.AddIfTrue(!reproLineItems.Where(x => x.DisbId == reproId).All(x => x.AccountId == xAid), reproId);
+                        }
+                    }
+
+                    reproLineItems = reproLineItems.Where(x => !removeIds.Contains(x.DisbId));
+                }
+                else
+                {
+                    reproLineItems = reproLineItems.Where(x => searchParams.AccountIds.Contains(x.AccountId));
+
+                }
+            }
+
+            // var debit = searchParams.DebitAmount;
+            // var credit = searchParams.CreditAmount;
+            // var debitComparison = searchParams.DebitComparer;
+            // var creditComparison = searchParams.CreditComparer;
+
+            // if (debitComparison != AmountComparer.None)
+            // {
+            //     reproLineItems = debitComparison switch
+            //     {
+            //         AmountComparer.GreaterThan => reproLineItems.Where(x => x.Increase >= debit),
+            //         AmountComparer.LessThan => reproLineItems.Where(x => x.Increase <= debit),
+            //         AmountComparer.EqualTo => reproLineItems.Where(x => x.Increase == debit),
+            //         _ => reproLineItems.Where(x => x.Increase > 0 || x.Increase != null),
+            //     };
+            // }
+
+            // if (creditComparison != AmountComparer.None)
+            // {
+            //     reproLineItems = creditComparison switch
+            //     {
+            //         AmountComparer.GreaterThan => reproLineItems.Where(x => x.Decrease >= credit),
+            //         AmountComparer.LessThan => reproLineItems.Where(x => x.Decrease <= credit),
+            //         AmountComparer.EqualTo => reproLineItems.Where(x => x.Decrease == credit),
+            //         _ => reproLineItems.Where(x => x.Decrease > 0 || x.Decrease != null),
+            //     };
+            // }
+
+            // Console.WriteLine("INITIATIVE IDS", searchParams.InitiativeIds);
+            // Console.WriteLine(searchParams.DebitAmount);
+            // Console.WriteLine(searchParams.DebitComparer);
+            // Console.WriteLine(searchParams.CreditAmount);
+            // Console.WriteLine(searchParams.CreditComparer);
+
+
+            var lineItemIds = await reproLineItems.Select(x => x.DisbId).ToListAsync();
+
+            var reproLineItemResponses = await _dbContext.DisbLineItems
+                                    .Include(x => x.Initiative)
+                                    .Include(x => x.Grant)
+                                    .Include(x => x.Account)
+                                    .Include(x => x.Category)
+                                    .Include(x => x.Payee)
+                                    .Where(x => lineItemIds.Contains(x.DisbId))
+                                    .Select(y => new PaymentSearchResponseLineItemDto
+                                    {
+                                        PaymentId = y.DisbId,
+                                        RowId = y.RowId,
+                                        InitiativeName = y.Initiative!.Name,
+                                        GrantName = y.Grant!.Name,
+                                        CategoryName = y.Category!.Name,
+                                        AccountName = y.Account!.Name,
+                                        PayeeName = y.Payee!.Name,
+                                        Amount = y.Amount,
+                                        Year = y.Year
+                                    }).ToListAsync();
+
+            var reprosQuery = _dbContext.Repros
+                            .Include(x => x.CreatedBy)
+                            .Include(x => x.PostedBy)
+                            .Where(x => lineItemIds.Contains(x.Id))
+                            .Select(x => new PaymentSearchPaymentResponseDto
+                            {
+                                Id = x.Id,
+                                CreateDate = x.CreatedDate,
+                                CreatedBy = $"{x.CreatedBy!.FirstName} {x.CreatedBy!.LastName}",
+                                PostedDate = x.PostedDate,
+                                Posted = x.Posted,
+                                PostedBy = x.PostedBy != null ? $"{x.PostedBy!.FirstName} {x.PostedBy!.LastName}" : string.Empty,
+                                StatusSort = x.Posted ? 1 : 2,
+                                Amount = x.Amount
+                            })
+                            .AsQueryable();
+
+
+            if (searchParams.Status != PaymentSearchStatus.ALL)
+            {
+                reprosQuery = reprosQuery.Where(x => x.Posted == (searchParams.Status != PaymentSearchStatus.SAVED));
+            }
+
+            var sorted = sortBy switch
+            {
+                "ID" => reprosQuery.OrderBy(x => x.Id),
+                "IDdesc" => reprosQuery.OrderByDescending(x => x.Id),
+                "STATUS" => reprosQuery.OrderBy(x => x.StatusSort),
+                "STATUSdesc" => reprosQuery.OrderByDescending(x => x.StatusSort),
+                "POSTEDBY" => reprosQuery.OrderBy(x => x.PostedBy),
+                "POSTEDBYdesc" => reprosQuery.OrderByDescending(x => x.PostedBy),
+                "POSTEDDATE" => reprosQuery.OrderBy(x => x.PostedDate),
+                "POSTEDDATEdesc" => reprosQuery.OrderByDescending(x => x.PostedDate),
+                "AMOUNT" => reprosQuery.OrderBy(x => x.Amount),
+                "AMOUNTdesc" => reprosQuery.OrderByDescending(x => x.Amount),
+                _ => reprosQuery.OrderBy(x => x.Id)
+            };
+
+
+            var pagedItemsList =
+                           PagedList<PaymentSearchPaymentResponseDto>.ToPagedList(sorted, paginationParams.PageNumber, paginationParams.PageSize);
+
+            pagedItemsList.ForEach(r =>
+            {
+                r.LineItems = [.. reproLineItemResponses.Where(x => x.PaymentId == r.Id)];
+            });
+
+            var result = new PaymentSearchResponseDto
+            {
+                Items = pagedItemsList,
+                ItemCount = pagedItemsList.Metadata.TotalCount,
+                MetaData = pagedItemsList.Metadata
+            };
+
+            return Result<PaymentSearchResponseDto>.Success(result);
         }
 
         // public async Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId)

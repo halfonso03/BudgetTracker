@@ -68,7 +68,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<Result<PaymentSearchResponseDto>> GetPayeePayments(int payeeId, PaginationParams paginationParams, string sortBy)
+        public async Task<Result<PayeePaymentSearchResponseDto>> GetPayeePayments(int payeeId, PaginationParams paginationParams, string sortBy)
         {
 
             var paymentsQuery = await (from d in dbContext.Disbs
@@ -125,16 +125,16 @@ namespace Application.Services
                        PagedList<PayeePaymentResponseDto>.ToPagedList(paymentsQuerySorted.AsQueryable(), paginationParams.PageNumber, paginationParams.PageSize);
 
             Console.WriteLine(pagedItemsList.Count);
-            
 
-            var response = new PaymentSearchResponseDto
+
+            var response = new PayeePaymentSearchResponseDto
             {
                 Items = pagedItemsList,
                 MetaData = pagedItemsList.Metadata,
                 ItemCount = pagedItemsList.Metadata.TotalCount
             };
 
-            return Result<PaymentSearchResponseDto>.Success(response);
+            return Result<PayeePaymentSearchResponseDto>.Success(response);
         }
 
         public async Task<Result<PayeePaymentStatsDto?>> GetPayeePaymentSummary(int payeeId)
