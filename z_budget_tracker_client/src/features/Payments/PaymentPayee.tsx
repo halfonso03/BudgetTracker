@@ -7,6 +7,7 @@ import {
 } from '../../app/util';
 import InvoiceInfoModal from './modals/InvoiceInfoModal';
 import { useState } from 'react';
+import PaymentNumber from './PaymentNumber';
 type Props = {
   paymentLineItem: PaymentLineItem;
   paymentHeader: PaymentHeader;
@@ -112,15 +113,10 @@ const PaymentPayee = ({
 
         <div className="flex flex-col justify-between gap-1 flex-1 items-end ">
           <div className="w-[99%]  rounded-sm p-2 ">
-            <div className="flex w-full  ">
-              <div className="flex-8 text-end  text-neutral-500 text-[1rem]">
-                Payment No.
-              </div>
-              <div className="flex-5 text-end text-neutral-800">
-                {paymentLineItem.paymentNumber ||
-                  (paymentLineItem?.numberOfPayments ?? 0) + 1}
-              </div>
-            </div>
+            <PaymentNumber
+              paymentLineItem={paymentLineItem}
+              status={paymentHeader.status}
+            ></PaymentNumber>
             <div className="flex w-full ">
               <div className="flex-8 text-end  text-neutral-500 text-[1rem]">
                 Last Payment Date
