@@ -1170,6 +1170,9 @@ namespace Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[invoice_number] IS NOT NULL");
 
+                    b.HasIndex("DisbId", "PayeeId", "PaymentNumber")
+                        .IsUnique();
+
                     b.HasIndex("DisbId", "InitiativeId", "GrantId", "CategoryId", "AccountId", "PayeeId")
                         .IsUnique();
 

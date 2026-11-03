@@ -221,6 +221,7 @@ const PaymentLineModal = (props: Props) => {
         comment: data.comment?.trim(),
         lastPaymentDate: payee?.lastPaymentDate,
         numberOfPayments: payee?.numberOfPayments,
+        paymentNumber: payee?.numberOfPayments ?? 0 + 1
       };
       props.onLineAdded(newLine);
     } else {

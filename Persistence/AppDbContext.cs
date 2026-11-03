@@ -238,6 +238,9 @@ namespace Persistence
             builder.Entity<DisbLineItem>().Property(x => x.PaymentNumber).HasColumnName("payment_number");
 
 
+            builder.Entity<DisbLineItem>()
+                               .HasIndex(a => new { a.DisbId, a.PayeeId, a.PaymentNumber })
+                               .IsUnique();
 
             builder.Entity<Report>().Property(x => x.Name).HasColumnType("VARCHAR(200)");
             builder.Entity<Report>().Property(x => x.Path).HasColumnType("VARCHAR(1000)");

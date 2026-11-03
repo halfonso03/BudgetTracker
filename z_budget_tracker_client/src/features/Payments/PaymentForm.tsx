@@ -277,13 +277,12 @@ const PaymentForm = ({
 
   function handleLineAdded(newLine: PaymentLineItem) {
     setTimeout(() => setPaymentLineModalIsOpen(false), 500);
-
     const paymentNoBase =
       lines.filter((x) => x.payeeId === newLine.payeeId).length > 0
-        ? lines.filter((x) => x.payeeId === newLine.payeeId)[
+        ? (lines.filter((x) => x.payeeId === newLine.payeeId)[
             lines.filter((x) => x.payeeId === newLine.payeeId).length - 1
-          ].paymentNumber
-        : 1;
+          ].paymentNumber ?? 0) + 1
+        : (newLine.paymentNumber ?? 0) + 1;
 
     setLines([
       ...lines,
@@ -291,7 +290,7 @@ const PaymentForm = ({
         ...newLine,
         rowId: lines.length,
         paymentAmount: newLine.paymentAmount,
-        paymentNumber: (paymentNoBase ?? 0) + (newLine.paymentNumber ?? 1),
+        paymentNumber: paymentNoBase,
       },
     ]);
 

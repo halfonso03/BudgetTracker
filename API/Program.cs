@@ -25,7 +25,7 @@ builder.Services.AddControllers(opt =>
 // 2. Database Context configuration
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
-    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")).EnableSensitiveDataLogging();
 });
 
 // 3. Identity Setup
