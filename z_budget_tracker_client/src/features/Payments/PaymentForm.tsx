@@ -704,7 +704,6 @@ console.log('data', data)
 
   return (
     <MenuIdProvider>
-      <pre>{JSON.stringify(lines)}</pre>
       <div>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 ">
           {/* opacity-0 cursor-none */}

@@ -9,12 +9,12 @@ type Props = {
 const PaymentNumber = (props: Props) => {
   return (
     <div className="flex w-full  ">
-      <div className="flex justify-end items-center flex-8 text-end  text-neutral-500 text-[1rem]">
+      <div className="flex gap-2 justify-end items-center flex-8 text-end  text-neutral-500 text-[1rem]">
         Payment No.
         {props.status !== POSTED && (
           <div className="self-center cursor-pointer">
             <Tooltip
-              text="Payment numbers will update once all payments have settled."
+              text="Payment numbers may not reflect accurately whilte there are pending payments."
               position="top"
             >
               <Info className="text-neutral-500/90" size={16}></Info>

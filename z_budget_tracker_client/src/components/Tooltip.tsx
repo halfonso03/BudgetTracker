@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import './Tooltip.css';
 
-
 type Props = {
     text:string,
     position:string
@@ -11,11 +10,11 @@ export default function Tooltip({ text, children, position = 'top' }: Props) {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <div 
+    <div
       className="tooltip-container"
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
-      onFocus={() => setIsVisible(true)}  /* Accessibility for keyboard users */ 
+      onFocus={() => setIsVisible(true)}  /* Accessibility for keyboard users */
       onBlur={() => setIsVisible(false)}
     >
       {children}

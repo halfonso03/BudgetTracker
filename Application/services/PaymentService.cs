@@ -266,6 +266,37 @@ namespace Application.Services
                     })]
                 };
 
+
+                if (disbRequestDto.Posted)
+                {
+                    // payeeId, paymentNo
+                    var usedNos = new Dictionary<int, int>();
+
+                    foreach (var p in newDisb.Items.Select(x => x.PayeeId).Distinct())
+                    {
+                        var proposedPaymentNo = payeePayments.Any(x => x.payeeId == p)
+                                    ? payeePayments.First(x => x.payeeId == p).paymentCount + 1
+                                    : 1;
+                        Console.WriteLine("proposedPaymentNo: " + proposedPaymentNo.ToString());
+
+                        usedNos[p] = proposedPaymentNo;
+                    }
+
+                    foreach (var line in newDisb.Items.OrderBy(x => x.RowId))
+                    {
+                        Console.WriteLine("here1");
+                        if (usedNos.TryGetValue(line.PayeeId, out int value))
+                        {
+                            line.PaymentNumber = value;
+                            usedNos[line.PayeeId] = value + 1;
+                            Console.WriteLine("here2");
+                        }
+
+                        Console.WriteLine(line);
+                    }
+                }
+
+
                 _dbContext.Disbs.Add(newDisb);
 
                 await _dbContext.SaveChangesAsync();

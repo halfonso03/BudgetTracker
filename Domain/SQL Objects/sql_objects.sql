@@ -175,12 +175,10 @@ FROM tblPayee v LEFT OUTER JOIN tblAccount a ON v.account_id = a.id
 GROUP BY v.id, v.name, v.is_active, a.name, a.id, c.id, max_p.last_amount_paid, c.id, v.additional_information, v.payee_type_id,   max_p.num_payments
 GO
 /****** Object:  StoredProcedure [dbo].[spPayeeSummaries]    Script Date: 11/1/2026 2:00:00 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE procedure [dbo].[spPayeeSummaries]
-    @searchTerm VARCHAR(100) = '',
+
+
+create procedure [dbo].[spPayeeSummaries]
+    @searchTerm VARCHAR(100) = 'ADP',
     @year INT = 0 
 as
 begin 
@@ -197,7 +195,7 @@ begin
      last_payment_amount (payee_id, days_since_last_payment, last_payment_amount, last_payment_date, num_payments)
     AS
     (
-      SELECT l.payee_id, DATEDIFF(d, l.entry_date, GETDATE()), l.amount, l.entry_date, lp.num_payments
+      SELECT l.payee_id, DATEDIFF(d, l.entry_date, GETDATE()), l.amount, CAST(l.entry_date AS DATE), lp.num_payments
       FROM tblDisbLineItem l JOIN last_payment lp ON l.payee_id = lp.payee_id AND l.disb_id = lp.last_id
         JOIN tblDisb d ON d.id = l.disb_id
        WHERE d.year = CASE WHEN @year !=  0 THEN @year ELSE d.year END
@@ -232,12 +230,6 @@ begin
 end
 
 GO
-/****** Object:  StoredProcedure [Report].[spBudgetDetail]    Script Date: 11/1/2026 2:00:00 PM ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-
 
 
 
