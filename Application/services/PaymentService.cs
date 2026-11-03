@@ -6,6 +6,7 @@ using Domain;
 using InternalVisibleTo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Microsoft.Identity.Client;
 using Persistence;
 
 namespace Application.Services
@@ -225,10 +226,10 @@ namespace Application.Services
                 var payeePayments = await _dbContext.DisbLineItems
                                     .Where(x => payeeIds.Contains(x.PayeeId))
                                     .GroupBy(x => x.PayeeId)
-                                    .Select(x => new
+                                    .Select(x => new PayeePaymentCount
                                     {
-                                        paymentCount = x.Count(),
-                                        payeeId = x.Key
+                                        Count = x.Count(),
+                                        PayeeId = x.Key
                                     })
                                     .ToListAsync();
 
@@ -260,34 +261,14 @@ namespace Application.Services
                         InvoiceNumber = x.InvoiceNumber,
                         InvoiceDate = x.InvoiceDate,
                         CheckNumber = x.CheckNumber,
-                        PaymentNumber = payeePayments.Any(x => x.payeeId == x.payeeId)
-                                                ? payeePayments.First(x => x.payeeId == x.payeeId).paymentCount + 1
+                        PaymentNumber = payeePayments.Any(x => x.PayeeId == x.PayeeId)
+                                                ? payeePayments.First(x => x.PayeeId == x.PayeeId).Count + 1
                                                 : 1
                     })]
                 };
 
-
-                if (disbRequestDto.Posted)
-                {
-                    // payeeId, paymentNo
-                    var usedNos = new Dictionary<int, int>();
-
-                    foreach (var p in newDisb.Items.Select(x => x.PayeeId).Distinct())
-                    {
-                        usedNos[p] = payeePayments.Any(x => x.payeeId == p)
-                                    ? payeePayments.First(x => x.payeeId == p).paymentCount + 1
-                                    : 1;
-                    }
-
-                    foreach (var line in newDisb.Items.OrderBy(x => x.RowId))
-                    {
-                        if (usedNos.TryGetValue(line.PayeeId, out int value))
-                        {
-                            line.PaymentNumber = value;
-                            usedNos[line.PayeeId] = value + 1;
-                        }
-                    }
-                }
+                
+                UpdatePaymentCounts(disbRequestDto, payeePayments, newDisb.Items);
 
 
                 _dbContext.Disbs.Add(newDisb);
@@ -317,6 +298,31 @@ namespace Application.Services
             }
 
             return Result<CreatePaymentResponseDto>.Success(CreatePaymentResponseDto.Create(newId, newRowIds));
+        }
+
+        private static void UpdatePaymentCounts(PaymentRequestBaseDto disbRequestDto, List<PayeePaymentCount> payeePayments, IList<DisbLineItem> items)
+        {
+            if (disbRequestDto.Posted)
+            {
+                // payeeId, paymentNo
+                var usedNos = new Dictionary<int, int>();
+
+                foreach (var p in items.Select(x => x.PayeeId).Distinct())
+                {
+                    usedNos[p] = payeePayments.Any(x => x.PayeeId == p)
+                                ? payeePayments.First(x => x.PayeeId == p).Count + 1
+                                : 1;
+                }
+
+                foreach (var line in items.OrderBy(x => x.RowId))
+                {
+                    if (usedNos.TryGetValue(line.PayeeId, out int value))
+                    {
+                        line.PaymentNumber = value;
+                        usedNos[line.PayeeId] = value + 1;
+                    }
+                }
+            }
         }
 
         public async Task<Result<CreatePaymentResponseDto>> UpdatePayment(UpdatePaymentRequestDto disbRequestDto)
@@ -376,11 +382,11 @@ namespace Application.Services
                 var payeePayments = await _dbContext.DisbLineItems
                                     .Where(x => payeeIds.Contains(x.PayeeId) && x.BudgetLineItemId != null)
                                     .GroupBy(x => x.PayeeId)
-                                    .Select(x => new
-                                    {
-                                        payeeId = x.Key,
-                                        paymentCount = x.Count()
-                                    })
+                                   .Select(x => new PayeePaymentCount
+                                   {
+                                       Count = x.Count(),
+                                       PayeeId = x.Key
+                                   })
                                     .ToListAsync();
 
                 foreach (var req in disbRequestDto.LineItems)
@@ -435,8 +441,8 @@ namespace Application.Services
                             InvoiceNumber = req.InvoiceNumber,
                             InvoiceDate = req.InvoiceDate,
                             CheckNumber = req.CheckNumber,
-                            PaymentNumber = payeePayments.Any(x => x.payeeId == req.PayeeId)
-                                                ? payeePayments.First(x => x.payeeId == req.PayeeId).paymentCount + 1
+                            PaymentNumber = payeePayments.Any(x => x.PayeeId == req.PayeeId)
+                                                ? payeePayments.First(x => x.PayeeId == req.PayeeId).Count + 1
                                                 : 1
                         };
 
@@ -456,25 +462,26 @@ namespace Application.Services
                     }
                 }
 
+                UpdatePaymentCounts(disbRequestDto, payeePayments, allLines);
 
-                // payeeId, paymentNo
-                var usedNos = new Dictionary<int, int>();
+                // // payeeId, paymentNo
+                // var usedNos = new Dictionary<int, int>();
 
-                foreach (var p in allLines.Select(x => x.PayeeId).Distinct())
-                {
-                    usedNos[p] =  payeePayments.Any(x => x.payeeId == p)
-                                ? payeePayments.First(x => x.payeeId == p).paymentCount + 1
-                                : 1;
-                }
+                // foreach (var p in allLines.Select(x => x.PayeeId).Distinct())
+                // {
+                //     usedNos[p] = payeePayments.Any(x => x.payeeId == p)
+                //                 ? payeePayments.First(x => x.payeeId == p).paymentCount + 1
+                //                 : 1;
+                // }
 
-                foreach (var line in allLines.OrderBy(x => x.RowId))
-                {
-                    if (usedNos.TryGetValue(line.PayeeId, out int value))
-                    {
-                        line.PaymentNumber = value;
-                        usedNos[line.PayeeId] = value + 1;
-                    }
-                }
+                // foreach (var line in allLines.OrderBy(x => x.RowId))
+                // {
+                //     if (usedNos.TryGetValue(line.PayeeId, out int value))
+                //     {
+                //         line.PaymentNumber = value;
+                //         usedNos[line.PayeeId] = value + 1;
+                //     }
+                // }
 
                 if (disbRequestDto.Posted)
                 {
@@ -768,4 +775,11 @@ namespace Application.Services
         //     return [.. query.OrderBy(x => x.PostedDate)];
         // }
     }
+
+    public class PayeePaymentCount
+    {
+        public int PayeeId { get; set; }
+        public int Count { get; set; }
+    }
 }
+
