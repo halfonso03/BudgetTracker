@@ -1,13 +1,12 @@
 namespace Application.DTOs.Payment
 {
-    public class CreatePaymentResponseDto
+    public class CreatePaymentResponseDto : PaymentResponseBaseDto
     {
-        public required int NewId { get; set; }
-        public required List<int> RowIds { get; set; }
-        public static CreatePaymentResponseDto Create(int newId, List<int> rowsIds) => new()
+        public static CreatePaymentResponseDto Create(int newId, List<int> rowsIds, List<int> paymentNumbers) => new()
         {
             NewId = newId,
-            RowIds = rowsIds
+            RowIds = rowsIds,
+            PaymentNumbers = paymentNumbers
         };
     }
 }

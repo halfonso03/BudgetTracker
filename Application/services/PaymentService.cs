@@ -205,7 +205,8 @@ namespace Application.Services
         public async Task<Result<CreatePaymentResponseDto>> CreatePayment(CreatePaymentRequestDto disbRequestDto)
         {
             var newId = 0;
-            var newRowIds = new List<int>();
+            var rowIdsResponse = new List<int>();
+            var paymentNumbersResponse = new List<int>();
 
             await using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
@@ -220,17 +221,6 @@ namespace Application.Services
             try
             {
                 var grant = await _dbContext.Grants.FirstAsync(x => x.Id == disbRequestDto.LineItems.First().GrantId);
-
-                var payeeIds = disbRequestDto.LineItems.Select(x => x.PayeeId).Distinct().ToList();
-                var payeePayments = await _dbContext.DisbLineItems
-                                    .Where(x => payeeIds.Contains(x.PayeeId) && x.BudgetLineItemId != null)
-                                    .GroupBy(x => x.PayeeId)
-                                    .Select(x => new
-                                    {
-                                        paymentCount = x.Count(),
-                                        payeeId = x.Key
-                                    })
-                                    .ToListAsync();
 
                 var newDisb = new Disb()
                 {
@@ -264,28 +254,18 @@ namespace Application.Services
                     })]
                 };
 
+                var payeeIds = disbRequestDto.LineItems.Select(x => x.PayeeId).Distinct().ToList();
+                var payeePayments = await _dbContext.DisbLineItems
+                                    .Where(x => payeeIds.Contains(x.PayeeId) && x.BudgetLineItemId != null)
+                                    .GroupBy(x => x.PayeeId)
+                                    .Select(x => new PayeePaymentCount
+                                    {
+                                        PaymentCount = x.Count(),
+                                        PayeeId = x.Key
+                                    })
+                                    .ToListAsync();
 
-                if (disbRequestDto.Posted || 1 == 1)
-                {
-                    // payeeId, paymentNo
-                    var usedNos = new Dictionary<int, int>();
-
-                    foreach (var p in newDisb.Items.Select(x => x.PayeeId).Distinct())
-                    {
-                        usedNos[p] = payeePayments.Any(x => x.payeeId == p)
-                                    ? payeePayments.First(x => x.payeeId == p).paymentCount + 1
-                                    : 1;
-                    }
-
-                    foreach (var line in newDisb.Items.OrderBy(x => x.RowId))
-                    {
-                        if (usedNos.TryGetValue(line.PayeeId, out int value))
-                        {
-                            line.PaymentNumber = value;
-                            usedNos[line.PayeeId] = value + 1;
-                        }
-                    }
-                }
+                UpdatePaymentNumbers(newDisb.Items, payeePayments);
 
 
                 _dbContext.Disbs.Add(newDisb);
@@ -301,7 +281,8 @@ namespace Application.Services
 
                 await transaction.CommitAsync();
 
-                newRowIds = [.. newDisb.Items.OrderBy(x => x.RowId).Select(x => x.Id)];
+                rowIdsResponse = [.. newDisb.Items.OrderBy(x => x.RowId).Select(x => x.Id)];
+                paymentNumbersResponse = [.. newDisb.Items.OrderBy(x => x.RowId).Select(x => x.PaymentNumber)];
             }
             catch (DbException ex)
             {
@@ -314,7 +295,29 @@ namespace Application.Services
                 return Result<CreatePaymentResponseDto>.Failure($"Error: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
 
-            return Result<CreatePaymentResponseDto>.Success(CreatePaymentResponseDto.Create(newId, newRowIds));
+            return Result<CreatePaymentResponseDto>.Success(CreatePaymentResponseDto.Create(newId, rowIdsResponse, paymentNumbersResponse));
+        }
+
+        private void UpdatePaymentNumbers(IList<DisbLineItem> items, List<PayeePaymentCount> payeePaymentCounts)
+        {
+            // payeeId, paymentNo
+            var usedNos = new Dictionary<int, int>();
+
+            foreach (var p in items.Select(x => x.PayeeId).Distinct())
+            {
+                usedNos[p] = payeePaymentCounts.Any(x => x.PayeeId == p)
+                            ? payeePaymentCounts.First(x => x.PayeeId == p).PaymentCount + 1
+                            : 1;
+            }
+
+            foreach (var line in items.OrderBy(x => x.RowId))
+            {
+                if (usedNos.TryGetValue(line.PayeeId, out int value))
+                {
+                    line.PaymentNumber = value;
+                    usedNos[line.PayeeId] = value + 1;
+                }
+            }
         }
 
         public async Task<Result<UpdatePaymentResponseDto>> UpdatePayment(UpdatePaymentRequestDto disbRequestDto)
@@ -370,17 +373,6 @@ namespace Application.Services
                 disbFromDb.Posted = disbRequestDto.Posted;
 
                 var lineItemsFromDb = await _dbContext.DisbLineItems.Where(x => x.DisbId == disbRequestDto.Id).ToListAsync();
-
-                var payeeIds = disbRequestDto.LineItems.Select(x => x.PayeeId).Distinct().ToList();
-                var payeePayments = await _dbContext.DisbLineItems
-                                    .Where(x => payeeIds.Contains(x.PayeeId) && x.BudgetLineItemId != null)
-                                    .GroupBy(x => x.PayeeId)
-                                    .Select(x => new
-                                    {
-                                        payeeId = x.Key,
-                                        paymentCount = x.Count()
-                                    })
-                                    .ToListAsync();
 
                 foreach (var req in disbRequestDto.LineItems)
                 {
@@ -453,24 +445,19 @@ namespace Application.Services
                 }
 
 
-                // payeeId, paymentNo
-                var usedNos = new Dictionary<int, int>();
+                var payeeIds = disbRequestDto.LineItems.Select(x => x.PayeeId).Distinct().ToList();
+                var payeePayments = await _dbContext.DisbLineItems
+                                    .Where(x => payeeIds.Contains(x.PayeeId) && x.BudgetLineItemId != null)
+                                    .GroupBy(x => x.PayeeId)
+                                    .Select(x => new PayeePaymentCount
+                                    {
+                                        PaymentCount = x.Count(),
+                                        PayeeId = x.Key
+                                    })
+                                    .ToListAsync();
 
-                foreach (var p in allLines.Select(x => x.PayeeId).Distinct())
-                {
-                    usedNos[p] = payeePayments.Any(x => x.payeeId == p)
-                                ? payeePayments.First(x => x.payeeId == p).paymentCount + 1
-                                : 1;
-                }
+                UpdatePaymentNumbers(allLines, payeePayments);
 
-                foreach (var line in allLines.OrderBy(x => x.RowId))
-                {
-                    if (usedNos.TryGetValue(line.PayeeId, out int value))
-                    {
-                        line.PaymentNumber = value;
-                        usedNos[line.PayeeId] = value + 1;
-                    }
-                }
 
                 if (disbRequestDto.Posted)
                 {
@@ -793,5 +780,11 @@ namespace Application.Services
 
         //     return [.. query.OrderBy(x => x.PostedDate)];
         // }
+        private class PayeePaymentCount
+        {
+            public int PayeeId { get; set; }
+            public int PaymentCount { get; set; }
+        }
+
     }
 }
