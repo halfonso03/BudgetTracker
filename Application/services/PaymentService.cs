@@ -274,25 +274,18 @@ namespace Application.Services
 
                     foreach (var p in newDisb.Items.Select(x => x.PayeeId).Distinct())
                     {
-                        var proposedPaymentNo = payeePayments.Any(x => x.payeeId == p)
+                        usedNos[p] = payeePayments.Any(x => x.payeeId == p)
                                     ? payeePayments.First(x => x.payeeId == p).paymentCount + 1
                                     : 1;
-                        Console.WriteLine("proposedPaymentNo: " + proposedPaymentNo.ToString());
-
-                        usedNos[p] = proposedPaymentNo;
                     }
 
                     foreach (var line in newDisb.Items.OrderBy(x => x.RowId))
                     {
-                        Console.WriteLine("here1");
                         if (usedNos.TryGetValue(line.PayeeId, out int value))
                         {
                             line.PaymentNumber = value;
                             usedNos[line.PayeeId] = value + 1;
-                            Console.WriteLine("here2");
                         }
-
-                        Console.WriteLine(line);
                     }
                 }
 
@@ -421,14 +414,7 @@ namespace Application.Services
                             lineFromDb.InvoiceNumber = req.InvoiceNumber;
                         }
 
-                        lineFromDb.PaymentNumber = payeePayments.Any(x => x.payeeId == req.PayeeId)
-                                                ? payeePayments.First(x => x.payeeId == req.PayeeId).paymentCount + 1
-                                                : 1;
-
-                        if (disbRequestDto.Posted)
-                        {
-                            allLines.Add(lineFromDb);
-                        }
+                        allLines.Add(lineFromDb);
                     }
                     else
                     {
@@ -471,32 +457,22 @@ namespace Application.Services
                 }
 
 
-                if (disbRequestDto.Posted)
+                // payeeId, paymentNo
+                var usedNos = new Dictionary<int, int>();
+
+                foreach (var p in allLines.Select(x => x.PayeeId).Distinct())
                 {
-                    // payeeId, paymentNo
-                    var usedNos = new Dictionary<int, int>();
+                    usedNos[p] =  payeePayments.Any(x => x.payeeId == p)
+                                ? payeePayments.First(x => x.payeeId == p).paymentCount + 1
+                                : 1;
+                }
 
-                    foreach (var p in allLines.Select(x => x.PayeeId).Distinct())
+                foreach (var line in allLines.OrderBy(x => x.RowId))
+                {
+                    if (usedNos.TryGetValue(line.PayeeId, out int value))
                     {
-                        var proposedPaymentNo = payeePayments.Any(x => x.payeeId == p)
-                                    ? payeePayments.First(x => x.payeeId == p).paymentCount + 1
-                                    : 1;
-                        Console.WriteLine("proposedPaymentNo: " + proposedPaymentNo.ToString());
-
-                        usedNos[p] = proposedPaymentNo;
-                    }
-
-                    foreach (var line in allLines.OrderBy(x => x.RowId))
-                    {
-                        Console.WriteLine("here1");
-                        if (usedNos.TryGetValue(line.PayeeId, out int value))
-                        {
-                            line.PaymentNumber = value;
-                            usedNos[line.PayeeId] = value + 1;
-                            Console.WriteLine("here2");
-                        }
-
-                        Console.WriteLine(line);
+                        line.PaymentNumber = value;
+                        usedNos[line.PayeeId] = value + 1;
                     }
                 }
 

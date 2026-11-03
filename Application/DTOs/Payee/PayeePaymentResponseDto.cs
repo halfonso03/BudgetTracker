@@ -17,5 +17,6 @@ namespace Application.DTOs.Payee
         public string? InvoiceNumber { get; set; }
         public DateTime? InvoiceDate { get; set; }
         public string? CheckNumber { get; set; }
+        public required int PaymentNumber { get; set; }
     }
 }

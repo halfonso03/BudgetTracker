@@ -148,7 +148,7 @@ const PayeePaymentsList = ({
               className={` ${onPaymentRowClicked != null ? 'cursor-pointer ' : ''} 
               grid grid-cols-[.25fr_.25fr_1.1fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-1  gap-4  hover:bg-neutral-100 duration-200 transition-all border-b border-b-neutral-200 last:border-0`}
             >
-              <div className="py-1 px-4 self-center ">{p.id}</div>
+              <div className="py-1 px-4 self-center ">{p.paymentNumber}</div>
               <div className="py-1 self-center">{p.year}</div>
               <div className="py-1 self-center">{p.initiative}</div>
               <div className="  py-1 self-center text-center">{p.grant}</div>

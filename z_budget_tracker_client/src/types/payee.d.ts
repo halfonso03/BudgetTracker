@@ -27,6 +27,7 @@ type PayeePayment = {
     invoiceNumber?: string
     invoiceDate?: Date
     checkNumber?: string
+    paymentNumber: number
 }
 
 type PayeePaymentStats = {

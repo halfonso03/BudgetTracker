@@ -277,12 +277,21 @@ const PaymentForm = ({
 
   function handleLineAdded(newLine: PaymentLineItem) {
     setTimeout(() => setPaymentLineModalIsOpen(false), 500);
+
+    const paymentNoBase =
+      lines.filter((x) => x.payeeId === newLine.payeeId).length > 0
+        ? lines.filter((x) => x.payeeId === newLine.payeeId)[
+            lines.filter((x) => x.payeeId === newLine.payeeId).length - 1
+          ].paymentNumber
+        : 1;
+
     setLines([
       ...lines,
       {
         ...newLine,
         rowId: lines.length,
         paymentAmount: newLine.paymentAmount,
+        paymentNumber: (paymentNoBase ?? 0) + (newLine.paymentNumber ?? 1),
       },
     ]);
 
@@ -522,7 +531,7 @@ const PaymentForm = ({
           await invalidateBalances();
         }
         const postedDate = new Date();
-console.log('data', data)
+        console.log('data', data);
         queryClient.setQueryData<Payment>(
           ['payment', paymentHeader.id],
           () => ({

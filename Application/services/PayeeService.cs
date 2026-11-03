@@ -89,7 +89,8 @@ namespace Application.Services
                                            Grant = g.Name,
                                            InvoiceDate = l.InvoiceDate,
                                            InvoiceNumber = l.InvoiceNumber,
-                                           CheckNumber = l.CheckNumber
+                                           CheckNumber = l.CheckNumber,
+                                           PaymentNumber = l.PaymentNumber
                                        }).ToListAsync();
 
 
