@@ -525,7 +525,11 @@ const PaymentForm = ({
     console.log('paymentToSave', paymentToSave.lineItems);
 
     await updatePayment.mutateAsync(paymentToSave, {
-      onSuccess: async (data: { newId: number; rowIds: number[] }) => {
+      onSuccess: async (data: {
+        newId: number;
+        rowIds: number[];
+        paymentNumbers: number[];
+      }) => {
         if (posted) {
           await invalidateBalances();
         }
@@ -559,6 +563,9 @@ const PaymentForm = ({
                 paymentAmount: l.paymentAmount,
                 newAvailableAmount: l.newAvailableAmount,
                 paymentLineItemId: data.rowIds[l.rowId],
+                paymentNumber: posted
+                  ? data.paymentNumbers[l.rowId]
+                  : l.paymentNumber,
               };
             }),
           }),

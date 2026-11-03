@@ -14,7 +14,7 @@ const PaymentNumber = (props: Props) => {
         {props.status !== POSTED && (
           <div className="self-center cursor-pointer">
             <Tooltip
-              text="Payment numbers may not reflect accurately whilte there are pending payments."
+              text="Payment numbers may not reflect accurately while there are pending payments."
               position="top"
             >
               <Info className="text-neutral-500/90" size={16}></Info>
