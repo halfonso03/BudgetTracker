@@ -203,6 +203,7 @@ type PaymentSearchResult = {
     postedBy: string | null
     postedDate: Date | null
     posted: boolean,
+    paymentLineItemId: number
 
 }
 

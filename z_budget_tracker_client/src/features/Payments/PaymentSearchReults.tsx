@@ -6,6 +6,7 @@ import Menus from '../../components/menus/Menus';
 import {
   DollarSign,
   Download,
+  Ellipsis,
   EllipsisVertical,
   Glasses,
   Pen,
@@ -139,18 +140,18 @@ const PaymentSearchReults = ({ results }: Props) => {
               <div className="text-center self-center">
                 {r.categoryName + '/' + r.accountName}
               </div>
-              <div className="text-center self-center">
+              <div className="flex justify-center self-center">
                 <Menus>
-                  <Menus.Toggler id={r.paymentId.toString()}>
-                    <EllipsisVertical
-                      size={20}
-                      className="text-neutral-500"
-                    ></EllipsisVertical>
+                  <Menus.Toggler id={r.paymentLineItemId.toString()}>
+                    <Ellipsis
+                      size={22}
+                      className="text-neutral-500 hover:text-blue-500 transition-all duration-200 hover:scale-120"
+                    ></Ellipsis>
                   </Menus.Toggler>
                   <Menus.List
-                    id={r.paymentId.toString()}
-                    topPos="translate-y-0"
-                    leftPos="translate-x-4"
+                    id={r.paymentLineItemId.toString()}
+                    topPos="translate-y-5"
+                    leftPos="translate-x-22"
                   >
                     <Menus.MenuItem>
                       <Link className="flex" to={`/payment/${r.paymentId}`}>
