@@ -7,7 +7,9 @@ const fetchCategories = async (): Promise<Category[]> => {
 };
 
 const useCategories = (getData: boolean = true, flattened: boolean = false) => {
-  const { data, isLoading, isFetched, isSuccess } = useQuery<Category[]>({
+  const { data, isLoading, isFetching, isFetched, isSuccess } = useQuery<
+    Category[]
+  >({
     queryKey: ['categories'],
     queryFn: fetchCategories,
     placeholderData: [],
@@ -43,6 +45,7 @@ const useCategories = (getData: boolean = true, flattened: boolean = false) => {
     loadingCat: isLoading,
     catSuccess: isSuccess,
     categoriesFetched: isFetched,
+    categoriesFetching: isFetching,
   };
 };
 

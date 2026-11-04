@@ -14,6 +14,8 @@ import { usePayeeMutations } from '../../api/hooks/payees/usePayeeMutations';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 type Props = {
   payee: Payee;
@@ -33,13 +35,11 @@ const PayeeForm = ({
   const queryClient = useQueryClient();
   const [isActive, setIsActive] = useState(payee.isActive);
   const [payeeId, setPayeeId] = useState(payee.id);
-  const [categorySelected, setCategoryIsSelected] = useState(false);
   const {
     register,
     handleSubmit,
     setValues,
     getValues,
-    reset,
     watch,
     formState: { errors },
   } = useForm<FormValues>({
@@ -56,7 +56,8 @@ const PayeeForm = ({
   });
 
   const { createPayee, updatePayee } = usePayeeMutations();
-  const { categories, catSuccess } = useCategories();
+  const { categories, catSuccess, categoriesFetching, loadingCat } =
+    useCategories();
 
   const payeeTypeOptions = [
     { id: 1, name: 'Vendor' },
@@ -71,10 +72,6 @@ const PayeeForm = ({
       ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
       : [];
   }, [categories, categoryIdWatchValue]);
-
-  function onCategoryChange() {
-    setCategoryIsSelected(true);
-  }
 
   async function onSubmit(data: FormValues) {
     try {
@@ -141,22 +138,6 @@ const PayeeForm = ({
     setValues({ name: payee.name });
     setValues({ additionalInformation: payee.additionalInformation });
     setValues({ payeeTypeId: payee.payeeTypeId });
-
-    // if (catSuccess && payee.id === 0 && getValues('id') !== 0) {
-    //   console.log('123', 123);
-    //   reset({
-    //     id: payee.id,
-    //     name: payee.name,
-    //     additionalInformation: payee.additionalInformation,
-    //     accountId: payee.accountId,
-    //     payeeTypeId: payee.payeeTypeId,
-    //     isActive: payee.isActive,
-    //   });
-    // }
-
-    // if (catSuccess && categories?.length && accounts?.length) {
-    //   if (!categorySelected) setValues({ accountId: payee.accountId });
-    // }
   }, [
     payee.accountId,
     payee.additionalInformation,
@@ -166,6 +147,10 @@ const PayeeForm = ({
     payee.payeeTypeId,
     setValues,
   ]);
+
+  useEffect(() => {
+    if (accounts?.length) setValues({ accountId: payee.accountId });
+  }, [accounts?.length, payee.accountId, setValues]);
 
   return (
     <form
@@ -221,30 +206,57 @@ const PayeeForm = ({
           Charge Account
         </div>
 
-        {catSuccess && categories?.length && (
-          <FormRow
-            id="categoryId"
-            label="Category"
-            useMessage={true}
-            error={errors?.categoryId?.message}
-          >
+        <FormRow
+          id="categoryId"
+          label="Category"
+          useMessage={true}
+          error={errors?.categoryId?.message}
+        >
+          {categoriesFetching && (
+            <div>
+              <Skeleton
+                height={30}
+                width="95%"
+                className="mb-2"
+                enableAnimation={true}
+                count={1}
+                containerClassName="flex-1"
+              />
+            </div>
+          )}
+
+          {catSuccess && categories && categories.length > 0 && (
             <Select id="categoryId" {...register('categoryId')}>
-              {(payeeId === 0 || categorySelected) && (
+              {payeeId === 0 && (
                 <option value="0">--Select a Category --</option>
               )}
               {categories?.map((x) => (
                 <option value={x.id}>{x.name}</option>
               ))}
             </Select>
-          </FormRow>
-        )}
-        {catSuccess && categories?.length && accounts?.length && (
-          <FormRow
-            id="accountId"
-            label="Account"
-            error={errors?.accountId?.message}
-            useMessage={false}
-          >
+          )}
+        </FormRow>
+
+        <FormRow
+          id="accountId"
+          label="Account"
+          error={errors?.accountId?.message}
+          useMessage={false}
+        >
+          {categoriesFetching && (
+            <div>
+              <Skeleton
+                height={30}
+                width="95%"
+                className="mb-2"
+                enableAnimation={true}
+                count={1}
+                containerClassName="flex-1"
+              />
+            </div>
+          )}
+
+          {catSuccess && categories && categories.length > 0 && (
             <Select
               {...register('accountId')}
               disabled={+getValues('categoryId') === 0}
@@ -258,8 +270,8 @@ const PayeeForm = ({
                 </option>
               ))}
             </Select>
-          </FormRow>
-        )}
+          )}
+        </FormRow>
 
         <div className="grid grid-cols-[1fr_1.6fr_0.2fr]  mt-4">
           <div></div>
