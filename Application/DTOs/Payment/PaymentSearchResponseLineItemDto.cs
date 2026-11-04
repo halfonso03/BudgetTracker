@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
 using Microsoft.Identity.Client;
 
@@ -8,7 +9,7 @@ namespace Application.DTOs.Payment
 {
     public class PaymentSearchResponseLineItemDto
     {
-        public required int RowId { get; set; }
+        public int PaymentId { get; internal set; }
         public required string InitiativeName { get; set; }
         public required string GrantName { get; set; }
         public required string CategoryName { get; set; }
@@ -17,6 +18,13 @@ namespace Application.DTOs.Payment
         public required decimal Amount { get; set; }
         public required int Year { get; set; }
         public string? Comment { get; set; }
-        public int PaymentId { get; internal set; }
+        public string? InvoiceNumber { get; set; }
+        public DateTime? InvoiceDate { get; set; }
+        public string? CheckNumber { get; set; }
+        public required int PaymentNumber { get; set; }
+        public string? PostedBy { get; set; }
+        public required int StatusSort { get; set; }
+        public DateTime? PostedDate { get; set; }
+        public object bu { get; internal set; }
     }
 }

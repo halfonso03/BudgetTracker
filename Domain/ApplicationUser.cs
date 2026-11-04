@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Domain
 {
@@ -14,6 +15,8 @@ namespace Domain
         public bool ForcePasswordChangeOnNextLogin { get; set; } = false;
 
         public DateTimeOffset? LastLoginDate { get; set; }
+
+        public string FullName => FirstName + " " + LastName;
     }
 
     public class ApplicationRole : IdentityRole<int>
