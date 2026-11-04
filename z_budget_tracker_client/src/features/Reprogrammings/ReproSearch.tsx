@@ -272,6 +272,7 @@ const ReproSearch = () => {
     <div>
       <div className="flex gap-2 mt-10">
         <div className="p-2 flex-7">
+          <pre>{JSON.stringify(selectedIds)}</pre>
           <div className="mb-4">
             <MemoizedReproParams
               initiatives={initiativesList?.map((x) => ({

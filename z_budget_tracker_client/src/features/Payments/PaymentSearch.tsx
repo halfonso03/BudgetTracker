@@ -63,8 +63,8 @@ const PaymentSearch = () => {
     //       .map((x) => ({ id: x.id, type: GRANTS_LIST_TYPE }));
     //     return [...i, ...a, ...g];
     //   });
-    //   setYear(year);
-    //   setPageNumber(1);
+      setYear(year);
+      setPageNumber(1);
   }, []);
 
   const handlePageNumberChange = useCallback((pageNumber: number) => {
@@ -120,8 +120,8 @@ const PaymentSearch = () => {
               <div className="flex flex-col">
                 <div className="flex justify-between  pl-1 items-center mb-4 ">
                   <div className="text-md font-semibold text-neutral-500  ">
-                    {paginationData.totalCount} Reprogramming
-                    {paginationData.totalCount > 1 ? 's' : ''} found.
+                    {paginationData.totalCount} Payment
+                    {paginationData.totalCount > 1 || paginationData.totalCount === 0 ? 's' : ''} found.
                   </div>
                   {searchResults && searchResults.items.length > 0 && (
                     <div>

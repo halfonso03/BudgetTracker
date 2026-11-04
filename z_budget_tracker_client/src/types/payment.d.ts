@@ -196,7 +196,7 @@ type PaymentSearchResult = {
     amount: number
     comment: string | null,
     invoiceNumber: string | null
-    invoiceData: Date | null
+    invoiceDate: Date | null
     checkNumber: string | null
     createdDate: Date
     createdBy: string
