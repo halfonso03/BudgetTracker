@@ -942,7 +942,7 @@ namespace Application.Services
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 
-            var paymentsList = paymentLineItemResponses
+            var paymentsList = await paymentLineItemResponses
                                         .Select(y => new PaymentSearchResponseLineItemDto
                                         {
                                             PaymentId = y.y.DisbId,
@@ -961,7 +961,7 @@ namespace Application.Services
                                             PostedBy = y.postedBy != null ? $"{y.postedBy!.FirstName} {y.postedBy!.LastName}" : string.Empty,
                                             StatusSort = y.postedBy != null ? 1 : 2,
                                             PostedDate = y.y.Disb!.PostedDate,
-                                        }).AsQueryable();
+                                        }).ToListAsync();
 
 
             var sorted = sortBy switch
@@ -997,7 +997,7 @@ namespace Application.Services
 
 
             var pagedItemsList =
-                           PagedList<PaymentSearchResponseLineItemDto>.ToPagedList(sorted, paginationParams.PageNumber, paginationParams.PageSize);
+                           PagedList<PaymentSearchResponseLineItemDto>.ToPagedList(sorted.AsQueryable(), paginationParams.PageNumber, paginationParams.PageSize);
 
             var result = new PaymentSearchResponseDto
             {
