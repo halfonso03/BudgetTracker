@@ -73,21 +73,21 @@ const PaymentSearchReults = ({ results }: Props) => {
         <div className="entity-label flex justify-center">
           <SortBySelector
             label="Initiative"
-            value="AMOUNT"
+            value="INITIATIVE"
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
         <div className="entity-label flex justify-center">
           <SortBySelector
             label="Award"
-            value="AMOUNT"
+            value="AWARD"
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
         <div className="entity-label flex justify-center">
           <SortBySelector
             label="Account"
-            value="AMOUNT"
+            value="ACCOUNT"
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
