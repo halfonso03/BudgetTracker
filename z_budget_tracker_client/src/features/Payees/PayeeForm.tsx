@@ -56,8 +56,7 @@ const PayeeForm = ({
   });
 
   const { createPayee, updatePayee } = usePayeeMutations();
-  const { categories, catSuccess, categoriesFetching, loadingCat } =
-    useCategories();
+  const { categories, catSuccess, categoriesFetching } = useCategories();
 
   const payeeTypeOptions = [
     { id: 1, name: 'Vendor' },
@@ -162,7 +161,6 @@ const PayeeForm = ({
       className="self-center w-full"
     >
       <input type="hidden" {...register('id')} />
-      {getValues('categoryId')}
       {/* {errors.additionalInformation && <div>FORM ERROR!</div>} */}
       <div className="flex flex-col gap-2 w-full">
         <div className="font-semibold text-neutral-500 mb-2 border-b border-b-neutral-200/60 pl-0 p-1 ">
@@ -215,9 +213,8 @@ const PayeeForm = ({
           {categoriesFetching && (
             <div>
               <Skeleton
-                height={30}
+                height={35}
                 width="95%"
-                className="mb-2"
                 enableAnimation={true}
                 count={1}
                 containerClassName="flex-1"
@@ -226,7 +223,14 @@ const PayeeForm = ({
           )}
 
           {catSuccess && categories && categories.length > 0 && (
-            <Select id="categoryId" {...register('categoryId')}>
+            <Select
+              id="categoryId"
+              {...register('categoryId')}
+              onChange={(e) => {
+                register('categoryId').onChange(e);
+                setValues({ accountId: 0 });
+              }}
+            >
               {payeeId === 0 && (
                 <option value="0">--Select a Category --</option>
               )}
@@ -246,7 +250,7 @@ const PayeeForm = ({
           {categoriesFetching && (
             <div>
               <Skeleton
-                height={30}
+                height={35}
                 width="95%"
                 className="mb-2"
                 enableAnimation={true}
@@ -261,7 +265,7 @@ const PayeeForm = ({
               {...register('accountId')}
               disabled={+getValues('categoryId') === 0}
             >
-              {payeeId === 0 && (
+              {(payeeId === 0 || +getValues('accountId') == 0) && (
                 <option value="0">--Select an Account --</option>
               )}
               {accounts?.map((x) => (
