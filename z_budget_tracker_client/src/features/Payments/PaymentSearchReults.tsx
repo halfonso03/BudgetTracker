@@ -2,6 +2,15 @@ import { Link } from 'react-router-dom';
 import { formatCurrency, formatDate } from '../../app/util';
 import SortBySelector from '../../components/SortBySelector';
 import { useSortingContext } from '../../contexts/useSortingContext';
+import Menus from '../../components/menus/Menus';
+import {
+  DollarSign,
+  Download,
+  EllipsisVertical,
+  Glasses,
+  Pen,
+  Trash,
+} from 'lucide-react';
 
 type Props = {
   results: PaymentSearchResult[];
@@ -109,11 +118,9 @@ const PaymentSearchReults = ({ results }: Props) => {
           >
             <div className="grid grid-cols-[.4fr_.9fr_1.2fr_1fr_.7fr_.7fr_.7fr_1fr_1fr_1.2fr_.5fr_1.2fr_.3fr] p-2 px-3">
               <div className="text-center self-center">
-                <Link to={`/payments/${r.paymentId}`}>
-                  {r.paymentId}
-                </Link>
+                <Link to={`/payments/${r.paymentId}`}>{r.paymentId}</Link>
               </div>
-                <div className="text-center self-center">{r.paymentNumber}</div>
+              <div className="text-center self-center">{r.paymentNumber}</div>
               <div className="text-center self-center">{r.payeeName}</div>
               <div className="text-center self-center">
                 {formatCurrency(r.amount)}
@@ -132,7 +139,52 @@ const PaymentSearchReults = ({ results }: Props) => {
               <div className="text-center self-center">
                 {r.categoryName + '/' + r.accountName}
               </div>
-              <div className="text-center self-center"></div>
+              <div className="text-center self-center">
+                <Menus>
+                  <Menus.Toggler id={r.paymentId.toString()}>
+                    <EllipsisVertical
+                      size={20}
+                      className="text-neutral-500"
+                    ></EllipsisVertical>
+                  </Menus.Toggler>
+                  <Menus.List
+                    id={r.paymentId.toString()}
+                    topPos="translate-y-0"
+                    leftPos="translate-x-4"
+                  >
+                    <Menus.MenuItem>
+                      <Link className="flex" to={`/payment/${r.paymentId}`}>
+                        {r.postedDate !== null ? (
+                          <Glasses size={18}></Glasses>
+                        ) : (
+                          <Pen size={18}></Pen>
+                        )}
+                        &nbsp;&nbsp;
+                        {r.postedDate !== null ? 'View' : 'Edit'}
+                      </Link>
+                    </Menus.MenuItem>
+                    <Menus.MenuItem
+                      onClick={() => {
+                        alert('download');
+                      }}
+                    >
+                      <Download size={18}></Download>
+                      &nbsp;&nbsp;Download
+                    </Menus.MenuItem>
+
+                    <Menus.MenuItem>
+                      <DollarSign size={18}></DollarSign>
+                      &nbsp;&nbsp;Update Invoice
+                    </Menus.MenuItem>
+                    {r.posted !== null && !r.posted && (
+                      <Menus.MenuItem>
+                        <Trash className="text-red-500" size={18}></Trash>
+                        &nbsp;&nbsp;Delete
+                      </Menus.MenuItem>
+                    )}
+                  </Menus.List>
+                </Menus>
+              </div>
             </div>
           </div>
         ))}

@@ -1,8 +1,10 @@
+import { POSTED } from '../../app/constants';
 import { formatCurrency } from '../../app/util';
 type Props = {
   paymentSummary: PaymentSummary;
+  paymentStatus: number;
 };
-const PaymentPayFrom = ({ paymentSummary }: Props) => {
+const PaymentPayFrom = ({ paymentSummary, paymentStatus }: Props) => {
   return (
     <div className="flex justify-between p-5 bg-neutral-200/50 rounded-md shadow-md self-start">
       <div>
@@ -41,9 +43,12 @@ const PaymentPayFrom = ({ paymentSummary }: Props) => {
 
       <div className="flex flex-col gap-4  ">
         <div>
-          <div className="text-neutral-600/90 text-end">Available</div>
+          <div className="text-neutral-600/90 text-end">
+            {paymentStatus !== POSTED && 'Available'}
+          </div>
           <div className="font-medium text-end text-neutral-800">
-            {formatCurrency(paymentSummary?.available ?? 0)}
+            {paymentStatus !== POSTED &&
+              formatCurrency(paymentSummary?.available ?? 0)}
           </div>
         </div>
         <div>
@@ -52,17 +57,19 @@ const PaymentPayFrom = ({ paymentSummary }: Props) => {
             {formatCurrency(paymentSummary?.totalPaid ?? 0)}
           </div>
         </div>
-        <div>
-          <div className="text-end text-neutral-600/90">Remaining</div>
-          <div
-            className={`text-end font-medium text-neutral-800 ${(paymentSummary?.available ?? 0) - (paymentSummary?.totalPaid ?? 0) < 0 && 'text-red-500 '}`}
-          >
-            {formatCurrency(
-              (paymentSummary?.available ?? 0) -
-                (paymentSummary?.totalPaid ?? 0),
-            )}
+        {paymentStatus !== POSTED && (
+          <div>
+            <div className="text-end text-neutral-600/90">Remaining</div>
+            <div
+              className={`text-end font-medium text-neutral-800 ${(paymentSummary?.available ?? 0) - (paymentSummary?.totalPaid ?? 0) < 0 && 'text-red-500 '}`}
+            >
+              {formatCurrency(
+                (paymentSummary?.available ?? 0) -
+                  (paymentSummary?.totalPaid ?? 0),
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

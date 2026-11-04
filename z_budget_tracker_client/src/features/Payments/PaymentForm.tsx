@@ -857,6 +857,7 @@ const PaymentForm = ({
                       </div>
                       <PaymentPayFrom
                         paymentSummary={paymentSummary}
+                        paymentStatus={paymentHeader.status}
                       ></PaymentPayFrom>
 
                       <div className="col-span-2 flex justify-end w-full mt-6">

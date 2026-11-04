@@ -1,3 +1,11 @@
+payment search
+add missing params 
+
+add options for search  
+    View payment
+    Update invoice
+    download
+    delete
 
 
 
