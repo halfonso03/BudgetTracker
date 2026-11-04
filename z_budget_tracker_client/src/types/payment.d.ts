@@ -1,9 +1,10 @@
-type ReproStatus = typeof EDITED | typeof SAVED | typeof POSTED;
+
+type PaymentStatus = typeof EDITED | typeof SAVED | typeof POSTED;
 
 type PaymentHeader = {
     id: number;
     justification: string;
-    status: ReproStatus;
+    status: PaymentStatus;
     createdBy?: string;
     createdById?: number;
     createDate?: Date;
@@ -155,3 +156,58 @@ type PaymentSummary = {
     totalPaid?: number,
     remaining?: number
 }
+
+type PaymentSearchBudgetHeaderResponse = {
+    initiativeId: number
+    initiativeName: string
+    grantId: number
+    grantName: string,
+    accountId: number
+    accountName: string,
+}
+
+type PaymentSearchParams = {
+    year: number
+    status: number
+    // paymentSearchBudgetHeaders: PaymentSearchBudgetHeader[]
+}
+
+type PaymentSearchRequest = {
+    year: number
+    status: number
+}
+
+type PaymentSearchResponse = {
+    items: PaymentSearchResult[]
+    itemCount: number
+    pagination: PaginationData
+    searchId?: string
+}
+
+type PaymentSearchResult = {
+    paymentId: number,
+    paymentNumber: number
+    year: number
+    initiativeName: string
+    grantName: string
+    categoryName: string
+    accountName: string
+    payeeName: string
+    amount: number
+    comment: string | null,
+    invoiceNumber: string | null
+    invoiceData: Date | null
+    checkNumber: string | null
+    createdDate: Date
+    createdBy: string
+    postedBy: string | null
+    postedDate: Date | null
+    posted: boolean,
+
+}
+
+// type PaymentSearchBudgetHeader = {
+//     initiativeId: number
+//     grantId: number
+//     accountId: number
+// }

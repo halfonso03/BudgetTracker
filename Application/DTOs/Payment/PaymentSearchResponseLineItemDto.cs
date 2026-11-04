@@ -25,6 +25,5 @@ namespace Application.DTOs.Payment
         public string? PostedBy { get; set; }
         public required int StatusSort { get; set; }
         public DateTime? PostedDate { get; set; }
-        public object bu { get; internal set; }
     }
 }

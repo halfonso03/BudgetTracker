@@ -5,13 +5,7 @@ namespace Application.DTOs.Payment
     {
         public PaymentSearchStatus Status { get; set; }
         public required int Year { get; set; }
-        public List<int>? InitiativeIds { get; set; } = [];
-        public List<int>? XInitiativeIds { get; set; } = [];
-        public List<int>? GrantIds { get; set; } = [];
-        public List<int>? XGrantIds { get; set; } = [];
-        public List<int>? AccountIds { get; set; } = [];
-        public List<int>? XAccountIds { get; set; } = [];
-        public List<PaymentSearchBudgetHeader>? PaymentSearchBudgetHeaders { get; set; } = null;
+        // public List<PaymentSearchBudgetHeader>? PaymentSearchBudgetHeaders { get; set; } = null;
     }
 
 

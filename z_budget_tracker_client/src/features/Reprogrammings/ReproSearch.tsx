@@ -48,10 +48,15 @@ const ReproSearch = () => {
 
   const [idToDelete, setIdToDelete] = useState(0);
 
-  const [years] = useState<{ id: number; name: string }[]>(() => [
-    { id: 2026, name: '2026' },
-    { id: 2025, name: '2025' },
-  ]);
+  const [years] = useState<{ id: number; name: string }[]>(() => {
+    const years = [];
+
+    for (let x = 0; x <= 1; x++) {
+      years.push(new Date().getFullYear() - x);
+    }
+
+    return years.map((y) => ({ id: y, name: y.toString() }));
+  });
 
   const initiativesList = useMemo(() => {
     return initiatives;

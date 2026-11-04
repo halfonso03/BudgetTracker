@@ -176,18 +176,6 @@ type ReproSearchRequest = {
     creditComparer: number
 }
 
-// public required int Year { get; set; }        
-//         public List<int>? InitiativeIds { get; set; } = [];
-//         public List<int>? GrantIds { get; set; } = [];
-//         public List<int>? AccountIds { get; set; } = [];
-//         public ReproSearchStatus Status { get; set; }
-//         public AmountComparer DebitComparer { get; set; }
-//         public AmountComparer CreditComparer { get; set; }
-//         public decimal DebitAmount { get; set; }
-//         public decimal CreditAmount { get; set; }
-
-
-
 type ReproSearchResponse = {
     items: ReproSearchResult[]
     itemCount: number

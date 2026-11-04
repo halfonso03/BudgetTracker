@@ -1,4 +1,5 @@
 using API.Extensions;
+using Application.Core;
 using Application.DTOs.Payment;
 using Application.PaginationHelpers;
 using Application.Services;
@@ -56,5 +57,11 @@ namespace API.Controllers
             return HandleResult(result);
         }
 
+
+        [HttpGet("search/budgets")]
+        public async Task<IActionResult> GetBudgets([FromQuery] int year)
+        {
+            return HandleResult(await _paymentService.GetBudgetsForSearch(year));
+        }
     }
 }

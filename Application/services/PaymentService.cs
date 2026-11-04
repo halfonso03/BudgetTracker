@@ -765,88 +765,88 @@ namespace Application.Services
                                     .Where(x => x.Year == searchParams.Year)
                                     .AsQueryable();
 
-            if (searchParams.InitiativeIds?.Count > 0)
-            {
-                disbLineItems = disbLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
+            // if (searchParams.InitiativeIds?.Count > 0)
+            // {
+            //     disbLineItems = disbLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
 
-                if (searchParams.XInitiativeIds?.Count > 0)
-                {
-                    var removeIds = new List<int>();
+            //     if (searchParams.XInitiativeIds?.Count > 0)
+            //     {
+            //         var removeIds = new List<int>();
 
-                    var paymentIds = disbLineItems.Select(x => x.DisbId).Distinct();
-                    var repros = _dbContext.Disbs
-                                            .Include(x => x.Items)
-                                            .Where(x => paymentIds.Contains(x.Id));
+            //         var paymentIds = disbLineItems.Select(x => x.DisbId).Distinct();
+            //         var repros = _dbContext.Disbs
+            //                                 .Include(x => x.Items)
+            //                                 .Where(x => paymentIds.Contains(x.Id));
 
-                    foreach (var paymentId in paymentIds)
-                    {
-                        foreach (var xIid in searchParams.XInitiativeIds)
-                        {
-                            if (!searchParams.InitiativeIds.Contains(xIid) || removeIds.Contains(paymentId)) break;
+            //         foreach (var paymentId in paymentIds)
+            //         {
+            //             foreach (var xIid in searchParams.XInitiativeIds)
+            //             {
+            //                 if (!searchParams.InitiativeIds.Contains(xIid) || removeIds.Contains(paymentId)) break;
 
-                            var exclusive = repros.First(x => x.Id == paymentId).Items.Any(x => x.InitiativeId != xIid);
-                            removeIds.AddIfTrue(exclusive, paymentId);
-                        }
-                    }
+            //                 var exclusive = repros.First(x => x.Id == paymentId).Items.Any(x => x.InitiativeId != xIid);
+            //                 removeIds.AddIfTrue(exclusive, paymentId);
+            //             }
+            //         }
 
-                    disbLineItems = disbLineItems.Where(x => !removeIds.Contains(x.DisbId));
-                }
-                else
-                {
-                    disbLineItems = disbLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
-                }
-            }
+            //         disbLineItems = disbLineItems.Where(x => !removeIds.Contains(x.DisbId));
+            //     }
+            //     else
+            //     {
+            //         disbLineItems = disbLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
+            //     }
+            // }
 
-            if (searchParams.GrantIds?.Count > 0)
-            {
-                var grantsForYear = await _dbContext.Grants.Where(x => x.StartDate.Year == searchParams.Year).ToListAsync();
+            // if (searchParams.GrantIds?.Count > 0)
+            // {
+            //     var grantsForYear = await _dbContext.Grants.Where(x => x.StartDate.Year == searchParams.Year).ToListAsync();
 
-                if (searchParams.XGrantIds?.Count > 0 && grantsForYear.Count != searchParams.XGrantIds.Count)
-                {
-                    var removeIds = new List<int>();
+            //     if (searchParams.XGrantIds?.Count > 0 && grantsForYear.Count != searchParams.XGrantIds.Count)
+            //     {
+            //         var removeIds = new List<int>();
 
-                    foreach (var paymentId in disbLineItems.Select(x => x.DisbId))
-                    {
-                        foreach (var xGid in searchParams.XGrantIds)
-                        {
-                            if (!searchParams.GrantIds.Contains(xGid) || removeIds.Contains(paymentId)) break;
+            //         foreach (var paymentId in disbLineItems.Select(x => x.DisbId))
+            //         {
+            //             foreach (var xGid in searchParams.XGrantIds)
+            //             {
+            //                 if (!searchParams.GrantIds.Contains(xGid) || removeIds.Contains(paymentId)) break;
 
-                            removeIds.AddIfTrue(!disbLineItems.Where(x => x.DisbId == paymentId).All(x => x.GrantId == xGid), paymentId);
-                        }
-                    }
+            //                 removeIds.AddIfTrue(!disbLineItems.Where(x => x.DisbId == paymentId).All(x => x.GrantId == xGid), paymentId);
+            //             }
+            //         }
 
-                    disbLineItems = disbLineItems.Where(x => !removeIds.Contains(x.DisbId));
-                }
-                else
-                {
-                    disbLineItems = disbLineItems.Where(x => searchParams.GrantIds.Contains(x.GrantId));
-                }
-            }
+            //         disbLineItems = disbLineItems.Where(x => !removeIds.Contains(x.DisbId));
+            //     }
+            //     else
+            //     {
+            //         disbLineItems = disbLineItems.Where(x => searchParams.GrantIds.Contains(x.GrantId));
+            //     }
+            // }
 
-            if (searchParams.AccountIds?.Count > 0)
-            {
-                if (searchParams.XAccountIds?.Count > 0)
-                {
-                    var removeIds = new List<int>();
+            // if (searchParams.AccountIds?.Count > 0)
+            // {
+            //     if (searchParams.XAccountIds?.Count > 0)
+            //     {
+            //         var removeIds = new List<int>();
 
-                    foreach (var paymentId in disbLineItems.Select(x => x.DisbId))
-                    {
-                        foreach (var xAid in searchParams.XAccountIds)
-                        {
-                            if (!searchParams.XAccountIds.Contains(xAid) || removeIds.Contains(paymentId)) break;
+            //         foreach (var paymentId in disbLineItems.Select(x => x.DisbId))
+            //         {
+            //             foreach (var xAid in searchParams.XAccountIds)
+            //             {
+            //                 if (!searchParams.XAccountIds.Contains(xAid) || removeIds.Contains(paymentId)) break;
 
-                            removeIds.AddIfTrue(!disbLineItems.Where(x => x.DisbId == paymentId).All(x => x.AccountId == xAid), paymentId);
-                        }
-                    }
+            //                 removeIds.AddIfTrue(!disbLineItems.Where(x => x.DisbId == paymentId).All(x => x.AccountId == xAid), paymentId);
+            //             }
+            //         }
 
-                    disbLineItems = disbLineItems.Where(x => !removeIds.Contains(x.DisbId));
-                }
-                else
-                {
-                    disbLineItems = disbLineItems.Where(x => searchParams.AccountIds.Contains(x.AccountId));
+            //         disbLineItems = disbLineItems.Where(x => !removeIds.Contains(x.DisbId));
+            //     }
+            //     else
+            //     {
+            //         disbLineItems = disbLineItems.Where(x => searchParams.AccountIds.Contains(x.AccountId));
 
-                }
-            }
+            //     }
+            // }
 
 
 
@@ -897,25 +897,25 @@ namespace Application.Services
 
             var lineItemIdsByBudget = new List<int>();
 
-            if (searchParams.PaymentSearchBudgetHeaders != null)
-            {
-                var ids1 = searchParams.PaymentSearchBudgetHeaders.Select(x => x.InitiativeId);
-                var ids2 = searchParams.PaymentSearchBudgetHeaders.Select(x => x.GrantId);
+            // if (searchParams.PaymentSearchBudgetHeaders != null)
+            // {
+            //     var ids1 = searchParams.PaymentSearchBudgetHeaders.Select(x => x.InitiativeId);
+            //     var ids2 = searchParams.PaymentSearchBudgetHeaders.Select(x => x.GrantId);
 
-                List<(int InitiativeId, int GrantId, int AccountId)> Tuples = [];
+            //     List<(int InitiativeId, int GrantId, int AccountId)> Tuples = [];
 
-                foreach (var (InitiativeId, GrantId, AccountId) in searchParams.PaymentSearchBudgetHeaders.Select(x => (x.InitiativeId, x.GrantId, x.AccountId)).ToList())
-                {
-                    Tuples.Add((InitiativeId, GrantId, AccountId));
-                }
+            //     foreach (var (InitiativeId, GrantId, AccountId) in searchParams.PaymentSearchBudgetHeaders.Select(x => (x.InitiativeId, x.GrantId, x.AccountId)).ToList())
+            //     {
+            //         Tuples.Add((InitiativeId, GrantId, AccountId));
+            //     }
 
-                lineItemIdsByBudget = [.. disbLineItems.AsEnumerable().Join(Tuples.AsEnumerable(),
-                            r => new { r.InitiativeId, r.GrantId, r.AccountId },
-                            t => new { t.InitiativeId, t.GrantId, t.AccountId },
-                            (r, t) =>
-                                r.Id
-                            )];
-            }
+            //     lineItemIdsByBudget = [.. disbLineItems.AsEnumerable().Join(Tuples.AsEnumerable(),
+            //                 r => new { r.InitiativeId, r.GrantId, r.AccountId },
+            //                 t => new { t.InitiativeId, t.GrantId, t.AccountId },
+            //                 (r, t) =>
+            //                     r.Id
+            //                 )];
+            // }
 
             if (lineItemIdsByBudget.Count > 0)
             {
@@ -990,6 +990,65 @@ namespace Application.Services
             };
 
             return Result<PaymentSearchResponseDto>.Success(result);
+        }
+
+        public async Task<Result<List<PaymentSearchBudgetParamResponseDto>>> GetBudgetsForSearch(int year)
+        {
+
+            var result = _dbContext.DisbLineItems
+                                .Join(_dbContext.Initiatives,
+                                    d => d.InitiativeId,
+                                    i => i.Id,
+                                    (d, i) =>
+                                    new
+                                    {
+                                        d.InitiativeId,
+                                        d.GrantId,
+                                        d.AccountId,
+                                        InitiativeName = i.Name
+                                    }
+                                )
+                                .Join(_dbContext.Grants,
+                                    d => d.GrantId,
+                                    g => g.Id,
+                                    (d, g) =>
+                                    new
+                                    {
+                                        d.InitiativeId,
+                                        d.InitiativeName,
+                                        d.GrantId,
+                                        GrantName = g.Name,
+                                        d.AccountId,
+                                        g.Year
+                                    })
+                                .Join(_dbContext.Accounts,
+                                d => d.AccountId,
+                                a => a.Id,
+                                (d, g) =>
+                                new
+                                {
+                                    d.InitiativeId,
+                                    d.InitiativeName,
+                                    d.GrantId,
+                                    d.GrantName,
+                                    d.AccountId,
+                                    AccountName = g.Name,
+                                    d.Year
+                                })
+                                .Where(x => x.Year == year)
+                                .Select(x => new PaymentSearchBudgetParamResponseDto
+                                {
+                                    InitiativeId = x.InitiativeId,
+                                    InitiativeName = x.InitiativeName,
+                                    GrantId = x.GrantId,
+                                    GrantName = x.GrantName,
+                                    AccountId = x.AccountId,
+                                    AccountName = x.AccountName
+                                })
+                                .Distinct()
+                                .ToList();
+
+            return Result<List<PaymentSearchBudgetParamResponseDto>>.Success(result);
         }
 
         private class PayeePaymentCount
