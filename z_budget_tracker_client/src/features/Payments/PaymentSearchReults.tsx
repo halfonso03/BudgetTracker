@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { formatCurrency, formatDate } from '../../app/util';
 import SortBySelector from '../../components/SortBySelector';
 import { useSortingContext } from '../../contexts/useSortingContext';
@@ -13,7 +14,14 @@ const PaymentSearchReults = ({ results }: Props) => {
 
   return (
     <div className="w-full min-w-full ">
-      <div className="grid grid-cols-[.7fr_1.2fr_1fr_.7fr_.7fr_.7fr_1fr_1fr_1.2fr_.5fr_1.2fr_.3fr] p-2 px-3 bg-gray-50 text-neutral-500 border border-neutral-300/60 ">
+      <div className="grid grid-cols-[.4fr_.9fr_1.2fr_1fr_.7fr_.7fr_.7fr_1fr_1fr_1.2fr_.5fr_1.2fr_.3fr] p-2 px-3 bg-gray-50 text-neutral-500 border border-neutral-300/60 ">
+        <div className="entity-label flex justify-center">
+          <SortBySelector
+            label="ID"
+            value="ID"
+            currentSortValue={sortByValue}
+          ></SortBySelector>
+        </div>
         <div className="entity-label flex justify-center">
           <SortBySelector
             label="Payment No."
@@ -99,10 +107,17 @@ const PaymentSearchReults = ({ results }: Props) => {
             key={index}
             className="hover:bg-neutral-100  border-b border-b-neutral-300/60 last:border-0"
           >
-            <div className="grid grid-cols-[.7fr_1.2fr_1fr_.7fr_.7fr_.7fr_1fr_1fr_1.2fr_.5fr_1.2fr_.3fr] p-2 px-3">
-              <div className="text-center self-center">{r.paymentNumber}</div>
+            <div className="grid grid-cols-[.4fr_.9fr_1.2fr_1fr_.7fr_.7fr_.7fr_1fr_1fr_1.2fr_.5fr_1.2fr_.3fr] p-2 px-3">
+              <div className="text-center self-center">
+                <Link to={`/payments/${r.paymentId}`}>
+                  {r.paymentId}
+                </Link>
+              </div>
+                <div className="text-center self-center">{r.paymentNumber}</div>
               <div className="text-center self-center">{r.payeeName}</div>
-              <div className="text-center self-center">{formatCurrency(r.amount)}</div>
+              <div className="text-center self-center">
+                {formatCurrency(r.amount)}
+              </div>
               <div className="text-center self-center">{r.invoiceNumber}</div>
               <div className="text-center self-center">
                 {r.invoiceDate && formatDate(r.invoiceDate)}

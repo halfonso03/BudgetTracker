@@ -72,7 +72,7 @@ const PaymentSearch = () => {
   }, []);
 
   const handleRefreshClick = () => {
-    queryClient.invalidateQueries({ queryKey: ['repro_search'] });
+    queryClient.invalidateQueries({ queryKey: ['payment_search'] });
     setPageNumber(1);
   };
 

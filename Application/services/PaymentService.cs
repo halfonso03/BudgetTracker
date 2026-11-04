@@ -945,7 +945,8 @@ namespace Application.Services
             var paymentsList = paymentLineItemResponses
                                         .Select(y => new PaymentSearchResponseLineItemDto
                                         {
-                                            PaymentId = y.y.Id,
+                                            PaymentId = y.y.DisbId,
+                                            PaymentLineItemId = y.y.Id,
                                             PaymentNumber = y.y.PaymentNumber,
                                             Year = y.y.Year,
                                             InitiativeName = y.y.Initiative!.Name,
@@ -965,8 +966,10 @@ namespace Application.Services
 
             var sorted = sortBy switch
             {
-                "PAYMENTNUMBER" => paymentsList.OrderBy(x => x.PaymentNumber),
-                "PAYMENTNUMBERdesc" => paymentsList.OrderByDescending(x => x.PaymentNumber),
+                "ID" => paymentsList.OrderBy(x => x.PaymentId),
+                "IDdesc" => paymentsList.OrderByDescending(x => x.PaymentId).ThenByDescending(x => x.PayeeName),
+                "PAYMENTNUMBER" => paymentsList.OrderBy(x => x.PaymentNumber).ThenBy(x => x.PayeeName),
+                "PAYMENTNUMBERdesc" => paymentsList.OrderByDescending(x => x.PaymentNumber).ThenByDescending(x => x.PayeeName),
                 "PAYEE" => paymentsList.OrderBy(x => x.PayeeName),
                 "PAYEEdesc" => paymentsList.OrderByDescending(x => x.PayeeName),
                 "AMOUNT" => paymentsList.OrderBy(x => x.Amount).ThenBy(x => x.PayeeName),
