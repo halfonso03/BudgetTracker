@@ -303,7 +303,7 @@ namespace Application.Services
             return Result<CreatePaymentResponseDto>.Success(CreatePaymentResponseDto.Create(newId, rowIdsResponse, paymentNumbersResponse));
         }
 
-        private void UpdatePaymentNumbers(IList<DisbLineItem> items, List<PayeePaymentCount> payeePaymentCounts)
+        private static void UpdatePaymentNumbers(IList<DisbLineItem> items, List<PayeePaymentCount> payeePaymentCounts)
         {
             // payeeId, paymentNo
             var usedNos = new Dictionary<int, int>();
@@ -914,14 +914,17 @@ namespace Application.Services
                             t => new { t.InitiativeId, t.GrantId, t.AccountId },
                             (r, t) =>
                                 r.Id
-                            ).Select(x => x)];
+                            )];
             }
 
             if (lineItemIdsByBudget.Count > 0)
+            {
                 disbLineItems = disbLineItems.Where(x => lineItemIdsByBudget.Contains(x.Id));
+            }
 
             var lineItemIds = await disbLineItems.Select(x => x.Id).ToListAsync();
 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             var paymentLineItemResponses = _dbContext.DisbLineItems
                                     .Include(x => x.Initiative)
                                     .Include(x => x.Grant)
@@ -933,50 +936,30 @@ namespace Application.Services
                                     .Where(x => lineItemIds.Contains(x.Id))
                                     .Select(y => new
                                     {
-
-                                        PaymentId = y.DisbId,
-                                        y.RowId,
-                                        y.PaymentNumber,
-                                        PaymentLineItemId = y.Id,
-                                        InitiativeName = y.Initiative!.Name,
-                                        InitiativeId = y.Initiative!.Id,
-                                        GrantId = y.Grant!.Id,
-                                        AccountId = y.Account!.Id,
-                                        GrantName = y.Grant!.Name,
-                                        CategoryName = y.Category!.Name,
-                                        AccountName = y.Account!.Name,
-                                        PayeeName = y.Payee!.Name,
-                                        y.Amount,
-                                        y.Year,
-                                        y.InvoiceNumber,
-                                        y.InvoiceDate,
-                                        y.CheckNumber,
-                                        y.Disb!.Posted,
+                                        y,
                                         postedBy = y.Disb!.Posted == true ? y.Disb.PostedBy : null,
-                                        y.Disb!.PostedDate,
                                     }).AsQueryable();
-
-
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 
             var paymentsList = paymentLineItemResponses
                                         .Select(y => new PaymentSearchResponseLineItemDto
                                         {
-                                            PaymentId = y.PaymentId,
-                                            PaymentNumber = y.PaymentNumber,
-                                            Year = y.Year,
-                                            InitiativeName = y.InitiativeName,
-                                            GrantName = y.GrantName,
-                                            CategoryName = y.CategoryName,
-                                            AccountName = y.AccountName,
-                                            PayeeName = y.PayeeName,
-                                            InvoiceNumber = y.InvoiceNumber,
-                                            InvoiceDate = y.InvoiceDate,
-                                            CheckNumber = y.CheckNumber,
-                                            Amount = y.Amount,
+                                            PaymentId = y.y.Id,
+                                            PaymentNumber = y.y.PaymentNumber,
+                                            Year = y.y.Year,
+                                            InitiativeName = y.y.Initiative!.Name,
+                                            GrantName = y.y.Grant!.Name,
+                                            CategoryName = y.y.Category!.Name,
+                                            AccountName = y.y.Account!.Name,
+                                            PayeeName = y.y.Payee!.Name,
+                                            InvoiceNumber = y.y.InvoiceNumber,
+                                            InvoiceDate = y.y.InvoiceDate,
+                                            CheckNumber = y.y.CheckNumber,
+                                            Amount = y.y.Amount,
                                             PostedBy = y.postedBy != null ? $"{y.postedBy!.FirstName} {y.postedBy!.LastName}" : string.Empty,
                                             StatusSort = y.postedBy != null ? 1 : 2,
-                                            PostedDate = y.PostedDate,
+                                            PostedDate = y.y.Disb!.PostedDate,
                                         }).AsQueryable();
 
 

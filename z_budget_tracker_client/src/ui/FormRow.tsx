@@ -16,7 +16,7 @@ type FormRowProps = {
 const StyledFormRow = styled.div`
   display: grid;
   align-items: center;
-  grid-template-columns: 1fr 1.6fr 0.1fr;
+  grid-template-columns: 1fr 1.6fr 0.2fr;
 
   &:first-child {
     padding-top: 0;

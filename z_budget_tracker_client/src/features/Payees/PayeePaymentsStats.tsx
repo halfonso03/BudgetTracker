@@ -24,7 +24,7 @@ const PayeePaymentsStats = ({ payeeId }: Props) => {
         )}
 
         {paymentStats && paymentStats.lastPaymentDate && (
-          <div className=" grid grid-cols-[1.3fr_.7fr_1fr_.7fr_.5fr_1fr_.5fr_1fr] gap-2">
+          <div className=" grid grid-cols-[1.3fr_.7fr_1fr_.7fr_.5fr_1fr_.5fr_1fr] gap-2 mb-6">
             <div className="text-neutral-500 ">
               Last Payment Date
             </div>

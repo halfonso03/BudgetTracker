@@ -1,9 +1,7 @@
-import { ArrowRight, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import PayeeForm from './PayeeForm';
 import NavBar from '../../components/NavBar';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import PayeePayments from './PayeePayments';
 
 type Props = {
@@ -12,12 +10,11 @@ type Props = {
 };
 
 const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
-  const [showNewPaymentLink, setShowNewPaymentLInk] = useState(false);
-  const [newPayeeInfo, setNewPayeeInfo] = useState<NewPayeeInfo | null>(null);
+  // const [showNewPaymentLink, setShowNewPaymentLInk] = useState(false);
+  // const [newPayeeInfo, setNewPayeeInfo] = useState<NewPayeeInfo | null>(null);
 
-  function handlePayeeCreated(i: NewPayeeInfo) {
-    setShowNewPaymentLInk(true);
-    setNewPayeeInfo(i);
+  function handlePayeeCreated() {
+    // setNewPayeeInfo(i);
   }
 
   return createPortal(
@@ -53,7 +50,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
                 <PayeePayments payeeId={payee.id}></PayeePayments>
               )}
 
-              {showNewPaymentLink && (
+              {/* {showNewPaymentLink && (
                 <Link
                   className="text-blue-500"
                   to={`/payees/payment/new?payeeid=${newPayeeInfo?.id}&accountId=${newPayeeInfo?.accountId}&categoryId=${newPayeeInfo?.categoryId}`}
@@ -62,7 +59,7 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
                     Create new payment <ArrowRight></ArrowRight>
                   </div>
                 </Link>
-              )}
+              )} */}
             </div>
           </div>
         </div>

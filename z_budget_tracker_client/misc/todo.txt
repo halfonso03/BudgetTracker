@@ -1,3 +1,10 @@
+
+
+invalidate queuery for payees payments
+ - or add it to the payment list??
+
+payee details still not showing the right Category and account when clicked
+
 reports:
 grant balance by AR and initiative
 project budget vs actual budgeted

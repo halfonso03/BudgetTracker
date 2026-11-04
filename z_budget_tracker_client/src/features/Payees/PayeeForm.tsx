@@ -39,18 +39,19 @@ const PayeeForm = ({
     handleSubmit,
     setValues,
     getValues,
+    reset,
     watch,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(PayeeFormSchema) as Resolver<FormValues>,
     defaultValues: {
-      id: payee.id,
-      name: payee.name,
-      additionalInformation: payee.additionalInformation,
-      categoryId: payee.categoryId,
-      accountId: payee.accountId,
-      isActive: payee.isActive,
-      payeeTypeId: payee.payeeTypeId,
+      id: 0,
+      name: '',
+      additionalInformation: '',
+      categoryId: 0,
+      accountId: 0,
+      isActive: false,
+      payeeTypeId: 0,
     },
   });
 
@@ -66,10 +67,10 @@ const PayeeForm = ({
   const categoryIdWatchValue = watch('categoryId') as number;
 
   const accounts = useMemo(() => {
-    return catSuccess && categories
+    return categories && categories.length
       ? categories.filter((x) => x.id === +categoryIdWatchValue)[0]?.accounts
       : [];
-  }, [catSuccess, categories, categoryIdWatchValue]);
+  }, [categories, categoryIdWatchValue]);
 
   function onCategoryChange() {
     setCategoryIsSelected(true);
@@ -98,7 +99,7 @@ const PayeeForm = ({
           },
           onError: (e: Error) => {
             const error = e as AxiosError;
-            if (error && error.response  && error.response.data) {
+            if (error && error.response && error.response.data) {
               if (typeof error.response.data === 'string') {
                 toast.error(error.response.data, { duration: 2500 });
               }
@@ -132,78 +133,103 @@ const PayeeForm = ({
   function onError() {}
 
   useEffect(() => {
-    if (categorySelected && accounts && accounts.length) {
-      setValues({ accountId: accounts[0].id });
-    }
-  }, [accounts, categorySelected, setValues]);
+    console.log('payee.accountId', payee.accountId);
+    setValues({ id: payee.id });
+    setValues({ categoryId: payee.categoryId });
+    setValues({ payeeTypeId: payee.payeeTypeId });
+    setValues({ accountId: payee.accountId });
+    setValues({ name: payee.name });
+    setValues({ additionalInformation: payee.additionalInformation });
+    setValues({ payeeTypeId: payee.payeeTypeId });
+
+    // if (catSuccess && payee.id === 0 && getValues('id') !== 0) {
+    //   console.log('123', 123);
+    //   reset({
+    //     id: payee.id,
+    //     name: payee.name,
+    //     additionalInformation: payee.additionalInformation,
+    //     accountId: payee.accountId,
+    //     payeeTypeId: payee.payeeTypeId,
+    //     isActive: payee.isActive,
+    //   });
+    // }
+
+    // if (catSuccess && categories?.length && accounts?.length) {
+    //   if (!categorySelected) setValues({ accountId: payee.accountId });
+    // }
+  }, [
+    payee.accountId,
+    payee.additionalInformation,
+    payee.categoryId,
+    payee.id,
+    payee.name,
+    payee.payeeTypeId,
+    setValues,
+  ]);
 
   return (
-    <div className="">
-      <form
-        id="payee_form"
-        onSubmit={(e) => {
-          e.stopPropagation(); // Stops the event from bubbling to parent forms in the React tree
-          handleSubmit(onSubmit, onError)(e);
-        }}
-        className="self-center w-full"
-      >
-        <input type="hidden" {...register('id')} />
-        {/* {errors.additionalInformation && <div>FORM ERROR!</div>} */}
-        <div className="flex flex-col gap-2 w-full">
-          <div className="font-semibold text-neutral-500 mb-2 border-b border-b-neutral-200/60 pl-0 p-1 ">
-            Details
-          </div>
-          <FormRow
-            id="name"
-            label="Name"
-            error={errors?.name?.message}
-            useMessage={true}
-          >
-            <Input type="text" {...register('name')} />
-          </FormRow>
-          <FormRow
-            id="details"
-            label="Additional Information"
-            error={errors?.additionalInformation?.message}
-          >
-            <TextArea {...register('additionalInformation')} rows={3} />
-          </FormRow>
-          <FormRow
-            id="payeeTypeId"
-            label="Payee Type"
-            useMessage={true}
-            error={errors?.payeeTypeId?.message}
-          >
-            <Select {...register('payeeTypeId')}>
-              {payeeId === 0 && (
-                <option value="0">--Select a Payee Type --</option>
-              )}
-              {payeeTypeOptions.map((x) => (
-                <option value={x.id}>{x.name}</option>
-              ))}
-            </Select>
-          </FormRow>
-          <FormRow id="isActive" label="Active">
-            <Switch isOn={isActive} handleToggle={handleToggle}></Switch>
-          </FormRow>
+    <form
+      id="payee_form"
+      onSubmit={(e) => {
+        e.stopPropagation(); // Stops the event from bubbling to parent forms in the React tree
+        handleSubmit(onSubmit, onError)(e);
+      }}
+      className="self-center w-full"
+    >
+      <input type="hidden" {...register('id')} />
+      {getValues('categoryId')}
+      {/* {errors.additionalInformation && <div>FORM ERROR!</div>} */}
+      <div className="flex flex-col gap-2 w-full">
+        <div className="font-semibold text-neutral-500 mb-2 border-b border-b-neutral-200/60 pl-0 p-1 ">
+          Details
+        </div>
+        <FormRow
+          id="name"
+          label="Name"
+          error={errors?.name?.message}
+          useMessage={true}
+        >
+          <Input type="text" {...register('name')} />
+        </FormRow>
+        <FormRow
+          id="details"
+          label="Additional Information"
+          error={errors?.additionalInformation?.message}
+        >
+          <TextArea {...register('additionalInformation')} rows={3} />
+        </FormRow>
+        <FormRow
+          id="payeeTypeId"
+          label="Payee Type"
+          useMessage={true}
+          error={errors?.payeeTypeId?.message}
+        >
+          <Select {...register('payeeTypeId')}>
+            {payeeId === 0 && (
+              <option value="0">--Select a Payee Type --</option>
+            )}
+            {payeeTypeOptions.map((x) => (
+              <option value={x.id}>{x.name}</option>
+            ))}
+          </Select>
+        </FormRow>
+        <FormRow id="isActive" label="Active">
+          <Switch isOn={isActive} handleToggle={handleToggle}></Switch>
+        </FormRow>
 
-          <div className="font-semibold text-neutral-500 border-b border-b-neutral-200/80 pl-0 p-1 mt-6 ">
-            Charge Account
-          </div>
+        <div className="font-semibold text-neutral-500 border-b border-b-neutral-200/80 pl-0 p-1 mt-6 ">
+          Charge Account
+        </div>
+
+        {catSuccess && categories?.length && (
           <FormRow
             id="categoryId"
             label="Category"
-            error={errors?.categoryId?.message}
             useMessage={true}
+            error={errors?.categoryId?.message}
           >
-            <Select
-              {...register('categoryId')}
-              onChange={(e) => {
-                register('categoryId').onChange(e);
-                onCategoryChange();
-              }}
-            >
-              {payeeId === 0 && (
+            <Select id="categoryId" {...register('categoryId')}>
+              {(payeeId === 0 || categorySelected) && (
                 <option value="0">--Select a Category --</option>
               )}
               {categories?.map((x) => (
@@ -211,11 +237,13 @@ const PayeeForm = ({
               ))}
             </Select>
           </FormRow>
+        )}
+        {catSuccess && categories?.length && accounts?.length && (
           <FormRow
             id="accountId"
             label="Account"
             error={errors?.accountId?.message}
-            useMessage={true}
+            useMessage={false}
           >
             <Select
               {...register('accountId')}
@@ -225,18 +253,38 @@ const PayeeForm = ({
                 <option value="0">--Select an Account --</option>
               )}
               {accounts?.map((x) => (
-                <option value={x.id}>{x.name}</option>
+                <option key={x.id} value={x.id}>
+                  {x.name}
+                </option>
               ))}
             </Select>
           </FormRow>
-          <div className="grid grid-cols-[1fr_1.6fr_0.1fr]  mt-4">
-            <div></div>
-            <div className="flex gap-2 justify-end">
+        )}
+
+        <div className="grid grid-cols-[1fr_1.6fr_0.2fr]  mt-4">
+          <div></div>
+          <div className="flex gap-2 justify-end">
+            <Button
+              type="submit"
+              variation="primary"
+              buttonSize="medium"
+              form="payee_form"
+            >
+              {/* {isLoginSuccess ? (
+                <Check></Check>
+              ) : isLoginPending ? (
+                <div className="animate-spin h-6 w-6 border-4 border-gray-200 border-t-transparent border-b-transparent rounded-full"></div>
+              ) : (
+                'OK'
+              )} */}
+              Save
+            </Button>
+            {mode === 'modal' && (
               <Button
-                type="submit"
-                variation="primary"
+                type="button"
+                variation="secondary"
                 buttonSize="medium"
-                form="payee_form"
+                onClick={() => onCancel?.()}
               >
                 {/* {isLoginSuccess ? (
                 <Check></Check>
@@ -245,31 +293,14 @@ const PayeeForm = ({
               ) : (
                 'OK'
               )} */}
-                Save
+                Cancel
               </Button>
-              {mode === 'modal' && (
-                <Button
-                  type="button"
-                  variation="secondary"
-                  buttonSize="medium"
-                  onClick={() => onCancel?.()}
-                >
-                  {/* {isLoginSuccess ? (
-                <Check></Check>
-              ) : isLoginPending ? (
-                <div className="animate-spin h-6 w-6 border-4 border-gray-200 border-t-transparent border-b-transparent rounded-full"></div>
-              ) : (
-                'OK'
-              )} */}
-                  Cancel
-                </Button>
-              )}
-            </div>
-            <div></div>
+            )}
           </div>
+          <div></div>
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 };
 export default PayeeForm;
