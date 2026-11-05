@@ -458,8 +458,7 @@ const PaymentForm = ({
         if (posted) {
           await invalidateBalances();
         }
-        console.log('data', data);
-
+        
         queryClient.setQueryData<Payment>(['payment', data.newId], () => ({
           ...paymentToSave,
           id: data.newId,
@@ -534,7 +533,6 @@ const PaymentForm = ({
           await invalidateBalances();
         }
         const postedDate = new Date();
-        console.log('data', data);
         queryClient.setQueryData<Payment>(
           ['payment', paymentHeader.id],
           () => ({

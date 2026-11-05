@@ -10,6 +10,7 @@ namespace Application.DTOs.Payment
     public class PaymentSearchResponseLineItemDto
     {
         public int PaymentId { get; internal set; }
+        public required int PayeeId { get; set; }
         public required string InitiativeName { get; set; }
         public required string GrantName { get; set; }
         public required string CategoryName { get; set; }

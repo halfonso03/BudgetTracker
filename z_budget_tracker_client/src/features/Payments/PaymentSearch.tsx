@@ -30,6 +30,7 @@ type SelectedItem = {
 const MemoizedSearchParams = React.memo(PaymentSearchParams);
 
 const PaymentSearch = () => {
+  const pageSizeConfig = import.meta.env.VITE_REPRO_SEARCH_PAGE_SIZE;
   const queryClient = useQueryClient();
   const [year, setYear] = useState<number>(2026);
   const [status, setStatus] = useState<number>(0);
@@ -40,6 +41,7 @@ const PaymentSearch = () => {
   const { data: payees } = usePayeesAll();
   const [deleteConfirmModalIsOpen, setDeleteConfirmModalIsOpen] =
     useState(false);
+  // const { sortByValue } = useSortingContext();
 
   const [invoiceModalIsopen, setInvoiceModalIsOpen] = useState(false);
   const [paymentLineItemInvoiceToUpdate, setPaymentLineItemInvoiceToUpdate] =
@@ -128,7 +130,7 @@ const PaymentSearch = () => {
     usePaymentSearch(
       {
         pageNumber: pageNumber,
-        pageSize: import.meta.env.VITE_REPRO_SEARCH_PAGE_SIZE,
+        pageSize: pageSizeConfig,
       },
       {
         status,
@@ -219,6 +221,7 @@ const PaymentSearch = () => {
   function handleStartInvoiceUpdate(l: PaymentSearchResult) {
     const pl = {
       uuid: '',
+      payeeId: l.payeeId,
       payeeName: l.payeeName,
       paymentAmount: l.amount,
       paymentLineItemId: l.paymentLineItemId,
@@ -262,12 +265,39 @@ const PaymentSearch = () => {
     checkNumber: string | null;
     invoiceDate: Date | null;
   }) {
-    console.log('invoiceNumber', data);
+    const oldData = queryClient.getQueriesData({
+      queryKey: ['payment_search'],
+    });
+
+    const queryKey = oldData[0][0];
+
+    console.log('oldD', queryKey);
+
+    const oDT: { items: PaymentSearchResult[] } = oldData[0][1] as {
+      items: PaymentSearchResult[];
+    };
+    const oldItems = oDT.items;
+    const newItems = oldItems.map((i) => {
+      if (
+        i.paymentLineItemId !==
+        paymentLineItemInvoiceToUpdate?.paymentLineItemId
+      )
+        return i;
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { uuid, ...dataWI } = data;
+      return { ...i, ...dataWI };
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    queryClient.setQueryData(oldData[0][0], (oldData: any) => {
+      return { ...oldData, items: newItems };
+    });
   }
 
   return (
     <div className="flex gap-2 mt-10">
-      <div className=" flex-7">
+      <div className="flex-7">
         {/* <pre>{JSON.stringify(selectedIds)}</pre>
         <pre>{JSON.stringify(itemsList)}</pre> */}
 

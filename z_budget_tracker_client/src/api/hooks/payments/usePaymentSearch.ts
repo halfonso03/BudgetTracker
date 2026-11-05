@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import agent from "../../agent"
 import { useSortingContext } from "../../../contexts/useSortingContext"
-
-const fetchRepros = async (
+import * as hash from 'murmurhash3js';
+const fetchPayments = async (
     pagination: PaginationRequestData,
     paymentSearchParams: PaymentSearchParams,
     sortByValue: string
@@ -10,8 +10,6 @@ const fetchRepros = async (
 
     const searchParams1 = { ...paymentSearchParams };
     const { selectedIds, ...searchParams2 } = searchParams1;
-    // xSelectedIds,
-
 
     const payload: PaymentSearchRequest = {
         ...searchParams2,
@@ -21,15 +19,18 @@ const fetchRepros = async (
         accountIds: selectedIds!.filter(x => x.type === 'A').map(x => x.id),
     };
 
-
-    console.log('payload', payload)
+    // console.log('payload', payload)
     const response = await agent.post(`/payment/search?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}&sortBy=${sortByValue}`, payload)
     const paginationHeader = response.headers["pagination"];
     const paginationResponse: PaginationData = paginationHeader
         ? JSON.parse(paginationHeader)
         : null;
 
-    return { items: response.data.items, itemCount: response.data.items.length, searchId: crypto.randomUUID(), pagination: paginationResponse };
+    return {
+        items: response.data.items,
+        itemCount: response.data.items.length,
+        pagination: paginationResponse
+    };
 }
 
 export const usePaymentSearch = (
@@ -39,11 +40,12 @@ export const usePaymentSearch = (
     const { sortByValue } = useSortingContext();
 
     const { data, isLoading, isSuccess } = useQuery<PaymentSearchResponse>({
-        queryKey: ['payment_search', { ...paymentSearchParams },
+        queryKey: ['payment_search',
+            hash.x86.hash32(JSON.stringify(paymentSearchParams)),
             pagination.pageNumber,
             pagination.pageSize,
             sortByValue],
-        queryFn: () => fetchRepros(pagination, paymentSearchParams, sortByValue),
+        queryFn: () => fetchPayments(pagination, paymentSearchParams, sortByValue),
         staleTime: 60 * 1000,
         gcTime: 60 * 1000,
     })

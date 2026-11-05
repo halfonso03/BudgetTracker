@@ -59,15 +59,15 @@ const PaymentSearchReults = ({
         </div>
         <div className="entity-label flex justify-center">
           <SortBySelector
-            label="Invoice No."
-            value="INVOICENUMBER"
+            label="Invoice Date"
+            value="INVOICEDATE"
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
         <div className="entity-label flex justify-center">
           <SortBySelector
-            label="Invoice Date"
-            value="INVOICEDATE"
+            label="Invoice No."
+            value="INVOICENUMBER"
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
@@ -130,10 +130,10 @@ const PaymentSearchReults = ({
               <div className="text-center self-center">
                 {formatCurrency(r.amount)}
               </div>
-              <div className="text-center self-center">{r.invoiceNumber}</div>
               <div className="text-center self-center">
                 {r.invoiceDate && formatDate(r.invoiceDate)}
               </div>
+              <div className="text-center self-center">{r.invoiceNumber}</div>
               <div className="text-center self-center">{r.checkNumber}</div>
               <div className="text-center self-center">{r.postedBy}</div>
               <div className="text-center self-center">

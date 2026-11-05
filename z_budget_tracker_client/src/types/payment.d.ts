@@ -64,6 +64,7 @@ type PaymentLineItem = {
 
 type PaymentInvoiceInfo = {
     uuid: string
+    payeeId: number,
     payeeName: string
     paymentLineItemId?: number | null
     invoiceDate?: Date | null | undefined;
@@ -204,6 +205,7 @@ type PaymentSearchResponse = {
 type PaymentSearchResult = {
     paymentId: number,
     paymentNumber: number
+    payeeId: number
     year: number
     initiativeName: string
     grantName: string

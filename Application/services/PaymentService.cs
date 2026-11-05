@@ -849,6 +849,7 @@ namespace Application.Services
                                         .Select(y => new PaymentSearchResponseLineItemDto
                                         {
                                             PaymentId = y.y.DisbId,
+                                            PayeeId = y.y.PayeeId,
                                             PaymentLineItemId = y.y.Id,
                                             PaymentNumber = y.y.PaymentNumber,
                                             Year = y.y.Year,

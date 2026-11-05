@@ -6,20 +6,20 @@ function App() {
   return (
     <>
       <NavBar></NavBar>
-      <div className="pt-10 w-[85%] mx-auto">
+      <div className="pt-10 w-[82%] mx-auto">
         <Outlet></Outlet>
       </div>
       <Toaster
         gutter={12}
-        position='bottom-center'
+        position="bottom-center"
         // containerStyle={{
         //   margin: '8px',
         //   position: 'absolute',
         //   top: '250px',
         // }}
-         containerStyle={{
+        containerStyle={{
           zIndex: 99999,
-        }} 
+        }}
         toastOptions={{
           success: {
             duration: 1500,

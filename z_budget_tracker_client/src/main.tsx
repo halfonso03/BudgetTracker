@@ -5,7 +5,7 @@ import { RouterProvider } from 'react-router-dom';
 import { router } from './app/routes/routes.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ClientAuthProvider } from './contexts/ClientAuthContext.tsx';
-
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 const main = () => {
   const queryClient = new QueryClient();
 
@@ -13,6 +13,7 @@ const main = () => {
     <StrictMode>
       <ClientAuthProvider>
         <QueryClientProvider client={queryClient}>
+          <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
           <RouterProvider router={router}></RouterProvider>
         </QueryClientProvider>
       </ClientAuthProvider>
