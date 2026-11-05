@@ -153,7 +153,7 @@ const PaymentSearchReults = ({ results }: Props) => {
                     leftPos="translate-x-22"
                   >
                     <Menus.MenuItem>
-                      <Link className="flex" to={`/payment/${r.paymentId}`}>
+                      <Link className="flex" to={`/payments/${r.paymentId}`}>
                         {r.postedDate !== null ? (
                           <Glasses size={18}></Glasses>
                         ) : (

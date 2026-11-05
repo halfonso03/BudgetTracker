@@ -15,7 +15,10 @@ const fetchRepros = async (
 
     const payload: PaymentSearchRequest = {
         ...searchParams2,
-        payeeIds: selectedIds!.filter(x => x.type === 'P').map(x => x.id)
+        payeeIds: selectedIds!.filter(x => x.type === 'P').map(x => x.id),
+        initiativeIds: selectedIds!.filter(x => x.type === 'I').map(x => x.id),
+        grantIds: selectedIds!.filter(x => x.type === 'G').map(x => x.id),
+        accountIds: selectedIds!.filter(x => x.type === 'A').map(x => x.id),
     };
 
 

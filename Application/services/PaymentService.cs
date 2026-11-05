@@ -770,33 +770,20 @@ namespace Application.Services
                 disbLineItems = disbLineItems.Where(x => searchParams.PayeeIds.Contains(x.PayeeId));
             }
 
-            // if (searchParams.GrantIds?.Count > 0)
-            // {
-            //     var grantsForYear = await _dbContext.Grants.Where(x => x.StartDate.Year == searchParams.Year).ToListAsync();
+            if (searchParams.InitiativeIds?.Count > 0)
+            {
+                disbLineItems = disbLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
+            }
+            if (searchParams.GrantIds?.Count > 0)
+            {
+                disbLineItems = disbLineItems.Where(x => searchParams.GrantIds.Contains(x.GrantId));
+            }
+            if (searchParams.AccountIds?.Count > 0)
+            {
+                disbLineItems = disbLineItems.Where(x => searchParams.AccountIds.Contains(x.AccountId));
+            }
 
-            //     if (searchParams.XGrantIds?.Count > 0 && grantsForYear.Count != searchParams.XGrantIds.Count)
-            //     {
-            //         var removeIds = new List<int>();
 
-            //         foreach (var paymentId in disbLineItems.Select(x => x.DisbId))
-            //         {
-            //             foreach (var xGid in searchParams.XGrantIds)
-            //             {
-            //                 if (!searchParams.GrantIds.Contains(xGid) || removeIds.Contains(paymentId)) break;
-
-            //                 removeIds.AddIfTrue(!disbLineItems.Where(x => x.DisbId == paymentId).All(x => x.GrantId == xGid), paymentId);
-            //             }
-            //         }
-
-            //         disbLineItems = disbLineItems.Where(x => !removeIds.Contains(x.DisbId));
-            //     }
-            //     else
-            //     {
-            //         disbLineItems = disbLineItems.Where(x => searchParams.GrantIds.Contains(x.GrantId));
-            //     }
-            // }
-
-    
 
             if (searchParams.Status != PaymentSearchStatus.ALL)
             {

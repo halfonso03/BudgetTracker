@@ -109,7 +109,7 @@ const PaymentSearchParams = memo(
       if (type == PAYEE_LIST_TYPE) {
         setPLabel('Payee');
       } else if (type == INITIATIVES_LIST_TYPE) {
-        setILabel('Grant');
+        setILabel('Initiative');
       } else if (type == GRANTS_LIST_TYPE) {
         setGLabel('Grant');
       } else if (type == ACCOUNTS_LIST_TYPE) {
