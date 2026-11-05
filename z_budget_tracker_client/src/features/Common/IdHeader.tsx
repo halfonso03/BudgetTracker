@@ -33,7 +33,7 @@ const IdHeader = React.memo(({ id, status, created }: Props) => {
         ) : status === SAVED ? (
           <div>Saved</div>
         ) : (
-          <div className='text-yellow-600/90 font-semibold tracking-wider'>Editing</div>
+          <div className='text-blue-700 font-semibold tracking-wider'>EDITING</div>
         )}
       </div>
     </div>

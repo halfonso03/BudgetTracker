@@ -217,10 +217,8 @@ const PaymentSearch = () => {
   }
 
   function handleStartInvoiceUpdate(l: PaymentSearchResult) {
-
     const pl = {
       uuid: '',
-      payeeId: l.paymentId,
       payeeName: l.payeeName,
       paymentAmount: l.amount,
       paymentLineItemId: l.paymentLineItemId,

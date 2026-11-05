@@ -64,7 +64,6 @@ type PaymentLineItem = {
 
 type PaymentInvoiceInfo = {
     uuid: string
-    payeeId: number,
     payeeName: string
     paymentLineItemId?: number | null
     invoiceDate?: Date | null | undefined;

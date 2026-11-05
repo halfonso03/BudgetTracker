@@ -64,17 +64,6 @@ const PaymentPayee = ({
 
           <div className="flex flex-col gap-2">
             <div className="flex text-neutral-800">
-              <div className="flex-1  text-neutral-500 ">Invoice No.</div>
-              <div>
-                {paymentLineItem.invoiceNumber && (
-                  <div>{paymentLineItem.invoiceNumber}</div>
-                )}
-                {!paymentLineItem.invoiceNumber && (
-                  <div className="text-neutral-400/70 font-bold">-</div>
-                )}
-              </div>
-            </div>
-            <div className="flex text-neutral-800">
               <div className="flex-1  text-neutral-500">Invoice Date</div>
               <div className="flex-1  flex justify-end  text-neutral-950">
                 {paymentLineItem.invoiceDate && (
@@ -85,6 +74,18 @@ const PaymentPayee = ({
                 )}
               </div>
             </div>
+            <div className="flex text-neutral-800">
+              <div className="flex-1  text-neutral-500 ">Invoice No.</div>
+              <div>
+                {paymentLineItem.invoiceNumber && (
+                  <div>{paymentLineItem.invoiceNumber}</div>
+                )}
+                {!paymentLineItem.invoiceNumber && (
+                  <div className="text-neutral-400/70 font-bold">-</div>
+                )}
+              </div>
+            </div>
+
             <div className="flex text-neutral-800">
               <div className="flex-1 text-neutral-500">Check No.</div>
               <div>
