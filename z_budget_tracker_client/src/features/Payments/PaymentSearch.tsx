@@ -270,9 +270,6 @@ const PaymentSearch = () => {
     });
 
     const queryKey = oldData[0][0];
-
-    console.log('oldD', queryKey);
-
     const oDT: { items: PaymentSearchResult[] } = oldData[0][1] as {
       items: PaymentSearchResult[];
     };
@@ -290,7 +287,7 @@ const PaymentSearch = () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    queryClient.setQueryData(oldData[0][0], (oldData: any) => {
+    queryClient.setQueryData(queryKey, (oldData: any) => {
       return { ...oldData, items: newItems };
     });
   }

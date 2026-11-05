@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import agent from "../../agent"
 import { useSortingContext } from "../../../contexts/useSortingContext"
-import * as hash from 'murmurhash3js';
 const fetchPayments = async (
     pagination: PaginationRequestData,
     paymentSearchParams: PaymentSearchParams,
@@ -41,7 +40,7 @@ export const usePaymentSearch = (
 
     const { data, isLoading, isSuccess } = useQuery<PaymentSearchResponse>({
         queryKey: ['payment_search',
-            hash.x86.hash32(JSON.stringify(paymentSearchParams)),
+            JSON.stringify(paymentSearchParams),
             pagination.pageNumber,
             pagination.pageSize,
             sortByValue],

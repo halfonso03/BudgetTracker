@@ -133,7 +133,7 @@ const PaymentSearchReults = ({
               <div className="text-center self-center">
                 {r.invoiceDate && formatDate(r.invoiceDate)}
               </div>
-              <div className="text-center self-center">{r.invoiceNumber}</div>
+              <div className="text-center self-center ">{r.invoiceNumber}</div>
               <div className="text-center self-center">{r.checkNumber}</div>
               <div className="text-center self-center">{r.postedBy}</div>
               <div className="text-center self-center">
