@@ -15,9 +15,14 @@ import {
 type Props = {
   results: PaymentSearchResult[];
   onDelete: (id: number, name: string) => void;
+  onStartUpdateInvoice: (paymentSearchResult: PaymentSearchResult) => void;
 };
 
-const PaymentSearchReults = ({ results, onDelete }: Props) => {
+const PaymentSearchReults = ({
+  results,
+  onDelete,
+  onStartUpdateInvoice,
+}: Props) => {
   const { sortByValue } = useSortingContext();
   if (results.length == 0) return null;
 
@@ -172,12 +177,16 @@ const PaymentSearchReults = ({ results, onDelete }: Props) => {
                       &nbsp;&nbsp;Download
                     </Menus.MenuItem>
 
-                    <Menus.MenuItem>
+                    <Menus.MenuItem onClick={() => onStartUpdateInvoice(r)}>
                       <DollarSign size={18}></DollarSign>
                       &nbsp;&nbsp;Update Invoice
                     </Menus.MenuItem>
                     {r.posted !== null && !r.posted && (
-                      <Menus.MenuItem onClick={() => onDelete(r.paymentLineItemId, r.payeeName)}>
+                      <Menus.MenuItem
+                        onClick={() =>
+                          onDelete(r.paymentLineItemId, r.payeeName)
+                        }
+                      >
                         <Trash className="text-red-500" size={18}></Trash>
                         &nbsp;&nbsp;Delete
                       </Menus.MenuItem>

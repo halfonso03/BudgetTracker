@@ -710,7 +710,9 @@ const PaymentForm = ({
       if (lineItem.uuid !== data.uuid) return lineItem;
       const newLine: PaymentLineItem = {
         ...lineItem,
-        ...data,
+        invoiceNumber: data.invoiceNumber,
+        invoiceDate: data.invoiceDate,
+        checkNumber: data.checkNumber,
       };
       return newLine;
     });

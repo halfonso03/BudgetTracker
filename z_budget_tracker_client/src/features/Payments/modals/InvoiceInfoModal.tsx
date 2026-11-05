@@ -15,7 +15,7 @@ import toast from 'react-hot-toast';
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
-  paymentLineItem: PaymentLineItem;
+  paymentLineItem: PaymentInvoiceInfo;
   onInvoiceUpdated: (data: {
     uuid: string;
     invoiceNumber: string | null;
@@ -35,8 +35,8 @@ type FormValues = Yup.InferType<typeof InvoiceInfoFormSchema>;
 const InvoiceInfoModal = ({
   isOpen,
   onCancel,
-  paymentLineItem,
   onInvoiceUpdated,
+  paymentLineItem,
 }: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
 
@@ -83,11 +83,7 @@ const InvoiceInfoModal = ({
     reset,
   ]);
 
-  console.log('paymentLineItem', paymentLineItem)
   async function onSubmit(data: FormData) {
-    console.log('data', data);
-    console.log('paymentLineItemId', paymentLineItem.paymentLineItemId);
-
     await mutateAsync(
       {
         paymentLineItemId: paymentLineItem.paymentLineItemId!,
@@ -129,16 +125,6 @@ const InvoiceInfoModal = ({
       onCancel={closeModal}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        {/* {errors.invoiceDate?.message}
-        {errors.invoiceNumber?.message}
-        {errors.checkNumber?.message}
-        {errors.payeeId?.message} */}
-        {/* {payeeId}
-        <br></br>
-        {invoiceNumberEntered}
-        <br></br>
-        {getValues('invoiceNumber')} */}
-
         <div className="flex gap-1 justify-between mb-7">
           <div>
             <div className=" text-neutral-600">Payee Name</div>
@@ -155,7 +141,7 @@ const InvoiceInfoModal = ({
           <div>
             <div className=" text-neutral-600 text-end">Payment No.</div>
             <div className="font-medium text-end">
-              {(paymentLineItem.numberOfPayments ?? 0) + 1}
+              {paymentLineItem.paymentNumber}
             </div>
           </div>
         </div>

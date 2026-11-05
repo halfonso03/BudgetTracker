@@ -15,6 +15,7 @@ import useInitiatives from '../../api/hooks/common/useInitiatives';
 import { usePaymentMutations } from '../../api/hooks/payments/usePaymentMutations';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../../components/ConfirmModal';
+import InvoiceInfoModal from './modals/InvoiceInfoModal';
 
 const PAYEE_LIST_TYPE = 'P';
 const INITIATIVES_LIST_TYPE = 'I';
@@ -40,6 +41,9 @@ const PaymentSearch = () => {
   const [deleteConfirmModalIsOpen, setDeleteConfirmModalIsOpen] =
     useState(false);
 
+  const [invoiceModalIsopen, setInvoiceModalIsOpen] = useState(false);
+  const [paymentLineItemInvoiceToUpdate, setPaymentLineItemInvoiceToUpdate] =
+    useState<PaymentInvoiceInfo | null>(null);
   const [payeeNameToDelete, setPayeeNameToDelete] = useState<string>();
 
   const [idToDelete, setIdToDelete] = useState(0);
@@ -206,10 +210,27 @@ const PaymentSearch = () => {
     setPageNumber(1);
   };
 
-  async function handleDelete(id: number, name: string) {
+  function handleStartDelete(id: number, name: string) {
     setPayeeNameToDelete(name);
     setIdToDelete(id);
     setDeleteConfirmModalIsOpen(true);
+  }
+
+  function handleStartInvoiceUpdate(l: PaymentSearchResult) {
+
+    const pl = {
+      uuid: '',
+      payeeId: l.paymentId,
+      payeeName: l.payeeName,
+      paymentAmount: l.amount,
+      paymentLineItemId: l.paymentLineItemId,
+      paymentNumber: l.paymentNumber,
+      invoiceNumber: l.invoiceNumber,
+      invoiceDate: l.invoiceDate,
+      checkNumber: l.checkNumber,
+    };
+    setPaymentLineItemInvoiceToUpdate(pl);
+    setInvoiceModalIsOpen(true);
   }
 
   async function deleteConfirmed() {
@@ -226,7 +247,8 @@ const PaymentSearch = () => {
             },
           );
           setTimeout(
-            () => queryClient.invalidateQueries({ queryKey: ['payment_search'] }),
+            () =>
+              queryClient.invalidateQueries({ queryKey: ['payment_search'] }),
             1000,
           );
         },
@@ -234,6 +256,15 @@ const PaymentSearch = () => {
     } catch (e) {
       console.log('e', e);
     }
+  }
+
+  function handleInvoiceUpdated(data: {
+    uuid: string;
+    invoiceNumber: string | null;
+    checkNumber: string | null;
+    invoiceDate: Date | null;
+  }) {
+    console.log('invoiceNumber', data);
   }
 
   return (
@@ -309,7 +340,8 @@ const PaymentSearch = () => {
                 <PaymentSearchReults
                   key={searchResults.searchId}
                   results={searchResults.items}
-                  onDelete={handleDelete}
+                  onDelete={handleStartDelete}
+                  onStartUpdateInvoice={handleStartInvoiceUpdate}
                 ></PaymentSearchReults>
               )}
 
@@ -340,6 +372,19 @@ const PaymentSearch = () => {
           }, 500);
         }}
       ></ConfirmModal>
+      {paymentLineItemInvoiceToUpdate && (
+        <InvoiceInfoModal
+          isOpen={invoiceModalIsopen}
+          key={crypto.randomUUID()}
+          paymentLineItem={paymentLineItemInvoiceToUpdate}
+          onCancel={() => {
+            setTimeout(() => {
+              setInvoiceModalIsOpen(false);
+            }, 500);
+          }}
+          onInvoiceUpdated={handleInvoiceUpdated}
+        ></InvoiceInfoModal>
+      )}
     </div>
   );
 };
