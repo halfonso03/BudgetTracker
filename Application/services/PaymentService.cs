@@ -758,44 +758,17 @@ namespace Application.Services
             }
         }
 
-        public async Task<Result<PaymentSearchResponseDto>> Search(PaymentSearchParams searchParams,
+        public async Task<Result<PaymentSearchResponseDto>> Search(PaymentSearchRequestDto searchParams,
                             PaginationParams paginationParams, string sortBy)
         {
             var disbLineItems = _dbContext.DisbLineItems
                                     .Where(x => x.Year == searchParams.Year)
                                     .AsQueryable();
 
-            // if (searchParams.InitiativeIds?.Count > 0)
-            // {
-            //     disbLineItems = disbLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
-
-            //     if (searchParams.XInitiativeIds?.Count > 0)
-            //     {
-            //         var removeIds = new List<int>();
-
-            //         var paymentIds = disbLineItems.Select(x => x.DisbId).Distinct();
-            //         var repros = _dbContext.Disbs
-            //                                 .Include(x => x.Items)
-            //                                 .Where(x => paymentIds.Contains(x.Id));
-
-            //         foreach (var paymentId in paymentIds)
-            //         {
-            //             foreach (var xIid in searchParams.XInitiativeIds)
-            //             {
-            //                 if (!searchParams.InitiativeIds.Contains(xIid) || removeIds.Contains(paymentId)) break;
-
-            //                 var exclusive = repros.First(x => x.Id == paymentId).Items.Any(x => x.InitiativeId != xIid);
-            //                 removeIds.AddIfTrue(exclusive, paymentId);
-            //             }
-            //         }
-
-            //         disbLineItems = disbLineItems.Where(x => !removeIds.Contains(x.DisbId));
-            //     }
-            //     else
-            //     {
-            //         disbLineItems = disbLineItems.Where(x => searchParams.InitiativeIds.Contains(x.InitiativeId));
-            //     }
-            // }
+            if (searchParams.PayeeIds?.Count > 0)
+            {
+                disbLineItems = disbLineItems.Where(x => searchParams.PayeeIds.Contains(x.PayeeId));
+            }
 
             // if (searchParams.GrantIds?.Count > 0)
             // {
@@ -823,65 +796,7 @@ namespace Application.Services
             //     }
             // }
 
-            // if (searchParams.AccountIds?.Count > 0)
-            // {
-            //     if (searchParams.XAccountIds?.Count > 0)
-            //     {
-            //         var removeIds = new List<int>();
-
-            //         foreach (var paymentId in disbLineItems.Select(x => x.DisbId))
-            //         {
-            //             foreach (var xAid in searchParams.XAccountIds)
-            //             {
-            //                 if (!searchParams.XAccountIds.Contains(xAid) || removeIds.Contains(paymentId)) break;
-
-            //                 removeIds.AddIfTrue(!disbLineItems.Where(x => x.DisbId == paymentId).All(x => x.AccountId == xAid), paymentId);
-            //             }
-            //         }
-
-            //         disbLineItems = disbLineItems.Where(x => !removeIds.Contains(x.DisbId));
-            //     }
-            //     else
-            //     {
-            //         disbLineItems = disbLineItems.Where(x => searchParams.AccountIds.Contains(x.AccountId));
-
-            //     }
-            // }
-
-
-
-            // var debit = searchParams.DebitAmount;
-            // var credit = searchParams.CreditAmount;
-            // var debitComparison = searchParams.DebitComparer;
-            // var creditComparison = searchParams.CreditComparer;
-
-            // if (debitComparison != AmountComparer.None)
-            // {
-            //     reproLineItems = debitComparison switch
-            //     {
-            //         AmountComparer.GreaterThan => reproLineItems.Where(x => x.Increase >= debit),
-            //         AmountComparer.LessThan => reproLineItems.Where(x => x.Increase <= debit),
-            //         AmountComparer.EqualTo => reproLineItems.Where(x => x.Increase == debit),
-            //         _ => reproLineItems.Where(x => x.Increase > 0 || x.Increase != null),
-            //     };
-            // }
-
-            // if (creditComparison != AmountComparer.None)
-            // {
-            //     reproLineItems = creditComparison switch
-            //     {
-            //         AmountComparer.GreaterThan => reproLineItems.Where(x => x.Decrease >= credit),
-            //         AmountComparer.LessThan => reproLineItems.Where(x => x.Decrease <= credit),
-            //         AmountComparer.EqualTo => reproLineItems.Where(x => x.Decrease == credit),
-            //         _ => reproLineItems.Where(x => x.Decrease > 0 || x.Decrease != null),
-            //     };
-            // }
-
-            // Console.WriteLine("INITIATIVE IDS", searchParams.InitiativeIds);
-            // Console.WriteLine(searchParams.DebitAmount);
-            // Console.WriteLine(searchParams.DebitComparer);
-            // Console.WriteLine(searchParams.CreditAmount);
-            // Console.WriteLine(searchParams.CreditComparer);
+    
 
             if (searchParams.Status != PaymentSearchStatus.ALL)
             {
@@ -895,7 +810,7 @@ namespace Application.Services
                 }
             }
 
-            var lineItemIdsByBudget = new List<int>();
+            // var lineItemIdsByBudget = new List<int>();
 
             // if (searchParams.PaymentSearchBudgetHeaders != null)
             // {
@@ -917,10 +832,10 @@ namespace Application.Services
             //                 )];
             // }
 
-            if (lineItemIdsByBudget.Count > 0)
-            {
-                disbLineItems = disbLineItems.Where(x => lineItemIdsByBudget.Contains(x.Id));
-            }
+            // if (lineItemIdsByBudget.Count > 0)
+            // {
+            //     disbLineItems = disbLineItems.Where(x => lineItemIdsByBudget.Contains(x.Id));
+            // }
 
             var lineItemIds = await disbLineItems.Select(x => x.Id).ToListAsync();
 

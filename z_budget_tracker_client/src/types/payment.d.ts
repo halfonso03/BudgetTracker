@@ -169,12 +169,18 @@ type PaymentSearchBudgetHeaderResponse = {
 type PaymentSearchParams = {
     year: number
     status: number
+    selectedIds?: { id: number, type: string }[]
     // paymentSearchBudgetHeaders: PaymentSearchBudgetHeader[]
 }
 
 type PaymentSearchRequest = {
     year: number
     status: number
+    payeeIds?: number[] | null
+    initiativeIds?: number[] | null
+    grantIds?: number[] | null
+    accountIds?: number[] | null
+
 }
 
 type PaymentSearchResponse = {

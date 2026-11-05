@@ -48,7 +48,7 @@ namespace API.Controllers
         }
 
         [HttpPost("search")]
-        public async Task<IActionResult> Search([FromBody] PaymentSearchParams searchParams, [FromQuery] PaginationParams paginationParams, [FromQuery] string sortBy)
+        public async Task<IActionResult> Search([FromBody] PaymentSearchRequestDto searchParams, [FromQuery] PaginationParams paginationParams, [FromQuery] string sortBy)
         {
             var result = await _paymentService.Search(searchParams, paginationParams, sortBy);
 

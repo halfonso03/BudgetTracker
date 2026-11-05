@@ -9,12 +9,17 @@ const fetchRepros = async (
 ): Promise<PaymentSearchResponse> => {
 
     const searchParams1 = { ...paymentSearchParams };
-    // const { selectedIds, xSelectedIds, ...searchParams2 } = searchParams1;
+    const { selectedIds, ...searchParams2 } = searchParams1;
+    // xSelectedIds,
+
 
     const payload: PaymentSearchRequest = {
-        ...searchParams1,
+        ...searchParams2,
+        payeeIds: selectedIds!.filter(x => x.type === 'P').map(x => x.id)
     };
 
+
+    console.log('payload', payload)
     const response = await agent.post(`/payment/search?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}&sortBy=${sortByValue}`, payload)
     const paginationHeader = response.headers["pagination"];
     const paginationResponse: PaginationData = paginationHeader

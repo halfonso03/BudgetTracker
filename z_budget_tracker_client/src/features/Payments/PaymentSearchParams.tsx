@@ -16,6 +16,9 @@ import CheckBoxListSearchParam from '../../components/CheckBoxListSearchParam';
 const YEARS_LIST_TYPE = 'Y';
 const STATUS_LIST_TYPE = 'S';
 const PAYEE_LIST_TYPE = 'P';
+const INITIATIVES_LIST_TYPE = 'I';
+const GRANTS_LIST_TYPE = 'G';
+const ACCOUNTS_LIST_TYPE = 'A';
 
 type Props = {
   years: { id: number; name: string }[];
@@ -24,6 +27,9 @@ type Props = {
   onListCheck?: (id: number, key: string) => void;
   onDeselectAll: (type: string) => void;
   onSelectAll: (type: string) => void;
+  initiatives?: { id: number; name: string }[] | undefined;
+  grants?: { id: number; name: string }[] | undefined;
+  accounts?: { id: number; name: string }[] | undefined;
   payees: { id: number; name: string }[] | undefined;
 };
 
@@ -36,6 +42,9 @@ const PaymentSearchParams = memo(
     onDeselectAll,
     years,
     payees,
+    initiatives,
+    grants,
+    accounts,
   }: Props) => {
     const statuses = getStatuses();
     // const debitRef = useRef<HTMLInputElement | null>(null);
@@ -56,6 +65,9 @@ const PaymentSearchParams = memo(
       })),
     );
     const [pLabel, setPLabel] = useState('Payee');
+    const [iLabel, setILabel] = useState('Initiative');
+    const [gLabel, setGLabel] = useState('Grant');
+    const [aLabel, setALabel] = useState('Account');
     const [selectedStatus, setSelectedStatus] = useState(statuses[0].id);
     const [statusVisible, setStatusVisible] = useState(false);
     const [yearVisible, setYearVisible] = useState(false);
@@ -88,10 +100,6 @@ const PaymentSearchParams = memo(
       onListCheck?.(id, type);
     }
 
-    // function handleXCheck(id: number, type: string) {
-    //   onListXCheck?.(id, type);
-    // }
-
     function handleDeselectAll(type: string) {
       onDeselectAll(type);
     }
@@ -100,12 +108,13 @@ const PaymentSearchParams = memo(
       onSelectAll(type);
       if (type == PAYEE_LIST_TYPE) {
         setPLabel('Payee');
+      } else if (type == INITIATIVES_LIST_TYPE) {
+        setILabel('Grant');
+      } else if (type == GRANTS_LIST_TYPE) {
+        setGLabel('Grant');
+      } else if (type == ACCOUNTS_LIST_TYPE) {
+        setALabel('Account');
       }
-      // else if (type == GRANTS_LIST_TYPE) {
-      //   setGLabel('Grant');
-      // } else if (type == ACCOUNTS_LIST_TYPE) {
-      //   setALabel('Account');
-      // }
     }
 
     function handleOptionsUpdated(
@@ -117,40 +126,50 @@ const PaymentSearchParams = memo(
       }[],
       type: string,
     ) {
-      // if (type == INITIATIVES_LIST_TYPE) {
-      //   if (
-      //     options.filter((x) => x.checked).length === 0 ||
-      //     initiatives?.length === options.filter((x) => x.checked).length
-      //   ) {
-      //     setILabel('Initiative');
-      //   } else {
-      //     setILabel(
-      //       'Initiative (' + options.filter((x) => x.checked).length + ')',
-      //     );
-      //   }
-      // }
-      // if (type == GRANTS_LIST_TYPE) {
-      //   if (
-      //     options.filter((x) => x.checked).length === 0 ||
-      //     grants?.length === options.filter((x) => x.checked).length
-      //   ) {
-      //     setGLabel('Grant');
-      //   } else {
-      //     setGLabel('Grant (' + options.filter((x) => x.checked).length + ')');
-      //   }
-      // }
-      // if (type == ACCOUNTS_LIST_TYPE) {
-      //   if (
-      //     options.filter((x) => x.checked).length === 0 ||
-      //     accounts?.length === options.filter((x) => x.checked).length
-      //   ) {
-      //     setALabel('Account');
-      //   } else {
-      //     setALabel(
-      //       'Account (' + options.filter((x) => x.checked).length + ')',
-      //     );
-      //   }
-      // }
+      if (type == PAYEE_LIST_TYPE) {
+        if (
+          options.filter((x) => x.checked).length === 0 ||
+          payees?.length === options.filter((x) => x.checked).length
+        ) {
+          setPLabel('Payee');
+        } else {
+          setPLabel('Payee (' + options.filter((x) => x.checked).length + ')');
+        }
+      }
+      if (type == INITIATIVES_LIST_TYPE) {
+        if (
+          options.filter((x) => x.checked).length === 0 ||
+          initiatives?.length === options.filter((x) => x.checked).length
+        ) {
+          setILabel('Initiative');
+        } else {
+          setILabel(
+            'Initiative (' + options.filter((x) => x.checked).length + ')',
+          );
+        }
+      }
+      if (type == GRANTS_LIST_TYPE) {
+        if (
+          options.filter((x) => x.checked).length === 0 ||
+          grants?.length === options.filter((x) => x.checked).length
+        ) {
+          setGLabel('Grant');
+        } else {
+          setGLabel('Grant (' + options.filter((x) => x.checked).length + ')');
+        }
+      }
+      if (type == ACCOUNTS_LIST_TYPE) {
+        if (
+          options.filter((x) => x.checked).length === 0 ||
+          accounts?.length === options.filter((x) => x.checked).length
+        ) {
+          setALabel('Account');
+        } else {
+          setALabel(
+            'Account (' + options.filter((x) => x.checked).length + ')',
+          );
+        }
+      }
     }
 
     function handleStatusOpened() {
@@ -429,6 +448,12 @@ const PaymentSearchParams = memo(
               enableAnimation={true}
               containerClassName="flex-1"
             />
+            <Skeleton
+              height={40}
+              className="mt-0 self-center p-1 flex-1"
+              enableAnimation={true}
+              containerClassName="flex-1"
+            />
           </div>
         )}
 
@@ -452,6 +477,85 @@ const PaymentSearchParams = memo(
                 onSelectAll={handleSelectAll}
                 onOptionsUpdated={(o) =>
                   handleOptionsUpdated(o, PAYEE_LIST_TYPE)
+                }
+                showExclusiveOptions={false}
+              ></CheckBoxListSearchParam>
+            </div>
+          </PaymentSearchFilter>
+        )}
+
+        {initiatives !== undefined && initiatives.length > 0 && (
+          <PaymentSearchFilter
+            selectedItemLabel={iLabel}
+            parentCorntrolled={false}
+            outsideShowList={false}
+          >
+            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">
+              <CheckBoxListSearchParam
+                id={INITIATIVES_LIST_TYPE}
+                onCheck={handleCheck}
+                maxHeight={400}
+                items={initiatives.map((i) => ({
+                  ...i,
+                  checked: true,
+                  xChecked: false,
+                }))}
+                onDeselectAll={handleDeselectAll}
+                onSelectAll={handleSelectAll}
+                onOptionsUpdated={(o) =>
+                  handleOptionsUpdated(o, INITIATIVES_LIST_TYPE)
+                }
+              ></CheckBoxListSearchParam>
+            </div>
+          </PaymentSearchFilter>
+        )}
+
+        {grants !== undefined && grants.length > 0 && (
+          <PaymentSearchFilter
+            selectedItemLabel={gLabel}
+            parentCorntrolled={false}
+            outsideShowList={false}
+          >
+            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">
+              <CheckBoxListSearchParam
+                key={selectedYear}
+                id={GRANTS_LIST_TYPE}
+                onCheck={handleCheck}
+                items={grants.map((i) => ({
+                  ...i,
+                  checked: true,
+                  xChecked: false,
+                }))}
+                onDeselectAll={handleDeselectAll}
+                onSelectAll={handleSelectAll}
+                onOptionsUpdated={(o) =>
+                  handleOptionsUpdated(o, GRANTS_LIST_TYPE)
+                }
+              ></CheckBoxListSearchParam>
+            </div>
+          </PaymentSearchFilter>
+        )}
+
+        {accounts !== undefined && accounts.length > 0 && (
+          <PaymentSearchFilter
+            selectedItemLabel={aLabel}
+            parentCorntrolled={false}
+            outsideShowList={false}
+          >
+            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">
+              <CheckBoxListSearchParam
+                id={ACCOUNTS_LIST_TYPE}
+                onCheck={handleCheck}
+                maxHeight={600}
+                items={accounts.map((i) => ({
+                  ...i,
+                  checked: true,
+                  xChecked: false,
+                }))}
+                onDeselectAll={handleDeselectAll}
+                onSelectAll={handleSelectAll}
+                onOptionsUpdated={(o) =>
+                  handleOptionsUpdated(o, ACCOUNTS_LIST_TYPE)
                 }
               ></CheckBoxListSearchParam>
             </div>

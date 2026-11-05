@@ -1,11 +1,16 @@
 
 namespace Application.DTOs.Payment
 {
-    public class PaymentSearchParams
+    public class PaymentSearchRequestDto
     {
         public PaymentSearchStatus Status { get; set; }
         public required int Year { get; set; }
-        // public List<PaymentSearchBudgetHeader>? PaymentSearchBudgetHeaders { get; set; } = null;
+        public List<int>? PayeeIds { get; set; } = [];
+        public List<int>? InitiativeIds { get; set; } = [];
+        public List<int>? GrantIds { get; set; } = [];
+        public List<int>? AccountIds { get; set; } = [];
+
+        public List<PaymentSearchBudgetHeader>? PaymentSearchBudgetHeaders { get; set; } = null;
     }
 
 

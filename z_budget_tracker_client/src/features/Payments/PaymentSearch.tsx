@@ -9,8 +9,14 @@ import PaymentSearchReults from './PaymentSearchReults';
 import React from 'react';
 import PaymentSearchParams from './PaymentSearchParams';
 import { usePayeesAll } from '../../api/hooks/payees/usePayeesAll';
+import useCategories from '../../api/hooks/common/useCategories';
+import useGrantsAllYears from '../../api/hooks/common/useGrantsAllYears';
+import useInitiatives from '../../api/hooks/common/useInitiatives';
 
 const PAYEE_LIST_TYPE = 'P';
+const INITIATIVES_LIST_TYPE = 'I';
+const GRANTS_LIST_TYPE = 'G';
+const ACCOUNTS_LIST_TYPE = 'A';
 
 type SelectedItem = {
   id: number;
@@ -24,7 +30,9 @@ const PaymentSearch = () => {
   const [year, setYear] = useState<number>(2026);
   const [status, setStatus] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
-
+  const { initiatives } = useInitiatives();
+  const { grants } = useGrantsAllYears();
+  const { categories } = useCategories(true, true);
   const { data: payees } = usePayeesAll();
 
   const [years] = useState<{ id: number; name: string }[]>(() => {
@@ -36,24 +44,6 @@ const PaymentSearch = () => {
 
     return years.map((y) => ({ id: y, name: y.toString() }));
   });
-
-  const { searchResults, successLoadingResults, loadingSearchResults } =
-    usePaymentSearch(
-      {
-        pageNumber: pageNumber,
-        pageSize: import.meta.env.VITE_REPRO_SEARCH_PAGE_SIZE,
-      },
-      {
-        status,
-        year,
-      },
-    );
-
-  const paginationData = searchResults?.pagination;
-
-  const handlePageNumberChange = useCallback((pageNumber: number) => {
-    setPageNumber(pageNumber);
-  }, []);
 
   const payeesList = useMemo(() => {
     return payees;
@@ -70,29 +60,97 @@ const PaymentSearch = () => {
       : [];
   }, [payees, payeesList]);
 
+  const initiativesList = useMemo(() => {
+    return initiatives;
+  }, [initiatives]);
+
+  const accountsList = useMemo(() => {
+    return categories;
+  }, [categories]);
+
+  const i = useMemo(() => {
+    return initiativesList !== undefined && initiativesList !== null
+      ? [
+          ...initiatives!.map((i) => ({
+            id: i.id,
+            type: INITIATIVES_LIST_TYPE,
+          })),
+        ]
+      : [];
+  }, [initiatives, initiativesList]);
+
+  const preG = grants?.filter((x) => x.year === year);
+
+  const g = useMemo(() => {
+    return preG !== undefined && preG !== null
+      ? [
+          ...preG!.map((i) => ({
+            id: i.id,
+            type: GRANTS_LIST_TYPE,
+            year: i.year,
+          })),
+        ]
+      : [];
+  }, [preG]);
+
+  const c = useMemo(() => {
+    return accountsList !== undefined && accountsList !== null
+      ? [
+          ...categories!.map((i) => ({
+            id: i.id,
+            type: ACCOUNTS_LIST_TYPE,
+          })),
+        ]
+      : [];
+  }, [categories, accountsList]);
+
   const itemsList: SelectedItem[] = useMemo(() => {
-    return [...p];
-  }, [p]);
+    return [...i, ...g.filter((x) => x.year == year), ...c, ...p];
+  }, [c, g, i, p, year]);
 
   const [selectedIds, setSelectedIds] = useState<SelectedItem[]>(itemsList);
+
+  const { searchResults, successLoadingResults, loadingSearchResults } =
+    usePaymentSearch(
+      {
+        pageNumber: pageNumber,
+        pageSize: import.meta.env.VITE_REPRO_SEARCH_PAGE_SIZE,
+      },
+      {
+        status,
+        year,
+        selectedIds,
+      },
+    );
+
+  const paginationData = searchResults?.pagination;
+
+  const handlePageNumberChange = useCallback((pageNumber: number) => {
+    setPageNumber(pageNumber);
+  }, []);
 
   const handleStatusChange = useCallback((status: number) => {
     setStatus(status);
     setPageNumber(1);
   }, []);
 
-  const handleYearChange = useCallback((year: number) => {
-    setSelectedIds((prev) => {
-      const p = prev.filter((x) => x.type == PAYEE_LIST_TYPE);
-      // const a = prev.filter((x) => x.type == ACCOUNTS_LIST_TYPE);
-      // const g = grants!
-      //   .filter((x) => x.year === year)
-      //   .map((x) => ({ id: x.id, type: GRANTS_LIST_TYPE }));
-      return [...p];
-    });
-    setYear(year);
-    setPageNumber(1);
-  }, []);
+  const handleYearChange = useCallback(
+    (year: number) => {
+      setSelectedIds((prev) => {
+        const p = prev.filter((x) => x.type == PAYEE_LIST_TYPE);
+
+        const i = prev.filter((x) => x.type == INITIATIVES_LIST_TYPE);
+        const a = prev.filter((x) => x.type == ACCOUNTS_LIST_TYPE);
+        const g = grants!
+          .filter((x) => x.year === year)
+          .map((x) => ({ id: x.id, type: GRANTS_LIST_TYPE }));
+        return [...i, ...a, ...g, ...p];
+      });
+      setYear(year);
+      setPageNumber(1);
+    },
+    [grants],
+  );
 
   function handleSelectAll(type: string) {
     const newSelectedIds: SelectedItem[] = [
@@ -112,28 +170,57 @@ const PaymentSearch = () => {
     setPageNumber(1);
   };
 
+  const handleListCheck = (id: number, type: string) => {
+    // const removed = selectedIds.some((x) => x.id === id && x.type === type);
+
+    const newSelectedIds = selectedIds.some(
+      (x) => x.id === id && x.type === type,
+    )
+      ? [
+          ...selectedIds.filter(
+            (x) => (x.type === type && x.id !== id) || x.type !== type,
+          ),
+        ]
+      : [...selectedIds, { id: id, type: type }];
+
+    setSelectedIds(newSelectedIds);
+
+    // if (removed) {
+    //   // may not be needed
+    //   setXSelectedIds(
+    //     xSelectedIds.filter(
+    //       (x) => (x.type === type && x.id !== id) || x.type !== type,
+    //     ),
+    //   );
+    // }
+    setPageNumber(1);
+  };
+
   return (
     <div className="flex gap-2 mt-10">
       <div className=" flex-7">
+        <pre>{JSON.stringify(selectedIds)}</pre>
+        <pre>{JSON.stringify(itemsList)}</pre>
+
         <div className="mb-4">
           <MemoizedSearchParams
             payees={payeesList?.map((x) => ({
               id: x.id,
               name: x.name,
             }))}
-            // initiatives={initiativesList?.map((x) => ({
-            //   id: x.id,
-            //   name: x.name,
-            // }))}
-            // grants={grants
-            //   ?.filter((x) => x.year === year)
-            //   .map((x) => ({ id: x.id, name: x.name }))}
-            // accounts={accountsList?.map((x) => ({
-            //   id: x.id,
-            //   name: x.name,
-            // }))}
+            initiatives={initiativesList?.map((x) => ({
+              id: x.id,
+              name: x.name,
+            }))}
+            grants={grants
+              ?.filter((x) => x.year === year)
+              .map((x) => ({ id: x.id, name: x.name }))}
+            accounts={accountsList?.map((x) => ({
+              id: x.id,
+              name: x.name,
+            }))}
             years={years}
-            // onListCheck={handleListCheck}
+            onListCheck={handleListCheck}
             // onListXCheck={handleListXCheck}
             onDeselectAll={handleDeselectAll}
             onSelectAll={handleSelectAll}
