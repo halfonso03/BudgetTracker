@@ -7,7 +7,6 @@ import {
   DollarSign,
   Download,
   Ellipsis,
-  EllipsisVertical,
   Glasses,
   Pen,
   Trash,
