@@ -80,32 +80,46 @@ SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
+
 CREATE procedure [dbo].[spPayeeSummaries]
-    @searchTerm VARCHAR(100) = 'ADP',
+    @searchTerm VARCHAR(100),
     @year INT = 0 
 as
 begin 
 
 
 
-    WITH last_payment (payee_id, last_id,  num_payments)
+    ;WITH   
+
+   last_payment (payee_id, last_id,  num_payments, payee_name)
     AS (
-        SELECT l.payee_id, MAX(l.disb_id) last_id,  COUNT(DISTINCT l.id) num_payments
+        SELECT l.payee_id, MAX(l.disb_id) last_id,  COUNT(DISTINCT l.id) num_payments, p.name
         FROM tblDisbLineItem l JOIN tblDisb d ON l.disb_id = d.id
-        WHERE d.posted_date IS NOT NULL
-        GROUP BY l.payee_id
+            JOIN tblPayee p ON p.id = l.payee_id    
+        WHERE d.posted_date IS NOT NULL 
+        GROUP BY l.payee_id, p.name
       ),
      last_payment_amount (payee_id, days_since_last_payment, last_payment_amount, last_payment_date, num_payments)
     AS
     (
       SELECT l.payee_id, DATEDIFF(d, l.entry_date, GETDATE()), l.amount, CAST(l.entry_date AS DATETIME), lp.num_payments
       FROM tblDisbLineItem l JOIN last_payment lp ON l.payee_id = lp.payee_id AND l.disb_id = lp.last_id 
-        JOIN tblDisb d ON d.id = l.disb_id
-      WHERE d.year = CASE WHEN @year !=  0 THEN @year ELSE d.year END
+        JOIN tblDisb d ON d.id = l.disb_id      
+    ),
+    payments (payeeId, total_paid)
+    AS
+    (
+        SELECT p.payee_id, p.total_paid
+        FROM (
+          SELECT l.payee_id, SUM(amount) total_paid, CASE WHEN @year != 0 THEN year ELSE 0 END year
+                FROM tblDisbLineItem l        
+                GROUP BY l.payee_id,  CASE WHEN @year != 0 THEN year ELSE 0 END
+         ) AS p
+         WHERE p.year = CASE WHEN @year != 0 THEN @year ELSE p.year END
     )
-
-    SELECT 
-        p.id,
+    select 
+          p.id,
         p.name,
         p.is_active,
         a.category_id categoryid,
@@ -118,20 +132,22 @@ begin
         lpa.days_since_last_payment, 
         lpa.payee_id, 
         lpa.last_payment_date lastpaymentdate,
-        SUM(l.amount) total_paid,
+        p2.total_paid,
         lpa.num_payments numberofpayments
-    FROM tblPayee p LEFT OUTER JOIN last_payment_amount lpa ON p.id = lpa.payee_id 
-        LEFT OUTER JOIN tblDisbLineItem l ON l.payee_id = lpa.payee_id
-        LEFT OUTER JOIN tblDisb d ON d.id = l.disb_id
-        LEFT OUTER JOIN tblAccount a ON p.account_id = a.id
-        LEFT OUTER JOIN tblCategory c ON c.id = a.category_id
-    WHERE p.name LIKE '%' + @searchTerm + '%'
-    GROUP BY p.id, p.name, p.is_active, a.category_id, a.id, a.name, p.additional_information, p.payee_type_id, lpa.last_payment_amount, lpa.days_since_last_payment, lpa.payee_id, lpa.last_payment_date,lpa.num_payments 
+    FROM tblPayee p JOIN tblAccount a ON p.account_id = a.id
+        JOIN tblCategory c ON c.id = a.category_id
+        LEFT OUTER JOIN payments p2 ON p.id = p2.payeeId
+        LEFT OUTER JOIN last_payment_amount lpa ON p.id = lpa.payee_id 
+    WHERE 
+            p.name LIKE '%' + @searchTerm + '%'
+    GROUP BY p2.total_paid, p.id, p.name, p.is_active, a.category_id, a.id, a.name, p.additional_information, p.payee_type_id, lpa.last_payment_amount, lpa.days_since_last_payment, lpa.payee_id, lpa.last_payment_date,lpa.num_payments 
+    ORDER BY p.name
 
 
 end
 
 GO
+
 /****** Object:  StoredProcedure [Report].[spBudgetDetail]    Script Date: 11/3/2026 4:03:15 PM ******/
 SET ANSI_NULLS ON
 GO
