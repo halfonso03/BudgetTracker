@@ -70,8 +70,8 @@ const ReproSearchReults = ({ onDelete, results }: Props) => {
         {results.map((r, index) => (
           <div key={r.id} className="hover:bg-neutral-100  border-b border-b-neutral-300/60 last:border-0">
             <div className="grid grid-cols-[.5fr_.3fr_1fr_1fr.3fr_.4fr]  p-2 px-3 ">
-              <div>{r.id}</div>
-              <div>{!r.posted ? 'Saved' : 'Posted'}</div>
+              <div className="text-center">{r.id}</div>
+              <div className="text-center">{!r.posted ? 'Saved' : 'Posted'}</div>
               <div className="text-center">{r.posted && r.postedBy}</div>
               <div className="text-center">
                 {r.postedDate && formatDate(r.postedDate)}

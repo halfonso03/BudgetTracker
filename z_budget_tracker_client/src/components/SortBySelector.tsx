@@ -15,10 +15,10 @@ export default function SortBySelector({
   const { setSortByValue } = useSortingContext();
 
   return (
-    <div className="flex items-center hover:text-neutral-900 transition-colors duration-150">
-      <div className="flex items-center ">
+    <div className="hover:text-neutral-900 transition-colors duration-150 w-full">
+      <div className="flex items-center justify-center w-full">
         <button
-          className=" cursor-pointer font-medium capitalize select-none"
+          className="flex cursor-pointer font-medium capitalize select-none"
           onClick={() => {
             const sortDir =
               currentSortValue.indexOf('desc') === -1 ? 'desc' : '';
@@ -26,8 +26,6 @@ export default function SortBySelector({
           }}
         >
           {label}
-        </button>
-        <div className=" text-xl">
           {currentSortValue.indexOf(value) !== -1 ? (
             currentSortValue.includes('desc') ? (
               <ArrowDown className="ml-1" size={18}></ArrowDown>
@@ -37,7 +35,7 @@ export default function SortBySelector({
           ) : (
             <></>
           )}
-        </div>
+        </button>
       </div>
     </div>
   );

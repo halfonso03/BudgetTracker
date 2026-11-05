@@ -27,7 +27,7 @@ namespace API.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> Search(string filter)
         {
-            var payeesFromDb = await payeeService.GetPayees(new PaginationParams
+            var payeesFromDb = await payeeService.SearchPayees(new PaginationParams
             {
                 PageSize = 10000,
                 PageNumber = 1
@@ -44,12 +44,25 @@ namespace API.Controllers
             }
         }
 
+        [HttpGet("all")]
+        public async Task<IActionResult> All()
+        {
+            try
+            {
+                return HandleResult(await payeeService.GetAllPayees());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("list")]
         public async Task<IActionResult> List([FromQuery] PaginationParams paginationParams, string searchTerm = "", string sortBy = "NAME", int year = 0)
         {
             try
             {
-                var payeesFromDb = await payeeService.GetPayees(paginationParams, searchTerm, sortBy, year);
+                var payeesFromDb = await payeeService.SearchPayees(paginationParams, searchTerm, sortBy, year);
 
                 Response.AddPaginationHeader(payeesFromDb.Value!.MetaData);
 

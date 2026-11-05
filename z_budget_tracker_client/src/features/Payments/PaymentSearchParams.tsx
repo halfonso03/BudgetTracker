@@ -9,24 +9,39 @@ import RadioButtonList from '../../components/RadioButtonList';
 import PaymentSearchFilter from './PaymentSearchFilter';
 import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
 import { parseFormattedNumber } from '../../app/util';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import CheckBoxListSearchParam from '../../components/CheckBoxListSearchParam';
 
 const YEARS_LIST_TYPE = 'Y';
 const STATUS_LIST_TYPE = 'S';
+const PAYEE_LIST_TYPE = 'P';
 
 type Props = {
   years: { id: number; name: string }[];
   onYearChange: (year: number) => void;
   onStatusChange: (id: number) => void;
   onListCheck?: (id: number, key: string) => void;
-  // onDeselectAll: (type: string) => void;
-  // onSelectAll: (type: string) => void;
+  onDeselectAll: (type: string) => void;
+  onSelectAll: (type: string) => void;
+  payees: { id: number; name: string }[] | undefined;
 };
 
 const PaymentSearchParams = memo(
-  ({ onYearChange, onListCheck, onStatusChange, years }: Props) => {
+  ({
+    onYearChange,
+    onListCheck,
+    onStatusChange,
+    onSelectAll,
+    onDeselectAll,
+    years,
+    payees,
+  }: Props) => {
     const statuses = getStatuses();
-    const debitRef = useRef<HTMLInputElement | null>(null);
-    const creditRef = useRef<HTMLInputElement | null>(null);
+    // const debitRef = useRef<HTMLInputElement | null>(null);
+    // const creditRef = useRef<HTMLInputElement | null>(null);
+
+    console.log('payees', payees);
     const [yearOptions, setYearOptions] = useState<
       {
         id: number;
@@ -40,18 +55,18 @@ const PaymentSearchParams = memo(
         checked: y.id === years[0].id,
       })),
     );
-    const [iLabel, setILabel] = useState('Initiative');
+    const [pLabel, setPLabel] = useState('Payee');
     const [selectedStatus, setSelectedStatus] = useState(statuses[0].id);
     const [statusVisible, setStatusVisible] = useState(false);
     const [yearVisible, setYearVisible] = useState(false);
-    const [amountFilterVisible, setAmountFilterVisible] = useState(false);
-    const [amountFilter, setAmountFilter] = useState<ReproAmountFilter>({
-      debitAmount: 0,
-      creditAmount: 0,
-      debitComparer: 0,
-      creditComparer: 0,
-    });
-    const [amountFilterLabel, setAmountFilterLabel] = useState('$');
+    // const [amountFilterVisible, setAmountFilterVisible] = useState(false);
+    // const [amountFilter, setAmountFilter] = useState<ReproAmountFilter>({
+    //   debitAmount: 0,
+    //   creditAmount: 0,
+    //   debitComparer: 0,
+    //   creditComparer: 0,
+    // });
+    // const [amountFilterLabel, setAmountFilterLabel] = useState('$');
 
     function handleStatusChange(id: number) {
       setSelectedStatus(id);
@@ -77,20 +92,21 @@ const PaymentSearchParams = memo(
     //   onListXCheck?.(id, type);
     // }
 
-    // function handleDeselectAll(type: string) {
-    //   onDeselectAll(type);
-    // }
+    function handleDeselectAll(type: string) {
+      onDeselectAll(type);
+    }
 
-    // function handleSelectAll(type: string) {
-    //   onSelectAll(type);
-    //   if (type == INITIATIVES_LIST_TYPE) {
-    //     setILabel('Initiative');
-    //   } else if (type == GRANTS_LIST_TYPE) {
-    //     setGLabel('Grant');
-    //   } else if (type == ACCOUNTS_LIST_TYPE) {
-    //     setALabel('Account');
-    //   }
-    // }
+    function handleSelectAll(type: string) {
+      onSelectAll(type);
+      if (type == PAYEE_LIST_TYPE) {
+        setPLabel('Payee');
+      }
+      // else if (type == GRANTS_LIST_TYPE) {
+      //   setGLabel('Grant');
+      // } else if (type == ACCOUNTS_LIST_TYPE) {
+      //   setALabel('Account');
+      // }
+    }
 
     function handleOptionsUpdated(
       options: {
@@ -101,8 +117,6 @@ const PaymentSearchParams = memo(
       }[],
       type: string,
     ) {
-      console.log('options', options);
-      console.log('type', type);
       // if (type == INITIATIVES_LIST_TYPE) {
       //   if (
       //     options.filter((x) => x.checked).length === 0 ||
@@ -366,7 +380,36 @@ const PaymentSearchParams = memo(
           </div>
         </PaymentSearchFilter>
 
-        {/* {!initiatives && (
+        {/* <PaymentSearchFilter
+          parentCorntrolled={true}
+          outsideShowList={statusVisible}
+          listOpened={handleStatusOpened}
+          outsideClicked={handleStatusOutsideCLick}
+          selectedItemLabel={
+            statuses.filter((x) => x.id == selectedStatus)[0].name
+          }
+        >
+          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-50 rounded-md mt-1 z-1000 opacity-100 bg-white">
+            <RadioButtonList
+              id={PAYEE_LIST_TYPE}
+              onSelected={handleStatusChange}
+              items={statuses.map((y) => ({
+                ...y,
+                checked: selectedStatus === y.id,
+              }))}
+            ></RadioButtonList>
+            <button
+              className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer"
+              onClick={() => {
+                setStatusVisible(false);
+              }}
+            >
+              Apply
+            </button>
+          </div>
+        </PaymentSearchFilter> */}
+
+        {!payees && (
           <div className="flex gap-3 w-[30%]">
             <Skeleton
               height={40}
@@ -387,21 +430,20 @@ const PaymentSearchParams = memo(
               containerClassName="flex-1"
             />
           </div>
-        )} */}
-        {/* 
-        {initiatives !== undefined && initiatives.length > 0 && (
-          <ReproSearchFilter
-            selectedItemLabel={iLabel}
+        )}
+
+        {payees !== undefined && payees.length > 0 && (
+          <PaymentSearchFilter
+            selectedItemLabel={pLabel}
             parentCorntrolled={false}
             outsideShowList={false}
           >
             <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">
-              <CheckBoxListReproSearchParam
-                id={INITIATIVES_LIST_TYPE}
+              <CheckBoxListSearchParam
+                id={PAYEE_LIST_TYPE}
                 onCheck={handleCheck}
-                onXCheck={handleXCheck}
                 maxHeight={400}
-                items={initiatives.map((i) => ({
+                items={payees.map((i) => ({
                   ...i,
                   checked: true,
                   xChecked: false,
@@ -409,12 +451,12 @@ const PaymentSearchParams = memo(
                 onDeselectAll={handleDeselectAll}
                 onSelectAll={handleSelectAll}
                 onOptionsUpdated={(o) =>
-                  handleOptionsUpdated(o, INITIATIVES_LIST_TYPE)
+                  handleOptionsUpdated(o, PAYEE_LIST_TYPE)
                 }
-              ></CheckBoxListReproSearchParam>
+              ></CheckBoxListSearchParam>
             </div>
-          </ReproSearchFilter>
-        )} */}
+          </PaymentSearchFilter>
+        )}
       </div>
     );
   },

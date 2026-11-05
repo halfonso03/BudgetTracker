@@ -158,7 +158,7 @@ namespace Application.Services
             return Result<PayeePaymentStatsDto?>.Success(paymentsQuery ?? new PayeePaymentStatsDto());
         }
 
-        public async Task<Result<PayeeSearchResponseDto>> GetPayees(PaginationParams paginationParams, string searchTerm, string sortBy = "NAME", int year = 0)
+        public async Task<Result<PayeeSearchResponseDto>> SearchPayees(PaginationParams paginationParams, string searchTerm, string sortBy = "NAME", int year = 0)
         {
 
             // var payeeSummaries = dbContext.PayeeSummaries.AsQueryable();
@@ -305,6 +305,22 @@ namespace Application.Services
             Console.WriteLine(found);
 
             return Result<bool>.Success(found);
+        }
+
+        public async Task<Result<List<PayeeSearchPayeeResponseDto>>> GetAllPayees()
+        {
+            var result = await dbContext.Payees
+                         .Select(x => new PayeeSearchPayeeResponseDto
+                         {
+                             Id = x.Id,
+                             Name = x.Name,
+                             IsActive = x.IsActive,
+                             PayeeTypeId = (int)x.PayeeTypeId,
+                         })
+                         .OrderBy(x => x.Name)
+                         .ToListAsync();
+
+            return Result<List<PayeeSearchPayeeResponseDto>>.Success(result);
         }
 
 

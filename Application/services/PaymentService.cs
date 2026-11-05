@@ -468,8 +468,11 @@ namespace Application.Services
                 {
                     await PostDisb(disbRequestDto.LineItems, disbRequestDto.Id, disbRequestDto.UpdatedById);
                 }
+                else
+                {
+                    await _dbContext.SaveChangesAsync();
+                }
 
-                await _dbContext.SaveChangesAsync();
                 await transaction.CommitAsync();
 
                 rowIdsResponse = [.. disbFromDb.Items.OrderBy(x => x.RowId).Select(x => x.Id)];
@@ -478,12 +481,12 @@ namespace Application.Services
             catch (DbException ex)
             {
                 await transaction.RollbackAsync();
-                return Result<UpdatePaymentResponseDto>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+                return Result<UpdatePaymentResponseDto>.Failure($"UpdatePayment: DbException: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
             catch (Exception ex)
             {
                 await transaction.RollbackAsync();
-                return Result<UpdatePaymentResponseDto>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+                return Result<UpdatePaymentResponseDto>.Failure($"UpdatePayment: Exception: {ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
             }
 
             return Result<UpdatePaymentResponseDto>.Success(UpdatePaymentResponseDto.Create(disbRequestDto.Id, rowIdsResponse, paymentNumbersResponse));
@@ -555,9 +558,8 @@ namespace Application.Services
             return null;
         }
 
-        private async Task<bool> PostDisb(IList<PaymentRequestLineItemDto> items, int disbId, int userId)
+        private async Task PostDisb(IList<PaymentRequestLineItemDto> items, int disbId, int userId)
         {
-
             var postedBudgetLineItems = new List<BudgetLineItem>();
 
             var disbLines = await _dbContext.DisbLineItems.Where(x => x.DisbId == disbId).Select(x => x).ToListAsync();
@@ -622,8 +624,6 @@ namespace Application.Services
                     throw new Exception("One or more posted disb lines was not updated with the new budget line item id.");
                 }
             }
-
-            return true;
         }
 
         public async Task<Result<PaymentResponseDto>> DuplicatePayment(int id, int userId)

@@ -6,7 +6,6 @@ import CreateBudgetModal from './modals/CreateBudgetModal';
 import Select from '../../components/Select';
 
 const Budgets = () => {
-  const [year, setYear] = useState<number>(2025);
   const [isCreateBudgetModalOpen, setIsCreateBudgetOpenModal] =
     useState<boolean>(false);
 
@@ -14,25 +13,26 @@ const Budgets = () => {
     setYear(+e.target.value);
   };
 
+  const years: number[] = [];
+  for (let x = 0; x <= 4; x++) {
+    years.push(new Date().getFullYear() - x);
+  }
+
+  const [year, setYear] = useState<number>(years[0]);
+
   useEffect(() => {
     toast.dismissAll();
   }, []);
 
-  // function inc() {
-  //   increment();
-  // }
-  // console.log('budgets render');
   return (
     <div className="">
       <div className="flex mb-4 justify-between items-center">
         <div>
           <div className="p-2 font-bold entity-label">Year:</div>
-          <Select
-            value={year}
-            onChange={handleYearChange}
-          >
-            <option value="2026">2026</option>
-            <option value="2025">2025</option>
+          <Select value={year} onChange={handleYearChange}>
+            {years.map((y) => (
+              <option value={y}>{y}</option>
+            ))}
           </Select>
         </div>
         <div>

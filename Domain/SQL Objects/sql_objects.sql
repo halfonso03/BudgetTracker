@@ -139,7 +139,9 @@ begin
         LEFT OUTER JOIN payments p2 ON p.id = p2.payeeId
         LEFT OUTER JOIN last_payment_amount lpa ON p.id = lpa.payee_id 
     WHERE 
-            p.name LIKE '%' + @searchTerm + '%'
+             p.name LIKE '%' + @searchTerm + '%'
+            OR a.name LIKE '%' + @searchTerm + '%'
+            OR c.name LIKE '%' + @searchTerm + '%'
     GROUP BY p2.total_paid, p.id, p.name, p.is_active, a.category_id, a.id, a.name, p.additional_information, p.payee_type_id, lpa.last_payment_amount, lpa.days_since_last_payment, lpa.payee_id, lpa.last_payment_date,lpa.num_payments 
     ORDER BY p.name
 

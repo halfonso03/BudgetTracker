@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { usePaymentSearch } from '../../api/hooks/payments/usePaymentSearch';
 import { RefreshCw } from 'lucide-react';
 import Skeleton from 'react-loading-skeleton';
@@ -8,6 +8,9 @@ import MenuIdProvider from '../../contexts/MenuIdContext';
 import PaymentSearchReults from './PaymentSearchReults';
 import React from 'react';
 import PaymentSearchParams from './PaymentSearchParams';
+import { usePayeesAll } from '../../api/hooks/payees/usePayeesAll';
+
+const PAYEE_LIST_TYPE = 'P';
 
 type SelectedItem = {
   id: number;
@@ -16,12 +19,13 @@ type SelectedItem = {
 
 const MemoizedSearchParams = React.memo(PaymentSearchParams);
 
-
 const PaymentSearch = () => {
   const queryClient = useQueryClient();
   const [year, setYear] = useState<number>(2026);
   const [status, setStatus] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
+
+  const { data: payees } = usePayeesAll();
 
   const [years] = useState<{ id: number; name: string }[]>(() => {
     const years = [];
@@ -32,7 +36,6 @@ const PaymentSearch = () => {
 
     return years.map((y) => ({ id: y, name: y.toString() }));
   });
-  // const [selectedIds, setSelectedIds] = useState<SelectedItem[]>(itemsList);
 
   const { searchResults, successLoadingResults, loadingSearchResults } =
     usePaymentSearch(
@@ -48,28 +51,61 @@ const PaymentSearch = () => {
 
   const paginationData = searchResults?.pagination;
 
+  const handlePageNumberChange = useCallback((pageNumber: number) => {
+    setPageNumber(pageNumber);
+  }, []);
+
+  const payeesList = useMemo(() => {
+    return payees;
+  }, [payees]);
+
+  const p = useMemo(() => {
+    return payeesList !== undefined && payeesList !== null
+      ? [
+          ...payees!.map((i: Payee) => ({
+            id: i.id,
+            type: PAYEE_LIST_TYPE,
+          })),
+        ]
+      : [];
+  }, [payees, payeesList]);
+
+  const itemsList: SelectedItem[] = useMemo(() => {
+    return [...p];
+  }, [p]);
+
+  const [selectedIds, setSelectedIds] = useState<SelectedItem[]>(itemsList);
+
   const handleStatusChange = useCallback((status: number) => {
     setStatus(status);
     setPageNumber(1);
   }, []);
 
   const handleYearChange = useCallback((year: number) => {
-    console.log('year', year);
-    //   setSelectedIds((prev) => {
-    //     const i = prev.filter((x) => x.type == INITIATIVES_LIST_TYPE);
-    //     const a = prev.filter((x) => x.type == ACCOUNTS_LIST_TYPE);
-    //     const g = grants!
-    //       .filter((x) => x.year === year)
-    //       .map((x) => ({ id: x.id, type: GRANTS_LIST_TYPE }));
-    //     return [...i, ...a, ...g];
-    //   });
-      setYear(year);
-      setPageNumber(1);
+    setSelectedIds((prev) => {
+      const p = prev.filter((x) => x.type == PAYEE_LIST_TYPE);
+      // const a = prev.filter((x) => x.type == ACCOUNTS_LIST_TYPE);
+      // const g = grants!
+      //   .filter((x) => x.year === year)
+      //   .map((x) => ({ id: x.id, type: GRANTS_LIST_TYPE }));
+      return [...p];
+    });
+    setYear(year);
+    setPageNumber(1);
   }, []);
 
-  const handlePageNumberChange = useCallback((pageNumber: number) => {
-    setPageNumber(pageNumber);
-  }, []);
+  function handleSelectAll(type: string) {
+    const newSelectedIds: SelectedItem[] = [
+      ...selectedIds.filter((x) => x.type !== type),
+      ...itemsList.filter((x) => x.type == type),
+    ];
+
+    setSelectedIds(newSelectedIds);
+  }
+
+  function handleDeselectAll(type: string) {
+    setSelectedIds((prev) => [...prev.filter((x) => x.type !== type)]);
+  }
 
   const handleRefreshClick = () => {
     queryClient.invalidateQueries({ queryKey: ['payment_search'] });
@@ -77,85 +113,92 @@ const PaymentSearch = () => {
   };
 
   return (
-    <div>
-      <div className="flex gap-2 mt-10">
-        <div className="p-2 flex-7">
-          <div className="mb-4">
-            <MemoizedSearchParams
-              // initiatives={initiativesList?.map((x) => ({
-              //   id: x.id,
-              //   name: x.name,
-              // }))}
-              // grants={grants
-              //   ?.filter((x) => x.year === year)
-              //   .map((x) => ({ id: x.id, name: x.name }))}
-              // accounts={accountsList?.map((x) => ({
-              //   id: x.id,
-              //   name: x.name,
-              // }))}
-              years={years}
-              // onListCheck={handleListCheck}
-              // onListXCheck={handleListXCheck}
-              // onDeselectAll={handleDeselectAll}
-              // onSelectAll={handleSelectAll}
-              onStatusChange={handleStatusChange}
-              onYearChange={handleYearChange}
-              // onAmountFilter={handleAmountFilter}
-              // onAmountFilterCancel={handleAmountFilterCancel}
-            ></MemoizedSearchParams>
-          </div>
-          {loadingSearchResults && (
-            <div className="mt-16 ">
-              <Skeleton
-                height={35}
-                width="100%"
-                enableAnimation={true}
-                count={15}
-                containerClassName="flex-1"
-              />
-            </div>
-          )}
-          {successLoadingResults && paginationData && (
-            <MenuIdProvider>
-              <div className="flex flex-col">
-                <div className="flex justify-between  pl-1 items-center mb-4 ">
-                  <div className="text-md font-semibold text-neutral-500  ">
-                    {paginationData.totalCount} Payment
-                    {paginationData.totalCount > 1 || paginationData.totalCount === 0 ? 's' : ''} found.
-                  </div>
-                  {searchResults && searchResults.items.length > 0 && (
-                    <div>
-                      <button
-                        className="text-neutral-500 hover:text-blue-800 cursor-pointer hover:scale-115 transition-all duration-200 "
-                        onClick={handleRefreshClick}
-                      >
-                        <RefreshCw size={20}></RefreshCw>
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {successLoadingResults && searchResults && (
-                  <PaymentSearchReults
-                    key={searchResults.searchId}
-                    results={searchResults.items}
-                    // onDelete={handleDelete}
-                  ></PaymentSearchReults>
-                )}
-
-                {searchResults &&
-                  searchResults?.items.length > 0 &&
-                  paginationData && (
-                    <Pagination
-                      data={paginationData}
-                      onPageNumberChange={handlePageNumberChange}
-                    ></Pagination>
-                  )}
-              </div>
-            </MenuIdProvider>
-          )}
+    <div className="flex gap-2 mt-10">
+      <div className=" flex-7">
+        <div className="mb-4">
+          <MemoizedSearchParams
+            payees={payeesList?.map((x) => ({
+              id: x.id,
+              name: x.name,
+            }))}
+            // initiatives={initiativesList?.map((x) => ({
+            //   id: x.id,
+            //   name: x.name,
+            // }))}
+            // grants={grants
+            //   ?.filter((x) => x.year === year)
+            //   .map((x) => ({ id: x.id, name: x.name }))}
+            // accounts={accountsList?.map((x) => ({
+            //   id: x.id,
+            //   name: x.name,
+            // }))}
+            years={years}
+            // onListCheck={handleListCheck}
+            // onListXCheck={handleListXCheck}
+            onDeselectAll={handleDeselectAll}
+            onSelectAll={handleSelectAll}
+            onStatusChange={handleStatusChange}
+            onYearChange={handleYearChange}
+            // onAmountFilter={handleAmountFilter}
+            // onAmountFilterCancel={handleAmountFilterCancel}
+          ></MemoizedSearchParams>
         </div>
-        {/* <ConfirmModal
+        {loadingSearchResults && (
+          <div className="mt-16 ">
+            <Skeleton
+              height={35}
+              width="100%"
+              enableAnimation={true}
+              count={15}
+              containerClassName="flex-1"
+            />
+          </div>
+        )}
+        {successLoadingResults && paginationData && (
+          <MenuIdProvider>
+            <div className="flex flex-col">
+              <div className="flex justify-between  pl-1 items-center mb-4 ">
+                <div className="text-md font-semibold text-neutral-500  ">
+                  {paginationData.totalCount} Payment
+                  {paginationData.totalCount > 1 ||
+                  paginationData.totalCount === 0
+                    ? 's'
+                    : ''}{' '}
+                  found.
+                </div>
+                {searchResults && searchResults.items.length > 0 && (
+                  <div>
+                    <button
+                      className="text-neutral-500 hover:text-blue-800 cursor-pointer hover:scale-115 transition-all duration-200 "
+                      onClick={handleRefreshClick}
+                    >
+                      <RefreshCw size={20}></RefreshCw>
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {successLoadingResults && searchResults && (
+                <PaymentSearchReults
+                  key={searchResults.searchId}
+                  results={searchResults.items}
+                  // onDelete={handleDelete}
+                ></PaymentSearchReults>
+              )}
+
+              {searchResults &&
+                searchResults?.items.length > 0 &&
+                paginationData && (
+                  <Pagination
+                    data={paginationData}
+                    onPageNumberChange={handlePageNumberChange}
+                  ></Pagination>
+                )}
+            </div>
+          </MenuIdProvider>
+        )}
+      </div>
+      {/* <ConfirmModal
           onCancel={() => {
             setTimeout(() => {
               setDeleteConfirmModalIsOpen(false);
@@ -170,7 +213,6 @@ const PaymentSearch = () => {
             }, 500);
           }}
         ></ConfirmModal> */}
-      </div>
     </div>
   );
 };

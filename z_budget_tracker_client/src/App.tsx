@@ -6,7 +6,7 @@ function App() {
   return (
     <>
       <NavBar></NavBar>
-      <div className="p-3 pt-10 w-[82%] mx-auto">
+      <div className="pt-10 w-[85%] mx-auto">
         <Outlet></Outlet>
       </div>
       <Toaster
