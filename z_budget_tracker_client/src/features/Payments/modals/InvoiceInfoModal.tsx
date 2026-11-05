@@ -11,11 +11,12 @@ import { usePaymentMutations } from '../../../api/hooks/payments/usePaymentMutat
 import Spinner from '../../../components/Spinner';
 import { InvoiceInfoFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import toast from 'react-hot-toast';
+import { useQueryClient } from '@tanstack/react-query';
 
 type Props = {
   isOpen: boolean;
   onCancel: () => void;
-  paymentLineItem: PaymentInvoiceInfo;
+  paymentInvoiceInfo: PaymentInvoiceInfo;
   onInvoiceUpdated: (data: {
     uuid: string;
     invoiceNumber: string | null;
@@ -25,6 +26,7 @@ type Props = {
 };
 
 interface FormData {
+  paymentId: number;
   invoiceDate?: Date | null | undefined;
   invoiceNumber?: string | null;
   checkNumber?: string | null;
@@ -36,8 +38,10 @@ const InvoiceInfoModal = ({
   isOpen,
   onCancel,
   onInvoiceUpdated,
-  paymentLineItem,
+  paymentInvoiceInfo: paymentInvoiceInfo,
 }: Props) => {
+  const queryClient = useQueryClient();
+
   const [animateOut, setAnimateOut] = useState(false);
 
   const { updateInvoice } = usePaymentMutations();
@@ -59,11 +63,12 @@ const InvoiceInfoModal = ({
     mode: 'onBlur',
     context: {
       payload: {
-        payeeId: paymentLineItem.payeeId,
-        priorInvoiceNumber: paymentLineItem.invoiceNumber,
+        payeeId: paymentInvoiceInfo.payeeId,
+        priorInvoiceNumber: paymentInvoiceInfo.invoiceNumber,
       }, // Pass your external value here
     },
     defaultValues: {
+      paymentId: 0,
       invoiceDate: null,
       checkNumber: '',
       invoiceNumber: '',
@@ -72,21 +77,24 @@ const InvoiceInfoModal = ({
 
   useEffect(() => {
     reset({
-      invoiceNumber: paymentLineItem.invoiceNumber,
-      invoiceDate: paymentLineItem.invoiceDate,
-      checkNumber: paymentLineItem.checkNumber,
+      invoiceNumber: paymentInvoiceInfo.invoiceNumber,
+      invoiceDate: paymentInvoiceInfo.invoiceDate,
+      checkNumber: paymentInvoiceInfo.checkNumber,
+      paymentId: paymentInvoiceInfo.paymentId,
     });
   }, [
-    paymentLineItem.checkNumber,
-    paymentLineItem.invoiceDate,
-    paymentLineItem.invoiceNumber,
+    paymentInvoiceInfo.checkNumber,
+    paymentInvoiceInfo.invoiceDate,
+    paymentInvoiceInfo.invoiceNumber,
+    paymentInvoiceInfo.paymentId,
     reset,
   ]);
 
   async function onSubmit(data: FormData) {
+    console.log('data', data);
     await mutateAsync(
       {
-        paymentLineItemId: paymentLineItem.paymentLineItemId!,
+        paymentLineItemId: paymentInvoiceInfo.paymentLineItemId!,
         invoiceDate: data.invoiceDate,
         invoiceNumber: data.invoiceNumber,
         checkNumber: data.checkNumber,
@@ -96,11 +104,40 @@ const InvoiceInfoModal = ({
           toast.success('Updated successfull.');
           setTimeout(closeModal, 800);
           onInvoiceUpdated({
-            uuid: paymentLineItem.uuid,
+            uuid: paymentInvoiceInfo.uuid,
             invoiceDate: data.invoiceDate ?? null,
             invoiceNumber: data.invoiceNumber ?? null,
             checkNumber: data.checkNumber ?? null,
           });
+
+          setTimeout(() => {
+            queryClient.invalidateQueries({ queryKey: ['payment_search'] });
+
+            const payments = queryClient.getQueriesData({
+              queryKey: ['payment', data.paymentId],
+            });
+
+            const payment: Payment = payments[0][1] as Payment;
+
+            const updatedPayment = {
+              ...payment,
+              lineItems: payment.lineItems.map((x) => {
+                if (
+                  x.paymentLineItemId !== paymentInvoiceInfo.paymentLineItemId!
+                )
+                  return x;
+                return {
+                  ...x,
+                  invoiceNumber: data.invoiceNumber,
+                  invoiceDate: data.invoiceDate,
+                  checkNumber: data.checkNumber,
+                };
+              }),
+            };
+            queryClient.setQueryData(['payment', payment.id], () => {
+              return updatedPayment;
+            });
+          }, 10);
         },
       },
     );
@@ -125,23 +162,26 @@ const InvoiceInfoModal = ({
       onCancel={closeModal}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
+        {errors.paymentId?.message}
         <div className="flex gap-1 justify-between mb-7">
           <div>
             <div className=" text-neutral-600">Payee Name</div>
-            <div className="font-medium">{paymentLineItem.payeeName}</div>
+            <div className="font-medium">{paymentInvoiceInfo.payeeName}</div>
           </div>
           <div>
             <div className="text-neutral-600 ">Payment Amount</div>
             <div className="font-medium text-end">
               {formatCurrency(
-                parseFormattedNumber(paymentLineItem.paymentAmount.toString()),
+                parseFormattedNumber(
+                  paymentInvoiceInfo.paymentAmount.toString(),
+                ),
               )}
             </div>
           </div>
           <div>
             <div className=" text-neutral-600 text-end">Payment No.</div>
             <div className="font-medium text-end">
-              {paymentLineItem.paymentNumber}
+              {paymentInvoiceInfo.paymentNumber}
             </div>
           </div>
         </div>

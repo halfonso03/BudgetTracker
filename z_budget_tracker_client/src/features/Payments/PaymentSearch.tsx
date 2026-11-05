@@ -229,6 +229,7 @@ const PaymentSearch = () => {
       invoiceNumber: l.invoiceNumber,
       invoiceDate: l.invoiceDate,
       checkNumber: l.checkNumber,
+      paymentId: l.paymentId,
     };
     setPaymentLineItemInvoiceToUpdate(pl);
     setInvoiceModalIsOpen(true);
@@ -401,7 +402,7 @@ const PaymentSearch = () => {
         <InvoiceInfoModal
           isOpen={invoiceModalIsopen}
           key={crypto.randomUUID()}
-          paymentLineItem={paymentLineItemInvoiceToUpdate}
+          paymentInvoiceInfo={paymentLineItemInvoiceToUpdate}
           onCancel={() => {
             setTimeout(() => {
               setInvoiceModalIsOpen(false);

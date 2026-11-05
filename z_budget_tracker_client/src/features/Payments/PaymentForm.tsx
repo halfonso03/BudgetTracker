@@ -458,7 +458,7 @@ const PaymentForm = ({
         if (posted) {
           await invalidateBalances();
         }
-        
+
         queryClient.setQueryData<Payment>(['payment', data.newId], () => ({
           ...paymentToSave,
           id: data.newId,
@@ -715,6 +715,10 @@ const PaymentForm = ({
       return newLine;
     });
     setLines(newLines);
+    queryClient.invalidateQueries({
+      queryKey: ['payment_search'],
+    });
+    console.log('123', 123)
   }
 
   return (

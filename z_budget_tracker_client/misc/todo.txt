@@ -1,15 +1,6 @@
 
 
-payment search add missing params 
-add payment delete
-
-add options for search  
-    View payment
-    Update invoice
-    download
-    delete
-
-
+payment search add missing params, posted with number of days filter
 
 
 reports:
@@ -24,6 +15,11 @@ role assignment
 
 ON HOLD -  invalidate queuery for payees payments - or add it to the payment list??
 
+DONE add options for search  
+    View payment
+    Update invoice
+    download
+    delete
 DONE payee details still not showing the right Category and account when clicked
 DONE budgetsummary - when remaining is 0, show transactions link now shows -
 DONE payment invoice date and nunmber and check unmber

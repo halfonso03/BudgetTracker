@@ -68,6 +68,7 @@ export const PaymentFormSchema = Yup.object().shape({
 
 
 export const InvoiceInfoFormSchema = Yup.object().shape({
+    paymentId: Yup.number().required(),
     checkNumber: Yup.string().optional().nullable(),
     invoiceDate: Yup.date().optional().nullable(),
     invoiceNumber: Yup

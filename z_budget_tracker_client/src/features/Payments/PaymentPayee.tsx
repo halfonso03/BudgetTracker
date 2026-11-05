@@ -102,7 +102,10 @@ const PaymentPayee = ({
           <InvoiceInfoModal
             isOpen={invoiceModalIsopen}
             key={crypto.randomUUID()}
-            paymentLineItem={paymentLineItem}
+            paymentInvoiceInfo={{
+              ...paymentLineItem,
+              paymentId: paymentHeader.id,
+            }}
             onCancel={() => {
               setTimeout(() => {
                 setInvoiceModalIsOpen(false);

@@ -60,9 +60,11 @@ type PaymentLineItem = {
     checkNumber?: string | null
     paymentLineItemId?: number | null
     paymentNumber?: number | null
+    paymentId?:number | null
 }
 
 type PaymentInvoiceInfo = {
+    paymentId: number
     uuid: string
     payeeId: number,
     payeeName: string
