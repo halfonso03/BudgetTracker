@@ -14,10 +14,10 @@ import {
 
 type Props = {
   results: PaymentSearchResult[];
-  // onDelete: (id: number) => void;
+  onDelete: (id: number, name: string) => void;
 };
 
-const PaymentSearchReults = ({ results }: Props) => {
+const PaymentSearchReults = ({ results, onDelete }: Props) => {
   const { sortByValue } = useSortingContext();
   if (results.length == 0) return null;
 
@@ -177,7 +177,7 @@ const PaymentSearchReults = ({ results }: Props) => {
                       &nbsp;&nbsp;Update Invoice
                     </Menus.MenuItem>
                     {r.posted !== null && !r.posted && (
-                      <Menus.MenuItem>
+                      <Menus.MenuItem onClick={() => onDelete(r.paymentLineItemId, r.payeeName)}>
                         <Trash className="text-red-500" size={18}></Trash>
                         &nbsp;&nbsp;Delete
                       </Menus.MenuItem>

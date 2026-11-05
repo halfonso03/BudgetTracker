@@ -12,6 +12,9 @@ import { usePayeesAll } from '../../api/hooks/payees/usePayeesAll';
 import useCategories from '../../api/hooks/common/useCategories';
 import useGrantsAllYears from '../../api/hooks/common/useGrantsAllYears';
 import useInitiatives from '../../api/hooks/common/useInitiatives';
+import { usePaymentMutations } from '../../api/hooks/payments/usePaymentMutations';
+import toast from 'react-hot-toast';
+import ConfirmModal from '../../components/ConfirmModal';
 
 const PAYEE_LIST_TYPE = 'P';
 const INITIATIVES_LIST_TYPE = 'I';
@@ -34,7 +37,12 @@ const PaymentSearch = () => {
   const { grants } = useGrantsAllYears();
   const { categories } = useCategories(true, true);
   const { data: payees } = usePayeesAll();
+  const [deleteConfirmModalIsOpen, setDeleteConfirmModalIsOpen] =
+    useState(false);
 
+  const [payeeNameToDelete, setPayeeNameToDelete] = useState<string>();
+
+  const [idToDelete, setIdToDelete] = useState(0);
   const [years] = useState<{ id: number; name: string }[]>(() => {
     const years = [];
 
@@ -44,6 +52,8 @@ const PaymentSearch = () => {
 
     return years.map((y) => ({ id: y, name: y.toString() }));
   });
+
+  const { deletePayment } = usePaymentMutations();
 
   const payeesList = useMemo(() => {
     return payees;
@@ -196,11 +206,41 @@ const PaymentSearch = () => {
     setPageNumber(1);
   };
 
+  async function handleDelete(id: number, name: string) {
+    setPayeeNameToDelete(name);
+    setIdToDelete(id);
+    setDeleteConfirmModalIsOpen(true);
+  }
+
+  async function deleteConfirmed() {
+    try {
+      await deletePayment.mutateAsync(idToDelete, {
+        onSuccess: () => {
+          toast.success(
+            <div>
+              <div className="pb-1">{`Payment to ${payeeNameToDelete} has been deleted.`}</div>
+              <div>Refreshing results...</div>
+            </div>,
+            {
+              duration: 1500,
+            },
+          );
+          setTimeout(
+            () => queryClient.invalidateQueries({ queryKey: ['payment_search'] }),
+            1000,
+          );
+        },
+      });
+    } catch (e) {
+      console.log('e', e);
+    }
+  }
+
   return (
     <div className="flex gap-2 mt-10">
       <div className=" flex-7">
-        <pre>{JSON.stringify(selectedIds)}</pre>
-        <pre>{JSON.stringify(itemsList)}</pre>
+        {/* <pre>{JSON.stringify(selectedIds)}</pre>
+        <pre>{JSON.stringify(itemsList)}</pre> */}
 
         <div className="mb-4">
           <MemoizedSearchParams
@@ -269,7 +309,7 @@ const PaymentSearch = () => {
                 <PaymentSearchReults
                   key={searchResults.searchId}
                   results={searchResults.items}
-                  // onDelete={handleDelete}
+                  onDelete={handleDelete}
                 ></PaymentSearchReults>
               )}
 
@@ -285,21 +325,21 @@ const PaymentSearch = () => {
           </MenuIdProvider>
         )}
       </div>
-      {/* <ConfirmModal
-          onCancel={() => {
-            setTimeout(() => {
-              setDeleteConfirmModalIsOpen(false);
-            }, 500);
-          }}
-          message={`WARNING: Reprogramming ID ${idToDelete} will be deleted! Click OK to continue.`}
-          isOpen={deleteConfirmModalIsOpen}
-          onConfirm={() => {
-            setTimeout(() => {
-              setDeleteConfirmModalIsOpen(false);
-              setTimeout(deleteConfirmed, 100);
-            }, 500);
-          }}
-        ></ConfirmModal> */}
+      <ConfirmModal
+        onCancel={() => {
+          setTimeout(() => {
+            setDeleteConfirmModalIsOpen(false);
+          }, 500);
+        }}
+        message={`WARNING: Payment to ${payeeNameToDelete} will be deleted! Click OK to continue.`}
+        isOpen={deleteConfirmModalIsOpen}
+        onConfirm={() => {
+          setTimeout(() => {
+            setDeleteConfirmModalIsOpen(false);
+            setTimeout(deleteConfirmed, 100);
+          }, 500);
+        }}
+      ></ConfirmModal>
     </div>
   );
 };

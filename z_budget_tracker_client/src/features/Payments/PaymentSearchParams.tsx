@@ -1,14 +1,9 @@
 import {
   memo,
-  useRef,
   useState,
-  type ChangeEvent,
-  type FocusEvent,
 } from 'react';
 import RadioButtonList from '../../components/RadioButtonList';
 import PaymentSearchFilter from './PaymentSearchFilter';
-import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
-import { parseFormattedNumber } from '../../app/util';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import CheckBoxListSearchParam from '../../components/CheckBoxListSearchParam';

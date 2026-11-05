@@ -1,5 +1,6 @@
 using System.Data.Common;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using Application.Core;
 using Application.DTOs;
@@ -968,6 +969,41 @@ namespace Application.Services
                                 .ToList();
 
             return Result<List<PaymentSearchBudgetParamResponseDto>>.Success(result);
+        }
+
+        public async Task<Result<Unit>> DeletePayment(int paymentLineItemId)
+        {
+            var disbLIneItem = await _dbContext.DisbLineItems.SingleOrDefaultAsync(x => x.Id == paymentLineItemId);
+
+            if (disbLIneItem is null) return Result<Unit>.Failure("Payment Item not found", 404);
+
+            var disb = await _dbContext.Disbs.Include(x => x.Items).Where(x => x.Id == disbLIneItem.DisbId).FirstAsync();
+
+            try
+            {
+                var itemCount = disb.Items.Count;
+
+                if (itemCount == 1)
+                {
+                    _dbContext.Disbs.Remove(disb);
+                }
+                else
+                {
+                    _dbContext.DisbLineItems.Remove(disbLIneItem);
+                }
+
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (DbException ex)
+            {
+                return Result<Unit>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+            }
+            catch (Exception ex)
+            {
+                return Result<Unit>.Failure($"{ex.Message}. Inner Ex: {ex.InnerException?.Message}", 400);
+            }
+
+            return Result<Unit>.Success(Unit.Value);
         }
 
         private class PayeePaymentCount

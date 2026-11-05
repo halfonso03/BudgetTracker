@@ -40,7 +40,6 @@ namespace API.Controllers
             return HandleResult(await _paymentService.DuplicatePayment(data.Id, data.UserId));
         }
 
-
         [HttpPut("invoice")]
         public async Task<IActionResult> Invoice([FromBody] UpdateInvoiceRequestDto updateInvoiceRequestDto)
         {
@@ -57,11 +56,16 @@ namespace API.Controllers
             return HandleResult(result);
         }
 
-
         [HttpGet("search/budgets")]
         public async Task<IActionResult> GetBudgets([FromQuery] int year)
         {
             return HandleResult(await _paymentService.GetBudgetsForSearch(year));
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int paymentLineItemId)
+        {
+            return HandleResult(await _paymentService.DeletePayment(paymentLineItemId));
         }
     }
 }
