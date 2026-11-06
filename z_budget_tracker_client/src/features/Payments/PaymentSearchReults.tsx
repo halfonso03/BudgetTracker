@@ -202,7 +202,7 @@ const PaymentSearchReults = ({
                       <DollarSign size={18}></DollarSign>
                       &nbsp;&nbsp;Update Invoice
                     </Menus.MenuItem>
-                    {r.posted !== null && !r.posted && (
+                    {!r.postedDate && (
                       <Menus.MenuItem
                         onClick={() =>
                           onDelete(r.paymentLineItemId, r.payeeName)
@@ -210,6 +210,7 @@ const PaymentSearchReults = ({
                       >
                         <Trash className="text-red-500" size={18}></Trash>
                         &nbsp;&nbsp;Delete
+
                       </Menus.MenuItem>
                     )}
                   </Menus.List>

@@ -264,7 +264,9 @@ const PaymentSearchParams = memo(
 
         <PaymentSearchFilter
           selectedItemLabel={
-            daysAgo.filter((x) => x.id == selectedDaysAgo)[0].name
+            selectedDaysAgo === 0
+              ? 'Paid Less...'
+              : daysAgo.filter((x) => x.id == selectedDaysAgo)[0].name
           }
           parentCorntrolled={true}
           outsideShowList={daysAgoFilterVisible}

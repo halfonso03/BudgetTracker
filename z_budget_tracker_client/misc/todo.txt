@@ -1,8 +1,5 @@
 
 
-payment search add missing params, posted with number of days filter
-
-
 
 charts - home page 
 import data from ST

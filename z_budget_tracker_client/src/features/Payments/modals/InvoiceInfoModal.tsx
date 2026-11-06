@@ -186,7 +186,7 @@ const InvoiceInfoModal = ({
           </div>
         </div>
         <div className=" mb-8   ">
-          <div className="flex flex-col gap-3   ">
+          <div className="flex flex-col gap-4   ">
             <div className="grid grid-cols-[.45fr_1fr_.5fr]  w-full items-center">
               <div className="text-neutral-600/90 font-medium">
                 Invoice Date.
@@ -219,7 +219,7 @@ const InvoiceInfoModal = ({
                   {...register('invoiceNumber')}
                   additionalclasses="bg-white "
                 ></Input>
-                {!isValidating && (
+                {dirtyFields.invoiceNumber && errors.invoiceNumber?.message && (
                   <div className="text-red-500">
                     {errors.invoiceNumber?.message}
                   </div>
@@ -228,7 +228,7 @@ const InvoiceInfoModal = ({
               <div className="flex-1  w-full text-red-500">
                 {isValidating && dirtyFields.invoiceNumber && (
                   <div className="ml-2">
-                    <Spinner color="neutral"></Spinner>
+                    <Spinner color="neutral" ></Spinner>
                   </div>
                 )}
               </div>
