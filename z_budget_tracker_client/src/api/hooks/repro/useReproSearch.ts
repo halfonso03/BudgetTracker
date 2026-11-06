@@ -27,7 +27,7 @@ const fetchRepros = async (
         ? JSON.parse(paginationHeader)
         : null;
 
-    return { items: response.data.items, itemCount: response.data.items.length, searchId: crypto.randomUUID(), pagination: paginationResponse };
+    return { items: response.data.items, itemCount: response.data.items.length, pagination: paginationResponse };
 }
 
 export const useReproSearch = (
@@ -36,11 +36,9 @@ export const useReproSearch = (
 ) => {
     const { sortByValue } = useSortingContext();
 
-    //   reproSearchParams.selectedIds!.map(x => (x.id + x.type)),
-    //         reproSearchParams.xSelectedIds!.map(x => (x.id + x.type)),
-
     const { data, isLoading, isSuccess } = useQuery<ReproSearchResponse>({
-        queryKey: ['repro_search', { ...reproSearchParams },
+        queryKey: ['repro_search',
+            JSON.stringify(reproSearchParams),
             pagination.pageNumber,
             pagination.pageSize,
             sortByValue],

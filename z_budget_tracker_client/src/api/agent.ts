@@ -115,7 +115,7 @@ agent.interceptors.response.use(
                         toast.error(JSON.stringify(error.response), { duration: 2000 });
 
                     }
-                    // window.location.href = '/login';
+                    window.location.href = '/login';
                     break;
                 case 403:
                     toast.error('You do not have access.');

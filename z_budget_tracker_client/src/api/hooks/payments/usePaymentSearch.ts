@@ -18,7 +18,6 @@ const fetchPayments = async (
         accountIds: selectedIds!.filter(x => x.type === 'A').map(x => x.id),
     };
 
-    // console.log('payload', payload)
     const response = await agent.post(`/payment/search?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}&sortBy=${sortByValue}`, payload)
     const paginationHeader = response.headers["pagination"];
     const paginationResponse: PaginationData = paginationHeader

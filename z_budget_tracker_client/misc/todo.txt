@@ -2,7 +2,6 @@
 
 
 charts - home page 
-import data from ST
 
 
 
