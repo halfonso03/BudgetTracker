@@ -42,14 +42,13 @@ export const routes: RouteObject[] = [
     element: <Logout></Logout>,
   },
   {
-    path: '/',
     element: <App></App>,
     children: [
       {
         path: '/',
         element: (
           <ProtectedRoute>
-            <PaymentLanding></PaymentLanding>
+            <Home></Home>
           </ProtectedRoute>
         ),
       },

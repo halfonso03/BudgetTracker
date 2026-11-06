@@ -134,6 +134,7 @@ namespace Application.services
                                   g.StartDate.Year
                               } into grp
                               where grp.Key.StartDate.Year == year
+                              orderby grp.Key.initiative_name
                               select new
                               {
                                   Grant = GrantDto.Create(grp.Key.GrantId, grp.Key.grant_name, grp.Key.StartDate, grp.Key.EndDate, grp.Key.Fiduciary),
@@ -157,6 +158,7 @@ namespace Application.services
 
 
             var result = from a in budgetBase
+                         
                          select new BudgetDto
                          {
                              GrantId = a.GrantId,
