@@ -1,6 +1,9 @@
 
 
 
+
+should be able to save a payment even when not enough funds
+
 charts - home page 
 
 
