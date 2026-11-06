@@ -12,31 +12,35 @@ const PayeeListColumHeaders = ({ year, onOpenYearFilterModal }: Props) => {
 
   return (
     <div
-      className="grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.35fr_.4fr_.2fr] gap-2 
-                        bg-gray-50 text-neutral-500 border border-neutral-300/60 p-2 px-3"
+      className="grid grid-cols-[.6fr_.3fr_1fr_.6fr_.4fr_.35fr_.4fr_.2fr] gap-2 
+                        bg-gray-50 text-neutral-500 border border-neutral-300/60 py-1"
     >
-      <div className="flex justify-start pl-4">
+      <div className="flex items-center justify-start px-4">
         <SortBySelector
           label="Name"
           value="NAME"
           currentSortValue={sortByValue}
         ></SortBySelector>
       </div>
-      <div className="flex justify-center ">
-        <SortBySelector
-          label="Type"
-          value="PAYEETYPE"
-          currentSortValue={sortByValue}
-        ></SortBySelector>
+      <div className="flex items-center justify-center ">
+        <div className="flex justify-center">
+          <SortBySelector
+            label="Type"
+            value="PAYEETYPE"
+            currentSortValue={sortByValue}
+          ></SortBySelector>
+        </div>
       </div>
-      <div className="flex justify-center">
-        <SortBySelector
-          label="Charge Account"
-          value="ACCOUNT"
-          currentSortValue={sortByValue}
-        ></SortBySelector>
+      <div className="flex items-center justify-center">
+        <div className="flex justify-center">
+          <SortBySelector
+            label="Charge Account"
+            value="ACCOUNT"
+            currentSortValue={sortByValue}
+          ></SortBySelector>
+        </div>
       </div>
-      <div className='flex flex-col justify-center '>
+      <div className="flex items-center flex-col justify-center ">
         <div className="flex justify-center items-center gap-1">
           <SortBySelector
             label="Total Paid"
@@ -49,7 +53,11 @@ const PayeeListColumHeaders = ({ year, onOpenYearFilterModal }: Props) => {
             onClick={onOpenYearFilterModal}
           ></Filter>
         </div>
-        {year !== 0 && <div className='self-center italic text-[.9rem] text-blue-500'>FY {year}</div>}
+        {year !== 0 && (
+          <div className="self-center italic text-[.9rem] text-blue-500">
+            FY {year}
+          </div>
+        )}
       </div>
       <div className="flex justify-center">
         <SortBySelector

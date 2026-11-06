@@ -36,9 +36,9 @@ const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
       <div className="border-l border-r border-b border-neutral-300/60">
         {data.map((v) => (
           <div
-            className=" grid grid-cols-[.7fr_.4fr_1fr_.6fr_.4fr_.35fr_.4fr_.2fr] 
-          gap-2 items-center hover:bg-neutral-100 duration-200 transition-all 
-          cursor-pointer border-b border-b-neutral-300/60 last:border-0 py-2"
+            className="grid grid-cols-[.6fr_.3fr_1fr_.6fr_.4fr_.35fr_.4fr_.2fr] gap-2 
+            items-center hover:bg-neutral-100 duration-200 transition-all 
+          cursor-pointer border-b border-b-neutral-300/60 last:border-0 py-1"
             key={v.id}
             onClick={() => {
               openPayeeDetails(v);

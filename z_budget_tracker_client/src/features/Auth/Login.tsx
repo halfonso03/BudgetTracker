@@ -59,7 +59,7 @@ const Login = () => {
                 autoComplete="current-password"
               />
             </div>
-
+            HI
             <StackedFormRow
               id="email"
               label="Email"
@@ -73,7 +73,6 @@ const Login = () => {
                 })}
               ></Input>
             </StackedFormRow>
-
             <StackedFormRow
               id="password"
               label="Password"
@@ -99,7 +98,6 @@ const Login = () => {
                 'OK'
               )}
             </Button>
-
             {/* <div className="mt-3 p-4 border border-slate-400 bg-tranparent text-gray-700 dark:border-neutral-700 dark:text-gray-50 ">
               You must login with an Active Directory account.
               <div className=" underline mt-2 uppercase">
