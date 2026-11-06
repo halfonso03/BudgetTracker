@@ -763,6 +763,7 @@ namespace Application.Services
                             PaginationParams paginationParams, string sortBy)
         {
             var disbLineItems = _dbContext.DisbLineItems
+                                    .Include(x => x.Disb)
                                     .Where(x => x.Year == searchParams.Year)
                                     .AsQueryable();
 
@@ -797,33 +798,13 @@ namespace Application.Services
                     disbLineItems = disbLineItems.Where(x => x.BudgetLineItemId != null);
                 }
             }
+            Console.WriteLine(searchParams.DaysPaid);
 
-            // var lineItemIdsByBudget = new List<int>();
+            if (searchParams.DaysPaid != 0)
+            {
+                disbLineItems = disbLineItems.Where(x => x.Disb!.PostedDate > DateTime.Now.AddDays(-1 * searchParams.DaysPaid));
+            }
 
-            // if (searchParams.PaymentSearchBudgetHeaders != null)
-            // {
-            //     var ids1 = searchParams.PaymentSearchBudgetHeaders.Select(x => x.InitiativeId);
-            //     var ids2 = searchParams.PaymentSearchBudgetHeaders.Select(x => x.GrantId);
-
-            //     List<(int InitiativeId, int GrantId, int AccountId)> Tuples = [];
-
-            //     foreach (var (InitiativeId, GrantId, AccountId) in searchParams.PaymentSearchBudgetHeaders.Select(x => (x.InitiativeId, x.GrantId, x.AccountId)).ToList())
-            //     {
-            //         Tuples.Add((InitiativeId, GrantId, AccountId));
-            //     }
-
-            //     lineItemIdsByBudget = [.. disbLineItems.AsEnumerable().Join(Tuples.AsEnumerable(),
-            //                 r => new { r.InitiativeId, r.GrantId, r.AccountId },
-            //                 t => new { t.InitiativeId, t.GrantId, t.AccountId },
-            //                 (r, t) =>
-            //                     r.Id
-            //                 )];
-            // }
-
-            // if (lineItemIdsByBudget.Count > 0)
-            // {
-            //     disbLineItems = disbLineItems.Where(x => lineItemIdsByBudget.Contains(x.Id));
-            // }
 
             var lineItemIds = await disbLineItems.Select(x => x.Id).ToListAsync();
 
@@ -911,6 +892,30 @@ namespace Application.Services
             };
 
             return Result<PaymentSearchResponseDto>.Success(result);
+
+
+            // PROBABLY WONT USE THIS BUT EXMAPLE OF JOIN A TABLE TO A TUPLE WITH MULTIPLE VALUES
+            // var lineItemIdsByBudget = new List<int>();
+            // if (searchParams.PaymentSearchBudgetHeaders != null)
+            // {
+            //     var ids1 = searchParams.PaymentSearchBudgetHeaders.Select(x => x.InitiativeId);
+            //     var ids2 = searchParams.PaymentSearchBudgetHeaders.Select(x => x.GrantId);
+            //     List<(int InitiativeId, int GrantId, int AccountId)> Tuples = [];
+            //     foreach (var (InitiativeId, GrantId, AccountId) in searchParams.PaymentSearchBudgetHeaders.Select(x => (x.InitiativeId, x.GrantId, x.AccountId)).ToList())
+            //     {
+            //         Tuples.Add((InitiativeId, GrantId, AccountId));
+            //     }
+            //     lineItemIdsByBudget = [.. disbLineItems.AsEnumerable().Join(Tuples.AsEnumerable(),
+            //                 r => new { r.InitiativeId, r.GrantId, r.AccountId },
+            //                 t => new { t.InitiativeId, t.GrantId, t.AccountId },
+            //                 (r, t) =>
+            //                     r.Id
+            //                 )];
+            // }
+            // if (lineItemIdsByBudget.Count > 0)
+            // {
+            //     disbLineItems = disbLineItems.Where(x => lineItemIdsByBudget.Contains(x.Id));
+            // }
         }
 
         public async Task<Result<List<PaymentSearchBudgetParamResponseDto>>> GetBudgetsForSearch(int year)

@@ -9,7 +9,7 @@ namespace Application.DTOs.Payment
         public List<int>? InitiativeIds { get; set; } = [];
         public List<int>? GrantIds { get; set; } = [];
         public List<int>? AccountIds { get; set; } = [];
-
+        public int DaysPaid { get; set; }
         public List<PaymentSearchBudgetHeader>? PaymentSearchBudgetHeaders { get; set; } = null;
     }
 
@@ -19,7 +19,6 @@ namespace Application.DTOs.Payment
         public int InitiativeId { get; set; }
         public int GrantId { get; set; }
         public int AccountId { get; set; }
-
         public override string ToString()
         {
             return $"{InitiativeId} {GrantId} {AccountId}";
