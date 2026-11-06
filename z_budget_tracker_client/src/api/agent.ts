@@ -7,8 +7,8 @@ const agent = axios.create({
 });
 
 
-const sleep = (delay: number) =>
-    new Promise((resolve) => setTimeout(resolve, delay));
+// const sleep = (delay: number) =>
+//     new Promise((resolve) => setTimeout(resolve, delay));
 
 
 agent.interceptors.request.use(async (config) => {
