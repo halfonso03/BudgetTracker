@@ -184,6 +184,7 @@ type PaymentSearchParams = {
     year: number
     status: number
     selectedIds?: { id: number, type: string }[]
+    daysPaid:number
     // paymentSearchBudgetHeaders: PaymentSearchBudgetHeader[]
 }
 

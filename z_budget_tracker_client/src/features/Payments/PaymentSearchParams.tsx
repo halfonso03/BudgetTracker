@@ -1,7 +1,4 @@
-import {
-  memo,
-  useState,
-} from 'react';
+import { memo, useState } from 'react';
 import RadioButtonList from '../../components/RadioButtonList';
 import PaymentSearchFilter from './PaymentSearchFilter';
 import Skeleton from 'react-loading-skeleton';
@@ -14,11 +11,19 @@ const PAYEE_LIST_TYPE = 'P';
 const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
 const ACCOUNTS_LIST_TYPE = 'A';
+const DAYS_LIST_TYPE = 'D';
 
+type RadioOption = {
+  id: number;
+  name: string;
+  checked: boolean;
+};
 type Props = {
   years: { id: number; name: string }[];
+  daysAgo: { id: number; name: string }[];
   onYearChange: (year: number) => void;
   onStatusChange: (id: number) => void;
+  onDaysChange: (id: number) => void;
   onListCheck?: (id: number, key: string) => void;
   onDeselectAll: (type: string) => void;
   onSelectAll: (type: string) => void;
@@ -33,19 +38,17 @@ const PaymentSearchParams = memo(
     onYearChange,
     onListCheck,
     onStatusChange,
+    onDaysChange,
     onSelectAll,
     onDeselectAll,
     years,
+    daysAgo,
     payees,
     initiatives,
     grants,
     accounts,
   }: Props) => {
     const statuses = getStatuses();
-    // const debitRef = useRef<HTMLInputElement | null>(null);
-    // const creditRef = useRef<HTMLInputElement | null>(null);
-
-    console.log('payees', payees);
     const [yearOptions, setYearOptions] = useState<
       {
         id: number;
@@ -59,28 +62,33 @@ const PaymentSearchParams = memo(
         checked: y.id === years[0].id,
       })),
     );
+
+    const [daysAgoOptions, setDaysAgoOptions] = useState<RadioOption[]>(() =>
+      daysAgo.map((y) => ({
+        id: +y.id,
+        name: y.name,
+        checked: y.id === daysAgo[0].id,
+      })),
+    );
+
     const [pLabel, setPLabel] = useState('Payee');
     const [iLabel, setILabel] = useState('Initiative');
     const [gLabel, setGLabel] = useState('Grant');
     const [aLabel, setALabel] = useState('Account');
+
+    const [selectedYear, setSelectedYear] = useState(years[0].id);
     const [selectedStatus, setSelectedStatus] = useState(statuses[0].id);
+    const [selectedDaysAgo, setSelectedDaysAgo] = useState(0);
+
     const [statusVisible, setStatusVisible] = useState(false);
     const [yearVisible, setYearVisible] = useState(false);
-    // const [amountFilterVisible, setAmountFilterVisible] = useState(false);
-    // const [amountFilter, setAmountFilter] = useState<ReproAmountFilter>({
-    //   debitAmount: 0,
-    //   creditAmount: 0,
-    //   debitComparer: 0,
-    //   creditComparer: 0,
-    // });
-    // const [amountFilterLabel, setAmountFilterLabel] = useState('$');
+    const [daysAgoFilterVisible, setDaysAgoFilterVisible] =
+      useState<boolean>(false);
 
     function handleStatusChange(id: number) {
       setSelectedStatus(id);
       onStatusChange(id);
     }
-
-    const [selectedYear, setSelectedYear] = useState(years[0].id);
 
     function handleYearSelected(id: number) {
       setSelectedYear(id);
@@ -89,6 +97,15 @@ const PaymentSearchParams = memo(
       );
 
       onYearChange(id);
+    }
+
+    function handleDaysSelected(id: number) {
+      setSelectedDaysAgo(id);
+      setDaysAgoOptions((prev) =>
+        prev.map((y) => ({ ...y, checked: y.id === id })),
+      );
+
+      onDaysChange(id);
     }
 
     function handleCheck(id: number, type: string) {
@@ -175,9 +192,9 @@ const PaymentSearchParams = memo(
       setYearVisible((prev) => !prev);
     }
 
-    // function handleAmountFilterOpened() {
-    //   setAmountFilterVisible((prev) => !prev);
-    // }
+    function handleAmountFilterOpened() {
+      setDaysAgoFilterVisible((prev) => !prev);
+    }
 
     function handleStatusOutsideCLick() {
       setStatusVisible(false);
@@ -187,160 +204,12 @@ const PaymentSearchParams = memo(
       setYearVisible(false);
     }
 
-    // function handleAmountFilterOutsideClick() {
-    //   setAmountFilterVisible(false);
-    // }
-
-    // function handleAmountFilter() {
-    //   setAmountFilterVisible(false);
-    //   // onAmountFilter(amountFilter);
-
-    //   const valueCount =
-    //     (amountFilter.debitAmount !== 0 ? 1 : 0) +
-    //     (amountFilter.creditAmount !== 0 ? 1 : 0) +
-    //     (amountFilter.debitComparer !== 0 ? 1 : 0) +
-    //     (amountFilter.creditComparer !== 0 ? 1 : 0);
-    //   setAmountFilterLabel(valueCount == 0 ? '$' : valueCount + ' input(s)');
-    // }
-
-    // function handleAmountFilterCancel() {
-    //   debitRef!.current!.value = '';
-    //   creditRef!.current!.value = '';
-    //   setAmountFilter({
-    //     debitAmount: 0,
-    //     creditAmount: 0,
-    //     debitComparer: 0,
-    //     creditComparer: 0,
-    //   });
-
-    //   setAmountFilterVisible(false);
-    //   setAmountFilterLabel('$');
-    //   // onAmountFilterCancel();
-    // }
-
-    // function handleDebitBlur(e: ChangeEvent<HTMLInputElement>) {
-    //   const amount = parseFormattedNumber(e.target.value);
-    //   setAmountFilter((prev) => ({ ...prev, debitAmount: amount }));
-    // }
-
-    // function handleCreditBlur(e: ChangeEvent<HTMLInputElement>) {
-    //   const amount = parseFormattedNumber(e.target.value);
-    //   setAmountFilter((prev) => ({ ...prev, creditAmount: amount }));
-    // }
-
-    // function handleDebitComparerChange(e: ChangeEvent<HTMLSelectElement>) {
-    //   const value = +e.target.value;
-    //   if (value == 0) debitRef!.current!.value = '0';
-
-    //   setAmountFilter((prev) => ({
-    //     ...prev,
-    //     debitAmount: value == 0 ? prev.debitAmount : 0,
-    //     debitComparer: value,
-    //   }));
-    // }
-
-    // function handleCreditComparerChange(e: ChangeEvent<HTMLSelectElement>) {
-    //   const value = +e.target.value;
-    //   if (value == 0) creditRef!.current!.value = '0';
-    //   setAmountFilter((prev) => ({
-    //     ...prev,
-    //     creditAmount: value == 0 ? 0 : prev.creditAmount,
-    //     creditCompare: value,
-    //   }));
-    // }
+    function handleAmountFilterOutsideClick() {
+      setDaysAgoFilterVisible(false);
+    }
 
     return (
       <div className=" flex justify-center items-center gap-3 z-10 w-full">
-        {/* <PaymentSearchFilter
-          selectedItemLabel={amountFilterLabel}
-          parentCorntrolled={true}
-          outsideShowList={amountFilterVisible}
-          listOpened={handleAmountFilterOpened}
-          outsideClicked={handleAmountFilterOutsideClick}
-        >
-          <div
-            style={{ height: 'auto', zIndex: 10, overflow: 'visible' }}
-            className="flex flex-col absolute shadow-lg shadow-neutral-300 w-80 rounded-md mt-1 opacity-100 bg-white"
-          >
-            <div className="border border-b-0 border-neutral-200 p-2 py-3">
-              <div className="font-semibold text-neutral-600 ml-1">
-                Debit Amount
-              </div>
-              <div className="flex gap-2">
-                <select
-                  className="border p-2 border-neutral-300 rounded-sm text-neutral-800 focus:outline-none focus:ring-0 focus:ring-offset-0 disabled:opacity-90 disabled:bg-neutral-200"
-                  value={amountFilter.debitComparer}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                    handleDebitComparerChange(e);
-                    setAmountFilter(() => ({
-                      ...amountFilter,
-                      debitComparer: +e.target.value,
-                    }));
-                  }}
-                >
-                  <option value="0">None</option>
-                  <option value="1">Greater Than</option>
-                  <option value="2">Less than</option>
-                  <option value="3">Equal To</option>
-                </select>
-                <NumericInputUncontrolled
-                  className="border border-neutral-300 p-1 rounded-md text-end "
-                  placeholder="Amount..."
-                  ref={debitRef}
-                  onBlur={(e: FocusEvent<HTMLInputElement>) => {
-                    handleDebitBlur(e);
-                  }}
-                ></NumericInputUncontrolled>
-              </div>
-            </div>
-            <div className="border border-neutral-200 p-2 py-3">
-              <div className="font-semibold text-neutral-600 ml-1">
-                Credit Amount
-              </div>
-              <div className="flex gap-2">
-                <select
-                  className="border p-2 border-neutral-300 rounded-sm text-neutral-800 focus:outline-none focus:ring-0 focus:ring-offset-0 disabled:opacity-90 disabled:bg-neutral-200"
-                  value={amountFilter.creditComparer}
-                  onChange={(e: ChangeEvent<HTMLSelectElement>) => {
-                    handleCreditComparerChange(e);
-                    setAmountFilter(() => ({
-                      ...amountFilter,
-                      creditComparer: +e.target.value,
-                    }));
-                  }}
-                >
-                  <option value="0">None</option>
-                  <option value="1">Greater Than</option>
-                  <option value="2">Less than</option>
-                  <option value="3">Equal To</option>
-                </select>
-                <NumericInputUncontrolled
-                  className="border border-neutral-300 p-1 rounded-md text-end "
-                  placeholder="Amount..."
-                  ref={creditRef}
-                  onBlur={(e) => {
-                    handleCreditBlur(e);
-                  }}
-                ></NumericInputUncontrolled>
-              </div>
-            </div>
-            <div className="flex gap-2 p-2">
-              <button
-                className="flex-1 bg-blue-600 text-neutral-50 p-1 rounded-sm font-semibold cursor-pointer"
-                onClick={handleAmountFilter}
-              >
-                Apply
-              </button>
-              <button
-                className="flex-1 border border-neutral-200 bg-neutral-50 text-blue-500 p-1 rounded-sm font-semibold cursor-pointer"
-                onClick={handleAmountFilterCancel}
-              >
-                Clear
-              </button>
-            </div>
-          </div>
-        </PaymentSearchFilter> */}
-
         <PaymentSearchFilter
           parentCorntrolled={true}
           outsideShowList={yearVisible}
@@ -364,7 +233,6 @@ const PaymentSearchParams = memo(
             </button>
           </div>
         </PaymentSearchFilter>
-
         <PaymentSearchFilter
           parentCorntrolled={true}
           outsideShowList={statusVisible}
@@ -394,34 +262,31 @@ const PaymentSearchParams = memo(
           </div>
         </PaymentSearchFilter>
 
-        {/* <PaymentSearchFilter
-          parentCorntrolled={true}
-          outsideShowList={statusVisible}
-          listOpened={handleStatusOpened}
-          outsideClicked={handleStatusOutsideCLick}
+        <PaymentSearchFilter
           selectedItemLabel={
-            statuses.filter((x) => x.id == selectedStatus)[0].name
+            daysAgo.filter((x) => x.id == selectedDaysAgo)[0].name
           }
+          parentCorntrolled={true}
+          outsideShowList={daysAgoFilterVisible}
+          listOpened={handleAmountFilterOpened}
+          outsideClicked={handleAmountFilterOutsideClick}
         >
           <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-50 rounded-md mt-1 z-1000 opacity-100 bg-white">
             <RadioButtonList
-              id={PAYEE_LIST_TYPE}
-              onSelected={handleStatusChange}
-              items={statuses.map((y) => ({
-                ...y,
-                checked: selectedStatus === y.id,
-              }))}
+              id={DAYS_LIST_TYPE}
+              onSelected={handleDaysSelected}
+              items={daysAgoOptions}
             ></RadioButtonList>
             <button
               className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer"
               onClick={() => {
-                setStatusVisible(false);
+                setDaysAgoFilterVisible(false);
               }}
             >
               Apply
             </button>
           </div>
-        </PaymentSearchFilter> */}
+        </PaymentSearchFilter>
 
         {!payees && (
           <div className="flex gap-3 w-[30%]">
@@ -563,11 +428,7 @@ const PaymentSearchParams = memo(
 
 export default PaymentSearchParams;
 
-function getStatuses(): {
-  id: number;
-  name: string;
-  checked: boolean;
-}[] {
+function getStatuses(): RadioOption[] {
   return [
     { id: 0, name: 'All Statuses', checked: true },
     { id: 1, name: 'Saved', checked: false },

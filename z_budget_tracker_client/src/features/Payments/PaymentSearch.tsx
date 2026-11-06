@@ -34,6 +34,7 @@ const PaymentSearch = () => {
   const queryClient = useQueryClient();
   const [year, setYear] = useState<number>(2026);
   const [status, setStatus] = useState<number>(0);
+  const [daysPaid, setDaysPaid] = useState(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const { initiatives } = useInitiatives();
   const { grants } = useGrantsAllYears();
@@ -51,8 +52,7 @@ const PaymentSearch = () => {
   const [idToDelete, setIdToDelete] = useState(0);
   const [years] = useState<{ id: number; name: string }[]>(() => {
     const years = [];
-
-    for (let x = 0; x <= 1; x++) {
+    for (let x = 0; x <= 4; x++) {
       years.push(new Date().getFullYear() - x);
     }
 
@@ -135,6 +135,7 @@ const PaymentSearch = () => {
       {
         status,
         year,
+        daysPaid,
         selectedIds,
       },
     );
@@ -145,16 +146,10 @@ const PaymentSearch = () => {
     setPageNumber(pageNumber);
   }, []);
 
-  const handleStatusChange = useCallback((status: number) => {
-    setStatus(status);
-    setPageNumber(1);
-  }, []);
-
   const handleYearChange = useCallback(
     (year: number) => {
       setSelectedIds((prev) => {
         const p = prev.filter((x) => x.type == PAYEE_LIST_TYPE);
-
         const i = prev.filter((x) => x.type == INITIATIVES_LIST_TYPE);
         const a = prev.filter((x) => x.type == ACCOUNTS_LIST_TYPE);
         const g = grants!
@@ -167,6 +162,16 @@ const PaymentSearch = () => {
     },
     [grants],
   );
+
+  const handleStatusChange = useCallback((status: number) => {
+    setStatus(status);
+    setPageNumber(1);
+  }, []);
+
+  const handleDaysChange = useCallback((days: number) => {
+    setDaysPaid(days);
+    setPageNumber(1);
+  }, []);
 
   function handleSelectAll(type: string) {
     const newSelectedIds: SelectedItem[] = [
@@ -317,12 +322,17 @@ const PaymentSearch = () => {
               name: x.name,
             }))}
             years={years}
+            daysAgo={[0, 5, 10, 15, 20, 25, 30].map((x) => ({
+              id: x,
+              name: x === 0 ? 'All' : `Less than ${x} ago`,
+            }))}
             onListCheck={handleListCheck}
             // onListXCheck={handleListXCheck}
             onDeselectAll={handleDeselectAll}
             onSelectAll={handleSelectAll}
             onStatusChange={handleStatusChange}
             onYearChange={handleYearChange}
+            onDaysChange={handleDaysChange}
             // onAmountFilter={handleAmountFilter}
             // onAmountFilterCancel={handleAmountFilterCancel}
           ></MemoizedSearchParams>
