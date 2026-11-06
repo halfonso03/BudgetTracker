@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import useGetRepro from '../../api/hooks/repro/useGetRepro';
@@ -10,8 +11,7 @@ const ReproDetails = () => {
 
   const navigate = useNavigate();
   const { id } = useParams();
-  const { setHasUnsavedChanges } =
-    useHasUnsavedChangesStore();
+  const { setHasUnsavedChanges } = useHasUnsavedChangesStore();
   // const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const reproId = id !== undefined ? +id : undefined;
 
@@ -135,7 +135,7 @@ function createReproFromDb(repro2: Repro): Repro {
   const repro: Repro = {
     ...repro2,
     justification: repro2.justification.trim(),
-    uuid: crypto.randomUUID(),
+    uuid: uuidv4(),
     rowBalances: repro2.rowBalances,
     lineItems: repro2.lineItems!.map((l) => {
       const curAmount =
@@ -150,7 +150,7 @@ function createReproFromDb(repro2: Repro): Repro {
           .currentAmount ?? 0;
       return {
         ...l,
-        uuid: window.crypto.randomUUID(),
+        uuid: uuidv4(),
         currentAmount: curAmount,
         newAmount: curAmount + Number(l.increase) - Number(l.decrease),
       };

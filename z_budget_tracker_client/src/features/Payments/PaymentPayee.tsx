@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Ellipsis, TrashIcon } from 'lucide-react';
 import { POSTED } from '../../app/constants';
 import {
@@ -101,7 +102,7 @@ const PaymentPayee = ({
           {/* {paymentLineItem.paymentLineItemId} */}
           <InvoiceInfoModal
             isOpen={invoiceModalIsopen}
-            key={crypto.randomUUID()}
+            key={uuidv4()}
             paymentInvoiceInfo={{
               ...paymentLineItem,
               paymentId: paymentHeader.id,

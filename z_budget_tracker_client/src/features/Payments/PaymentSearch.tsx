@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 import { usePaymentSearch } from '../../api/hooks/payments/usePaymentSearch';
@@ -411,7 +412,7 @@ const PaymentSearch = () => {
       {paymentLineItemInvoiceToUpdate && (
         <InvoiceInfoModal
           isOpen={invoiceModalIsopen}
-          key={crypto.randomUUID()}
+          key={uuidv4()}
           paymentInvoiceInfo={paymentLineItemInvoiceToUpdate}
           onCancel={() => {
             setTimeout(() => {

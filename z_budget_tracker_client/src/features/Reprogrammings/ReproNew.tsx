@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import useClientAuth from '../../contexts/useClientAuth';
@@ -56,7 +57,7 @@ const ReproNew = () => {
       const lineItem: ReproLineItem = {
         ...preloadState.ids,
         rowId: 0,
-        uuid: crypto.randomUUID(),
+        uuid: uuidv4(),
         accountName: preloadState.ids.accountName,
         currentAmount: currentAmount,
         newCurrentAmount: currentAmount,
@@ -67,7 +68,7 @@ const ReproNew = () => {
   }
 
   const defaultRepro: Repro = {
-    uuid: crypto.randomUUID(),
+    uuid: uuidv4(),
     id: 0,
     year: initialYear,
     justification: justification,
@@ -91,7 +92,7 @@ const ReproNew = () => {
       ...defaultRepro,
       year: year,
       justification: justification,
-      uuid: crypto.randomUUID(),
+      uuid: uuidv4(),
     });
     navigate('/reprogramming/new', {
       state: {

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   AlertCircle,
@@ -413,7 +414,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
       newCurrentAmount: lineToDuplicate.currentAmount,
       remainingAmount: lineToDuplicate.remainingAmount,
       newRemainingAmount: lineToDuplicate.remainingAmount,
-      uuid: crypto.randomUUID(),
+      uuid: uuidv4(),
     };
 
     setLines([...lines, duplicatedLine]);

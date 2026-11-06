@@ -1,4 +1,5 @@
 import './Switch.css';
+import { v4 as uuidv4 } from 'uuid';
 
 type Props = {
   isOn: boolean;
@@ -6,7 +7,7 @@ type Props = {
 };
 
 const Switch = ({ isOn, handleToggle }: Props) => {
-  const id = crypto.randomUUID()
+  const id = uuidv4();
   return (
     <div>
       <input
@@ -19,7 +20,7 @@ const Switch = ({ isOn, handleToggle }: Props) => {
         type="checkbox"
       />
       <label
-        className={`react-switch-label ${isOn ? 'bg-blue-700': 'bg-neutral-500' }`}
+        className={`react-switch-label ${isOn ? 'bg-blue-700' : 'bg-neutral-500'}`}
         htmlFor={`react-switch-new_${id}`}
       >
         <span className={`react-switch-button`} />

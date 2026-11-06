@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useState, type ChangeEvent } from 'react';
 import useCategories from '../../../api/hooks/common/useCategories';
 import useGrants from '../../../api/hooks/common/useGrants';
@@ -59,7 +60,7 @@ const AddLineModal = ({ ...props }: Props) => {
 
       const newLine: ReproLineItem = {
         rowId: -1,
-        uuid: window.crypto.randomUUID(),
+        uuid: uuidv4(),
         accountId: account.accountId,
         accountName: account.accountName,
         categoryId: selections!.categoryId!,

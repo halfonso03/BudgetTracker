@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useState } from 'react';
 import useCategories from '../../../api/hooks/common/useCategories';
 import useGrants from '../../../api/hooks/common/useGrants';
@@ -201,7 +202,7 @@ const PaymentLineModal = (props: Props) => {
       const newLine: PaymentLineItem = {
         ...data,
         rowId: -1,
-        uuid: crypto.randomUUID(),
+        uuid: uuidv4(),
         accountName:
           categories!
             .filter((x) => x.id === data.categoryId)[0]
@@ -221,14 +222,14 @@ const PaymentLineModal = (props: Props) => {
         comment: data.comment?.trim(),
         lastPaymentDate: payee?.lastPaymentDate,
         numberOfPayments: payee?.numberOfPayments,
-        paymentNumber: payee?.numberOfPayments ?? 0 + 1
+        paymentNumber: payee?.numberOfPayments ?? 0 + 1,
       };
       props.onLineAdded(newLine);
     } else {
       // payentLinewItemId is being removed on update of row
 
       console.log('data', data);
-      
+
       const updatedLine: PaymentLineItem = {
         ...data,
         rowId: -1,
@@ -701,7 +702,7 @@ const checkKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
 
 //     const newLine: PaymentLineItem = {
 //       rowId: -1,
-//       uuid: window.crypto.randomUUID(),
+//       uuid:uuidv4(),
 //       accountId: account.accountId,
 //       accountName: account.accountName,
 //       categoryId: selections!.categoryId!,

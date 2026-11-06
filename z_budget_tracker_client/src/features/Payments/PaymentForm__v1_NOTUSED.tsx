@@ -68,7 +68,7 @@
 //   if (preloadedValues !== null && preloadedValues !== undefined) {
 //     // console.log('preloadedValues', preloadedValues);
 //     // console.log('initialSelection', initialEditSelection);
-//     initialEditSelection = { ...preloadedValues, uuid: crypto.randomUUID() };
+//     initialEditSelection = { ...preloadedValues, uuid: uuidv4() };
 //   }
 
 //   const [editSelections, setEditSelections] =
@@ -290,7 +290,7 @@
 //       ...lines.filter((x) => x.uuid === uuid)[0],
 //       paymentAmount: 0,
 //       rowId: lines.length,
-//       uuid: crypto.randomUUID(),
+//       uuid: uuidv4(),
 //     };
 
 //     setLines([...lines, duplicatedLine]);

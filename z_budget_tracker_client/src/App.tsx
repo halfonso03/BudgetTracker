@@ -3,6 +3,8 @@ import NavBar from './components/NavBar';
 import { ToastBar, Toaster } from 'react-hot-toast';
 
 function App() {
+
+  
   return (
     <>
       <NavBar></NavBar>

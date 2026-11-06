@@ -128,7 +128,7 @@
 //       ...data,
 
 //       rowId: -1,
-//       uuid: crypto.randomUUID(),
+//       uuid: uuidv4(),
 //       accountName:
 //         categories!
 //           .filter((x) => x.id === data.categoryId)[0]
@@ -499,7 +499,7 @@
 
 // //     const newLine: PaymentLineItem = {
 // //       rowId: -1,
-// //       uuid: window.crypto.randomUUID(),
+// //       uuid:uuidv4(),
 // //       accountId: account.accountId,
 // //       accountName: account.accountName,
 // //       categoryId: selections!.categoryId!,

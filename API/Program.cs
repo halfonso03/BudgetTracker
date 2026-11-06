@@ -22,6 +22,8 @@ builder.Services.AddControllers(opt =>
     opt.Filters.Add(new AuthorizeFilter(policy));
 });
 
+
+
 // 2. Database Context configuration
 builder.Services.AddDbContext<AppDbContext>(opt =>
 {
@@ -33,11 +35,11 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 builder.Services.AddIdentityApiEndpoints<ApplicationUser>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
-    opt.Stores.MaxLengthForKeys = 450; 
+    opt.Stores.MaxLengthForKeys = 450;
 })
 .AddRoles<ApplicationRole>()
 // Add identity stores explicitly passing your User, Role, DbContext, and Key type
-.AddEntityFrameworkStores<AppDbContext>() 
+.AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
 // FIX: Tells controllers to validate the Identity Cookie instead of checking for a Bearer token
@@ -49,14 +51,36 @@ builder.Services.AddAuthentication(options =>
 });
 
 // 4. Fine-tune Application Cookies for React Integration
+
+
+//    options.Cookie.SecurePolicy = builder.Environment.IsProduction() ? CookieSecurePolicy.Always : CookieSecurePolicy.SameAsRequest; // Set to SameAsRequest if strict HTTP locally
+
+
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Set to SameAsRequest if strict HTTP locally
-    options.Cookie.SameSite = SameSiteMode.None; // Set to Lax if React and API share exact same domain/port
+
+
+    options.Cookie.SecurePolicy = builder.Environment.IsProduction() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always; // Set to SameAsRequest if strict HTTP locally
+    options.Cookie.SameSite = builder.Environment.IsProduction() ? SameSiteMode.Lax : SameSiteMode.None; // Set to Lax if React and API share exact same domain/port
+
+
+    // DEV settings
+    // options.Cookie.SecurePolicy = CookieSecurePolicy.Always; // Set to SameAsRequest if strict HTTP locally
+    // options.Cookie.SameSite = SameSiteMode.None; // Set to Lax if React and API share exact same domain/port
+
+
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
     options.SlidingExpiration = true;
+    options.Events.OnRedirectToLogin = context =>
+       {
+           // Stop ASP.NET from redirecting API failures to an MVC HTML login page
+           context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+           return Task.CompletedTask;
+       };
 });
+
+var t = 1;
 
 // 5. Cross-Origin Resource Sharing (CORS) Configuration
 builder.Services.AddCors(opt =>
@@ -82,7 +106,7 @@ builder.Services.AddTransient<PaymentService, PaymentService>();
 builder.Services.AddTransient<IReportParameterValuesService, ReportParameterValuesService>();
 builder.Services.AddTransient<IReportService, ReportService>();
 builder.Services.AddTransient<PaymentService, PaymentService>();
-
+builder.Services.AddAntiforgery();
 
 builder.Services.AddTransient<IReportRunnerService, ReportRunnerService>((provider) =>
 {
@@ -109,6 +133,7 @@ var app = builder.Build();
 // 7. Request Pipeline Routing Middleware
 app.UseCors("CorsPolicy");
 
+app.UseAntiforgery();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -8,7 +8,7 @@ import { useState } from 'react';
 import type { AxiosError, AxiosResponse } from 'axios';
 export type LoginFormValues = { email: string; password: string };
 
-export default function useServerAuth() {
+export default function useLogin() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -32,7 +32,7 @@ export default function useServerAuth() {
       const loginResponse = response.data as LoginResponse;
       return loginResponse;
     },
-    onSuccess: (response: LoginResponse) => {
+    onSuccess: async (response: LoginResponse) => {
       if (hasUnsavedChanges) {
         setHasUnsavedChanges(false);
       }

@@ -53,7 +53,7 @@
 //     lineItems.push({
 //       ...preloadState.ids,
 //       rowId: 0,
-//       uuid: crypto.randomUUID(),
+//       uuid: uuidv4(),
 //       accountName: '',
 //       currentAmount: preloadState.balances.filter(
 //         (x: ReproLineItem) => x.accountId === preloadState.ids.accountId,
@@ -63,7 +63,7 @@
 //   }
 
 //   const defaultRepro: Repro = {
-//     uuid: crypto.randomUUID(),
+//     uuid: uuidv4(),
 //     id: 0,
 //     year: selectedYear,
 //     justification: '',
@@ -106,7 +106,7 @@
 //     setSelectedYear(e.year);
 //     setReproState(() => ({
 //       ...defaultRepro,
-//       uuid: crypto.randomUUID(),
+//       uuid: uuidv4(),
 //       justification: e.justification,
 //       year: e.year,
 //     }));
@@ -183,7 +183,7 @@
 //   const repro: Repro = {
 //     ...repro2,
 //     justification: repro2.justification.trim(),
-//     uuid: crypto.randomUUID(),
+//     uuid: uuidv4(),
 //     lineItems: repro2.lineItems!.map((l) => {
 //       const curAmount =
 //         repro2.rowBalances
@@ -197,7 +197,7 @@
 //           .currentAmount ?? 0;
 //       return {
 //         ...l,
-//         uuid: window.crypto.randomUUID(),
+//         uuid:uuidv4(),
 //         currentAmount: curAmount,
 //         newAmount: curAmount + Number(l.increase) - Number(l.decrease),
 //         rowBalances: repro2.rowBalances,

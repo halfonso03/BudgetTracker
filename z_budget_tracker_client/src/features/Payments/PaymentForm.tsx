@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BUDGET_CUMULATIVE_TOTAL_EXCEEDED,
@@ -79,7 +80,7 @@ const PaymentForm = ({
   if (preloadedValues !== null && preloadedValues !== undefined) {
     // console.log('preloadedValues', preloadedValues);
     // console.log('initialSelection', initialEditSelection);
-    initialEditSelection = { ...preloadedValues, uuid: crypto.randomUUID() };
+    initialEditSelection = { ...preloadedValues, uuid: uuidv4() };
   }
 
   const [editSelections, setEditSelections] =
@@ -718,7 +719,7 @@ const PaymentForm = ({
     queryClient.invalidateQueries({
       queryKey: ['payment_search'],
     });
-    console.log('123', 123)
+    console.log('123', 123);
   }
 
   return (

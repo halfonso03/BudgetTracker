@@ -1,14 +1,15 @@
-import  { useState, type ChangeEvent, type FormEvent } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 
 // 1. Updated structural interfaces to support Categories -> Accounts
 export interface BudgetAccount {
   id: string;
-  name: string;      // e.g., "Legal Consultation", "SaaS Subscriptions"
+  name: string; // e.g., "Legal Consultation", "SaaS Subscriptions"
 }
 
 export interface BudgetCategory {
   id: string;
-  name: string;      // e.g., "Services", "Equipment"
+  name: string; // e.g., "Services", "Equipment"
   accounts: BudgetAccount[]; // The lowest level where funds are locked
 }
 
@@ -38,7 +39,10 @@ interface FormState {
   notes: string;
 }
 
-export default function EncumbranceForm({ budgetCategories, onAddEncumbrance }: EncumbranceFormProps) {
+export default function EncumbranceForm({
+  budgetCategories,
+  onAddEncumbrance,
+}: EncumbranceFormProps) {
   const [formData, setFormData] = useState<FormState>({
     title: '',
     amount: '',
@@ -48,7 +52,9 @@ export default function EncumbranceForm({ budgetCategories, onAddEncumbrance }: 
     notes: '',
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -59,13 +65,20 @@ export default function EncumbranceForm({ budgetCategories, onAddEncumbrance }: 
 
     onAddEncumbrance({
       ...formData,
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       amount: parseFloat(formData.amount),
       status: 'Encumbered',
       createdAt: new Date().toISOString(),
     });
 
-    setFormData({ title: '', amount: '', accountId: '', vendor: '', estimatedFulfillmentDate: '', notes: '' });
+    setFormData({
+      title: '',
+      amount: '',
+      accountId: '',
+      vendor: '',
+      estimatedFulfillmentDate: '',
+      notes: '',
+    });
   };
 
   return (
@@ -74,12 +87,15 @@ export default function EncumbranceForm({ budgetCategories, onAddEncumbrance }: 
         🔒 Record New Encumbrance
       </h2>
       <p className="text-xs text-gray-500 mb-4">
-        Hold and commit funds from a specific budget account before the actual invoice arrives.
+        Hold and commit funds from a specific budget account before the actual
+        invoice arrives.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Commitment Title *</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Commitment Title *
+          </label>
           <input
             type="text"
             name="title"
@@ -93,7 +109,9 @@ export default function EncumbranceForm({ budgetCategories, onAddEncumbrance }: 
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Amount ($) *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Amount ($) *
+            </label>
             <input
               type="number"
               name="amount"
@@ -107,7 +125,9 @@ export default function EncumbranceForm({ budgetCategories, onAddEncumbrance }: 
           </div>
           <div>
             {/* 2. Grouped dropdown menu handling the two-tier structure */}
-            <label className="block text-sm font-medium text-gray-700 mb-1">Budget Account *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Budget Account *
+            </label>
             <select
               name="accountId"
               value={formData.accountId}
@@ -131,7 +151,9 @@ export default function EncumbranceForm({ budgetCategories, onAddEncumbrance }: 
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Vendor/Payee</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Vendor/Payee
+            </label>
             <input
               type="text"
               name="vendor"
@@ -142,7 +164,9 @@ export default function EncumbranceForm({ budgetCategories, onAddEncumbrance }: 
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Est. Clear Date</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Est. Clear Date
+            </label>
             <input
               type="date"
               name="estimatedFulfillmentDate"
@@ -154,7 +178,9 @@ export default function EncumbranceForm({ budgetCategories, onAddEncumbrance }: 
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Reference Notes</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Reference Notes
+          </label>
           <textarea
             name="notes"
             value={formData.notes}

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useClientAuth from '../../contexts/useClientAuth';
 import { useEffect, useState } from 'react';
@@ -36,7 +37,7 @@ const PaymentNew = () => {
   }
 
   const defaultPayment: Payment = {
-    uuid: crypto.randomUUID(),
+    uuid: uuidv4(),
     id: 0,
     year: initialYear,
     justification: justification,
@@ -62,7 +63,7 @@ const PaymentNew = () => {
       ...defaultPayment,
       year: year,
       justification: justification,
-      uuid: crypto.randomUUID(),
+      uuid: uuidv4(),
     });
     navigate('/payments/new', {
       state: {

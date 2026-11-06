@@ -1,11 +1,11 @@
 import Button from '../../components/Button';
-import { type LoginFormValues } from '../../api/hooks/auth/useServerAuth';
+import { type LoginFormValues } from '../../api/hooks/auth/useLogin';
 import toast from 'react-hot-toast';
 import StackedFormRow from '../../ui/StackedFormRow';
 import Input from '../../components/Input';
 import { Check } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import useServerAuth from '../../api/hooks/auth/useServerAuth';
+import useLogin from '../../api/hooks/auth/useLogin';
 
 const Login = () => {
   const {
@@ -20,13 +20,13 @@ const Login = () => {
   });
 
   const { loginUser, isLoginPending, isLoginSuccess, errorMessage } =
-    useServerAuth();
+    useLogin();
 
-  const onSubmit = (data: LoginFormValues) => {
+  const onSubmit = async (data: LoginFormValues) => {
     // setIsLoggingIn(true);
 
     try {
-      loginUser(data);
+      await loginUser(data);
     } catch (error) {
       toast.error(error!.toString());
     } finally {
@@ -59,7 +59,6 @@ const Login = () => {
                 autoComplete="current-password"
               />
             </div>
-            HI
             <StackedFormRow
               id="email"
               label="Email"

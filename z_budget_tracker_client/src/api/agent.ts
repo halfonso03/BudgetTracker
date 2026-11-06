@@ -14,9 +14,9 @@ const agent = axios.create({
 agent.interceptors.request.use(async (config) => {
     // store.uiStore.isBusy();
 
-    if (import.meta.env.DEV) {
-        // await sleep(600);
-    }
+    // if (import.meta.env.DEV) {
+    //     await sleep(2000);
+    // }
     return config;
 });
 
@@ -84,19 +84,38 @@ agent.interceptors.response.use(
                     // }
 
 
-                    // console.log('error', error)
+                    console.log('error', error)
+                    console.error(error)
 
-                    // if (error.response.data) {
-                    //     toast.error(error.response.data, { duration: 2000 })
+                    if (error.response.data) {
+                        if (error.response.data.errors) {
+                            toast.error(JSON.stringify(error.response.data.errors), { duration: 2000 });
+                        }
+                        //     toast.error(error.response.data, { duration: 2000 })
 
-                    // }
-                    // else if (error.response) {
-                    //     // toast.error(error.response, { duration: 2000 })
-                    // }
+                    }
+                    else if (error.response) {
+                        toast.error(JSON.stringify(error.response), { duration: 2000 });
+
+                    }
                     break;
                 }
                 case 401:
-                    window.location.href = '/login';
+                    console.log('error', error)
+                    console.error(error)
+
+                    if (error.response.data) {
+                        if (error.response.data.errors) {
+                            toast.error(JSON.stringify(error.response.data.errors), { duration: 2000 });
+                        }
+                        //     toast.error(error.response.data, { duration: 2000 })
+
+                    }
+                    else if (error.response) {
+                        toast.error(JSON.stringify(error.response), { duration: 2000 });
+
+                    }
+                    // window.location.href = '/login';
                     break;
                 case 403:
                     toast.error('You do not have access.');

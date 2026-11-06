@@ -12,13 +12,13 @@ const useLogout = () => {
 
   const { mutate: logoutUser } = useMutation({
     mutationFn: async () => {
-      agent.post('/account/logout');
+      await agent.post('/account/logout');
     },
     onSuccess: async () => {
       setHasUnsavedChanges(false);
-      navigate('/login', { replace: true });
       logout();
       queryClient.removeQueries();
+      navigate('/login', { replace: true });
     },
   });
 

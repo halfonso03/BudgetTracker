@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import PaymentControls from './PaymentControls';
@@ -10,8 +11,7 @@ const PaymentDetails = () => {
 
   const navigate = useNavigate();
   const { id } = useParams();
-  const { setHasUnsavedChanges } =
-    useHasUnsavedChangesStore();
+  const { setHasUnsavedChanges } = useHasUnsavedChangesStore();
   // const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const paymentId = id !== undefined ? +id : undefined;
 
@@ -99,7 +99,7 @@ function createPaymentFromDb(payment: Payment): Payment {
   const payment2: Payment = {
     ...payment,
     justification: payment.justification.trim(),
-    uuid: crypto.randomUUID(),
+    uuid: uuidv4(),
     lineItems: payment.lineItems!.map((l) => {
       return {
         ...l,
@@ -109,7 +109,7 @@ function createPaymentFromDb(payment: Payment): Payment {
             x.grantId === l.grantId &&
             x.accountId === l.accountId,
         )[0].remainingAmount,
-        uuid: window.crypto.randomUUID(),
+        uuid: uuidv4(),
         paymentAmount: l.paymentAmount,
       };
     }),
