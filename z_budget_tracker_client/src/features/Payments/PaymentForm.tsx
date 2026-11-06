@@ -309,6 +309,8 @@ const PaymentForm = ({
 
       const newLine: PaymentLineItem = {
         ...updatedLine,
+        paymentNumber: lineItem.paymentNumber,
+        lastPaymentDate: lineItem.lastPaymentDate,
         rowId: lineItem.rowId,
         paymentLineItemId: lineItem.paymentLineItemId,
         newAvailableAmount:
