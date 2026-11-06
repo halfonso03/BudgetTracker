@@ -29,49 +29,64 @@ const ReproSearchReults = ({ onDelete, results }: Props) => {
   return (
     <div className="w-full min-w-full ">
       <div className="grid grid-cols-[.5fr_.3fr_1fr_1fr.3fr_.4fr] p-2 px-3 bg-gray-50 text-neutral-500 border border-neutral-300/60 ">
-        <div className="entity-label">
-          <SortBySelector
-            label="ID"
-            value="ID"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
-        </div>
-        <div className="entity-label">
-          <SortBySelector
-            label="Status"
-            value="STATUS"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+        <div className="entity-label flex justify-center">
+          <div className="flex justify-center">
+            <SortBySelector
+              label="ID"
+              value="ID"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Posted By"
-            value="POSTEDBY"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Status"
+              value="STATUS"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Posted Date"
-            value="POSTEDDATE"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Posted By"
+              value="POSTEDBY"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Amount"
-            value="AMOUNT"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Posted Date"
+              value="POSTEDDATE"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
+        </div>
+        <div className="entity-label flex justify-center">
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Amount"
+              value="AMOUNT"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="text-center"></div>
       </div>
       <div className="border-l border-r border-b border-neutral-300/60">
         {results.map((r, index) => (
-          <div key={r.id} className="hover:bg-neutral-100  border-b border-b-neutral-300/60 last:border-0">
+          <div
+            key={r.id}
+            className="hover:bg-neutral-100  border-b border-b-neutral-300/60 last:border-0"
+          >
             <div className="grid grid-cols-[.5fr_.3fr_1fr_1fr.3fr_.4fr]  p-2 px-3 ">
               <div className="text-center">{r.id}</div>
-              <div className="text-center">{!r.posted ? 'Saved' : 'Posted'}</div>
+              <div className="text-center">
+                {!r.posted ? 'Saved' : 'Posted'}
+              </div>
               <div className="text-center">{r.posted && r.postedBy}</div>
               <div className="text-center">
                 {r.postedDate && formatDate(r.postedDate)}
@@ -104,7 +119,7 @@ const ReproSearchReults = ({ onDelete, results }: Props) => {
                       className="text-neutral-500"
                     ></EllipsisVertical>
                   </Menus.Toggler>
-                  <Menus.List id={r.id.toString()}  topPos='translate-y-5'>
+                  <Menus.List id={r.id.toString()} topPos="translate-y-5">
                     <Menus.MenuItem>
                       <Link className="flex" to={`/reprogramming/${r.id}`}>
                         {r.posted ? (
@@ -141,12 +156,18 @@ const ReproSearchReults = ({ onDelete, results }: Props) => {
               <div className="border border-neutral-200 p-3 border-b-0 bg-neutral-50">
                 <div className="border border-neutral-200 bg-white ">
                   <div className="grid grid-cols-[1fr_.5fr_.5fr_1fr_.5fr_.5fr] p-2 px-6 border-b border-b-neutral-200">
-                    <div className="text-neutral-600">Initiative</div>
-                    <div className="text-neutral-600">Award</div>
-                    <div className="text-neutral-600">Category</div>
-                    <div className="text-neutral-600">Account</div>
-                    <div className="text-neutral-600 text-center">Increase</div>
-                    <div className="text-neutral-600 text-center">Decrease</div>
+                    <div className="text-neutral-500 font-medium">
+                      Initiative
+                    </div>
+                    <div className="text-neutral-500 font-medium">Award</div>
+                    <div className="text-neutral-500 font-medium">Category</div>
+                    <div className="text-neutral-500 font-medium">Account</div>
+                    <div className="text-neutral-500 font-medium text-center">
+                      Increase
+                    </div>
+                    <div className="text-neutral-500 font-medium text-center">
+                      Decrease
+                    </div>
                   </div>
                   {r.lineItems.map((item, index) => (
                     <div

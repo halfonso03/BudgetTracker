@@ -33,7 +33,10 @@ const PayeeForm = ({
   mode = '',
 }: Props) => {
   const queryClient = useQueryClient();
-  const [isActive, setIsActive] = useState(payee.isActive);
+
+  const [isActive, setIsActive] = useState(
+    payee.id === 0 ? true : payee.isActive,
+  );
   const [payeeId, setPayeeId] = useState(payee.id);
   const {
     register,
@@ -136,12 +139,13 @@ const PayeeForm = ({
     setValues({ accountId: payee.accountId });
     setValues({ name: payee.name });
     setValues({ additionalInformation: payee.additionalInformation });
-    setValues({ payeeTypeId: payee.payeeTypeId });
+    setValues({ isActive: payee.id == 0 ? true : payee.isActive });
   }, [
     payee.accountId,
     payee.additionalInformation,
     payee.categoryId,
     payee.id,
+    payee.isActive,
     payee.name,
     payee.payeeTypeId,
     setValues,

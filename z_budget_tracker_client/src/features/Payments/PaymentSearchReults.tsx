@@ -37,67 +37,86 @@ const PaymentSearchReults = ({
           ></SortBySelector>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Payment No."
-            value="PAYMENTNUMBER"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Payment No."
+              value="PAYMENTNUMBER"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Payee"
-            value="PAYEE"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Payee"
+              value="PAYEE"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Amount"
-            value="AMOUNT"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Amount"
+              value="AMOUNT"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Invoice Date"
-            value="INVOICEDATE"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            {' '}
+            <SortBySelector
+              label="Invoice Date"
+              value="INVOICEDATE"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Invoice No."
-            value="INVOICENUMBER"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Invoice No."
+              value="INVOICENUMBER"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Check No."
-            value="CHECKNUMBER"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Check No."
+              value="CHECKNUMBER"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Posted By"
-            value="POSTEDBY"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Posted By"
+              value="POSTEDBY"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Posted Date"
-            value="POSTEDDATE"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Posted Date"
+              value="POSTEDDATE"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Initiative"
-            value="INITIATIVE"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Initiative"
+              value="INITIATIVE"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="entity-label flex justify-center">
           <SortBySelector
@@ -107,11 +126,13 @@ const PaymentSearchReults = ({
           ></SortBySelector>
         </div>
         <div className="entity-label flex justify-center">
-          <SortBySelector
-            label="Account"
-            value="ACCOUNT"
-            currentSortValue={sortByValue}
-          ></SortBySelector>
+          <div className="flex justify-center">
+            <SortBySelector
+              label="Account"
+              value="ACCOUNT"
+              currentSortValue={sortByValue}
+            ></SortBySelector>
+          </div>
         </div>
         <div className="text-center"></div>
       </div>
@@ -122,7 +143,7 @@ const PaymentSearchReults = ({
             className="hover:bg-neutral-100  border-b border-b-neutral-300/60 last:border-0"
           >
             <div className="grid grid-cols-[.4fr_.9fr_1.2fr_1fr_.7fr_.7fr_.7fr_1fr_.8fr_1.2fr_.5fr_1.4fr_.3fr] p-2 px-3">
-              <div className="text-center self-center">
+              <div className="self-center">
                 <Link to={`/payments/${r.paymentId}`}>{r.paymentId}</Link>
               </div>
               <div className="text-center self-center">{r.paymentNumber}</div>
@@ -144,7 +165,7 @@ const PaymentSearchReults = ({
               <div className="text-center self-center">
                 {r.categoryName + '/' + r.accountName}
               </div>
-              <div className="flex justify-center self-center">
+              <div className="flex justify-center self-center w-full">
                 <Menus>
                   <Menus.Toggler id={r.paymentLineItemId.toString()}>
                     <Ellipsis
