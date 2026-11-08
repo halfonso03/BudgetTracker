@@ -1,6 +1,6 @@
 using Application.DTOs.Payees;
 using AutoMapper;
-using Domain.Views;
+using Domain;
 
 namespace Application.Core
 {

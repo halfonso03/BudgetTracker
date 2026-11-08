@@ -1,6 +1,6 @@
 using System;
+using Application.DTOs.Dashboard;
 using Domain;
-using Domain.Views;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -292,6 +292,9 @@ namespace Persistence
             builder.Entity<BudgetHeader>().Property(x => x.UpdatedBy).HasColumnName("updated_by");
             builder.Entity<BudgetHeader>().HasKey(x => new { x.InitiativeId, x.GrantId });
             builder.Entity<BudgetHeader>().Property(x => x.UpdatedDate).HasColumnName("update_date").HasColumnType("DATETIME2");
+            
+            builder.Entity<BudgetSurplusBurnRateDto>().HasNoKey();
+
 
             DataSeeder.SeedData(builder, "hialfonso@nhac.org");
         }

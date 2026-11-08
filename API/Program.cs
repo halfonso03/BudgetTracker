@@ -106,6 +106,8 @@ builder.Services.AddTransient<PaymentService, PaymentService>();
 builder.Services.AddTransient<IReportParameterValuesService, ReportParameterValuesService>();
 builder.Services.AddTransient<IReportService, ReportService>();
 builder.Services.AddTransient<PaymentService, PaymentService>();
+builder.Services.AddTransient<DashboardService, DashboardService>();
+
 builder.Services.AddAntiforgery();
 
 builder.Services.AddTransient<IReportRunnerService, ReportRunnerService>((provider) =>
