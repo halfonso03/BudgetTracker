@@ -931,6 +931,55 @@ namespace Persistence.Migrations
                     b.ToTable("tblBudget", "Audit");
                 });
 
+            modelBuilder.Entity("Domain.BudgetSurplusBurnRateDto", b =>
+                {
+                    b.Property<DateTime>("BudgetStart")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("CumulativeSpent")
+                        .HasColumnType("NUMERIC(15,2)");
+
+                    b.Property<int>("CurrentMonth")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("CurrentMonthlyBurnRate")
+                        .HasColumnType("NUMERIC(5,2)");
+
+                    b.Property<string>("GrantName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InitiativeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("MonthsOfRunwayLeft")
+                        .HasColumnType("NUMERIC(10,2)");
+
+                    b.Property<decimal>("PercentCashLeft")
+                        .HasColumnType("NUMERIC(5,2)");
+
+                    b.Property<decimal>("PercentTimeElapsed")
+                        .HasColumnType("NUMERIC(5,2)");
+
+                    b.Property<DateTime>("ProjectedExhaustionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("RemainingBalance")
+                        .HasColumnType("NUMERIC(15,2)");
+
+                    b.Property<decimal>("SurplusGapPoints")
+                        .HasColumnType("NUMERIC(10,2)");
+
+                    b.Property<int>("SurplusScore")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAllocation")
+                        .HasColumnType("NUMERIC(15,2)");
+
+                    b.ToTable("BudgetSurplusBurnRateDto");
+                });
+
             modelBuilder.Entity("Domain.Category", b =>
                 {
                     b.Property<int>("Id")
@@ -1582,6 +1631,63 @@ namespace Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Domain.PayeeSummary", b =>
+                {
+                    b.Property<int?>("AccountId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AccountName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AdditionalInformation")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("additional_information");
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DaysSinceLastPayment")
+                        .HasColumnType("int")
+                        .HasColumnName("days_since_last_payment");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("is_active");
+
+                    b.Property<decimal?>("LastPaymentAmount")
+                        .HasColumnType("NUMERIC(15,2)");
+
+                    b.Property<DateTime?>("LastPaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NumberOfPayments")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PayeeType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("payeeType");
+
+                    b.Property<int>("PayeeTypeId")
+                        .HasColumnType("int")
+                        .HasColumnName("payee_type_id");
+
+                    b.Property<decimal?>("TotalPaid")
+                        .HasColumnType("NUMERIC(15,2)")
+                        .HasColumnName("total_paid");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("vwPayeeSummary", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Report", b =>
                 {
                     b.Property<int>("Id")
@@ -1918,63 +2024,6 @@ namespace Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("tblReproLineItem");
-                });
-
-            modelBuilder.Entity("Domain.Views.PayeeSummary", b =>
-                {
-                    b.Property<int?>("AccountId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("AccountName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AdditionalInformation")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("additional_information");
-
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DaysSinceLastPayment")
-                        .HasColumnType("int")
-                        .HasColumnName("days_since_last_payment");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasColumnName("is_active");
-
-                    b.Property<decimal?>("LastPaymentAmount")
-                        .HasColumnType("NUMERIC(15,2)");
-
-                    b.Property<DateTime?>("LastPaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NumberOfPayments")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PayeeType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("payeeType");
-
-                    b.Property<int>("PayeeTypeId")
-                        .HasColumnType("int")
-                        .HasColumnName("payee_type_id");
-
-                    b.Property<decimal?>("TotalPaid")
-                        .HasColumnType("NUMERIC(15,2)")
-                        .HasColumnName("total_paid");
-
-                    b.ToTable((string)null);
-
-                    b.ToView("vwPayeeSummary", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Account", b =>

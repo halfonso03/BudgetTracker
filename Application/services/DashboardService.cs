@@ -1,5 +1,5 @@
 using Application.Core;
-using Application.DTOs.Dashboard;
+using Domain;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Persistence;

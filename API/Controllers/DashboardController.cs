@@ -10,7 +10,8 @@ namespace API.Controllers
 {
     public class DashboardController (DashboardService dashboardService) : BaseApiController
     {
-        public async Task<IActionResult> GetBudgetSurplusBurnRateReportAsync (int hidtaId, int year)
+        [HttpGet("BudgetSurplusBurnRateReport")]
+        public async Task<IActionResult> GetBudgetSurplusBurnRateReportAsync ([FromQuery]int hidtaId, [FromQuery]int year)
         {
             return HandleResult(await dashboardService.GetBudgetSurplusBurnRateReportAsync(hidtaId, year));
         }

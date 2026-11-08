@@ -1,5 +1,4 @@
 using System;
-using Application.DTOs.Dashboard;
 using Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -119,7 +118,6 @@ namespace Persistence
 
             builder.Entity<BudgetLineItem>(entity =>
                 {
-                    // Replace "YourTableName" with the real table name.
                     // The trigger name parameter can be any string representing your database trigger.
                     entity.ToTable("tblBudget", tb => tb.HasTrigger("trg_tblBudget_Update"));
                 });
@@ -292,9 +290,18 @@ namespace Persistence
             builder.Entity<BudgetHeader>().Property(x => x.UpdatedBy).HasColumnName("updated_by");
             builder.Entity<BudgetHeader>().HasKey(x => new { x.InitiativeId, x.GrantId });
             builder.Entity<BudgetHeader>().Property(x => x.UpdatedDate).HasColumnName("update_date").HasColumnType("DATETIME2");
-            
-            builder.Entity<BudgetSurplusBurnRateDto>().HasNoKey();
 
+            builder.Entity<BudgetSurplusBurnRateDto>().HasNoKey();
+            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.PercentTimeElapsed).HasColumnType("NUMERIC(5,2)");
+
+
+            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.CumulativeSpent).HasColumnType("NUMERIC(15,2)");
+            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.RemainingBalance).HasColumnType("NUMERIC(15,2)");
+            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.TotalAllocation).HasColumnType("NUMERIC(15,2)");
+            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.PercentCashLeft).HasColumnType("NUMERIC(5,2)");
+            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.CurrentMonthlyBurnRate).HasColumnType("NUMERIC(5,2)");
+            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.MonthsOfRunwayLeft).HasColumnType("NUMERIC(10,2)");
+            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.SurplusGapPoints).HasColumnType("NUMERIC(10,2)");
 
             DataSeeder.SeedData(builder, "hialfonso@nhac.org");
         }

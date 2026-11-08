@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Application.DTOs.Dashboard
+namespace Domain
 {
     /// <summary>
     /// Represents the combined proactive budget burn-rate predictor and surplus scoring metrics 
@@ -34,51 +34,53 @@ namespace Application.DTOs.Dashboard
         /// <summary>
         /// Percentage of total allocated timeline that has elapsed.
         /// </summary>
-        public int PercentTimeElapsed { get; set; }
+        public decimal PercentTimeElapsed { get; set; }
 
         /// <summary>
         /// Total financial allocation granted.
         /// </summary>
+        /// 
+        /// 
         public decimal TotalAllocation { get; set; }
 
-        /// <summary>
-        /// Cumulative funds spent to date.
-        /// </summary>
+        // /// <summary>
+        // /// Cumulative funds spent to date.
+        // /// </summary>
         public decimal CumulativeSpent { get; set; }
 
-        /// <summary>
-        /// Remaining financial balance available.
-        /// </summary>
+        // /// <summary>
+        // /// Remaining financial balance available.
+        // /// </summary>
         public decimal RemainingBalance { get; set; }
 
-        /// <summary>
-        /// Percentage of cash remaining relative to total allocation.
-        /// </summary>
-        public double PercentCashLeft { get; set; }
+        // /// <summary>
+        // /// Percentage of cash remaining relative to total allocation.
+        // /// </summary>
+        public decimal PercentCashLeft { get; set; }
 
-        /// <summary>
-        /// Average monthly burn rate of funds.
-        /// </summary>
+        // /// <summary>
+        // /// Average monthly burn rate of funds.
+        // /// </summary>
         public decimal CurrentMonthlyBurnRate { get; set; }
 
-        /// <summary>
-        /// Estimated runway remaining in months.
-        /// </summary>
-        public double MonthsOfRunwayLeft { get; set; }
+        // /// <summary>
+        // /// Estimated runway remaining in months.
+        // /// </summary>
+        public decimal MonthsOfRunwayLeft { get; set; }
 
-        /// <summary>
-        /// Projected exact date when funds will be fully exhausted.
-        /// </summary>
+        // /// <summary>
+        // /// Projected exact date when funds will be fully exhausted.
+        // /// </summary>
         public DateTime ProjectedExhaustionDate { get; set; }
 
-        /// <summary>
-        /// Surplus gap points calculated for budget health tracking.
-        /// </summary>
-        public double SurplusGapPoints { get; set; }
+        // /// <summary>
+        // /// Surplus gap points calculated for budget health tracking.
+        // /// </summary>
+        public decimal SurplusGapPoints { get; set; }
 
-        /// <summary>
-        /// Final calculated budget surplus score.
-        /// </summary>
+        // /// <summary>
+        // /// Final calculated budget surplus score.
+        // /// </summary>
         public int SurplusScore { get; set; }
     }
 }
