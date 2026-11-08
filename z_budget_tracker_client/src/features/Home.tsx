@@ -1,10 +1,11 @@
-import BarChartWithMultiXAxis from './Charts/BarChartWithMultiXAxis';
+import BurnRateTable from "./Charts/BurnRateTable";
 
 // const RADIAN = Math.PI / 180;
 const Home = () => {
   return (
     <div>
-      <BarChartWithMultiXAxis></BarChartWithMultiXAxis>
+      {/* <BarChartWithMultiXAxis></BarChartWithMultiXAxis> */}
+      <BurnRateTable></BurnRateTable>
     </div>
   );
 };
