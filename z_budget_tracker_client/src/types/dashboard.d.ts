@@ -1,4 +1,4 @@
-export type BudgetSurplusBurnRate = {
+type BudgetSurplusBurnRate = {
   /** Name of the specific budget initiative or line item. */
   initiativeName: string;
 
@@ -6,7 +6,10 @@ export type BudgetSurplusBurnRate = {
   grantName: string;
 
   /** Start date of the budget or grant lifecycle. */
-  budgetStart: string; // ISO date string (e.g., '2023-01-01')
+  awardStartDate: string; // ISO date string (e.g., '2023-01-01')
+
+  /** End date of the budget or grant lifecycle. */
+  awardEndDate: string; // ISO date string (e.g., '2023-01-01')
 
   /** Current active month index in the lifecycle. */
   currentMonth: number;

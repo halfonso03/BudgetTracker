@@ -21,9 +21,9 @@ const Reports = () => {
         </div>
       </div>
     );
-  function loadParams(id: number) {
-    setSelectedReport(data?.filter((x) => x.id === id)[0] ?? null);
-    setReportParameters(data!.filter((r) => r.id === id)[0]!.parameters);
+  function loadParams(reportId: number) {
+    setSelectedReport(data?.filter((x) => x.id === reportId)[0] ?? null);
+    setReportParameters(data!.filter((r) => r.id === reportId)[0]!.parameters);
   }
 
   // async function handleRunReport(values: ParameterSelections[]) {
@@ -50,11 +50,11 @@ const Reports = () => {
     <div className="pt-4">
       {/* selectedValues: <pre>{JSON.stringify(selectedValues)}</pre> */}
       <div className="grid grid-cols-[1fr_3fr] gap-8 ">
-        <div className="border-r border-r-neutral-300">
+        <div className="border-r border-r-neutral-300 dark:border-r-slate-700">
           {data?.map((r, i) => (
-            <div key={i} className="mb-4 dark:text-white hover:dark:text-indigo-300 transition-colors">
+            <div key={i} className="mb-4 dark:text-slate-300 hover:dark:text-white transition-colors">
               <button
-                className={`cursor-pointer ${r.id === selectedReport?.id ? ' font-bold ' : ''}`}
+                className={`cursor-pointer ${r.id === selectedReport?.id ? ' font-bold  dark:text-slate-50 ' : ''}`}
                 onClick={() => loadParams(r.id)}
               >
                 {r.name}

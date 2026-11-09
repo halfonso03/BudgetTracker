@@ -24,7 +24,8 @@ namespace Domain
         /// <summary>
         /// Start date of the budget or grant lifecycle.
         /// </summary>
-        public DateTime BudgetStart { get; set; }
+        public DateTime AwardStartDate { get; set; }
+        public DateTime AwardEndDate { get; set; }
 
         /// <summary>
         /// Current active month index in the lifecycle.

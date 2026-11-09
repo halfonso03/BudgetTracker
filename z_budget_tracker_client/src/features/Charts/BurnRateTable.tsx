@@ -15,75 +15,9 @@ import {
   Download,
   Layers,
 } from 'lucide-react';
+import useBudgetSurplusBurnRate from '../../api/hooks/dashboard/useBudgetSurplusBurnRate';
 
 // Exact Dataset provided from Book2.xlsx analysis
-const INITIAL_BUDGET_DATA = [
-  {
-    id: 1,
-    grant: 'G25001',
-    initiative: 'Training',
-    totalAllocation: 400.0,
-    cumulativeSpent: 400.0,
-    remainingBalance: 0.0,
-    currentMonthlyBurnRate: 80.0,
-    monthsOfRunwayLeft: 0.0,
-    projectedExhaustionDate: '2026-11-07',
-    budgetRiskStatus: 'CRITICAL: EXHAUSTED',
-    trajectorySlope: 15.0, // Spending accelerated recently
-  },
-  {
-    id: 2,
-    grant: 'G26001',
-    initiative: 'Management & Coordination',
-    totalAllocation: 14700.0,
-    cumulativeSpent: 7526.0,
-    remainingBalance: 7174.0,
-    currentMonthlyBurnRate: 1881.5,
-    monthsOfRunwayLeft: 3.8,
-    projectedExhaustionDate: '2027-03-01',
-    budgetRiskStatus: 'HIGH RISK: Rapid depletion or accelerating fast',
-    trajectorySlope: 340.5,
-  },
-  {
-    id: 3,
-    grant: 'G26001',
-    initiative: 'Training',
-    totalAllocation: 86600.0,
-    cumulativeSpent: 17937.0,
-    remainingBalance: 68663.0,
-    currentMonthlyBurnRate: 2989.5,
-    monthsOfRunwayLeft: 23.0,
-    projectedExhaustionDate: '2028-09-26',
-    budgetRiskStatus: 'LOW RISK: Stable',
-    trajectorySlope: -45.2,
-  },
-  {
-    id: 4,
-    grant: 'G25001',
-    initiative: 'TAG',
-    totalAllocation: 803.0,
-    cumulativeSpent: 11.0,
-    remainingBalance: 792.0,
-    currentMonthlyBurnRate: 3.67,
-    monthsOfRunwayLeft: 216.0,
-    projectedExhaustionDate: '2044-08-04',
-    budgetRiskStatus: 'LOW RISK: Stable',
-    trajectorySlope: 0.1,
-  },
-  {
-    id: 5,
-    grant: 'G25001',
-    initiative: 'Management & Coordination',
-    totalAllocation: 2506.0,
-    cumulativeSpent: 20.0,
-    remainingBalance: 2486.0,
-    currentMonthlyBurnRate: 3.33,
-    monthsOfRunwayLeft: 745.8,
-    projectedExhaustionDate: '2088-02-09',
-    budgetRiskStatus: 'LOW RISK: Stable',
-    trajectorySlope: 0.05,
-  },
-];
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,43 +25,50 @@ export default function App() {
   const [sortField, setSortField] = useState('monthsOfRunwayLeft');
   const [sortAsc, setSortAsc] = useState(true);
 
-  // Currency Formatter
-  const formatCurrency = (val) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(val);
-  };
+  const {
+    data: burnRateData,
+    isSuccess: successBurnRateData,
+    isLoading,
+  } = useBudgetSurplusBurnRate();
 
   // Filter & Sort Logic
   const filteredData = useMemo(() => {
-    return INITIAL_BUDGET_DATA.filter((item) => {
-      const matchesSearch =
-        item.grant.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.initiative.toLowerCase().includes(searchQuery.toLowerCase());
+    if (isLoading) return [];
 
-      if (!matchesSearch) return false;
+    return (
+      burnRateData &&
+      burnRateData
+        .filter((item) => {
+          const matchesSearch =
+            item.grantName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.initiativeName
+              .toLowerCase()
+              .includes(searchQuery.toLowerCase());
 
-      if (riskFilter === 'RISK_ONLY') {
-        return item.monthsOfRunwayLeft < 4.0 || item.remainingBalance <= 0;
-      }
-      if (riskFilter === 'LOW_RISK') {
-        return item.monthsOfRunwayLeft >= 4.0 && item.remainingBalance > 0;
-      }
+          if (!matchesSearch) return false;
 
-      return true;
-    }).sort((a, b) => {
-      let aVal = a[sortField];
-      let bVal = b[sortField];
+          if (riskFilter === 'RISK_ONLY') {
+            return item.monthsOfRunwayLeft < 4.0 || item.remainingBalance <= 0;
+          }
+          if (riskFilter === 'LOW_RISK') {
+            return item.monthsOfRunwayLeft >= 4.0 && item.remainingBalance > 0;
+          }
 
-      if (typeof aVal === 'string') {
-        return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
-      }
-      return sortAsc ? aVal - bVal : bVal - aVal;
-    });
-  }, [searchQuery, riskFilter, sortField, sortAsc]);
+          return true;
+        })
+        .sort((a, b) => {
+          const aVal = a[sortField];
+          const bVal = b[sortField];
+
+          if (typeof aVal === 'string') {
+            return sortAsc
+              ? aVal.localeCompare(bVal)
+              : bVal.localeCompare(aVal);
+          }
+          return sortAsc ? aVal - bVal : bVal - aVal;
+        })
+    );
+  }, [isLoading, burnRateData, searchQuery, riskFilter, sortField, sortAsc]);
 
   const handleSort = (field) => {
     if (sortField === field) {
@@ -232,7 +173,9 @@ export default function App() {
             </div>
             <div className="flex justify-between items-center mt-2 dark:text-sm dark:text-slate-400">
               <span>24.7% Budget Consumed</span>
-              <span className="font-mono dark:text-slate-300">$79,115.00 Left</span>
+              <span className="font-mono dark:text-slate-300">
+                $79,115.00 Left
+              </span>
             </div>
           </div>
 
@@ -248,7 +191,9 @@ export default function App() {
             </div>
             <div className="text-2xl sm:text-3xl font-bold dark:text-white mt-3 font-mono">
               $4,958.00
-              <span className="dark:text-sm font-normal dark:text-slate-400">/mo</span>
+              <span className="dark:text-sm font-normal dark:text-slate-400">
+                /mo
+              </span>
             </div>
             <div className="flex items-center gap-1.5 mt-2 dark:text-sm dark:text-purple-300">
               <span>Combined Draindown Velocity</span>
@@ -343,7 +288,7 @@ export default function App() {
                       Allocation <ArrowUpDown className="w-3 h-3" />
                     </div>
                   </th>
-                  <th className="py-3.5 px-4 font-semibold text-right">
+                  {/* <th className="py-3.5 px-4 font-semibold text-right">
                     Consumption
                   </th>
                   <th
@@ -371,12 +316,12 @@ export default function App() {
                     </div>
                   </th>
                   <th className="py-3.5 px-4 font-semibold">Exhaustion Date</th>
-                  <th className="py-3.5 px-4 font-semibold">Risk Status</th>
+                  <th className="py-3.5 px-4 font-semibold">Risk Status</th>*/}
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-700/50 text-lg">
-                {filteredData.length > 0 ? (
-                  filteredData.map((row) => {
+                {filteredData && filteredData.length > 0 ? (
+                  filteredData.map((row, index) => {
                     const consumedPct = Math.min(
                       100,
                       (row.cumulativeSpent / row.totalAllocation) * 100,
@@ -386,26 +331,26 @@ export default function App() {
 
                     return (
                       <tr
-                        key={row.id}
+                        key={index}
                         className="dark:hover:bg-slate-700/30 transition-colors"
                       >
                         {/* Grant Code */}
                         <td className="py-4 px-4 font-mono font-bold text-indigo-300">
-                          {row.grant}
+                          {row.grantName}
                         </td>
 
                         {/* Initiative Name */}
                         <td className="py-4 px-4 font-medium dark:text-slate-100">
-                          {row.initiative}
+                          {row.initiativeName}
                         </td>
 
                         {/* Total Allocation */}
-                        <td className="py-4 px-4 text-right font-mono dark:text-slate-200">
+                        {/* <td className="py-4 px-4 text-right font-mono dark:text-slate-200">
                           {formatCurrency(row.totalAllocation)}
-                        </td>
+                        </td> */}
 
                         {/* Consumption Progress bar */}
-                        <td className="py-4 px-4 text-right min-w-35">
+                        {/* <td className="py-4 px-4 text-right min-w-35">
                           <div className="flex flex-col items-end gap-1">
                             <span className=" font-mono dark:text-slate-300">
                               {consumedPct.toFixed(1)}%
@@ -426,10 +371,10 @@ export default function App() {
                               Spent: {formatCurrency(row.cumulativeSpent)}
                             </span>
                           </div>
-                        </td>
+                        </td> */}
 
                         {/* Remaining Balance */}
-                        <td className="py-4 px-4 text-right font-mono font-semibold">
+                        {/* <td className="py-4 px-4 text-right font-mono font-semibold">
                           <span
                             className={
                               isExhausted ? 'text-rose-400' : 'dark:text-slate-100'
@@ -437,15 +382,15 @@ export default function App() {
                           >
                             {formatCurrency(row.remainingBalance)}
                           </span>
-                        </td>
+                        </td> */}
 
                         {/* Monthly Burn Rate */}
-                        <td className="py-4 px-4 text-right font-mono dark:text-slate-300">
+                        {/* <td className="py-4 px-4 text-right font-mono dark:text-slate-300">
                           {formatCurrency(row.currentMonthlyBurnRate)}/mo
-                        </td>
+                        </td> */}
 
                         {/* Runway Months */}
-                        <td className="py-4 px-4 text-center font-mono">
+                        {/* <td className="py-4 px-4 text-center font-mono">
                           <span
                             className={`px-2.5 py-1 rounded font-bold  ${
                               isExhausted
@@ -457,23 +402,23 @@ export default function App() {
                           >
                             {row.monthsOfRunwayLeft.toFixed(1)} mos
                           </span>
-                        </td>
+                        </td> */}
 
                         {/* Projected Exhaustion Date */}
-                        <td className="py-4 px-4 font-mono dark:text-slate-300">
+                        {/* <td className="py-4 px-4 font-mono dark:text-slate-300">
                           <div className="flex items-center gap-1.5">
                             <Calendar className="w-3.5 h-3.5 dark:text-slate-400 shrink-0" />
                             {row.projectedExhaustionDate}
                           </div>
-                        </td>
+                        </td> */}
 
                         {/* Risk Status Badge */}
-                        <td className="py-4 px-4">
+                        {/* <td className="py-4 px-4">
                           {getRiskBadge(
                             row.budgetRiskStatus,
                             row.monthsOfRunwayLeft,
                           )}
-                        </td>
+                        </td>*/}
                       </tr>
                     );
                   })
@@ -503,7 +448,9 @@ export default function App() {
             <div>
               Showing{' '}
               <span className="dark:text-slate-200 font-bold">
-                {filteredData.length}
+                {filteredData !== undefined && filteredData.length && (
+                  <span>{filteredData.length}</span>
+                )}
               </span>{' '}
               of 5 Budget Lines
             </div>
@@ -513,3 +460,81 @@ export default function App() {
     </div>
   );
 }
+
+// const INITIAL_BUDGET_DATA = [
+//   {
+//     id: 1,
+//     grant: 'G25001',
+//     initiative: 'Training',
+//     totalAllocation: 400.0,
+//     cumulativeSpent: 400.0,
+//     remainingBalance: 0.0,
+//     currentMonthlyBurnRate: 80.0,
+//     monthsOfRunwayLeft: 0.0,
+//     projectedExhaustionDate: '2026-11-07',
+//     budgetRiskStatus: 'CRITICAL: EXHAUSTED',
+//     trajectorySlope: 15.0, // Spending accelerated recently
+//   },
+//   {
+//     id: 2,
+//     grant: 'G26001',
+//     initiative: 'Management & Coordination',
+//     totalAllocation: 14700.0,
+//     cumulativeSpent: 7526.0,
+//     remainingBalance: 7174.0,
+//     currentMonthlyBurnRate: 1881.5,
+//     monthsOfRunwayLeft: 3.8,
+//     projectedExhaustionDate: '2027-03-01',
+//     budgetRiskStatus: 'HIGH RISK: Rapid depletion or accelerating fast',
+//     trajectorySlope: 340.5,
+//   },
+//   {
+//     id: 3,
+//     grant: 'G26001',
+//     initiative: 'Training',
+//     totalAllocation: 86600.0,
+//     cumulativeSpent: 17937.0,
+//     remainingBalance: 68663.0,
+//     currentMonthlyBurnRate: 2989.5,
+//     monthsOfRunwayLeft: 23.0,
+//     projectedExhaustionDate: '2028-09-26',
+//     budgetRiskStatus: 'LOW RISK: Stable',
+//     trajectorySlope: -45.2,
+//   },
+//   {
+//     id: 4,
+//     grant: 'G25001',
+//     initiative: 'TAG',
+//     totalAllocation: 803.0,
+//     cumulativeSpent: 11.0,
+//     remainingBalance: 792.0,
+//     currentMonthlyBurnRate: 3.67,
+//     monthsOfRunwayLeft: 216.0,
+//     projectedExhaustionDate: '2044-08-04',
+//     budgetRiskStatus: 'LOW RISK: Stable',
+//     trajectorySlope: 0.1,
+//   },
+//   {
+//     id: 5,
+//     grant: 'G25001',
+//     initiative: 'Management & Coordination',
+//     totalAllocation: 2506.0,
+//     cumulativeSpent: 20.0,
+//     remainingBalance: 2486.0,
+//     currentMonthlyBurnRate: 3.33,
+//     monthsOfRunwayLeft: 745.8,
+//     projectedExhaustionDate: '2088-02-09',
+//     budgetRiskStatus: 'LOW RISK: Stable',
+//     trajectorySlope: 0.05,
+//   },
+// ];
+
+// Currency Formatter
+// const formatCurrency = (val) => {
+//   return new Intl.NumberFormat('en-US', {
+//     style: 'currency',
+//     currency: 'USD',
+//     minimumFractionDigits: 2,
+//     maximumFractionDigits: 2,
+//   }).format(val);
+// };
