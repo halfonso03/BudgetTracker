@@ -56,7 +56,7 @@ const StackedFormRow: FC<FormRowProps> = ({
               textWrap: 'wrap',
               overflowWrap: 'break-word',
             }}
-            className='text-gray-600 dark:text-neutral-200 text-lg '
+            className='text-neutral-900 dark:text-neutral-200 text-lg '
           >
             {label}
           </Label>

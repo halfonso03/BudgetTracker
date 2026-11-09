@@ -20,6 +20,10 @@ pre {
   min-height: 100svh;
 }
 
+
+.dark .nav-link {
+  color: var(--color-slate-300)
+}
 /* .nav-link {
   padding-bottom: 0.4rem;
 }

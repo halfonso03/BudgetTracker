@@ -58,9 +58,9 @@ const Summary = ({ year }: Props) => {
   return (
     <div>
       <div
-        className={`border-b border-b-neutral-200 mb-8 entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-2 `}
+        className={`border-b border-b-neutral-200 dark:border-slate-700/80 mb-8 text-neutral-500 dark:text-slate-400  grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-2 `}
       >
-        <div>Totals</div>
+        <div className="">Totals</div>
         <div></div>
         <div className="text-end">Budgeted</div>
         <div className="text-end">Current</div>
@@ -69,28 +69,28 @@ const Summary = ({ year }: Props) => {
         <div></div>
         <div></div>
         <div></div>
-        <div className="text-end text-neutral-950">
+        <div className="text-end text-neutral-950 dark:text-neutral-50">
           {formatCurrency(
             budgetSummaries
               .map((x) => x.approved_amount)
               .reduce((acc, cur) => acc + cur, 0),
           )}
         </div>
-        <div className="text-end text-neutral-950">
+        <div className="text-end text-neutral-950  dark:text-neutral-50">
           {formatCurrency(
             budgetSummaries
               .map((x) => x.current_amount)
               .reduce((acc, cur) => acc + cur, 0),
           )}
         </div>
-        <div className="text-end text-neutral-950">
+        <div className="text-end text-neutral-950  dark:text-neutral-50">
           {formatCurrency(
             budgetSummaries
               .map((x) => x.spent_amount)
               .reduce((acc, cur) => acc + cur, 0),
           )}
         </div>
-        <div className="text-end text-neutral-950">
+        <div className="text-end text-neutral-950 dark:text-neutral-50">
           {formatCurrency(
             budgetSummaries
               .map((x) => x.remaining_amount)
@@ -100,54 +100,61 @@ const Summary = ({ year }: Props) => {
         <div></div>
       </div>
       <div
-        className={`entity-label grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-4 `}
+        className={` grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-4 `}
       >
-        <div>Initiative</div>
-        <div>Grant</div>
-        <div className="text-end">Budgeted </div>
-        <div className="text-end">Current </div>
-        <div className="text-end">Spent </div>
-        <div className="text-end">Remaining </div>
-        {/* <div className="text-center entity-label">Details</div> */}
+        <div className="text-start text-neutral-500 dark:text-slate-400 font-semibold">Initiative</div>
+        <div className="text-start text-neutral-500 dark:text-slate-400 font-semibold">Grant</div>
+        <div className="text-end text-neutral-500 dark:text-slate-400 font-semibold">
+          Budgeted{' '}
+        </div>
+        <div className="text-end text-neutral-500 dark:text-slate-400 font-semibold">
+          Current{' '}
+        </div>
+        <div className="text-end text-neutral-500 dark:text-slate-400 font-semibold">
+          Spent{' '}
+        </div>
+        <div className="text-end text-neutral-500 dark:text-slate-400 font-semibold">
+          Remaining{' '}
+        </div>
         <div></div>
       </div>
       {budgetSummaries?.map((budget, index) => (
-        <div key={index} className=" border border-neutral-300 mb-5">
+        <div key={index} className=" border border-neutral-300 dark:border-slate-700/60 mb-5">
           <div
             className={`grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 py-3 `}
           >
-            <div className="pl-3 font-medium self-center">
+            <div className="pl-3 font-medium dark:text-slate-100 self-center">
               {budget.initiative_name}
             </div>
-            <div className="font-medium self-center">{budget.grant_name}</div>
+            <div className="font-mono font-bold text-indigo-300 self-center ">{budget.grant_name}</div>
             <div className="text-end self-center">
               <Link
                 to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
-                className="text-blue-500 self-center"
+                className="text-blue-500 self-center dark:text-indigo-500"
               >
                 <span className=" underline-offset-3 font-semibold underline">
                   {formatCurrency(budget.approved_amount)}
                 </span>
               </Link>
             </div>
-            <div className="text-end self-center">
+            <div className="text-end self-center dark:text-slate-100">
               {budget.current_amount === 0
                 ? '-'
                 : formatCurrency(budget.current_amount)}
             </div>
-            <div className="text-end self-center">
+            <div className="text-end self-center dark:text-slate-100">
               {budget.spent_amount !== 0 ? (
                 formatCurrency(budget.spent_amount)
               ) : (
-                <span className="text-neutral-400">-</span>
+                <span className="dark:text-slate-100">-</span>
               )}
             </div>
-            <div className="text-end self-center">
+            <div className="text-end self-center dark:text-slate-100">
               {formatCurrency(budget.remaining_amount)}
             </div>
             <div className="flex justify-center self-center">
               <ChevronDownSquare
-                className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
+                className={`dark:text-indigo-300  text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
                 onClick={() => {
                   if (expandedIndexes.some((x) => x == index)) {
                     setExpandedIndexes((prev) =>
@@ -239,8 +246,8 @@ function CategorySummary({
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
 
   return (
-    <div className=" border-t border-t-neutral-300">
-      <div className="entity-label  border-b border-b-neutral-300 p-3 pl-5 ">
+    <div className=" border-t border-t-neutral-300  dark:border-slate-700 ">
+      <div className="font-semibold text-neutral-500 dark:text-slate-400 border-b border-b-neutral-300 dark:border-b-slate-700/60 p-3 pl-5  ">
         Category
       </div>
       {categoryTotals.map((c, index) => {
@@ -251,52 +258,52 @@ function CategorySummary({
         const cateoryRedClass = n === true ? 'text-red-600' : '';
         return (
           <div
-            className=" relative z-6 border-b border-b-neutral-300 last:border-0"
+            className=" relative z-6 border-b border-b-neutral-300  dark:border-b-slate-700/60 last:border-0"
             key={index}
           >
             <div
-              className={` grid bg-neutral-200/30 grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 items-center`}
+              className={` grid bg-neutral-200/30 dark:bg-slate-800/80  grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 items-center`}
               key={index}
             >
               <div
-                className={` py-3 pl-8 font-medium col-span-2  ${cateoryRedClass}`}
+                className={` py-3 pl-8 font-medium col-span-2 text-neutral-500 dark:text-slate-100   ${cateoryRedClass}`}
                 key={index}
               >
                 {c.category}
               </div>
-              <div className="text-end">
+              <div className="text-end dark:text-slate-100 ">
                 {c.amount > 0 ? (
                   formatCurrency(c.amount)
                 ) : (
-                  <span className="text-neutral-400">-</span>
+                  <span className="text-neutral-400 dark:text-slate-100 ">-</span>
                 )}
               </div>
-              <div className="text-end">
+              <div className="text-end dark:text-slate-100 ">
                 {c.current_amount !== 0 ? (
                   formatCurrency(c.current_amount)
                 ) : (
-                  <span className="text-neutral-400">-</span>
+                  <span className="text-neutral-400 dark:text-slate-100 ">-</span>
                 )}
               </div>
-              <div className="text-end">
+              <div className="text-end dark:text-slate-100 ">
                 {c.spent_amount !== 0 ? (
                   formatCurrency(-1 * c.spent_amount)
                 ) : (
-                  <span className="text-neutral-400">-</span>
+                  <span className="text-neutral-400 dark:text-slate-100 ">-</span>
                 )}
               </div>
               <div
-                className={`text-end ${c.current_amount + c.spent_amount < 0 && 'text-red-500'}`}
+                className={`text-end dark:text-slate-100  ${c.current_amount + c.spent_amount < 0 && 'text-red-500'}`}
               >
                 {c.current_amount + c.spent_amount > 0 ? (
                   formatCurrency(c.current_amount - c.spent_amount)
                 ) : (
-                  <span className="text-neutral-400">-</span>
+                  <span className="text-neutral-400 dark:text-slate-100 ">-</span>
                 )}
               </div>
               <div className="flex justify-center items-center">
                 <ChevronDownSquare
-                  className={`text-neutral-500 cursor-pointer 
+                  className={`text-neutral-500 cursor-pointer dark:text-indigo-300 
                   ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
                   onClick={() => {
                     if (expandedIndexes.some((x) => x == index)) {
@@ -313,16 +320,16 @@ function CategorySummary({
             <div
               className={` box ${expandedIndexes.some((x) => x == index) ? ' expanded' : ''}   `}
             >
-              <div className="pl-12 py-2  font-semibold entity-label border-t border-t-neutral-300">
+              <div className="pl-12 py-2 dark:text-slate-400 font-semibold  border-t border-t-neutral-300 dark:border-t-slate-700/60">
                 Account
               </div>
-              <div className="bg-neutral-50 border-t border-t-neutral-300  ">
+              <div className="bg-neutral-50 border-t border-t-neutral-300 dark:border-t-slate-700/60  dark:hover:text-slate-900">
                 {items
                   .filter((x) => x.category?.name == c.category)
                   .sort((a, b) => a.account_name.localeCompare(b.account_name))
                   .map((i) => (
                     <div
-                      className="py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] items-center gap-4  last:mb-0 transition-all duration-200 hover:bg-neutral-200/50"
+                      className="py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] items-center gap-4  last:mb-0 transition-all duration-200 hover:bg-neutral-200/50  dark:hover:bg-slate-800/80  dark:bg-slate-800/80 "
                       key={i.account_id}
                     >
                       <div className="italic pl-16 col-span-2">
@@ -357,7 +364,8 @@ function CategorySummary({
                         </div>
                       </div>
                       <div className="flex justify-around text-blue-500 text-[.9rem]   ">
-                        <Link className='cursor-pointer'
+                        <Link
+                          className="cursor-pointer"
                           to={`/reprogramming/${year}/${initiativeId}/${grantId}/${i.category_id}/${i.account_id}`}
                         >
                           <ArrowLeftRight></ArrowLeftRight>
@@ -365,7 +373,8 @@ function CategorySummary({
                         <DollarSign
                           className={`cursor-pointer ${i.current_amount + i.spent_amount <= 0 ? 'text-neutral-300' : ''}`}
                           onClick={() => {
-                            if (i.current_amount + i.spent_amount <= 0 ) return false;
+                            if (i.current_amount + i.spent_amount <= 0)
+                              return false;
                             navigate(
                               `/payments/${year}/${initiativeId}/${grantId}/${i.category_id}/${i.account_id}`,
                             );

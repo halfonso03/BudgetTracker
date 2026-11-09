@@ -6,7 +6,7 @@ function App() {
 
   
   return (
-    <>
+    <div className='dark:bg-slate-900 min-h-dvh'>
       <NavBar></NavBar>
       <div className="pt-10 w-[82%] mx-auto">
         <Outlet></Outlet>
@@ -52,7 +52,7 @@ function App() {
           />
         )}
       </Toaster>
-    </>
+    </div>
   );
 }
 

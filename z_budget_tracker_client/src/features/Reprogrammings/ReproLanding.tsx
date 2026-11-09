@@ -7,7 +7,7 @@ const ReproLanding = () => {
   console.log('ReproLanding render');
 
   return (
-    <div>
+    <div className=''>
       <ReproProvider>
         <PaginationContextProvider>
           <SortingProvider defaultSortOrder='ID'>

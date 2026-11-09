@@ -8,12 +8,14 @@ import {
 import ConfirmModal from './ConfirmModal';
 import { useHasUnsavedChangesStore } from '../state/useHasUnsavedChangesStore';
 import useClientAuth from '../contexts/useClientAuth';
+import AccountToggler from './AccountToggler';
+import useLogout from '../api/hooks/auth/useLogout';
 
 const NavBar = () => {
   const navigate = useNavigate();
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [urltoGoTo, setUrlToGoTo] = useState<string>('');
-
+  const { logoutUser } = useLogout();
   const location = useLocation();
 
   // const [user, setUser] = useState(null);
@@ -114,10 +116,10 @@ const NavBar = () => {
   }
 
   return (
-    <div>
+    <div className='bg-white dark:bg-slate-900'>
       {user && (
         //bg-dark-nav
-        <div className="bg-white border-b border-b-neutral-300 flex justify-between align-middle p-3 text-gray-900 dark:text-gray-100  ">
+        <div className=" border-b border-b-neutral-300 dark:border-slate-700/80 flex justify-between align-middle p-3 text-gray-900 dark:text-gray-100  ">
           <div className="flex p-2 text-xl pb-0 justify-between w-full">
             <div className="flex absolute bottom-0 left-0">
               <div className="border p-2">
@@ -180,7 +182,6 @@ const NavBar = () => {
                   >
                     Admin
                   </NavLink>
-                 
                 </>
               )}
 
@@ -209,11 +210,11 @@ const NavBar = () => {
               )}
             </div>
             <div>
-              {isLoggedIn() && <span>Hello, {user.firstName}</span>}{' '}
               {isLoggedIn() && (
-                <NavLink to="/logout" className="nav-link">
-                  Log Out
-                </NavLink>
+                <AccountToggler
+                  loginId={user.email}
+                  logOut={logoutUser}
+                ></AccountToggler>
               )}
             </div>
           </div>

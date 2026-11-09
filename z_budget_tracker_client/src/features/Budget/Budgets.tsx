@@ -28,7 +28,7 @@ const Budgets = () => {
     <div className="">
       <div className="flex mb-4 justify-between items-center">
         <div>
-          <div className="p-2 font-bold entity-label">Year:</div>
+          <div className="p-2  dark:text-slate-400 font-semibold ">Year:</div>
           <Select value={year} onChange={handleYearChange}>
             {years.map((y) => (
               <option value={y}>{y}</option>
