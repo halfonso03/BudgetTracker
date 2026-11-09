@@ -52,7 +52,7 @@ const Reports = () => {
       <div className="grid grid-cols-[1fr_3fr] gap-8 ">
         <div className="border-r border-r-neutral-300">
           {data?.map((r, i) => (
-            <div key={i} className="mb-4">
+            <div key={i} className="mb-4 dark:text-white hover:dark:text-indigo-300 transition-colors">
               <button
                 className={`cursor-pointer ${r.id === selectedReport?.id ? ' font-bold ' : ''}`}
                 onClick={() => loadParams(r.id)}

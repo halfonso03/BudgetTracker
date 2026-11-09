@@ -263,7 +263,7 @@ const ReportParameters = ({ reportId, parameters, selectedReport }: Props) => {
             maxHeight={200}
             onAllItemsChecked={handleAllChecked}
             onItemsCheckedSnapshot={handleItemsCheckedSnapshot}
-            tailWindBorderStyles="rounded-md border border-neutral-300"
+            tailWindBorderStyles="rounded-md border border-neutral-300 dark:border-slate-700/80"
           ></CheckBoxList>
         );
       }
@@ -411,7 +411,7 @@ const ReportParameters = ({ reportId, parameters, selectedReport }: Props) => {
             key={index}
             className="grid grid-cols-[.3fr_1fr] mb-3 items-center"
           >
-            <div className="self-start">{p.label}</div>
+            <div className="self-start dark:text-indigo-300">{p.label}</div>
             <div>
               {createControls(p.name, p.controlType, paramOptionsQueries)}
             </div>

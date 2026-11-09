@@ -12,8 +12,8 @@ const CheckBox = ({ checked, label, onCheck }: Props) => {
           type="checkbox"
           onChange={onCheck}
           checked={checked}
-          className={`peer appearance-none w-6 h-6 border border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-green-700 dark:checked:border-green-700 
-                    transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-green-500 focus:ring-offset-2`}
+          className={`peer appearance-none w-6 h-6 border border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-slate-700 dark:checked:border-slate-500 
+                    transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-slate-700 focus:ring-offset-2`}
         />
         <svg
           className="absolute  h-4 text-white pointer-events-none hidden peer-checked:block left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -28,7 +28,7 @@ const CheckBox = ({ checked, label, onCheck }: Props) => {
           <polyline points="20 6 9 17 4 12"></polyline>
         </svg>
       </div>
-      <div className="text-[0.9rem]" onClick={onCheck}>
+      <div className="text-[0.9rem] dark:text-white" onClick={onCheck}>
         {label}
       </div>
     </div>
