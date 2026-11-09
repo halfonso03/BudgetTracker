@@ -6,6 +6,7 @@ import Button from '../../../components/Button';
 import type { ModalSize } from '../../../components/Modal2';
 import { formatDate } from '../../../app/util';
 import Modal2 from '../../../components/Modal2';
+import Label from '../../../components/Label';
 
 interface Props {
   initiativeId: number;
@@ -118,24 +119,26 @@ const CommentsModal = ({
         <div className="mb-3">
           <div className="grid grid-cols-[2fr_1fr]">
             <div>
-              <div className="entity-label"> Account </div>
-              <div className="entity-name"> {accountName} </div>
+              <Label>Account</Label>
+              <div className="dark:text-slate-100"> {accountName} </div>
             </div>
           </div>
         </div>
 
         <div className="">
           <div className="flex justify-between pb-1">
-            <div className="entity-label self-end ">Comments</div>
+            <div className='self-end'>
+              <Label>Comments</Label>
+            </div>
             <div>
-              <div className="text-sm text-end text-neutral-400 font-semibold">
+              <div className="text-sm text-end text-neutral-700 dark:text-slate-400 font-semibold">
                 {comment && comment.updateDate && 'Updated'}
                 {comment &&
                   comment.entryDate &&
                   !comment.updateDate &&
                   'Entered'}
               </div>
-              <div className="text-sm text-end text-neutral-600 font-semibold">
+              <div className="text-sm text-end text-neutral-600 dark:text-white font-semibold">
                 {comment &&
                   comment.entryDate &&
                   !comment.updateDate &&
@@ -155,7 +158,7 @@ const CommentsModal = ({
           >
             <textarea
               {...register('text')}
-              className="w-full border border-neutral-300 rounded-sm p-2 outline-none focus:outline-none focus:ring-1 focus:ring-neutral-300 transition-all duration-300 ease-in-out"
+              className="w-full border border-neutral-300 dark:border-slate-700/80 rounded-sm p-2 outline-none focus:outline-none dark:text-white focus:ring-1 focus:ring-neutral-300 dark:focus:ring-indigo-500 transition-all duration-300 ease-in-out"
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
                 if (!comment || comment.id === 0) {
                   if (e.target.value.trim() == '') {
@@ -170,7 +173,7 @@ const CommentsModal = ({
               {comment && comment.text != '' && (
                 <button
                   type="button"
-                  className="text-sm text-neutral-600 mb-2 hover:text-neutral-950 cursor-pointer"
+                  className="text-sm text-neutral-600 mb-2 hover:text-neutral-950 cursor-pointer dark:text-slate-400 dark:hover:text-slate-200 transition-all "
                   onClick={() => {
                     setValue('text', '');
                   }}

@@ -52,22 +52,22 @@ const Modal2 = ({
     // body
     <div
       onClick={onCancel}
-      className="fixed inset-0 z-10000 h-dvh w-screen bg-black/60 flex justify-center "
+      className="fixed inset-0 z-10000 h-dvh w-screen bg-black/60 dark:bg-black/40 flex justify-center "
     >
       {/* modal */}
       <div
-        className={`${modalStyles} ${animateClass} opacity-100  max-w-md bg-white bg-dark-nav self-center rounded-sm shadow-lg`}
+        className={`${modalStyles} ${animateClass} opacity-100  max-w-md bg-white dark:border dark:border-slate-700/80  dark:bg-slate-800 self-center rounded-sm shadow-lg`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-neutral-200/30 border rounded-t-sm w-full h-full mb-2 p-3 flex justify-between align-center border-b border-gray-200 dark:border-b-neutral-800">
-          <h2 className="m-0 p-0 text-2xl  text-gray-800 dark:text-gray-200">
+        <div className="bg-neutral-200/30 dark:bg-slate-900  rounded-t-sm w-full h-full p-3 flex justify-between align-center border-b border-gray-200 dark:border-slate-700/60 ">
+          <h2 className="m-0 p-0 text-2xl text-neutral-800 dark:text-white">
             {title}
           </h2>
           <button style={closeButtonStyles} onClick={onCancel}>
-            <X className="text-gray-500 hover:text-gray-700 dark:text-neutral-300 dark:hover:text-neutral-100 transition-all duration-200"></X>
+            <X className="text-neutral-500 hover:text-neutral-700 dark:text-slate-200 dark:hover:text-slate-100 transition-all duration-200"></X>
           </button>
         </div>
-        <div className="p-2 px-4">{children}</div>
+        <div className="p-2 px-4 dark:bg-slate-900">{children}</div>
       </div>
     </div>,
     document.body, // The target DOM container

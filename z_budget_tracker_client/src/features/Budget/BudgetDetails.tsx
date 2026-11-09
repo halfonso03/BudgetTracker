@@ -465,7 +465,7 @@ const BudgetDetails = () => {
 
           <div className="font-medium dark:text-white">{grant?.year}</div>
           <div className="font-medium dark:text-white">{initiative?.name}</div>
-          <div className="font-mono font-bold dark:text-indigo-500 ">
+          <div className="font-mono font-bold dark:text-indigo-300 ">
             {grant?.name} - {grant?.fiduciary}
           </div>
           <div></div>

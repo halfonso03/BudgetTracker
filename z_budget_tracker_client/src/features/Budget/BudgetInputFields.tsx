@@ -92,7 +92,8 @@ const BudgetInputFields = ({
   }
 
   function getCellColor(isLastRow: boolean, amount: string) {
-    if (isLastRow) return 'bg-neutral-100 font-bold text-neutral-600 dark:bg-slate-800/80';
+    if (isLastRow)
+      return 'bg-neutral-100 font-bold text-neutral-600 dark:bg-slate-800/80';
     if (isNaN(parseFormattedNumber(amount))) return 'text-neutral-400';
     if (parseFormattedNumber(amount) === 0) return 'text-neutral-400';
   }
@@ -165,10 +166,10 @@ const BudgetInputFields = ({
       >
         {!isLastRow ? (
           <>
-            <span className='dark:text-white'>
+            <span className="dark:text-white">
               {!hasRepro ? (
                 parseFormattedNumber(current) == 0 ? (
-                  '- '
+                  <span className="dark:text-slate-600">-</span>
                 ) : (
                   current
                 )
@@ -185,7 +186,7 @@ const BudgetInputFields = ({
                       fieldName,
                     )
                   }
-                  className=" hover:underline underline-offset-5 text-blue-600 dark:text-indigo-400 cursor-pointer"
+                  className=" hover:underline underline-offset-5 text-blue-600 dark:text-indigo-400 cursor-pointer font-semibold"
                 >
                   {current}
                 </button>
@@ -193,7 +194,7 @@ const BudgetInputFields = ({
             </span>
           </>
         ) : (
-          <div className='dark:text-slate-300'>
+          <div className="dark:text-slate-300">
             {parseFormattedNumber(currentAmount) > 0 ? (
               <input
                 type="text"
@@ -204,7 +205,7 @@ const BudgetInputFields = ({
                 className="text-end w-full"
               />
             ) : (
-              '-'
+              <span className="dark:text-slate-600">-</span>
             )}
           </div>
         )}
@@ -214,10 +215,12 @@ const BudgetInputFields = ({
       >
         {parseFormattedNumber(spentAmount) !== 0 && !isLastRow ? (
           <button type="button" tabIndex={-1}>
-            {formatCurrency(parseFormattedNumber(spentAmount))}
+            <div className="text-neutral-600 dark:text-white">
+              {formatCurrency(parseFormattedNumber(spentAmount))}
+            </div>
           </button>
         ) : parseFormattedNumber(spentAmount) === 0 ? (
-          '-'
+          <span className="dark:text-slate-600">-</span>
         ) : (
           <div className="dark:text-slate-300">
             {formatCurrency(parseFormattedNumber(spentAmount))}
@@ -248,7 +251,7 @@ const BudgetInputFields = ({
               readOnly={true}
               tabIndex={-1}
               disabled={true}
-              className="text-end w-full " 
+              className="text-end w-full "
             ></input>
           </>
         )}

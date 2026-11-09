@@ -6,6 +6,8 @@ import useGrants from '../../../api/hooks/common/useGrants';
 import useInitiatives from '../../../api/hooks/common/useInitiatives';
 import Button from '../../../components/Button';
 import Select from '../../../components/Select';
+import Modal2 from '../../../components/Modal2';
+import Label from '../../../components/Label';
 
 interface Props {
   year: number;
@@ -19,7 +21,7 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
   const [initiativeId, setInitiativeId] = useState<number>(0);
   let sortedInitiatives: Initiative[] = [];
 
-  const { grants = [],  loadingGrants } = useGrants(year);
+  const { grants = [], loadingGrants } = useGrants(year);
   const [grantId, setGrantId] = useState<number>(0);
   let grantsList: Grant[] = [];
 
@@ -49,7 +51,7 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
   }
 
   return (
-    <Modal
+    <Modal2
       isOpen={true}
       onCancel={onCancelForm}
       size="md"
@@ -59,14 +61,18 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
       <div className="p-5 pt-1">
         <div className="flex flex-col gap-4 mb-4 ">
           <div>
-            <div className="self-center entity-label">YEAR</div>
-            <div className="self-center ">{year}</div>
+            <Label>
+              <div className="self-center ">YEAR</div>
+            </Label>
+            <div className="self-center dark:text-white ">{year}</div>
           </div>
           <div>
-            <div className="self-center entity-label">Initiative</div>
+            <div className="self-center ">
+              <Label>Initiative</Label>
+            </div>
             <div>
               {loadingInit ? (
-                <div>Loading inits</div>
+                <div className="dark:text-white">Loading inits</div>
               ) : (
                 <Select
                   value={initiativeId}
@@ -88,7 +94,9 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
           </div>
 
           <div>
-            <div className="self-center entity-label">Award</div>
+            <div className="self-center">
+              <Label>Award</Label>
+            </div>
             <div>
               {loadingGrants ? (
                 <div>Loading grants</div>
@@ -128,7 +136,7 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
           </Button>
         </div>
       </div>
-    </Modal>
+    </Modal2>
   );
 };
 export default CreateBudgetModal;
