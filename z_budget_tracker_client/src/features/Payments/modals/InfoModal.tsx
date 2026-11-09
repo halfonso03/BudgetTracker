@@ -1,4 +1,5 @@
 import Button from '../../../components/Button';
+import Label from '../../../components/Label';
 import Modal2 from '../../../components/Modal2';
 import PayeePaymentsList from '../../Payees/PayeePaymentsList';
 
@@ -10,11 +11,11 @@ type Props = {
 
 const InfoModal = ({ ...props }: Props) => {
   return (
-    <Modal2 size="xl" title="Payee Information" animateOut={false}  {...props}>
+    <Modal2 size="xl" title="Payee Information" animateOut={false} {...props}>
       <div className="">
         <div className="flex my-2 mb-6 gap-3 ">
-          <div className="text-neutral-700 font-medium">Payee Name:</div>
-          <div className=" font-semibold">{props.payee?.name}</div>
+          <Label>Payee Name:</Label>
+          <div className=" font-semibold dark:text-white">{props.payee?.name}</div>
         </div>
         <div className=" mb-4 gap-4">
           {props.payee?.id && (

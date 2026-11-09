@@ -26,6 +26,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import Input from '../../../components/Input';
 import Spinner from '../../../components/Spinner';
+import Label from '../../../components/Label';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -367,7 +368,7 @@ const PaymentLineModal = (props: Props) => {
           className="self-center h-full w-full"
         >
           {fromRedirect && redirectMessageIsOpen && (
-            <div className="p-3  border border-blue-400 bg-blue-50 flex items-center relative">
+            <div className="p-3 border border-blue-400 bg-blue-50 flex items-center relative">
               <div className="flex-1 ">
                 Initiative, Grant, Category and Account have been pre-selected.
               </div>
@@ -384,20 +385,18 @@ const PaymentLineModal = (props: Props) => {
             </div>
           )}
 
-          <div className="flex flex-col justify-between h-full mt-2">
+          <div className="flex flex-col justify-between h-full ">
             <div className=" overflow-y-scroll h-[65dvh]">
               <div className="flex flex-col gap-4 justify-between p-3 px-4 ">
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
-                  <div className="text-neutral-600/90 font-medium">Year</div>
-                  <div className="text-neutral-700/90 font-medium">
+                  <Label>Year</Label>
+                  <div className="text-neutral-700/90 dark:text-white font-medium">
                     {paymentYear}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center">
-                  <div className="text-neutral-600/90 font-medium">
-                    Initiative
-                  </div>
+                  <Label>Initiative</Label>
                   <Dropdown
                     options={initiativesForDropdown}
                     value={getValues('initiativeId')}
@@ -437,7 +436,7 @@ const PaymentLineModal = (props: Props) => {
                 </div>
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center ">
-                  <div className="text-neutral-600/90 font-medium">Grant</div>
+                  <Label>Grant</Label>
                   <Dropdown
                     options={grantsForDropdown}
                     value={getValues('grantId')}
@@ -478,9 +477,7 @@ const PaymentLineModal = (props: Props) => {
                 </div>
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center">
-                  <div className="text-neutral-600/90 font-medium">
-                    Category
-                  </div>
+                  <Label>Category</Label>
                   <Dropdown
                     options={catsForDropdown}
                     value={getValues('categoryId')}
@@ -503,7 +500,7 @@ const PaymentLineModal = (props: Props) => {
                   )}
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center">
-                  <div className="text-neutral-600/90 font-medium">Account</div>
+                  <Label>Account</Label>
                   <Dropdown
                     options={accountsForDropdown}
                     value={getValues('accountId')}
@@ -527,7 +524,7 @@ const PaymentLineModal = (props: Props) => {
                   )}
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full ">
-                  <div className="text-neutral-600/90 font-medium">Payee</div>
+                  <Label>Payee</Label>
                   <PayeeSearcher
                     onPayeeSelected={handlePayeeSelected}
                     onPayeeSelectionCleared={handlePayeeSelectionCleared}
@@ -543,7 +540,7 @@ const PaymentLineModal = (props: Props) => {
                   </div>
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center ">
-                  <div className="text-neutral-600/90 font-medium">Comment</div>
+                  <Label>Comment</Label>
                   <textarea
                     {...register('comment')}
                     className="p-2 border border-neutral-300 rounded-sm focus:outline-0 focus:border-blue-500"
@@ -569,9 +566,7 @@ const PaymentLineModal = (props: Props) => {
                 </div>
 
                 <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center">
-                  <div className="text-neutral-600/90 font-medium">
-                    Invoice Date.
-                  </div>
+                  <Label>Invoice Date.</Label>
                   <div>
                     <div className=" ">
                       <Controller
@@ -599,9 +594,7 @@ const PaymentLineModal = (props: Props) => {
                   <div></div>
                 </div>
                 <div className="grid grid-cols-[.32fr_1fr] items-center">
-                  <div className="text-neutral-600/90 font-medium self-center">
-                    Invoice No.
-                  </div>
+                  <Label>Invoice No.</Label>
                   <div className="flex items-center gap-1 w-full">
                     <div>
                       <Input
@@ -621,9 +614,7 @@ const PaymentLineModal = (props: Props) => {
                   <div></div>
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] items-center">
-                  <div className="text-neutral-600/90 font-medium self-center">
-                    Check No.
-                  </div>
+                  <Label>Check No.</Label>
                   <div>
                     <div className="w-[38%]">
                       <Input

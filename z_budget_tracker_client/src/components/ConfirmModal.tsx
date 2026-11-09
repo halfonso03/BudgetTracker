@@ -16,7 +16,7 @@ const ConfirmModal = ({ ...props }: Props) => {
   return (
     <Modal2 size="sm" {...props} title="Confirm Action" animateOut={animateOut}>
       <div>
-        <div className="my-8 mb-14">{props.message}</div>
+        <div className="my-8 mb-14 dark:text-white">{props.message}</div>
         <div className="flex justify-end gap-3">
           <Button
             buttonSize="small"

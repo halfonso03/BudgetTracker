@@ -8,6 +8,9 @@ import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
 import Select from '../../../components/Select';
 import Spinner from '../../../components/Spinner';
+import Label from '../../../components/Label';
+import Box from '../../../components/Box';
+import BoxSmall from '../../../components/BoxSmall';
 
 type Selections = {
   initiativeId?: number;
@@ -100,7 +103,7 @@ const EditLineModal = ({ ...props }: Props) => {
       <div className="grid grid-cols-[.7fr_1fr] mb-4 gap-4">
         <div className="flex flex-col gap-9">
           <div>
-            <span className="entity-label">Select an Initiative</span>
+            <Label>Select an Initiative</Label>
             <Select
               value={selections?.initiativeId}
               additionalclasses={`${selections?.initiativeId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
@@ -114,14 +117,14 @@ const EditLineModal = ({ ...props }: Props) => {
               }}
             >
               {initiatives?.map((i) => (
-                <option value={i.id} key={i.id} className="text-neutral-900">
+                <option value={i.id} key={i.id} className="text-neutral-900 dark:text-white">
                   {i.name}
                 </option>
               ))}
             </Select>
           </div>
           <div>
-            <span className="entity-label">Select a Grant</span>
+            <Label>Select a Grant</Label>
             <Select
               additionalclasses={`${selections?.grantId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
               value={selections?.grantId}
@@ -136,14 +139,14 @@ const EditLineModal = ({ ...props }: Props) => {
               }}
             >
               {grants?.map((i) => (
-                <option value={i.id} key={i.id} className="text-neutral-900">
+                <option value={i.id} key={i.id} className="text-neutral-900 dark:text-white">
                   {i.name}
                 </option>
               ))}
             </Select>
           </div>
           <div>
-            <span className="entity-label">Select a Category</span>
+            <Label>Select a Category</Label>
             <Select
               additionalclasses={`${selections?.categoryId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
               value={selections?.categoryId}
@@ -158,7 +161,7 @@ const EditLineModal = ({ ...props }: Props) => {
               }}
             >
               {categories?.map((i) => (
-                <option value={i.id} key={i.id} className="text-neutral-900">
+                <option value={i.id} key={i.id} className="text-neutral-900 dark:text-white">
                   {i.name}
                 </option>
               ))}
@@ -166,7 +169,7 @@ const EditLineModal = ({ ...props }: Props) => {
           </div>
         </div>
 
-        <div className=" ">
+        <BoxSmall >
           {loadingBalances && (
             <div className="mt-4 flex justify-center">
               <Spinner></Spinner>
@@ -174,11 +177,15 @@ const EditLineModal = ({ ...props }: Props) => {
           )}
           {balances && (
             <div className="flex justify-between py-2 px-2 pt-0 ">
-              <div className="flex-10 entity-label">Accounts</div>
+              <div className="flex-10 ">
+                <Label>Accounts</Label>
+              </div>
               <div className="flex-9 grid grid-cols-[1fr_1fr] ">
-                <div className=" entity-label text-end">Current</div>
-                <div className=" font-semibold text-end text-neutral-500">
-                  Remaining
+                <div className="  text-end">
+                  <Label>Current</Label>
+                </div>
+                <div className=" text-end ">
+                  <Label>Remaining</Label>
                 </div>
               </div>
             </div>
@@ -186,12 +193,12 @@ const EditLineModal = ({ ...props }: Props) => {
 
           {balances?.map((b) => (
             <div
-              className={`rounded-sm inset-1 py-1 pt-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300
+              className={`rounded-sm inset-1 py-1 pt-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 dark:hover:bg-slate-700/80 dark:hover:border-slate-700/60 transition-all duration-300
                 ${
                   b.accountId == originalSlections.accountId &&
                   b.initiativeId == originalSlections.initiativeId &&
                   b.grantId == originalSlections.grantId &&
-                  'border border-blue-500 bg-blue-100/30 '
+                  'border border-blue-500 bg-blue-100/30 dark:text-white dark:bg-slate-800/80 dark:border-slate-500 dark:hover:border-indigo-400 '
                 }`}
               key={b.accountId}
               onClick={() => {
@@ -201,7 +208,7 @@ const EditLineModal = ({ ...props }: Props) => {
               }}
             >
               <div
-                className={`flex flex-10 text-neutral-700 items-center gap-1 `}
+                className={`flex flex-10 text-neutral-700 items-center gap-1 dark:text-white`}
               >
                 {/* {b.accountId == originalSlections.accountId &&
                   b.initiativeId == originalSlections.initiativeId &&
@@ -211,10 +218,10 @@ const EditLineModal = ({ ...props }: Props) => {
                 {b.accountName}
               </div>
               <div className="flex-9 grid grid-cols-[1fr_1fr] ">
-                <div className="text-neutral-900  text-end ">
+                <div className="text-neutral-900 dark:text-white  text-end ">
                   {formatCurrency(b.currentAmount)}
                 </div>
-                <div className="text-end text-neutral-500">
+                <div className="text-end text-neutral-500 dark:text-white">
                   {formatCurrency(b.remainingAmount)}
                 </div>
               </div>
@@ -222,7 +229,7 @@ const EditLineModal = ({ ...props }: Props) => {
           ))}
           <div className="flex justify-between py-2 px-2">
             {balances && (
-              <div className="flex-10 entity-label">
+              <div className="flex-10 dark:text-slate-300 font-semibold">
                 {selections &&
                   categories?.some((c) => c.id == selections?.categoryId) &&
                   categories?.filter((c) => c.id == selections?.categoryId)[0]
@@ -232,7 +239,7 @@ const EditLineModal = ({ ...props }: Props) => {
             )}
 
             <div className="flex-9 grid grid-cols-[1fr_1fr]">
-              <div className="font-semibold text-neutral-800 text-end">
+              <div className="font-semibold text-neutral-800 text-end dark:text-slate-300">
                 {balances &&
                   formatCurrency(
                     balances
@@ -240,7 +247,7 @@ const EditLineModal = ({ ...props }: Props) => {
                       ?.reduce((acc, cur) => acc + cur, 0),
                   )}
               </div>
-              <div className="font-semibold text-end text-neutral-500">
+              <div className="font-semibold text-end text-neutral-500 dark:text-slate-300">
                 {balances &&
                   formatCurrency(
                     balances
@@ -250,7 +257,7 @@ const EditLineModal = ({ ...props }: Props) => {
               </div>
             </div>
           </div>
-        </div>
+        </BoxSmall>
       </div>
       <div className="flex justify-end gap-3 pb-3">
         {/* <Button onClick={() => {}}>Save</Button> */}

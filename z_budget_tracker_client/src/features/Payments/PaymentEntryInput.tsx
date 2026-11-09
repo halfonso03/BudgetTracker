@@ -8,6 +8,7 @@ import NumericInputReactHookForm from '../../components/NumericInput';
 import { Asterisk } from 'lucide-react';
 import type { PaymentFormSchema } from '../../form_schemas/PaymentFormSchema';
 import * as Yup from 'yup';
+import Label from '../../components/Label';
 
 type FormValues = Yup.InferType<typeof PaymentFormSchema>;
 
@@ -47,9 +48,10 @@ const PaymentEntryInput = ({
         </div>
       </div> */}
       <div className="grid grid-cols-[.39fr_1fr_.1fr]  w-full items-center ">
-        <div className="text-neutral-600/90 font-medium self-start pt-2">
-          Payment Amount
+        <div className="self-start pt-2">
+          <Label>Payment Amount</Label>
         </div>
+
         <div className="flex items-center w-[42%]">
           <NumericInputReactHookForm
             register={register}

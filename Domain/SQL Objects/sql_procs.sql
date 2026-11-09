@@ -245,6 +245,9 @@ END
 
 GO
 
+
+
+
 create PROCEDURE [Report].[spGrantBalance]  
 (
 	@aiYear					SMALLINT = 2025,
@@ -323,10 +326,10 @@ BEGIN
 			d.initiative_id,				
 			d.amount, 	
 			a.id account_id
-		FROM tblDisb h INNER JOIN tblGrant g ON
-				h.grant_id = g.id
-			INNER JOIN tblDisbLineItem d ON
+		FROM tblDisb h INNER JOIN tblDisbLineItem d ON
 				d.disb_id = h.id
+			INNER JOIN tblGrant g ON
+				d.grant_id = g.id
 			INNER JOIN @initiatives i ON
 				d.initiative_id = i.id				
 			INNER JOIN tblCategory acc ON
@@ -389,7 +392,5 @@ BEGIN
 END
 
 go
-
-[Report].[spGrantBalance]  
 
 

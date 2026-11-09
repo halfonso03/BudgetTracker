@@ -12,6 +12,7 @@ import Spinner from '../../../components/Spinner';
 import { InvoiceInfoFormSchema } from '../../../form_schemas/PaymentFormSchema';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
+import Label from '../../../components/Label';
 
 type Props = {
   isOpen: boolean;
@@ -165,12 +166,14 @@ const InvoiceInfoModal = ({
         {errors.paymentId?.message}
         <div className="flex gap-1 justify-between mb-7">
           <div>
-            <div className=" text-neutral-600">Payee Name</div>
-            <div className="font-medium">{paymentInvoiceInfo.payeeName}</div>
+            <Label>Payee Name</Label>
+            <div className="font-medium dark:text-white">
+              {paymentInvoiceInfo.payeeName}
+            </div>
           </div>
           <div>
-            <div className="text-neutral-600 ">Payment Amount</div>
-            <div className="font-medium text-end">
+            <Label>Payment Amount</Label>
+            <div className="font-medium text-end dark:text-white">
               {formatCurrency(
                 parseFormattedNumber(
                   paymentInvoiceInfo.paymentAmount.toString(),
@@ -179,8 +182,8 @@ const InvoiceInfoModal = ({
             </div>
           </div>
           <div>
-            <div className=" text-neutral-600 text-end">Payment No.</div>
-            <div className="font-medium text-end">
+            <Label>Payment No.</Label>
+            <div className="font-medium text-end dark:text-white">
               {paymentInvoiceInfo.paymentNumber}
             </div>
           </div>
@@ -188,9 +191,7 @@ const InvoiceInfoModal = ({
         <div className=" mb-8   ">
           <div className="flex flex-col gap-4   ">
             <div className="grid grid-cols-[.45fr_1fr_.5fr]  w-full items-center">
-              <div className="text-neutral-600/90 font-medium">
-                Invoice Date.
-              </div>
+              <Label>Invoice Date.</Label>
               <Controller
                 control={control}
                 name="invoiceDate"
@@ -205,19 +206,17 @@ const InvoiceInfoModal = ({
                       field.onChange(date);
                     }}
                     wrapperClassName="w-full border border-blue-500"
-                    className="p-2 rounded-sm w-full bg-white border border-gray-300 focus:outline-none focus:ring focus:ring-blue-50 "
+                    className="p-2 rounded-sm w-full bg-white dark:bg-slate-800 dark:text-white dark:border-slate-700/80 border border-gray-300 focus:outline-none focus:ring focus:ring-blue-50  dark:focus:ring-indigo-500 "
                   />
                 )}
               ></Controller>
             </div>
             <div className="grid grid-cols-[.45fr_1fr_.5fr] items-center">
-              <div className="text-neutral-600/90 font-medium self-center">
-                Invoice No.
-              </div>
+              <Label>Invoice No.</Label>
               <div className="flex flex-col items-center gap-1 w-full ">
                 <Input
                   {...register('invoiceNumber')}
-                  additionalclasses="bg-white "
+                  additionalclasses=""
                 ></Input>
                 {dirtyFields.invoiceNumber && errors.invoiceNumber?.message && (
                   <div className="text-red-500">
@@ -228,15 +227,13 @@ const InvoiceInfoModal = ({
               <div className="flex-1  w-full text-red-500">
                 {isValidating && dirtyFields.invoiceNumber && (
                   <div className="ml-2">
-                    <Spinner color="neutral" ></Spinner>
+                    <Spinner color="neutral"></Spinner>
                   </div>
                 )}
               </div>
             </div>
             <div className="grid grid-cols-[.45fr_1fr_.5fr] items-center ">
-              <div className="text-neutral-600/90 font-medium self-center">
-                Check No.
-              </div>
+              <Label>Check No.</Label>
               <Input
                 {...register('checkNumber')}
                 additionalclasses="bg-white"
