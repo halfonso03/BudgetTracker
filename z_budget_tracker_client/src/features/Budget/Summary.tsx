@@ -56,9 +56,9 @@ const Summary = ({ year }: Props) => {
     return <div className="my-5">There are no budgets for {year}</div>;
 
   return (
-    <div>
+    <div className='tracking-wider'>
       <div
-        className={`border-b border-b-neutral-200 dark:border-slate-700/80 mb-8 text-neutral-500 dark:text-slate-400  grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-2 `}
+        className={` border-b border-b-neutral-200 dark:border-slate-700/80 mb-8 text-neutral-500 dark:text-slate-400  grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-2 `}
       >
         <div className="">Totals</div>
         <div></div>
@@ -119,14 +119,14 @@ const Summary = ({ year }: Props) => {
         <div></div>
       </div>
       {budgetSummaries?.map((budget, index) => (
-        <div key={index} className=" border border-neutral-300 dark:border-slate-700/60 mb-5">
+        <div key={index} className=" border border-neutral-300 dark:border-slate-700/60 mb-5 rounded-md">
           <div
             className={`grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 py-3 `}
           >
             <div className="pl-3 font-medium dark:text-slate-100 self-center">
               {budget.initiative_name}
             </div>
-            <div className="font-mono font-bold text-indigo-300 self-center ">{budget.grant_name}</div>
+            <div className="font-mono font-bold text-indigo-300 self-center text-[1.1rem]">{budget.grant_name}</div>
             <div className="text-end self-center">
               <Link
                 to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
@@ -329,27 +329,27 @@ function CategorySummary({
                   .sort((a, b) => a.account_name.localeCompare(b.account_name))
                   .map((i) => (
                     <div
-                      className="py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] items-center gap-4  last:mb-0 transition-all duration-200 hover:bg-neutral-200/50  dark:hover:bg-slate-800/80  dark:bg-slate-800/80 "
+                      className="dark:bg-slate-800/80 py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] items-center gap-4  last:mb-0 transition-all duration-200 hover:bg-neutral-200/50  dark:hover:bg-slate-800/80  "
                       key={i.account_id}
                     >
-                      <div className="italic pl-16 col-span-2">
+                      <div className="italic pl-16 col-span-2 dark:text-slate-100">
                         {i.account_name}
                       </div>
-                      <div className="text-end italic text-neutral-700">
+                      <div className="text-end italic text-neutral-700 dark:text-slate-100">
                         {i.amount > 0 ? (
                           formatCurrency(i.amount)
                         ) : (
                           <span className="text-neutral-400">-</span>
                         )}
                       </div>
-                      <div className="text-end italic text-neutral-700">
+                      <div className="text-end italic text-neutral-700 dark:text-slate-100">
                         {i.current_amount !== 0 ? (
                           formatCurrency(i.current_amount)
                         ) : (
                           <span className="text-neutral-400">-</span>
                         )}
                       </div>
-                      <div className="text-end italic text-neutral-700">
+                      <div className="text-end italic text-neutral-700 dark:text-slate-100">
                         {i.spent_amount !== 0 ? (
                           formatCurrency(i.spent_amount)
                         ) : (
@@ -358,12 +358,12 @@ function CategorySummary({
                       </div>
                       <div>
                         <div
-                          className={`italic text-end ${i.current_amount + i.spent_amount < 0 ? 'text-red-600' : ''}`}
+                          className={`dark:text-slate-100 italic text-end ${i.current_amount + i.spent_amount < 0 ? 'text-red-600' : ''}`}
                         >
                           {formatCurrency(i.current_amount + i.spent_amount)}
                         </div>
                       </div>
-                      <div className="flex justify-around text-blue-500 text-[.9rem]   ">
+                      <div className="flex justify-around text-blue-500 dark:text-indigo-500 text-[.9rem]   ">
                         <Link
                           className="cursor-pointer"
                           to={`/reprogramming/${year}/${initiativeId}/${grantId}/${i.category_id}/${i.account_id}`}
