@@ -3,6 +3,7 @@ import { formatCurrency, formatDate, formatNumber } from '../../../app/util';
 import Modal2 from '../../../components/Modal2';
 import { Fragment, useState } from 'react';
 import Button from '../../../components/Button';
+import Label from '../../../components/Label';
 
 type Props = {
   budgetType: number;
@@ -53,24 +54,28 @@ const TransactionsModal = (props: Props) => {
         {...props}
         onCancel={handleCancel}
       >
-        <div className="">
-          <div className="font-semibold text-neutral-500">ACCOUNT</div>
-          <div className="font-semibold self-end mb-3">{props.accountName}</div>
-          <div className="grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 my-3 border-b border-b-neutral-200">
+        <div >
+          <Label>ACCOUNT</Label>
+          <div className="font-semibold self-end mb-3 dark:text-white">
+            {props.accountName}
+          </div>
+          <div className="grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 my-3 border-b border-b-neutral-200 dark:border-b-slate-700">
             <div></div>
-            <div className="text-center font-medium text-neutral-500">
-              POSTED DATE
+            <div className="text-center">
+              <Label>POSTED DATE</Label>
             </div>
-            <div className="text-center font-medium text-neutral-500">
-              AMOUNT
+            <div className="text-end">
+              <Label>AMOUNT</Label>
             </div>
-            <div className="text-end font-medium text-neutral-500">BALANCE</div>
+            <div className="text-end">
+              <Label>BALANCE</Label>
+            </div>
           </div>
           {data?.map((t, i) => {
             if (i > 0) remaining += data[i].amount;
             return (
               <div
-                className="cursor-pointer grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 p-2 hover:bg-neutral-200/50 duration-200 transition-all"
+                className="cursor-pointer grid grid-cols-[1.6fr_1.5fr_1fr_1fr] gap-2 p-2 hover:bg-neutral-200/50 rounded-md dark:hover:bg-slate-700/60 duration-200 transition-all"
                 key={i}
                 onClick={() => {
                   if (t.typeName === 'Reprogramming') {
@@ -96,7 +101,7 @@ const TransactionsModal = (props: Props) => {
                 }}
               >
                 <div className="flex justify-between gap-2 ">
-                  <div className="font-medium">
+                  <div className="font-medium dark:text-white">
                     {t.typeName}{' '}
                     {t.typeName === 'Reprogramming' && (
                       <span>- &nbsp;{t.id}</span>
@@ -130,19 +135,19 @@ const TransactionsModal = (props: Props) => {
                     ) : null} */}
                   </div>
                 </div>
-                <div className="text-center font-medium text-neutral-700">
+                <div className="text-center font-medium text-neutral-700 dark:text-slate-100">
                   {formatDate(t.postedDate)}
                 </div>
-                <div className="text-center font-medium text-neutral-700">
+                <div className="text-end font-medium text-neutral-700 dark:text-slate-100">
                   {formatCurrency(t.amount)}
                 </div>
-                <div className="text-neutral-700 font-medium text-end">
+                <div className="text-neutral-700 font-medium text-end dark:text-slate-100">
                   {formatNumber(remaining)}
                 </div>
               </div>
             );
           })}
-          <div className="flex justify-end mt-8">
+          <div className="flex justify-end mt-4 pt-4  border-t border-t-neutral-200 dark:border-t-slate-700/60">
             <Button variation="secondary" onClick={handleCancel}>
               Close
             </Button>

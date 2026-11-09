@@ -254,7 +254,7 @@ const BudgetDetails = () => {
         return parseFormattedNumber(value);
       })
       .reduce((acc, cur) => cur + acc, 0);
-    setValue(`rows.${totalsIndex}.current_amount`, formatNumber(totalCurrent));
+    setValue(`rows.${totalsIndex}.amount`, formatNumber(totalCurrent));
 
     i = -1;
     const categoryTotal = fields
@@ -267,7 +267,7 @@ const BudgetDetails = () => {
       })
       .reduce((acc, cur) => cur + acc, 0);
 
-    setValue(`rows.${totalsIndex}.amount`, formatNumber(categoryTotal));
+    setValue(`rows.${totalsIndex}.current_amount`, formatNumber(categoryTotal));
 
     const totalSpent = budgetRows
       .filter((x) => x.categoryId == categoryId && x.accountId !== 999)
@@ -278,6 +278,7 @@ const BudgetDetails = () => {
       `rows.${totalsIndex}.remaining_amount`,
       formatNumber(categoryTotal + totalSpent),
     );
+
     calculateTotals();
   }
 
@@ -635,6 +636,7 @@ const BudgetDetails = () => {
 
                             if (isDirty && !hasUnsavedChanges)
                               setHasUnsavedChanges(true);
+
                           }}
                           onShowAccountHistory={handleShowAccountHistory}
                         ></BudgetInputFields>

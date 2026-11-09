@@ -186,7 +186,7 @@ const BudgetInputFields = ({
                       fieldName,
                     )
                   }
-                  className=" hover:underline underline-offset-5 text-blue-600 dark:text-indigo-400 cursor-pointer font-semibold"
+                  className=" hover:underline underline-offset-5 text-blue-600 dark:text-indigo-400 cursor-pointer "
                 >
                   {current}
                 </button>
@@ -240,7 +240,7 @@ const BudgetInputFields = ({
             onClick={() =>
               showAccountHistory(3, initiativeId, grantId, accountId, fieldName)
             }
-            className={`text-blue-600 hover:underline underline-offset-5 cursor-pointer dark:text-indigo-400 font-semibold`}
+            className={`text-blue-600 hover:underline underline-offset-5 cursor-pointer dark:text-indigo-400`}
           >
             {formatCurrency(parseFormattedNumber(remaining))}
           </div>
