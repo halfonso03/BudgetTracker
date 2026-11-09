@@ -2,7 +2,6 @@ import { LogOutIcon, User } from 'lucide-react';
 import { useState } from 'react';
 import { useOutsideClick } from '../hooks/useOutsideClick';
 import useTheme from '../contexts/useTheme';
-import Box from './Box';
 
 interface Props {
   loginId: string;
@@ -26,7 +25,7 @@ const AccountToggler = ({ loginId, logOut }: Props) => {
           onClick={() =>
             setIsOpenerClass((prev) => (prev == ' open ' ? '' : ' open '))
           }
-          className="cursor-pointer"
+          className="text-neutral-600 dark:text-slate-200 cursor-pointer"
         ></User>
       </div>
 
@@ -41,10 +40,10 @@ const AccountToggler = ({ loginId, logOut }: Props) => {
             Theme:
           </div>
           <div>
-            <div className="flex gap-2 pl-3 rounded-sm dark:text-neutral-300 dark:hover:bg-neutral-600 hover:bg-gray-300 transition-alll duration-300">
+            <div className="flex gap-2 pl-3 rounded-sm dark:text-neutral-300 dark:hover:bg-slate-700/80 hover:bg-gray-300 transition-alll duration-300">
               <div className="text-sm text-gray-700 dark:text-neutral-300 flex items-center ">
                 {!isDark ? (
-                  <div className="rounded-full p-[.2rem] border bg-neutral-500 border-neutral-500 dark:border-neutral-400 dark:bg-neutral-400"></div>
+                  <div className="rounded-full p-[.2rem]  bg-neutral-500 border-3 border-neutral-500 dark:bg-slate-800  dark:border-neutral-400 "></div>
                 ) : (
                   <div className="rounded-full border border-transparent p-[.2rem]"></div>
                 )}
@@ -59,10 +58,10 @@ const AccountToggler = ({ loginId, logOut }: Props) => {
                 Light
               </div>
             </div>
-            <div className="flex gap-2 pl-3 rounded-sm dark:text-neutral-300 dark:hover:bg-neutral-600 hover:bg-gray-300 transition-alll duration-300">
+            <div className="flex gap-2 pl-3 rounded-sm dark:text-neutral-300 dark:hover:bg-slate-700/80 hover:bg-gray-300 transition-alll duration-300">
               <div className="text-sm text-gray-700 dark:text-neutral-300 flex items-center ">
                 {isDark ? (
-                  <div className="rounded-full p-[.2rem] border bg-neutral-500 border-neutral-500 dark:border-neutral-400 dark:bg-neutral-400"></div>
+                  <div className="rounded-full p-[.2rem]  bg-neutral-500 border-3 border-neutral-500 dark:bg-slate-800  dark:border-neutral-400 "></div>
                 ) : (
                   <div className="rounded-full border border-transparent p-[.2rem]"></div>
                 )}
@@ -81,7 +80,7 @@ const AccountToggler = ({ loginId, logOut }: Props) => {
         </div>
         <div className="border border-neutral-300 dark:border-neutral-700 border-t-0 p-2 rounded-b-md ">
           <div
-            className="flex items-center cursor-pointer gap-1 text-sm text-gray-700 dark:text-neutral-300 hover:bg-gray-300 dark:hover:bg-neutral-600 duration-350 transition-all p-1 rounded-sm pl-2"
+            className="flex items-center cursor-pointer gap-1 text-sm text-gray-700 dark:text-neutral-300 hover:bg-gray-300 dark:hover:bg-slate-700/80   duration-350 transition-all p-1 rounded-sm pl-2"
             onClick={() => logOut()}
           >
             <LogOutIcon size={15}></LogOutIcon>

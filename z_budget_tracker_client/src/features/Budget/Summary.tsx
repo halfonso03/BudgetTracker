@@ -126,11 +126,11 @@ const Summary = ({ year }: Props) => {
             <div className="pl-3 font-medium dark:text-slate-100 self-center">
               {budget.initiative_name}
             </div>
-            <div className="font-mono font-bold text-indigo-300 self-center text-[1.1rem]">{budget.grant_name}</div>
+            <div className="font-mono font-bold text-neutral-700  dark:text-indigo-300 self-center text-[1.1rem]">{budget.grant_name}</div>
             <div className="text-end self-center">
               <Link
                 to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
-                className="text-blue-500 self-center dark:text-indigo-500"
+                className="text-blue-500 self-center dark:text-indigo-400"
               >
                 <span className=" underline-offset-3 font-semibold underline">
                   {formatCurrency(budget.approved_amount)}
@@ -246,7 +246,7 @@ function CategorySummary({
   const [expandedIndexes, setExpandedIndexes] = useState<number[]>([]);
 
   return (
-    <div className=" border-t border-t-neutral-300  dark:border-slate-700 ">
+    <div className=" border-t border-t-neutral-300  dark:border-slate-700  ">
       <div className="font-semibold text-neutral-500 dark:text-slate-400 border-b border-b-neutral-300 dark:border-b-slate-700/60 p-3 pl-5  ">
         Category
       </div>
@@ -266,7 +266,7 @@ function CategorySummary({
               key={index}
             >
               <div
-                className={` py-3 pl-8 font-medium col-span-2 text-neutral-500 dark:text-slate-100   ${cateoryRedClass}`}
+                className={` py-3 pl-8 font-semibold col-span-2 text-neutral-700 dark:text-slate-100   ${cateoryRedClass}`}
                 key={index}
               >
                 {c.category}
@@ -323,16 +323,18 @@ function CategorySummary({
               <div className="pl-12 py-2 dark:text-slate-400 font-semibold  border-t border-t-neutral-300 dark:border-t-slate-700/60">
                 Account
               </div>
-              <div className="bg-neutral-50 border-t border-t-neutral-300 dark:border-t-slate-700/60  dark:hover:text-slate-900">
+              <div className="bg-neutral-50 border-t border-t-neutral-300  dark:border-t-slate-800/90 dark:hover:text-slate-900">
                 {items
                   .filter((x) => x.category?.name == c.category)
                   .sort((a, b) => a.account_name.localeCompare(b.account_name))
                   .map((i) => (
                     <div
-                      className="dark:bg-slate-800/80 py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] items-center gap-4  last:mb-0 transition-all duration-200 hover:bg-neutral-200/50  dark:hover:bg-slate-800/80  "
+                      className=" py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] items-center gap-4 last:mb-0
+                         transition-all duration-200 hover:bg-neutral-200/50 dark:bg-slate-900 dark:hover:bg-slate-800 
+                         "
                       key={i.account_id}
                     >
-                      <div className="italic pl-16 col-span-2 dark:text-slate-100">
+                      <div className="italic pl-16 col-span-2 dark:text-slate-100 ">
                         {i.account_name}
                       </div>
                       <div className="text-end italic text-neutral-700 dark:text-slate-100">

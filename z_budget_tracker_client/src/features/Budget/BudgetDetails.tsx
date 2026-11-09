@@ -34,6 +34,7 @@ import MenuIdProvider from '../../contexts/MenuIdContext';
 import ChangesModal from './modals/ChangesModal';
 import PaymentMiniDetailsModal from './modals/PaymentMiniDetailModal';
 import ErrorsModal from '../Common/modals/ErrorsModal';
+import Label from '../../components/Label';
 
 type totalsFieldNames = 'amount' | 'current_amount' | 'remaining_amount';
 
@@ -410,24 +411,25 @@ const BudgetDetails = () => {
 
   return (
     <MenuIdProvider>
-      <div className="w-full mx-auto">
+      <div className="min-h-lvh pb-10">
         {/* <Button onClick={testCommetnField}>Comment</Button> */}
-        <div className="mb-2 font-semibold text-2xl pb-5 text-neutral-700">
+        <div className="mb-2  text-2xl pb-5 text-neutral-700 font-bold tracking-tight dark:text-white">
           Edit Budget
         </div>
-        <div className="grid grid-cols-[.15fr_.4fr_.3fr_1fr_.5fr_.075fr] mb-2 py-2 border-b border-b-neutral-200 ">
-          <div className="entity-label">YEAR</div>
-          <div className="entity-label">INITIATIVE</div>
-          <div className="entity-label">AWARD</div>
+        <div className="grid grid-cols-[.15fr_.4fr_.3fr_1fr_.5fr_.075fr] mb-2 py-2 border-b border-b-neutral-200 dark:border-b-slate-700/80  ">
+          <Label>YEAR</Label>
+          <Label>INITIATIVE</Label>
+          <Label>AWARD</Label>
           <div></div>
           <div className="grid grid-cols-[1fr_1fr] justify-end gap-4 text-sm">
             {budget.lastUpdatedDate && (
               <>
-                <div className="font-medium text-neutral-500/90 text-end animate-repro-fade-in">
-                  UPDATED ON
+                <div className="text-neutral-500/90 text-end animate-repro-fade-in">
+                  <Label>UPDATED ON</Label>
                 </div>
-                <div className="font-medium text-neutral-500/90 text-end">
-                  UPDATED BY
+
+                <div className="text-neutral-500/90 text-end">
+                  <Label>UPDATED BY</Label>
                 </div>
               </>
             )}
@@ -438,7 +440,7 @@ const BudgetDetails = () => {
               <Menus>
                 <Menus.Toggler id={'1'}>
                   <EllipsisVertical
-                    className="align-middle text-neutral-500"
+                    className="align-middle text-neutral-500 dark:text-white"
                     size={20}
                   ></EllipsisVertical>
                 </Menus.Toggler>
@@ -449,7 +451,10 @@ const BudgetDetails = () => {
                 >
                   <Menus.MenuItem onClick={() => setChangesModalIsOpen(true)}>
                     <div className="flex gap-1 items-center">
-                      <Shield className="text-neutral-700" size={16}></Shield>
+                      <Shield
+                        className="text-neutral-700 dark:text-white"
+                        size={16}
+                      ></Shield>
                       View Changes
                     </div>
                   </Menus.MenuItem>
@@ -458,19 +463,19 @@ const BudgetDetails = () => {
             )}
           </div>
 
-          <div className="font-medium">{grant?.year}</div>
-          <div className="font-medium">{initiative?.name}</div>
-          <div className="font-medium">
+          <div className="font-medium dark:text-white">{grant?.year}</div>
+          <div className="font-medium dark:text-white">{initiative?.name}</div>
+          <div className="font-mono font-bold dark:text-indigo-500 ">
             {grant?.name} - {grant?.fiduciary}
           </div>
           <div></div>
           <div className="grid grid-cols-[1fr_1fr] justify-end gap-4 text-sm ">
-            <div className="font-medium text-neutral-800 text-end">
+            <div className="font-medium text-neutral-800 text-end dark:text-slate-100">
               {budget.lastUpdatedDate
                 ? formatDate(budget.lastUpdatedDate, 'M/d/yyyy hh:mm a')
                 : ''}
             </div>
-            <div className="font-medium text-neutral-800 text-end">
+            <div className="font-medium text-neutral-800 text-end dark:text-slate-100">
               {budget.lastUpdatedBy ? budget.lastUpdatedBy : ''}
             </div>
           </div>
@@ -508,14 +513,17 @@ const BudgetDetails = () => {
             const categoryRedClass = n === true ? 'text-red-600' : '';
 
             return (
-              <div className="border border-neutral-200 mb-7" key={c.id}>
-                <div className="flex justify-between bg-neutral-100 ">
-                  <div className={`pl-3 py-2 font-semibold ${categoryRedClass}`}>
-                    {c.name}
+              <div
+                className="border border-neutral-200 mb-7 dark:border-slate-700/80"
+                key={c.id}
+              >
+                <div className="flex justify-between bg-neutral-100  dark:bg-slate-800/80">
+                  <div className={`pl-3 py-2  ${categoryRedClass}`}>
+                    <Label>{c.name}</Label>
                   </div>
                   <div className="self-center mr-2">
                     <ChevronDownSquare
-                      className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
+                      className={`dark:text-indigo-300  text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
                       onClick={() => {
                         if (expandedIndexes.some((x) => x == index)) {
                           setExpandedIndexes((prev) =>
@@ -530,29 +538,29 @@ const BudgetDetails = () => {
                 </div>
 
                 <div
-                  className={`  grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200' : ''}`}
+                  className={`  grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200 dark:border-t-slate-700/80' : ''}`}
                   key={c.id}
                 >
-                  <div className="pl-3 py-2 font-semibold bg-neutral-100 text-neutral-600 border-b border-b-neutral-200">
-                    Account
+                  <div className="pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                    <Label>Account</Label>
                   </div>
-                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
-                    Budgeted
+                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                    <Label>Budgeted</Label>
                   </div>
-                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
-                    Current
+                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                    <Label>Current</Label>
                   </div>
-                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
-                    Spent
+                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                    <Label>Spent</Label>
                   </div>
-                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
-                    Remaining
+                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                    <Label>Remaining</Label>
                   </div>
-                  <div className="text-center py-2 bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
-                    Comments
+                  <div className="text-center py-2 bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                    <Label>Comments</Label>
                   </div>
-                  <div className="text-center py-2 bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200">
-                    Actions
+                  <div className="text-center py-2 bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                    <Label>Actions</Label>
                   </div>
                   {amountFieldsForCategory.map((field) => {
                     indexRunningTotal += 1;
@@ -639,7 +647,7 @@ const BudgetDetails = () => {
 
                   return (
                     <div
-                      className="border-t border-t-neutral-200 grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr] pb-0"
+                      className="border-t border-t-neutral-200 dark:border-t-slate-700/80 grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr] pb-0 "
                       key={field.id}
                     >
                       <BudgetInputFields

@@ -57,7 +57,7 @@ function List({ id, topPos = 'translate-y-5', leftPos, children }: ListProps) {
 
   return (
     <div
-      className={`absolute animate-repro-fade-in z-1000 ${leftPosition} ${topPos} bg-neutral-50  bg-dark-content border border-gray-300 dark:border-neutral-700 p-2 rounded-sm cursor-pointer`}
+      className={`absolute animate-repro-fade-in z-1000 ${leftPosition} ${topPos} bg-neutral-50 bg-dark-content border border-gray-300 dark:border-neutral-700 p-2 dark:bg-slate-800  rounded-sm cursor-pointer`}
       ref={ref}
     >
       <ul className="w-50 ">{children}</ul>
@@ -114,7 +114,7 @@ function MenuItem({ children, onClick }: MenuItemProps) {
 
   return (
     <li
-      className={`flex justify-start items-center p-1 text-neutral-700 transition-colors duration-150 hover:bg-gray-200 dark:hover:bg-neutral-700 rounded-md`}
+      className={`flex justify-start items-center p-1 text-neutral-700 transition-colors duration-150 hover:bg-gray-200 dark:hover:bg-slate-700 rounded-md dark:text-white`}
       onClick={() => {
         close();
         onClick?.();

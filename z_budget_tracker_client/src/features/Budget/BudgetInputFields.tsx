@@ -92,7 +92,7 @@ const BudgetInputFields = ({
   }
 
   function getCellColor(isLastRow: boolean, amount: string) {
-    if (isLastRow) return 'bg-neutral-100 font-bold text-neutral-600 ';
+    if (isLastRow) return 'bg-neutral-100 font-bold text-neutral-600 dark:bg-slate-800/80';
     if (isNaN(parseFormattedNumber(amount))) return 'text-neutral-400';
     if (parseFormattedNumber(amount) === 0) return 'text-neutral-400';
   }
@@ -116,19 +116,19 @@ const BudgetInputFields = ({
   return (
     <>
       <div
-        className={`self-center pl-3 ${isLastRow ? 'py-2 bg-neutral-100 font-bold text-neutral-600' : ''}`}
+        className={` self-center pl-3 ${isLastRow ? 'dark:text-slate-300 py-2 bg-neutral-100 dark:bg-slate-800/80 font-bold text-neutral-600  ' : 'dark:text-white'}`}
       >
         {fieldName}
       </div>
       <div
-        className={`text-end self-center py-2  ${isLastRow ? ' py-2 bg-neutral-100' : ''}`}
+        className={`text-end self-center py-2 ${isLastRow ? ' py-2 bg-neutral-100 dark:bg-slate-800/80 ' : ''}`}
       >
         <NumericArrayInput
           key={accountId}
           register={amountRegister}
           readOnly={isLastRow}
           disabled={isLastRow}
-          className={`${isLastRow ? ' border-0 p-0 m-0 font-bold text-neutral-600 pr-1 ' : 'p-[.2rem] border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+          className={` ${isLastRow ? ' border-0 p-0 m-0 font-bold text-neutral-600 pr-1 dark:text-slate-300  ' : 'p-[.2rem] border border-neutral-200 dark:border-slate-700/80 dark:text-white dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
           onClick={(e) => (onClick ? onClick(e) : null)}
           onBlur={(e) => {
             if (onBlur) {
@@ -161,11 +161,11 @@ const BudgetInputFields = ({
         ></NumericArrayInput>
       </div>
       <div
-        className={`text-end self-center py-1 ${getCellColor(isLastRow, current)} ${isLastRow} ? " py-2 ":""`}
+        className={`text-end self-center py-1 ${getCellColor(isLastRow, current)} ${isLastRow} ? "  py-2 ":""`}
       >
         {!isLastRow ? (
           <>
-            <span>
+            <span className='dark:text-white'>
               {!hasRepro ? (
                 parseFormattedNumber(current) == 0 ? (
                   '- '
@@ -185,7 +185,7 @@ const BudgetInputFields = ({
                       fieldName,
                     )
                   }
-                  className=" hover:underline underline-offset-5 text-blue-600 cursor-pointer"
+                  className=" hover:underline underline-offset-5 text-blue-600 dark:text-indigo-400 cursor-pointer"
                 >
                   {current}
                 </button>
@@ -193,7 +193,7 @@ const BudgetInputFields = ({
             </span>
           </>
         ) : (
-          <div>
+          <div className='dark:text-slate-300'>
             {parseFormattedNumber(currentAmount) > 0 ? (
               <input
                 type="text"
@@ -219,13 +219,13 @@ const BudgetInputFields = ({
         ) : parseFormattedNumber(spentAmount) === 0 ? (
           '-'
         ) : (
-          <div className="">
+          <div className="dark:text-slate-300">
             {formatCurrency(parseFormattedNumber(spentAmount))}
           </div>
         )}
       </div>
       <div
-        className={`flex justify-end self-center py-1 ${isLastRow ? ' py-2 bg-neutral-100 font-bold text-neutral-600' : ''} `}
+        className={`flex justify-end self-center py-1 ${isLastRow ? ' py-2 bg-neutral-100 font-bold text-neutral-600 dark:bg-slate-800/80 dark:text-slate-300' : ''} `}
       >
         {!isLastRow && (error || parseFormattedNumber(remaining) < 0) && (
           <div className="mr-2 relative">
@@ -237,7 +237,7 @@ const BudgetInputFields = ({
             onClick={() =>
               showAccountHistory(3, initiativeId, grantId, accountId, fieldName)
             }
-            className={`text-blue-600 hover:underline underline-offset-5 cursor-pointer`}
+            className={`text-blue-600 hover:underline underline-offset-5 cursor-pointer dark:text-indigo-400 font-semibold`}
           >
             {formatCurrency(parseFormattedNumber(remaining))}
           </div>
@@ -248,13 +248,13 @@ const BudgetInputFields = ({
               readOnly={true}
               tabIndex={-1}
               disabled={true}
-              className="text-end w-full"
+              className="text-end w-full " 
             ></input>
           </>
         )}
       </div>
       <div
-        className={`text-center self-center py-1 text-blue-500 text-sm  ${isLastRow ? 'py-2 bg-neutral-100 self-stretch' : ' self-center '}`}
+        className={`text-center self-center py-1 text-blue-500 text-sm  ${isLastRow ? 'py-2 bg-neutral-100 self-stretch dark:bg-slate-800/80' : ' self-center '}`}
       >
         {!isLastRow ? (
           <button
@@ -266,7 +266,7 @@ const BudgetInputFields = ({
           >
             <Pencil
               size={comment?.text ? 24 : 22}
-              className={`hover:scale-120 transition-all duration-200 ${comment?.text ? 'text-blue-400' : 'text-neutral-400/60 '}`}
+              className={`hover:scale-120 dark:text-indigo-500 transition-all duration-200 ${comment?.text ? 'text-blue-400' : 'text-neutral-400/60 '}`}
             ></Pencil>
           </button>
         ) : (
@@ -274,7 +274,7 @@ const BudgetInputFields = ({
         )}
       </div>
       <div
-        className={`flex py-1 justify-around text-blue-500 self-center ${isLastRow ? 'bg-neutral-100' : ''}`}
+        className={`flex py-1 justify-around text-blue-500 dark:text-indigo-500 self-center ${isLastRow ? 'bg-neutral-100 dark:bg-slate-800/80' : ''}`}
       >
         {!isLastRow && (
           <Link
@@ -287,7 +287,7 @@ const BudgetInputFields = ({
         )}
         {!isLastRow && parseFormattedNumber(remaining) > 0 && (
           <DollarSign
-            className="cursor-pointer"
+            className="cursor-pointer "
             onClick={() => {
               navigate(
                 `/payments//${year}/${initiativeId}/${grantId}/${categoryId}/${accountId}`,
@@ -297,7 +297,7 @@ const BudgetInputFields = ({
         )}
 
         {!isLastRow && parseFormattedNumber(remaining) <= 0 && (
-          <DollarSign className="text-neutral-300"></DollarSign>
+          <DollarSign className="text-neutral-300 dark:text-indigo-500"></DollarSign>
         )}
         {isLastRow && <div className="py-1">&nbsp; </div>}
       </div>

@@ -119,7 +119,7 @@ const NavBar = () => {
     <div className='bg-white dark:bg-slate-900'>
       {user && (
         //bg-dark-nav
-        <div className=" border-b border-b-neutral-300 dark:border-slate-700/80 flex justify-between align-middle p-3 text-gray-900 dark:text-gray-100  ">
+        <div className=" border-b border-b-neutral-300 dark:border-slate-700/80 flex justify-between align-middle p-3 text-gray-800 dark:text-gray-100  ">
           <div className="flex p-2 text-xl pb-0 justify-between w-full">
             <div className="flex absolute bottom-0 left-0">
               <div className="border p-2">

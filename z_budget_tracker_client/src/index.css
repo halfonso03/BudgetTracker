@@ -22,7 +22,10 @@ pre {
 
 
 .dark .nav-link {
-  color: var(--color-slate-300)
+  color: var(--color-slate-200)
+}
+.dark .nav-link:hover {
+  color: var(--color-slate-50)  
 }
 /* .nav-link {
   padding-bottom: 0.4rem;

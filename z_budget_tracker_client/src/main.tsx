@@ -12,14 +12,16 @@ const main = () => {
 
   return (
     <StrictMode>
-      <ClientAuthProvider>
-        <ThemeProvider>
-          <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
-            <RouterProvider router={router}></RouterProvider>
-          </QueryClientProvider>
-        </ThemeProvider>
-      </ClientAuthProvider>
+      <div className="dark:bg-slate-100 min-h-lvh">
+        <ClientAuthProvider>
+          <ThemeProvider>
+            <QueryClientProvider client={queryClient}>
+              <ReactQueryDevtools initialIsOpen={false}></ReactQueryDevtools>
+              <RouterProvider router={router}></RouterProvider>
+            </QueryClientProvider>
+          </ThemeProvider>
+        </ClientAuthProvider>
+      </div>
     </StrictMode>
   );
 };
