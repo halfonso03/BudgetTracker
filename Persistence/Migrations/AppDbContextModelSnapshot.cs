@@ -1744,6 +1744,15 @@ namespace Persistence.Migrations
                             Enabled = true,
                             Name = "Budget Detail",
                             Path = "/BudgetDetail"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CategoryId = (byte)1,
+                            DefaultFileName = "AccountBalances",
+                            Enabled = true,
+                            Name = "Account Balances",
+                            Path = "/AccountBalances"
                         });
                 });
 
@@ -1873,6 +1882,16 @@ namespace Persistence.Migrations
                             Name = "aiBudgetCat",
                             ReportId = 2,
                             SortOrder = (byte)3
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ControlType = "dropdownlist",
+                            Enabled = true,
+                            Label = "Year",
+                            Name = "aiYear",
+                            ReportId = 3,
+                            SortOrder = (byte)1
                         });
                 });
 

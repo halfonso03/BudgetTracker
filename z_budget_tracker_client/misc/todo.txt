@@ -1,11 +1,11 @@
 
 
 
-
+summary pageius reversing the onblur for hte input field
+add % remaining on Summary.tsx
 should be able to save a payment even when not enough funds
 
 charts - home page 
-
 
 
 reports:

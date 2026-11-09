@@ -90,6 +90,15 @@ namespace Persistence
                     CategoryId = 1,
                     Enabled = true,
                     DefaultFileName = "BudgetDetail"
+                },
+                new ()
+                {
+                    Id = 3,
+                    Name = "Account Balances",
+                    Path = "/AccountBalances",
+                    CategoryId = 1,
+                    Enabled = true,
+                    DefaultFileName = "AccountBalances"
                 }
             });
 
@@ -143,6 +152,16 @@ namespace Persistence
                     Label = "Budget Category",
                     ReportId = 2,
                     SortOrder = 3,
+                    ControlType = "dropdownlist",
+                    Enabled = true
+                },
+                new ()
+                {
+                    Id = 6,
+                    Name = "aiYear",
+                    Label = "Year",
+                    ReportId = 3,
+                    SortOrder = 1,
                     ControlType = "dropdownlist",
                     Enabled = true
                 },
