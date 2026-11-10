@@ -6,10 +6,10 @@ type BudgetSurplusBurnRate = {
   grantName: string;
 
   /** Start date of the budget or grant lifecycle. */
-  awardStartDate: string; // ISO date string (e.g., '2023-01-01')
+  awardStartDate: Date; // ISO date string (e.g., '2023-01-01')
 
   /** End date of the budget or grant lifecycle. */
-  awardEndDate: string; // ISO date string (e.g., '2023-01-01')
+  awardEndDate: Date; // ISO date string (e.g., '2023-01-01')
 
   /** Current active month index in the lifecycle. */
   currentMonth: number;
@@ -43,4 +43,8 @@ type BudgetSurplusBurnRate = {
 
   /** Final calculated budget surplus score. */
   surplusScore: number;
+
+  monthsRemaining: number
+
+  simpleSlope: number
 };

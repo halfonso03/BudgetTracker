@@ -291,10 +291,12 @@ namespace Persistence
             builder.Entity<BudgetHeader>().HasKey(x => new { x.InitiativeId, x.GrantId });
             builder.Entity<BudgetHeader>().Property(x => x.UpdatedDate).HasColumnName("update_date").HasColumnType("DATETIME2");
 
-            builder.Entity<BudgetSurplusBurnRateDto>().HasNoKey();
+
+            builder.Entity<BudgetSurplusBurnRateDto>()
+                       .HasNoKey()
+                       .ToView(null);
+
             builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.PercentTimeElapsed).HasColumnType("NUMERIC(5,2)");
-
-
             builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.CumulativeSpent).HasColumnType("NUMERIC(15,2)");
             builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.RemainingBalance).HasColumnType("NUMERIC(15,2)");
             builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.TotalAllocation).HasColumnType("NUMERIC(15,2)");

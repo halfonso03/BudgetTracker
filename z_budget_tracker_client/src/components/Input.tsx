@@ -3,7 +3,7 @@ interface CustomInputProps extends React.ComponentPropsWithoutRef<'input'> {
 }
 
 const Input = ({ ...props }: CustomInputProps) => {
-  const defaultClasses = `bg-white dark:border-slate-700/80 text-neutral-900 dark:text-slate-300  dark:bg-slate-800/80 backdrop-blur dark:border-slate-700 border border-slate-300 w-full p-2 rounded-sm   focus:outline-none focus:border-indigo-400 disabled:bg-slate-200/60 
+  const defaultClasses = `bg-white dark:border-slate-700/80 text-neutral-900 dark:text-slate-300 dark:bg-slate-900 backdrop-blur dark:border-slate-700 border border-slate-300 w-full p-2 rounded-sm   focus:outline-none focus:border-indigo-400 disabled:bg-slate-200/60 
     focus:dark:border-indigo-500 dark:disabled:bg-slate-950 `;
 
   return (

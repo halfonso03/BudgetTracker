@@ -1,4 +1,14 @@
-create PROCEDURE dbo.usp_GetBudgetSurplusBurnRateReport
+USE [BudgetTracker_PROD]
+GO
+
+/****** Object:  StoredProcedure [dbo].[usp_GetBudgetSurplusBurnRateReport]    Script Date: 11/9/2026 4:20:22 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+ALTER PROCEDURE [dbo].[usp_GetBudgetSurplusBurnRateReport]
   @hidtaid INT = 47,
     @year INT = 2024
 AS
@@ -90,14 +100,7 @@ BEGIN
                 WHEN v.AvgMonthlyBurnRate <= 0 THEN NULL 
                 ELSE DATEADD(day, CAST((mrs.RemainingBalance / v.AvgMonthlyBurnRate) * 30.0 AS INT), CAST(GETDATE() AS DATE))
             END AS ProjectedExhaustionDate,
-            CASE 
-                WHEN mrs.RemainingBalance <= 0 THEN 'CRITICAL: EXHAUSTED'
-                WHEN (mrs.RemainingBalance / NULLIF(v.AvgMonthlyBurnRate, 0)) < 2.0 OR v.SpendingTrajectorySlope > 1000 
-                    THEN 'HIGH RISK: Rapid depletion or accelerating fast'
-                WHEN (mrs.RemainingBalance / NULLIF(v.AvgMonthlyBurnRate, 0)) < 4.0 
-                    THEN 'MEDIUM RISK: Running tight'
-                ELSE 'LOW RISK: Stable'
-            END AS BudgetRiskStatus
+            SpendingTrajectorySlope
         FROM MostRecentStatus mrs
         JOIN BurnRateVelocity v ON mrs.initiative_id = v.initiative_id AND mrs.grant_id = v.grant_id
         WHERE mrs.rn = 1
@@ -111,20 +114,21 @@ BEGIN
             i.id initiative_id,
             g.id grant_id,
             i.name AS InitiativeName,
-            g.name AS GrantName,
-            CAST ('1/1/' + CAST(g.year AS CHAR(4)) AS DATETIME) AS StartDate,
+            g.name AS GrantName, 
+            g.start_date StartDate,
+            g.end_date EndDate,
             SUM(l.amount) AS TotalSpent
         FROM tblDisb d 
         JOIN tblDisbLineItem l ON d.id = l.disb_id
         JOIN tblInitiative i ON i.id = l.initiative_id
         JOIN tblGrant g ON g.id = l.grant_id
         WHERE d.posted = 1 
-        GROUP BY i.id, g.id, i.name, g.name, g.year
+        GROUP BY i.id, g.id, i.name, g.name, g.start_date, g.end_date
     ),
 
     BudgetContext AS (
         SELECT 
-            ms.InitiativeName, ms.GrantName, ms.initiative_id, ms.grant_id, ms.StartDate AS BudgetStart,
+            ms.InitiativeName, ms.GrantName, ms.initiative_id, ms.grant_id, ms.StartDate AS AwardStartDate, ms.EndDate AS AwardEndDate,
             b.TotalAllocation AS total_budget,
             ms.TotalSpent AS actual_spent_to_date,
             24 AS total_months_duration,
@@ -144,15 +148,17 @@ BEGIN
             GrantName,
             initiative_id,
             grant_id,
-            BudgetStart,
+            AwardStartDate,
+            AwardEndDate,
             total_budget,
             actual_spent_to_date,
             (total_budget - actual_spent_to_date) AS remaining_budget,
             CASE
-                WHEN DATEDIFF(month, BudgetStart, GETDATE()) > 24 THEN 24
-                WHEN DATEDIFF(month, BudgetStart, GETDATE()) < 1 THEN 1
-                ELSE DATEDIFF(month, BudgetStart, GETDATE())
-            END AS months_elapsed
+                --WHEN DATEDIFF(month, AwardStartDate, GETDATE()) > 24 THEN 24
+                WHEN DATEDIFF(month, AwardStartDate, GETDATE()) < 1 THEN 1
+                ELSE DATEDIFF(month, AwardStartDate, GETDATE())
+            END AS months_elapsed,
+            DATEDIFF(month, GETDATE(), AwardEndDate) months_remaining
         FROM BudgetContext
     ),
 
@@ -162,13 +168,15 @@ BEGIN
             GrantName,
             initiative_id,
             grant_id,
-            BudgetStart,
+            AwardStartDate,
+            AwardEndDate,
             total_budget,
             actual_spent_to_date,
             remaining_budget,
             months_elapsed,
             (months_elapsed / 24.0) * 100.0 AS PercentTimeElapsed,
-            ((remaining_budget / NULLIF(total_budget, 0))) * 100.0 AS pct_budget_remaining
+            ((remaining_budget / NULLIF(total_budget, 0))) * 100.0 AS pct_budget_remaining,
+            months_remaining
         FROM timeline_calc
     ),
 
@@ -185,8 +193,10 @@ BEGIN
             GrantName,
             initiative_id,
             grant_id,
-            BudgetStart,
+            AwardStartDate,
+            AwardEndDate,
             months_elapsed AS CurrentMonth,
+            months_remaining AS MonthsRemaining,
             ROUND(PercentTimeElapsed, 1) AS PercentTimeElapsed,
             total_budget,
             ROUND(remaining_budget, 2) AS cash_left,
@@ -199,7 +209,8 @@ BEGIN
                 WHEN surplus_gap BETWEEN 15.01 AND 30.00 THEN 60
                 WHEN surplus_gap > 30.00 THEN 35
                 ELSE 0
-            END
+            END,
+            CAST((ROUND(pct_budget_remaining, 1) - 100) / ROUND(PercentTimeElapsed, 1) AS NUMERIC(5,2)) SimpleSLope
         FROM urgency_calc
     )
 
@@ -209,22 +220,30 @@ BEGIN
     SELECT 
         br.InitiativeName,
         br.GrantName, 
-        ss.BudgetStart,
+        ss.AwardStartDate,
+        ss.AwardEndDate,
+        DATEDIFF(m, GETDATE(), ss.AwardEndDate),
         ss.CurrentMonth,
         ss.PercentTimeElapsed,
         br.TotalAllocation,
         br.CumulativeSpent,
         br.RemainingBalance,
-        ss.PercentCashLeft,
-        br.CurrentMonthlyBurnRate,
         br.MonthsOfRunwayLeft,
-        br.ProjectedExhaustionDate,
+        ss.PercentCashLeft,
+        ss.SimpleSLope,
+        br.CurrentMonthlyBurnRate,
+        br.ProjectedExhaustionDate,        
         ss.SurplusGapPoints, 
-        ss.SurplusScore
+        ss.SurplusScore      
     FROM BurnRateFinal br 
     JOIN SurplusFinal ss 
       ON br.initiative_id = ss.initiative_id 
-     AND br.grant_id = ss.grant_id;
-
+     AND br.grant_id = ss.grant_id
+     Order by CurrentMonthlyBurnRate
 END
-go
+GO
+
+
+
+
+[dbo].[usp_GetBudgetSurplusBurnRateReport]

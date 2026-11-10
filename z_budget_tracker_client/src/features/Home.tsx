@@ -1,4 +1,4 @@
-import BurnRateTable from "./Charts/BurnRateTable";
+import BurnRateTable from "./Dashboard/BurnRateTable";
 
 // const RADIAN = Math.PI / 180;
 const Home = () => {

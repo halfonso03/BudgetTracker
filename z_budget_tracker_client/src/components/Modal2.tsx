@@ -56,10 +56,10 @@ const Modal2 = ({
     >
       {/* modal */}
       <div
-        className={`${modalStyles} ${animateClass} opacity-100  max-w-md bg-white dark:border dark:border-slate-700/80  dark:bg-slate-800 self-center rounded-sm shadow-lg`}
+        className={`${modalStyles} ${animateClass} opacity-100  max-w-md bg-white dark:border dark:border-slate-700/80 dark:bg-slate-800/80   self-center rounded-sm shadow-lg`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="bg-neutral-200/30 dark:bg-slate-900  rounded-t-sm w-full h-full p-3 flex justify-between align-center border-b border-gray-200 dark:border-slate-700/60 ">
+        <div className="bg-neutral-200/30 dark:bg-slate-900/80  rounded-t-sm w-full h-full p-3 flex justify-between align-center border-b border-gray-200 dark:border-slate-700/60 ">
           <h2 className="m-0 p-0 text-2xl text-neutral-800  dark:text-gray-200">
             {title}
           </h2>
@@ -67,7 +67,7 @@ const Modal2 = ({
             <X className="text-neutral-500 hover:text-neutral-700 dark:text-neutral-300  dark:hover:text-neutral-100 transition-all duration-200"></X>
           </button>
         </div>
-        <div className="p-2 px-4 dark:bg-slate-900">{children}</div>
+        <div className="p-2 px-4 dark:bg-slate-900/90">{children}</div>
       </div>
     </div>,
     document.body, // The target DOM container

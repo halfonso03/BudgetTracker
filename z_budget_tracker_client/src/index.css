@@ -96,7 +96,7 @@ input:-webkit-autofill:focus {
 
   @keyframes fadeIn {
     0% {
-      transform: translateY(-25%);
+      transform: translateY(-15%);
       opacity: 0;
     }
     100% {

@@ -83,5 +83,10 @@ namespace Domain
         // /// Final calculated budget surplus score.
         // /// </summary>
         public int SurplusScore { get; set; }
+
+        public int MonthsRemaining { get; set; }
+
+        public decimal SimpleSlope { get; set; }
+
     }
 }

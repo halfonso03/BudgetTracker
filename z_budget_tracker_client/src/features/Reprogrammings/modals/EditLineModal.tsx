@@ -9,7 +9,6 @@ import Modal2 from '../../../components/Modal2';
 import Select from '../../../components/Select';
 import Spinner from '../../../components/Spinner';
 import Label from '../../../components/Label';
-import Box from '../../../components/Box';
 import BoxSmall from '../../../components/BoxSmall';
 
 type Selections = {

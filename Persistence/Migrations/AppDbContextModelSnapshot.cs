@@ -931,55 +931,6 @@ namespace Persistence.Migrations
                     b.ToTable("tblBudget", "Audit");
                 });
 
-            modelBuilder.Entity("Domain.BudgetSurplusBurnRateDto", b =>
-                {
-                    b.Property<DateTime>("BudgetStart")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("CumulativeSpent")
-                        .HasColumnType("NUMERIC(15,2)");
-
-                    b.Property<int>("CurrentMonth")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("CurrentMonthlyBurnRate")
-                        .HasColumnType("NUMERIC(5,2)");
-
-                    b.Property<string>("GrantName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InitiativeName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("MonthsOfRunwayLeft")
-                        .HasColumnType("NUMERIC(10,2)");
-
-                    b.Property<decimal>("PercentCashLeft")
-                        .HasColumnType("NUMERIC(5,2)");
-
-                    b.Property<decimal>("PercentTimeElapsed")
-                        .HasColumnType("NUMERIC(5,2)");
-
-                    b.Property<DateTime>("ProjectedExhaustionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("RemainingBalance")
-                        .HasColumnType("NUMERIC(15,2)");
-
-                    b.Property<decimal>("SurplusGapPoints")
-                        .HasColumnType("NUMERIC(10,2)");
-
-                    b.Property<int>("SurplusScore")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("TotalAllocation")
-                        .HasColumnType("NUMERIC(15,2)");
-
-                    b.ToTable("BudgetSurplusBurnRateDto");
-                });
-
             modelBuilder.Entity("Domain.Category", b =>
                 {
                     b.Property<int>("Id")
