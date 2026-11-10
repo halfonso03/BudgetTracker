@@ -155,6 +155,11 @@ export default function App() {
       }))
       .filter((x) => x.monthsRemaining <= 6 && x.pct > 90) ?? null;
 
+  const combinedMonthlySpend =
+    burnRateData
+      ?.filter((x) => x.grantYear === year)
+      .map((x) => x.currentMonthlyBurnRate)
+      .reduce((acc, cur) => acc + cur, 1) ?? 0;
   console.log('burnRateData', burnRateData);
 
   const pctBudgetConsumed = (
@@ -168,7 +173,7 @@ export default function App() {
         {/* Header Bar */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-neutral-200 dark:border-slate-800">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-white mt-1">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-700 dark:text-white mt-1">
               Grant & Initiative Spend-Rate Predictor
             </h1>
             {/* <p className="dark:text-sm dark:text-slate-400 mt-1">
@@ -207,19 +212,20 @@ export default function App() {
               <span className="dark:text-sm font-semibold uppercase tracking-wider">
                 Total Budgeted
               </span>
-              <div className="p-2 rounded-lg dark:bg-indigo-500/10 text-indigo-400">
+              <div className="p-2 rounded-lg dark:bg-indigo-500/20 text-indigo-400">
                 <DollarSign className="w-4 h-4" />
               </div>
             </div>
             <div className="text-2xl sm:text-3xl font-bold text-neutral-800 dark:text-white mt-3 font-mono">
               {burnRateData && formatCurrency(totalAllocated)}
+              <div className="dark:text-indigo-400 text-indigo-400 text-[1rem] mt-5">Fiscal Year {year}</div>
             </div>
           </div>
 
           {/* Card 2: Cumulative Spent */}
           <div className="bg-neutral-100 border-neutral-300/30 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between dark:text-slate-400">
-              <span className="text-neutral-700 dark:text-sm font-semibold uppercase tracking-wider">
+              <span className="text-neutral-700 dark:text-slate-400 dark:text-sm font-semibold uppercase tracking-wider">
                 Total Spent YTD
               </span>
               <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400">
@@ -229,15 +235,17 @@ export default function App() {
             <div className="text-2xl sm:text-3xl font-bold text-neutral-800 dark:text-white mt-3 font-mono">
               {burnRateData && formatCurrency(totalSpent)}
             </div>
-            <div className="w-full bg-slate-700/50 rounded-full h-1.5 mt-3 overflow-hidden">
+            <div className="w-full bg-slate-700/50 rounded-full h-1.5 mt-3 overflow-hidden ">
               <div
                 className="bg-blue-500 h-full rounded-full text-neutral-700"
                 style={{ width: pctBudgetConsumed + '%' }}
               ></div>
             </div>
-            <div className="flex flex-col gap-1 justify-between text-[1.2rem]  mt-3 text-neutral-700 dark:text-slate-400 ">
-              <div>{pctBudgetConsumed}% Budget Consumed</div>
-              <div className="font-mono  dark:text-blue-400">
+            <div className="flex flex-col gap-1 justify-between text-[1.2rem] mt-3 text-neutral-700 dark:text-slate-400 ">
+              <div className="text-[1rem]">
+                {pctBudgetConsumed} % Budget Consumed
+              </div>
+              <div className="text-[1rem] font-mono  dark:text-blue-400">
                 {formatCurrency(totalAllocated - totalSpent)} Left
               </div>
             </div>
@@ -246,7 +254,7 @@ export default function App() {
           {/* Card 3: Monthly Burn Rate */}
           <div className="bg-neutral-100 border-neutral-300/30 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between dark:text-slate-400">
-              <span className="text-neutral-700 dark:text-sm font-semibold uppercase tracking-wider">
+              <span className="text-neutral-700 dark:text-slate-400  dark:text-sm font-semibold uppercase tracking-wider">
                 Avg Monthly Spend
               </span>
               <div className="p-2 rounded-lg dark:bg-purple-500/10 text-purple-400">
@@ -254,7 +262,7 @@ export default function App() {
               </div>
             </div>
             <div className="text-neutral-800 text-2xl sm:text-3xl font-bold dark:text-white mt-3 font-mono">
-              $4,958.00
+              {formatCurrency(combinedMonthlySpend)}
               <span className="dark:text-sm font-normal dark:text-slate-400">
                 /mo
               </span>
@@ -265,7 +273,9 @@ export default function App() {
           </div>
 
           {/* Card 4: Action Items */}
-          <div className="bg-neutral-100 border-neutral-300/30 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
+          <div
+            className={`${budgetsInTrouble?.length === 0 && 'opacity-50'} bg-neutral-100 border-neutral-300/30 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden`}
+          >
             <div className="flex items-center justify-between dark:text-slate-400">
               <span className="dark:text-sm font-semibold uppercase tracking-wider text-red-500 dark:text-rose-400">
                 High Priority Risk
@@ -320,7 +330,8 @@ export default function App() {
                   : 'dark:bg-slate-900 dark:text-slate-400 hover:dark:text-slate-200 border border-neutral-400 dark:border-slate-700'
               }`}
             >
-              All Budgets ({burnRateData?.length})
+              All Budgets (
+              {burnRateData?.filter((x) => x.grantYear === year).length})
             </button>
             <button
               onClick={() => setRiskFilter('HIGH_RISK')}
@@ -347,7 +358,8 @@ export default function App() {
               Low Risk (
               {budgetsInTrouble &&
                 burnRateData &&
-                burnRateData.length - budgetsInTrouble.length}
+                burnRateData.filter((x) => x.grantYear === year).length -
+                  budgetsInTrouble.length}
               )
             </button>
           </div>
@@ -436,7 +448,7 @@ export default function App() {
                           <div className="flex gap-2 justify-between">
                             <div>{row.grantName}</div>
 
-                            <div className="flex gap-2 text-neutral-600 dark:text-slate-500 text-sm">
+                            <div className="flex items-center gap-2 text-neutral-600 dark:text-slate-500 text-sm">
                               <span>{format(row.awardStartDate, 'M/yy')}</span>-
                               <span>{format(row.awardEndDate, 'M/yy')}</span>
                             </div>
@@ -469,15 +481,15 @@ export default function App() {
                             <div
                               className={`w-full dark:bg-slate-700 rounded-full h-1.5 overflow-hidden border ${
                                 consumedPct >= 90
-                                  ? 'border-green-400'
+                                  ? 'border-green-500'
                                   : consumedPct > 45
-                                    ? 'border-yellow-300'
-                                    : 'border-orange-400'
+                                    ? 'border-yellow-500'
+                                    : 'border-orange-500'
                               }`}
                             >
                               <div
                                 className={`h-full rounded-full ${
-                                  consumedPct >= 100
+                                  consumedPct >= 90
                                     ? 'bg-green-500'
                                     : consumedPct > 50
                                       ? 'bg-yellow-500'
@@ -584,7 +596,8 @@ export default function App() {
                   <span>{filteredData.length}</span>
                 )}
               </span>{' '}
-              of {burnRateData?.length} Budget Lines
+              of {burnRateData?.filter((x) => x.grantYear == year).length}{' '}
+              Budget Lines
             </div>
           </div>
         </div>
