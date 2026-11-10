@@ -21,6 +21,8 @@ namespace Domain
         /// </summary>
         public string GrantName { get; set; } = string.Empty;
 
+        public int GrantYear { get; set; }
+
         /// <summary>
         /// Start date of the budget or grant lifecycle.
         /// </summary>

@@ -35,7 +35,7 @@ const Button = ({
       ' font-medium text-neutral-50 bg-blue-600 hover:bg-blue-500 dark:bg-indigo-800 disabled:opacity-50 dark:disabled:bg-slate-700 dark:border-green-500 shadow-md dark:hover:bg-indigo-700 transition-all duration-300';
   } else if (variation == 'secondary') {
     classes +=
-      'font-medium text-neutral-50 bg-neutral-300 text-neutral-800 hover:bg-neutral-200 dark:bg-slate-800 border dark:border-slate-700/70 shadow-md dark:hover:bg-slate-700/60 hover:border-gray-400 dark:hover:border-slate-600 disabled:opacity-70 disabled:text-neutral-500  dark:text-white  transition-all duration-300';
+      'font-medium  bg-neutral-300 text-neutral-700 hover:bg-neutral-200 dark:bg-slate-800 border border-neutral-300 dark:border-slate-700/70 shadow-md dark:hover:bg-slate-700/60 hover:border-neutral-300 dark:hover:border-slate-600 disabled:opacity-70 disabled:text-neutral-500  dark:text-white  transition-all duration-300';
   } else if (variation == 'danger') {
     classes +=
       ' text-neutral-100 bg-red-500 border border-red-600 hover:bg-red-600 shadow-md transition-all duration-300 disabled:opacity-50';

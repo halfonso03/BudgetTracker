@@ -28,7 +28,7 @@ const getScoreDetails = (score: number) => {
   } else if (score >= 60) {
     return {
       label: 'MODERATE',
-      color: 'text-amber-300 dark:text-yellow-500',
+      color: 'text-yellow-500 dark:text-yellow-500',
     };
   } else if (score >= 36) {
     return {
@@ -139,7 +139,7 @@ export const GrantHealthScoreCard: React.FC<GrantHealthScoreProps> = ({
         </span>
         <Info
           size={16}
-          className="cursor-pointer animate-repro-fade-in dark:text-slate-400"
+          className="cursor-pointer animate-repro-fade-in text-neutral-500 dark:text-slate-400"
           onClick={() => setScoreBreakdownModalIsOpen(true)}
         ></Info>
       </div>

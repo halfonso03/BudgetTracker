@@ -5,6 +5,7 @@ type BudgetSurplusBurnRate = {
   /** Associated Grant or funding source code/name. */
   grantName: string;
 
+  grantYear: number,
   /** Start date of the budget or grant lifecycle. */
   awardStartDate: Date; // ISO date string (e.g., '2023-01-01')
 

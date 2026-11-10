@@ -14,6 +14,7 @@ import {
 import useBudgetSurplusBurnRate from '../../api/hooks/dashboard/useBudgetSurplusBurnRate';
 import { GrantHealthScoreCard } from './GrantHealthScore';
 import { format } from 'date-fns';
+import Button from '../../components/Button';
 
 // Exact Dataset provided from Book2.xlsx analysis
 
@@ -22,6 +23,7 @@ export default function App() {
   const [riskFilter, setRiskFilter] = useState('ALL'); // ALL, HIGH_RISK, LOW_RISK
   const [sortField, setSortField] = useState('monthsOfRunwayLeft');
   const [sortAsc, setSortAsc] = useState(true);
+  const [year, setYear] = useState(2025);
 
   const { data: burnRateData, isLoading } = useBudgetSurplusBurnRate();
 
@@ -32,6 +34,7 @@ export default function App() {
     return (
       burnRateData &&
       burnRateData
+        .filter((x) => x.grantYear === year)
         .filter((item) => {
           const matchesSearch =
             item.grantName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -63,7 +66,15 @@ export default function App() {
           return sortAsc ? aVal - bVal : bVal - aVal;
         })
     );
-  }, [isLoading, burnRateData, searchQuery, riskFilter, sortField, sortAsc]);
+  }, [
+    isLoading,
+    burnRateData,
+    year,
+    searchQuery,
+    riskFilter,
+    sortField,
+    sortAsc,
+  ]);
 
   const handleSort = (field) => {
     if (sortField === field) {
@@ -73,6 +84,17 @@ export default function App() {
       setSortAsc(true);
     }
   };
+
+  const years = useMemo(() => {
+    let result: number[] = [];
+    if (isLoading) return [];
+    if (burnRateData) {
+      const step1 = burnRateData.map((x) => x.grantYear);
+      const step2 = [...new Set(step1)];
+      result = [...step2];
+    }
+    return result;
+  }, [burnRateData, isLoading]);
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -111,16 +133,19 @@ export default function App() {
 
   const totalAllocated =
     burnRateData
-      ?.map((x) => x.totalAllocation)
+      ?.filter((x) => x.grantYear === year)
+      .map((x) => x.totalAllocation)
       .reduce((acc, cur) => acc + cur, 1) ?? 0;
 
   const totalSpent =
     burnRateData
-      ?.map((x) => x.cumulativeSpent)
+      ?.filter((x) => x.grantYear === year)
+      .map((x) => x.cumulativeSpent)
       .reduce((acc, cur) => acc + cur, 1) ?? 0;
 
   const budgetsInTrouble =
     burnRateData
+      ?.filter((x) => x.grantYear === year)
       ?.map((x) => ({
         i: x.initiativeName,
         g: x.grantName,
@@ -164,10 +189,21 @@ export default function App() {
         </div>
 
         {/* Executive KPI Cards Grid */}
+
+        <div className="flex gap-2">
+          {years.map((y) => (
+            <button
+              className={`cursor-pointer border border-neutral-300/70 dark:border-slate-700/80 rounded-sm dark:text-neutral-300 font-medium text-neutral-500 px-4 py-1 ${year === y ? 'text-neutral-900 bg-neutral-100 dark:bg-slate-800/80 dark:text-slate-200' : ''}`}
+              onClick={() => setYear(y)}
+            >
+              {y}
+            </button>
+          ))}
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
           {/* Card 1: Total Allocated */}
           <div className="bg-neutral-100 border-neutral-300/30 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
-            <div className="flex items-center justify-between dark:text-slate-400">
+            <div className="flex items-center justify-between text-neutral-700 dark:text-slate-400">
               <span className="dark:text-sm font-semibold uppercase tracking-wider">
                 Total Budgeted
               </span>
@@ -175,7 +211,7 @@ export default function App() {
                 <DollarSign className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-bold dark:text-white mt-3 font-mono">
+            <div className="text-2xl sm:text-3xl font-bold text-neutral-800 dark:text-white mt-3 font-mono">
               {burnRateData && formatCurrency(totalAllocated)}
             </div>
           </div>
@@ -183,23 +219,23 @@ export default function App() {
           {/* Card 2: Cumulative Spent */}
           <div className="bg-neutral-100 border-neutral-300/30 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between dark:text-slate-400">
-              <span className="dark:text-sm font-semibold uppercase tracking-wider">
+              <span className="text-neutral-700 dark:text-sm font-semibold uppercase tracking-wider">
                 Total Spent YTD
               </span>
               <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400">
                 <PieChart className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-bold dark:text-white mt-3 font-mono">
+            <div className="text-2xl sm:text-3xl font-bold text-neutral-800 dark:text-white mt-3 font-mono">
               {burnRateData && formatCurrency(totalSpent)}
             </div>
             <div className="w-full bg-slate-700/50 rounded-full h-1.5 mt-3 overflow-hidden">
               <div
-                className="bg-blue-500 h-full rounded-full"
+                className="bg-blue-500 h-full rounded-full text-neutral-700"
                 style={{ width: pctBudgetConsumed + '%' }}
               ></div>
             </div>
-            <div className="flex flex-col gap-1 justify-between text-[1.2rem]  mt-3 dark:text-slate-400">
+            <div className="flex flex-col gap-1 justify-between text-[1.2rem]  mt-3 text-neutral-700 dark:text-slate-400 ">
               <div>{pctBudgetConsumed}% Budget Consumed</div>
               <div className="font-mono  dark:text-blue-400">
                 {formatCurrency(totalAllocated - totalSpent)} Left
@@ -210,20 +246,20 @@ export default function App() {
           {/* Card 3: Monthly Burn Rate */}
           <div className="bg-neutral-100 border-neutral-300/30 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between dark:text-slate-400">
-              <span className="dark:text-sm font-semibold uppercase tracking-wider">
+              <span className="text-neutral-700 dark:text-sm font-semibold uppercase tracking-wider">
                 Avg Monthly Spend
               </span>
               <div className="p-2 rounded-lg dark:bg-purple-500/10 text-purple-400">
                 <TrendingUp className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl sm:text-3xl font-bold dark:text-white mt-3 font-mono">
+            <div className="text-neutral-800 text-2xl sm:text-3xl font-bold dark:text-white mt-3 font-mono">
               $4,958.00
               <span className="dark:text-sm font-normal dark:text-slate-400">
                 /mo
               </span>
             </div>
-            <div className="flex items-center gap-1.5 mt-2 dark:text-sm dark:text-purple-300">
+            <div className="flex items-center gap-1.5 mt-2 text-neutral-700 dark:text-sm dark:text-purple-300">
               <span>Combined Draindown Velocity</span>
             </div>
           </div>
@@ -393,7 +429,7 @@ export default function App() {
                     return (
                       <tr
                         key={index}
-                        className="dark:hover:bg-slate-700/30 transition-colors text-[1rem] text-neutral-700"
+                        className="dark:hover:bg-slate-700/30 transition-colors text-[1rem] text-neutral-800"
                       >
                         {/* Grant Code */}
                         <td className="py-4 px-4 font-mono font-bold text-indigo-500 dark:text-indigo-300">
