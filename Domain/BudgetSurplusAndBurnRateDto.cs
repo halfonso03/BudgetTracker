@@ -21,6 +21,9 @@ namespace Domain
         /// </summary>
         public string GrantName { get; set; } = string.Empty;
 
+        public required int InitiativeId { get; set; }
+
+        public required int GrantId { get; set; }
         public int GrantYear { get; set; }
 
         /// <summary>

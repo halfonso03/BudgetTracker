@@ -14,7 +14,7 @@ import {
 import useBudgetSurplusBurnRate from '../../api/hooks/dashboard/useBudgetSurplusBurnRate';
 import { GrantHealthScoreCard } from './GrantHealthScore';
 import { format } from 'date-fns';
-import Button from '../../components/Button';
+import BudgetBurnRateModal from './modals/BudgetBurnRateModal';
 
 // Exact Dataset provided from Book2.xlsx analysis
 
@@ -24,6 +24,11 @@ export default function App() {
   const [sortField, setSortField] = useState('monthsOfRunwayLeft');
   const [sortAsc, setSortAsc] = useState(true);
   const [year, setYear] = useState(2025);
+  const [budgetBurnRateModalIsOpen, setBudgetBurnRateModalIsOpen] =
+    useState(false);
+
+  const [selectedInitiativeId, setselectedInitiativeId] = useState(0);
+  const [selectedGrantId, setSelectedGrantId] = useState(0);
 
   const { data: burnRateData, isLoading } = useBudgetSurplusBurnRate();
 
@@ -76,7 +81,7 @@ export default function App() {
     sortAsc,
   ]);
 
-  const handleSort = (field) => {
+  const handleSort = (field:string) => {
     if (sortField === field) {
       setSortAsc(!sortAsc);
     } else {
@@ -173,8 +178,8 @@ export default function App() {
         {/* Header Bar */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-neutral-200 dark:border-slate-800">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-neutral-700 dark:text-white mt-1">
-              Grant & Initiative Spend-Rate Predictor
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-neutral-700 dark:text-white mt-1">
+              Budget Spend-Rate Analyzer
             </h1>
             {/* <p className="dark:text-sm dark:text-slate-400 mt-1">
               Linear regression velocity forecasting & fund exhaustion
@@ -198,7 +203,7 @@ export default function App() {
         <div className="flex gap-2">
           {years.map((y) => (
             <button
-              className={`cursor-pointer border border-neutral-300/70 dark:border-slate-700/80 rounded-sm dark:text-neutral-300 font-medium text-neutral-500 px-4 py-1 ${year === y ? 'text-neutral-900 bg-neutral-100 dark:bg-slate-800/80 dark:text-slate-200' : ''}`}
+              className={`cursor-pointer border border-neutral-300/70 dark:border-slate-700/80 rounded-sm dark:text-neutral-300 font-medium text-neutral-500 px-4 py-1 ${year === y ? 'text-neutral-900 bg-neutral-100 dark:bg-slate-800/80 dark:text-white' : ''}`}
               onClick={() => setYear(y)}
             >
               {y}
@@ -218,7 +223,9 @@ export default function App() {
             </div>
             <div className="text-2xl sm:text-3xl font-bold text-neutral-800 dark:text-white mt-3 font-mono">
               {burnRateData && formatCurrency(totalAllocated)}
-              <div className="dark:text-indigo-400 text-indigo-400 text-[1rem] mt-5">Fiscal Year {year}</div>
+              <div className="dark:text-indigo-400 text-indigo-400 text-[1rem] mt-5">
+                Fiscal Year {year}
+              </div>
             </div>
           </div>
 
@@ -441,7 +448,12 @@ export default function App() {
                     return (
                       <tr
                         key={index}
-                        className="dark:hover:bg-slate-700/30 transition-colors text-[1rem] text-neutral-800"
+                        onClick={() => {
+                          setBudgetBurnRateModalIsOpen(true);
+                          setselectedInitiativeId(row.initiativeId);
+                          setSelectedGrantId(row.grantId);
+                        }}
+                        className="cursor-pointer dark:hover:bg-slate-700/30 transition-colors text-[1rem] text-neutral-800"
                       >
                         {/* Grant Code */}
                         <td className="py-4 px-4 font-mono font-bold text-indigo-500 dark:text-indigo-300">
@@ -602,6 +614,14 @@ export default function App() {
           </div>
         </div>
       </div>
+      <BudgetBurnRateModal
+        isOpen={budgetBurnRateModalIsOpen}
+        onCancel={() => {
+          setTimeout(() => setBudgetBurnRateModalIsOpen(false), 500);
+        }}
+        initiativeId={selectedInitiativeId}
+        grantId={selectedGrantId}
+      ></BudgetBurnRateModal>
     </div>
   );
 }

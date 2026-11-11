@@ -16,14 +16,10 @@ namespace API.Controllers
             return HandleResult(await dashboardService.GetBudgetSurplusBurnRateReportAsync(hidtaId, year));
         }
 
-        [HttpGet("BudgetSurplusBurnRateReportByAccount")]
+        [HttpGet("BudgetSurplusBurnRateByAccountReport")]
         public async Task<IActionResult> GetBudgetSurplusBurnRateReportbyAccount([FromQuery] int initiativeId = 0, [FromQuery] int grantId = 0)
         {
-
-            var result = await dashboardService.GetBudgetSurplusBurnRateReportbyAccountAsync(initiativeId, grantId);
-            
-            return HandleResult(result);
+            return HandleResult( await dashboardService.GetBudgetSurplusBurnRateByAccountReportAsync(initiativeId, grantId));
         }
-        
     }
 }

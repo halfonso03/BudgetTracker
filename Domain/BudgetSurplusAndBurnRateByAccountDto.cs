@@ -12,14 +12,14 @@ namespace Domain
     public class BudgetSurplusAndBurnRateByAccountDto
     {
         /// <summary>
-        /// Name of the specific budget initiative or line item.
+        /// Name of the specific budget category or line item.
         /// </summary>
-        public string InitiativeName { get; set; } = string.Empty;
+        public string CategoryName { get; set; } = string.Empty;
 
         /// <summary>
-        /// Associated Grant or funding source code/name.
+        /// Associated Account
         /// </summary>
-        public string GrantName { get; set; } = string.Empty;
+        public string AccountName { get; set; } = string.Empty;
 
         public int GrantYear { get; set; }
 
@@ -69,12 +69,12 @@ namespace Domain
         // /// <summary>
         // /// Estimated runway remaining in months.
         // /// </summary>
-        public decimal MonthsOfRunwayLeft { get; set; }
+        public decimal? MonthsOfRunwayLeft { get; set; }
 
         // /// <summary>
         // /// Projected exact date when funds will be fully exhausted.
         // /// </summary>
-        public DateTime ProjectedExhaustionDate { get; set; }
+        public DateTime? ProjectedExhaustionDate { get; set; }
 
         // /// <summary>
         // /// Surplus gap points calculated for budget health tracking.

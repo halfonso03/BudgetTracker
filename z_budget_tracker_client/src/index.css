@@ -20,12 +20,11 @@ pre {
   min-height: 100svh;
 }
 
-
 .dark .nav-link {
-  color: var(--color-slate-200)
+  color: var(--color-slate-200);
 }
 .dark .nav-link:hover {
-  color: var(--color-slate-50)  
+  color: var(--color-slate-50);
 }
 /* .nav-link {
   padding-bottom: 0.4rem;
@@ -275,7 +274,7 @@ pre {
   letter-spacing: 1px;
   border-radius: var(--radius-sm);
   font-weight: var(--font-weight-medium);
-  color: var(--color-neutral-700)
+  color: var(--color-neutral-700);
 }
 
 .admin-menu-item:hover {
@@ -342,4 +341,8 @@ pre {
 
 .page-link {
   border: 1px solid transparent;
+}
+
+.min-w-8xl, .max-w-8xl {
+  width: calc(100% - 20vw);
 }

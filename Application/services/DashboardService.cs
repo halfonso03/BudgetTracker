@@ -37,7 +37,7 @@ namespace Application.Services
             return Result<List<BudgetSurplusAndBurnRateDto>>.Success(result);
         }
 
-        public async Task<Result<List<BudgetSurplusAndBurnRateByAccountDto>>> GetBudgetSurplusBurnRateReportByAccountAsync(int initiativeId, int grantId)
+        public async Task<Result<List<BudgetSurplusAndBurnRateByAccountDto>>> GetBudgetSurplusBurnRateByAccountReportAsync(int initiativeId, int grantId)
         {
             var result = await _context.Database
                 .SqlQueryRaw<BudgetSurplusAndBurnRateByAccountDto>(
