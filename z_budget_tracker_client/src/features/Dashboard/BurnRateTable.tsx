@@ -173,7 +173,7 @@ export default function App() {
   ).toFixed(2);
 
   return (
-    <div className="min-h-screen dark:bg-slate-900 dark:text-slate-100 p-4 sm:p-6 lg:p-8  antialiased">
+    <div className="min-h-screen dark:bg-slate-900 dark:text-slate-100   antialiased">
       <div className=" mx-auto space-y-6">
         {/* Header Bar */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-4 border-b border-neutral-200 dark:border-slate-800">
@@ -217,7 +217,7 @@ export default function App() {
               <span className="dark:text-sm font-semibold uppercase tracking-wider">
                 Total Budgeted
               </span>
-              <div className="p-2 rounded-lg dark:bg-indigo-500/20 text-indigo-400">
+              <div className="p-2 rounded-lg bg-indigo-400/10 dark:bg-indigo-500/20 text-indigo-400">
                 <DollarSign className="w-4 h-4" />
               </div>
             </div>
@@ -264,7 +264,7 @@ export default function App() {
               <span className="text-neutral-700 dark:text-slate-400  dark:text-sm font-semibold uppercase tracking-wider">
                 Avg Monthly Spend
               </span>
-              <div className="p-2 rounded-lg dark:bg-purple-500/10 text-purple-400">
+              <div className="p-2 rounded-lg bg-purple-500/10 dark:bg-purple-500/10 text-purple-400">
                 <TrendingUp className="w-4 h-4" />
               </div>
             </div>
@@ -287,7 +287,7 @@ export default function App() {
               <span className="dark:text-sm font-semibold uppercase tracking-wider text-red-500 dark:text-rose-400">
                 High Priority
               </span>
-              <div className="p-2 rounded-lg dark:bg-rose-500/10 text-red-500 dark:text-rose-400">
+              <div className="p-2 rounded-lg bg-rose-400/10 dark:bg-rose-500/10 text-red-500 dark:text-rose-400">
                 <ShieldAlert className="w-4 h-4 " />
               </div>
             </div>
@@ -377,7 +377,7 @@ export default function App() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-[.9rem]">
               <thead>
-                <tr className="bg-neutral-200 dark:bg-slate-900/80 dark:text-slate-400 uppercase text-neutral-500 border-b border-b-neutral-300/40 dark:border-slate-700/80">
+                <tr className="bg-neutral-100 dark:bg-slate-900/80 dark:text-slate-400 uppercase text-neutral-500 border-b border-b-neutral-300/40 dark:border-slate-700/80">
                   <th className="py-3.5 px-4 font-semibold">Grant Code</th>
                   <th
                     className=" py-3.5 px-4 font-semibold hover:text-neutral-700 dark:hover:text-white  cursor-pointer transition-colors"
