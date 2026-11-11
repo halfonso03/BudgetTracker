@@ -11,9 +11,17 @@ type Props = {
   onCancel: () => void;
   initiativeId: number;
   grantId: number;
+  initiativeName: string;
+  grantName: string;
 };
 
-const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
+const BudgetBurnRateModal = ({
+  initiativeId,
+  grantId,
+  initiativeName,
+  grantName,
+  ...props
+}: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortAsc, setSortAsc] = useState(true);
@@ -40,38 +48,37 @@ const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
     }).format(val);
   };
 
+  // const totalAllocated =
+  //   burnRateData
+  //     ?.map((x) => x.totalAllocation)
+  //     .reduce((acc, cur) => acc + cur, 1) ?? 0;
 
-  const totalAllocated =
-    burnRateData
-      ?.map((x) => x.totalAllocation)
-      .reduce((acc, cur) => acc + cur, 1) ?? 0;
+  // const totalSpent =
+  //   burnRateData
+  //     ?.map((x) => x.cumulativeSpent)
+  //     .reduce((acc, cur) => acc + cur, 1) ?? 0;
 
-  const totalSpent =
-    burnRateData
-      ?.map((x) => x.cumulativeSpent)
-      .reduce((acc, cur) => acc + cur, 1) ?? 0;
+  // const budgetsInTrouble =
+  //   burnRateData
+  //     ?.map((x) => ({
+  //       i: x.categoryName,
+  //       g: x.accountName,
+  //       monthsRemaining: x.monthsRemaining,
+  //       pct: x.percentCashLeft,
+  //       remaining: x.totalAllocation - x.cumulativeSpent,
+  //     }))
+  //     .filter((x) => x.monthsRemaining <= 6 && x.pct > 90) ?? null;
 
-  const budgetsInTrouble =
-    burnRateData
-      ?.map((x) => ({
-        i: x.categoryName,
-        g: x.accountName,
-        monthsRemaining: x.monthsRemaining,
-        pct: x.percentCashLeft,
-        remaining: x.totalAllocation - x.cumulativeSpent,
-      }))
-      .filter((x) => x.monthsRemaining <= 6 && x.pct > 90) ?? null;
+  // const combinedMonthlySpend =
+  //   burnRateData
+  //     ?.map((x) => x.currentMonthlyBurnRate)
+  //     .reduce((acc, cur) => acc + cur, 1) ?? 0;
+  // console.log('burnRateData', burnRateData);
 
-  const combinedMonthlySpend =
-    burnRateData
-      ?.map((x) => x.currentMonthlyBurnRate)
-      .reduce((acc, cur) => acc + cur, 1) ?? 0;
-  console.log('burnRateData', burnRateData);
-
-  const pctBudgetConsumed = (
-    (1 - (totalAllocated - totalSpent) / totalAllocated) *
-    100
-  ).toFixed(2);
+  // const pctBudgetConsumed = (
+  //   (1 - (totalAllocated - totalSpent) / totalAllocated) *
+  //   100
+  // ).toFixed(2);
 
   const filteredData = useMemo(() => {
     if (isLoading) return [];
@@ -110,7 +117,7 @@ const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
           return sortAsc ? aVal - bVal : bVal - aVal;
         })
     );
-  }, [isLoading, burnRateData, searchQuery, sortAsc]);
+  }, [isLoading, burnRateData, searchQuery, sortField, sortAsc]);
 
   return (
     <Modal2
@@ -119,7 +126,19 @@ const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
       animateOut={animateOut}
       {...props}
     >
-      <div >
+      <div>
+        <div className="flex gap-1 mt-4 mb-2">
+          <div className="w-1/12 text-neutral-700 dark:text-slate-400 text-2xl">Intiative</div>
+          <div className=" text-nuetral-800 dark:text-white  text-2xl">
+            {initiativeName}
+          </div>
+        </div>
+        <div className="flex gap-1">
+          <div className="w-1/12 text-neutral-700 dark:text-slate-400  text-2xl">Grant</div>
+          <div className="text-nuetral-800 dark:text-white  text-2xl">{grantName}</div>
+        </div>
+
+        <div></div>
         <div className="my-8 border-neutral-300 dark:bg-slate-800/90 border dark:border-slate-700/60 rounded-xl overflow-hidden shadow-sm ">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-[.9rem]">
@@ -153,9 +172,9 @@ const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
                       Remaining <ArrowUpDown className="w-3 h-3" />
                     </div>
                   </th>
-                  <th className="py-3.5 px-4 font-semibold text-right">
+                  {/* <th className="py-3.5 px-4 font-semibold text-right">
                     Months Left
-                  </th>
+                  </th> */}
                   <th
                     className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-white transition-colors"
                     // onClick={() => handleSort('currentMonthlyBurnRate')}
@@ -200,12 +219,15 @@ const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
                         {/* Grant Code */}
                         <td className="py-4 px-4 font-mono font-bold text-indigo-500 dark:text-indigo-300">
                           <div className="flex gap-2 justify-between">
-                            <div>{index == 0 ? row.categoryName : filteredData[index-1].categoryName === row.categoryName ? "" : row.categoryName}</div>
-
-                           
+                            <div>
+                              {index == 0
+                                ? row.categoryName
+                                : filteredData[index - 1].categoryName ===
+                                    row.categoryName
+                                  ? ''
+                                  : row.categoryName}
+                            </div>
                           </div>
-
-                        
                         </td>
 
                         {/* Initiative Name */}
@@ -256,7 +278,7 @@ const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
                             <div
                               className={
                                 isExhausted
-                                  ? 'text-rose-400'
+                                  ? 'text-green-400'
                                   : 'dark:text-slate-100'
                               }
                             >
@@ -265,9 +287,9 @@ const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
                             <div></div>
                           </div>
                         </td>
-                        <td className="py-4 px-4 text-right font-mono font-semibold dark:text-slate-300">
+                        {/* <td className="py-4 px-4 text-right font-mono font-semibold dark:text-slate-300">
                           {row.monthsRemaining}
-                        </td>
+                        </td> */}
                         {/* Monthly Burn Rate */}
                         <td className="py-4 px-4 text-center font-mono dark:text-slate-300">
                           {formatCurrency(row.currentMonthlyBurnRate)}/mo
@@ -278,7 +300,7 @@ const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
                             {format(row.projectedExhaustionDate, 'M/d/yy')}
                           </div>
                         </td>
-                        <td className="py-4 px-4">
+                        <td className="py-4 px-4 flex justify-center">
                           <GrantHealthScoreCard
                             surplusScore={row.surplusScore}
                             monthsRemaining={row.monthsRemaining}
@@ -342,8 +364,7 @@ const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
                   <span>{filteredData.length}</span>
                 )}
               </span>{' '}
-              of {burnRateData?.length}{' '}
-              Budget Lines
+              of {burnRateData?.length} Budget Lines
             </div>
           </div>
         </div>

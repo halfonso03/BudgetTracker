@@ -124,12 +124,20 @@ export const GrantHealthScoreCard: React.FC<GrantHealthScoreProps> = ({
   const status = getScoreDetails(totalScore);
 
   return (
-    <div className="flex justify-around  items-center text-neutral-600 dark:text-slate-900/80  dark:bg-transparent max-w-sm">
-      <div className="flex items-center gap-2 ">
+    <div className="flex flex-col gap-2 text-neutral-600 dark:text-slate-900/80  dark:bg-transparent max-w-sm">
+      <div className="flex justify-end items-center gap-2 ">
         <span className="font-bold dark:text-slate-400">{totalScore}</span>
         <span className="text-sm font-medium text-neutral-700 dark:text-slate-400">
           / 100
         </span>
+        <Info
+          size={16}
+          className="cursor-pointer animate-repro-fade-in text-neutral-500 dark:text-slate-400"
+          onClick={(e) => {
+            e.stopPropagation();
+            setScoreBreakdownModalIsOpen(true);
+          }}
+        ></Info>
       </div>
       <div className="ml-auto flex justify-end gap-1 ">
         <span
@@ -137,11 +145,6 @@ export const GrantHealthScoreCard: React.FC<GrantHealthScoreProps> = ({
         >
           {status.label}
         </span>
-        <Info
-          size={16}
-          className="cursor-pointer animate-repro-fade-in text-neutral-500 dark:text-slate-400"
-          onClick={() => setScoreBreakdownModalIsOpen(true)}
-        ></Info>
       </div>
 
       <ScoreBreakdownModal

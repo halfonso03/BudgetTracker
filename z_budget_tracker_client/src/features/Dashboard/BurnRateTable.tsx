@@ -81,7 +81,7 @@ export default function App() {
     sortAsc,
   ]);
 
-  const handleSort = (field:string) => {
+  const handleSort = (field: string) => {
     if (sortField === field) {
       setSortAsc(!sortAsc);
     } else {
@@ -285,7 +285,7 @@ export default function App() {
           >
             <div className="flex items-center justify-between dark:text-slate-400">
               <span className="dark:text-sm font-semibold uppercase tracking-wider text-red-500 dark:text-rose-400">
-                High Priority Risk
+                High Priority
               </span>
               <div className="p-2 rounded-lg dark:bg-rose-500/10 text-red-500 dark:text-rose-400">
                 <ShieldAlert className="w-4 h-4 " />
@@ -406,9 +406,9 @@ export default function App() {
                       Remaining <ArrowUpDown className="w-3 h-3" />
                     </div>
                   </th>
-                  <th className="py-3.5 px-4 font-semibold text-right">
+                  {/* <th className="py-3.5 px-4 font-semibold text-right">
                     Months Left
-                  </th>
+                  </th> */}
                   <th
                     className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-white transition-colors"
                     onClick={() => handleSort('currentMonthlyBurnRate')}
@@ -522,7 +522,7 @@ export default function App() {
                             <div
                               className={
                                 isExhausted
-                                  ? 'text-rose-400'
+                                  ? 'text-green-400'
                                   : 'dark:text-slate-100'
                               }
                             >
@@ -531,9 +531,9 @@ export default function App() {
                             <div></div>
                           </div>
                         </td>
-                        <td className="py-4 px-4 text-right font-mono font-semibold dark:text-slate-300">
+                        {/* <td className="py-4 px-4 text-right font-mono font-semibold dark:text-slate-300">
                           {row.monthsRemaining}
-                        </td>
+                        </td> */}
                         {/* Monthly Burn Rate */}
                         <td className="py-4 px-4 text-center font-mono dark:text-slate-300">
                           {formatCurrency(row.currentMonthlyBurnRate)}/mo
@@ -544,7 +544,7 @@ export default function App() {
                             {format(row.projectedExhaustionDate, 'M/d/yy')}
                           </div>
                         </td>
-                        <td className="py-4 px-4">
+                        <td className="py-4 px-4 flex justify-center">
                           <GrantHealthScoreCard
                             surplusScore={row.surplusScore}
                             monthsRemaining={row.monthsRemaining}
@@ -621,6 +621,16 @@ export default function App() {
         }}
         initiativeId={selectedInitiativeId}
         grantId={selectedGrantId}
+        initiativeName={
+          burnRateData?.filter(
+            (x) => x.initiativeId === selectedInitiativeId,
+          )[0]?.initiativeName ?? ''
+        }
+        grantName={
+          burnRateData?.filter(
+            (x) => x.grantId === selectedGrantId,
+          )[0]?.grantName ?? ''
+        }
       ></BudgetBurnRateModal>
     </div>
   );
