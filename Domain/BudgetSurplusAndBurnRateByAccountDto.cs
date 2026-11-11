@@ -9,7 +9,7 @@ namespace Domain
     /// Represents the combined proactive budget burn-rate predictor and surplus scoring metrics 
     /// for grant initiatives.
     /// </summary>
-    public class BudgetSurplusBurnRateDto
+    public class BudgetSurplusAndBurnRateByAccountDto
     {
         /// <summary>
         /// Name of the specific budget initiative or line item.

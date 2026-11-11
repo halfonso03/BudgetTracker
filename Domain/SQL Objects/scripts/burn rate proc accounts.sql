@@ -9,7 +9,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
-alter PROCEDURE [dbo].[usp_GetBudgetSurplusBurnRateReportForInitiativeAndAward]
+create PROCEDURE [dbo].[usp_GetBudgetSurplusBurnRateReportByAccount]
     @initiativeId INT = 6,
     @grantId INT = 1
 AS
@@ -270,4 +270,4 @@ GO
 
 
 
-[dbo].[usp_GetBudgetSurplusBurnRateReportForInitiativeAndAward] 
+[dbo].[usp_GetBudgetSurplusBurnRateReportByAccount] 

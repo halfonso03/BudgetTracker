@@ -292,18 +292,18 @@ namespace Persistence
             builder.Entity<BudgetHeader>().Property(x => x.UpdatedDate).HasColumnName("update_date").HasColumnType("DATETIME2");
 
 
-            builder.Entity<BudgetSurplusBurnRateDto>()
+            builder.Entity<BudgetSurplusAndBurnRateDto>()
                        .HasNoKey()
                        .ToView(null);
 
-            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.PercentTimeElapsed).HasColumnType("NUMERIC(5,2)");
-            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.CumulativeSpent).HasColumnType("NUMERIC(15,2)");
-            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.RemainingBalance).HasColumnType("NUMERIC(15,2)");
-            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.TotalAllocation).HasColumnType("NUMERIC(15,2)");
-            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.PercentCashLeft).HasColumnType("NUMERIC(5,2)");
-            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.CurrentMonthlyBurnRate).HasColumnType("NUMERIC(5,2)");
-            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.MonthsOfRunwayLeft).HasColumnType("NUMERIC(10,2)");
-            builder.Entity<BudgetSurplusBurnRateDto>().Property(x => x.SurplusGapPoints).HasColumnType("NUMERIC(10,2)");
+            builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.PercentTimeElapsed).HasColumnType("NUMERIC(5,2)");
+            builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.CumulativeSpent).HasColumnType("NUMERIC(15,2)");
+            builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.RemainingBalance).HasColumnType("NUMERIC(15,2)");
+            builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.TotalAllocation).HasColumnType("NUMERIC(15,2)");
+            builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.PercentCashLeft).HasColumnType("NUMERIC(5,2)");
+            builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.CurrentMonthlyBurnRate).HasColumnType("NUMERIC(5,2)");
+            builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.MonthsOfRunwayLeft).HasColumnType("NUMERIC(10,2)");
+            builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.SurplusGapPoints).HasColumnType("NUMERIC(10,2)");
 
             DataSeeder.SeedData(builder, "hialfonso@nhac.org");
         }
