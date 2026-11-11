@@ -158,7 +158,7 @@ const CommentsModal = ({
           >
             <textarea
               {...register('text')}
-              className="w-full border border-neutral-300 dark:border-slate-700/80 rounded-sm p-2 outline-none focus:outline-none dark:text-white focus:ring-1 focus:ring-neutral-300 dark:focus:ring-indigo-500 transition-all duration-300 ease-in-out"
+              className="w-full border border-neutral-300 dark:border-slate-700/80  dark:bg-slate-900 rounded-sm p-2 outline-none focus:outline-none dark:text-white focus:ring-1 focus:ring-neutral-300 dark:focus:ring-indigo-500 transition-all duration-300 ease-in-out"
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
                 if (!comment || comment.id === 0) {
                   if (e.target.value.trim() == '') {

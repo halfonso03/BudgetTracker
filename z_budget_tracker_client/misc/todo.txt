@@ -1,9 +1,10 @@
 
 
-
-summary pageius reversing the onblur for hte input field
+there are two ADP showing when searching for payee
 add % remaining on Summary.tsx
 should be able to save a payment even when not enough funds
+Oralce payment not showing on list
+
 
 charts - home page 
 

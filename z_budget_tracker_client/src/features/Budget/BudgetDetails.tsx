@@ -446,8 +446,8 @@ const BudgetDetails = () => {
                   ></EllipsisVertical>
                 </Menus.Toggler>
                 <Menus.List
-                  topPos="translate-y-7"
-                  leftPos="translate-x-45"
+                  topPos="translate-y-10"
+                  leftPos="translate-x-40"
                   id={'1'}
                 >
                   <Menus.MenuItem onClick={() => setChangesModalIsOpen(true)}>
