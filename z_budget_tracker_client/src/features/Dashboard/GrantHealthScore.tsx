@@ -139,7 +139,7 @@ export const GrantHealthScoreCard: React.FC<GrantHealthScoreProps> = ({
           }}
         ></Info>
       </div>
-      <div className="ml-auto flex justify-end gap-1 ">
+      <div className=" flex justify-center gap-1 ">
         <span
           className={`px-2 text-sm font-medium rounded-sm  ${status.color}`}
         >

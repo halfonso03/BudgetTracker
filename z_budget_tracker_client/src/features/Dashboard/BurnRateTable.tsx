@@ -212,7 +212,7 @@ export default function App() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
           {/* Card 1: Total Allocated */}
-          <div className="bg-neutral-100 border-neutral-300/30 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
+          <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between text-neutral-700 dark:text-slate-400">
               <span className="dark:text-sm font-semibold uppercase tracking-wider">
                 Total Budgeted
@@ -230,7 +230,7 @@ export default function App() {
           </div>
 
           {/* Card 2: Cumulative Spent */}
-          <div className="bg-neutral-100 border-neutral-300/30 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
+          <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between dark:text-slate-400">
               <span className="text-neutral-700 dark:text-slate-400 dark:text-sm font-semibold uppercase tracking-wider">
                 Total Spent YTD
@@ -259,7 +259,7 @@ export default function App() {
           </div>
 
           {/* Card 3: Monthly Burn Rate */}
-          <div className="bg-neutral-100 border-neutral-300/30 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
+          <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
             <div className="flex items-center justify-between dark:text-slate-400">
               <span className="text-neutral-700 dark:text-slate-400  dark:text-sm font-semibold uppercase tracking-wider">
                 Avg Monthly Spend
@@ -281,7 +281,7 @@ export default function App() {
 
           {/* Card 4: Action Items */}
           <div
-            className={`${budgetsInTrouble?.length === 0 && 'opacity-50'} bg-neutral-100 border-neutral-300/30 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden`}
+            className={`${budgetsInTrouble?.length === 0 && 'opacity-50'} bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden`}
           >
             <div className="flex items-center justify-between dark:text-slate-400">
               <span className="dark:text-sm font-semibold uppercase tracking-wider text-red-500 dark:text-rose-400">
@@ -308,16 +308,16 @@ export default function App() {
         </div>
 
         {/* Filter Controls Bar */}
-        <div className="border border-neutral-300 dark:bg-slate-800/90 dark:border-slate-700/60 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+        <div className="border bg-neutral-100 border-neutral-300/80 dark:bg-slate-800/90 dark:border-slate-700/60 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
           {/* Search Box */}
-          <div className="relative  w-full sm:w-80">
+          <div className="relative w-full sm:w-80">
             <Search className=" w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500 dark:text-slate-400" />
             <input
               type="text"
               placeholder="Search by Grant ID or Initiative..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="border border-neutral-300 w-full dark:bg-slate-900  dark:border-slate-700 rounded-lg pl-9 pr-4 py-2 dark:text-sm dark:text-slate-100 placeholder-neutral-400/80 focus:outline-none focus:border-blue-500 transition-colors"
+              className="border bg-white  border-neutral-300 w-full dark:bg-slate-900  dark:border-slate-700 rounded-lg pl-9 pr-4 py-2 dark:text-sm dark:text-slate-100 placeholder-neutral-400/80 focus:outline-none focus:border-blue-500 transition-colors"
             />
           </div>
 
@@ -377,10 +377,10 @@ export default function App() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-[.9rem]">
               <thead>
-                <tr className="bg-neutral-200 dark:bg-slate-900/80 dark:text-slate-400 uppercase text-neutral-600 border-b border-b-neutral-300/40 dark:border-slate-700/80">
+                <tr className="bg-neutral-200 dark:bg-slate-900/80 dark:text-slate-400 uppercase text-neutral-500 border-b border-b-neutral-300/40 dark:border-slate-700/80">
                   <th className="py-3.5 px-4 font-semibold">Grant Code</th>
                   <th
-                    className=" py-3.5 px-4 font-semibold  cursor-pointer hover:text-white transition-colors"
+                    className=" py-3.5 px-4 font-semibold hover:text-neutral-700 dark:hover:text-white  cursor-pointer transition-colors"
                     onClick={() => handleSort('initiativeName')}
                   >
                     <div className="flex items-center gap-1 ">
@@ -388,7 +388,7 @@ export default function App() {
                     </div>
                   </th>
                   <th
-                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-white transition-colors"
+                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-neutral-700 dark:hover:text-white  transition-colors"
                     onClick={() => handleSort('totalAllocation')}
                   >
                     <div className="flex items-center justify-end gap-1">
@@ -399,7 +399,7 @@ export default function App() {
                     Spent
                   </th>
                   <th
-                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-white transition-colors"
+                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-neutral-700 dark:hover:text-white  transition-colors"
                     onClick={() => handleSort('remainingBalance')}
                   >
                     <div className="flex items-center justify-end gap-1">
@@ -410,10 +410,10 @@ export default function App() {
                     Months Left
                   </th> */}
                   <th
-                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-white transition-colors"
+                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-neutral-700 dark:hover:text-white  transition-colors"
                     onClick={() => handleSort('currentMonthlyBurnRate')}
                   >
-                    <div className="flex items-center justify-center gap-1">
+                    <div className="flex items-center justify-center gap-1 ">
                       Monthly Spend <ArrowUpDown className="w-3 h-3" />
                     </div>
                   </th>
@@ -453,20 +453,20 @@ export default function App() {
                           setselectedInitiativeId(row.initiativeId);
                           setSelectedGrantId(row.grantId);
                         }}
-                        className="cursor-pointer dark:hover:bg-slate-700/30 transition-colors text-[1rem] text-neutral-800"
+                        className="cursor-pointer dark:hover:bg-slate-700/30 transition-colors text-[1rem] dark:text-slate-400 text-neutral-500 "
                       >
                         {/* Grant Code */}
-                        <td className="py-4 px-4 font-mono font-bold text-indigo-500 dark:text-indigo-300">
+                        <td className="py-2 px-4 font-mono font-bold text-indigo-500 dark:text-indigo-300">
                           <div className="flex gap-2 justify-between">
                             <div>{row.grantName}</div>
 
-                            <div className="flex items-center gap-2 text-neutral-600 dark:text-slate-500 text-sm">
+                            <div className="flex items-center gap-2 text-neutral-500 dark:text-slate-500 text-sm">
                               <span>{format(row.awardStartDate, 'M/yy')}</span>-
                               <span>{format(row.awardEndDate, 'M/yy')}</span>
                             </div>
                           </div>
 
-                          <div className="flex flex-col text-neutral-600 dark:text-slate-500 text-sm">
+                          <div className="flex flex-col text-neutral-500 dark:text-slate-500 text-sm">
                             <span>
                               {row.monthsRemaining} month
                               {row.monthsRemaining > 1 ? 's' : ''} remaining
@@ -475,17 +475,17 @@ export default function App() {
                         </td>
 
                         {/* Initiative Name */}
-                        <td className="py-4 px-4 font-medium dark:text-slate-100">
+                        <td className="py-2 px-4 font-medium text-neutral-800 dark:text-slate-100">
                           {row.initiativeName}
                         </td>
 
                         {/* Total Allocation */}
-                        <td className="py-4 px-4 text-right font-mono dark:text-slate-200">
+                        <td className="py-2 px-4 text-right font-mono dark:text-slate-200">
                           {formatCurrency(row.totalAllocation)}
                         </td>
 
                         {/* Consumption Progress bar */}
-                        <td className="py-4 px-4 text-right min-w-35">
+                        <td className="py-2 px-4 text-right min-w-35">
                           <div className="flex flex-col items-end gap-1">
                             <span className=" font-mono dark:text-slate-300">
                               {consumedPct.toFixed(1)}%
@@ -517,7 +517,7 @@ export default function App() {
                         </td>
 
                         {/* Remaining Balance */}
-                        <td className="py-4 px-4 text-right font-mono font-semibold">
+                        <td className="py-2 px-4 text-right font-mono font-semibold">
                           <div>
                             <div
                               className={
@@ -535,16 +535,16 @@ export default function App() {
                           {row.monthsRemaining}
                         </td> */}
                         {/* Monthly Burn Rate */}
-                        <td className="py-4 px-4 text-center font-mono dark:text-slate-300">
+                        <td className="py-2 px-4 text-center font-mono dark:text-slate-300">
                           {formatCurrency(row.currentMonthlyBurnRate)}/mo
                         </td>
-                        <td className="py-4 px-4 font-mono dark:text-slate-300">
+                        <td className="py-2 px-4 font-mono dark:text-slate-300">
                           <div className="flex justify-center items-center gap-1.5">
                             <Calendar className="w-3.5 h-3.5 dark:text-slate-400 shrink-0" />
                             {format(row.projectedExhaustionDate, 'M/d/yy')}
                           </div>
                         </td>
-                        <td className="py-4 px-4 flex justify-center">
+                        <td className="py-2 px-4 flex justify-center">
                           <GrantHealthScoreCard
                             surplusScore={row.surplusScore}
                             monthsRemaining={row.monthsRemaining}

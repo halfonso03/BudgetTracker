@@ -126,9 +126,9 @@ const BudgetBurnRateModal = ({
       animateOut={animateOut}
       {...props}
     >
-      <div>
+      <div className=''>
         <div className="flex gap-1 mt-4 mb-2">
-          <div className="w-1/12 text-neutral-700 dark:text-slate-400 text-2xl">Intiative</div>
+          <div className="w-1/12 text-neutral-700 dark:text-slate-400 text-2xl">Initiative</div>
           <div className=" text-nuetral-800 dark:text-white  text-2xl">
             {initiativeName}
           </div>
@@ -139,14 +139,14 @@ const BudgetBurnRateModal = ({
         </div>
 
         <div></div>
-        <div className="my-8 border-neutral-300 dark:bg-slate-800/90 border dark:border-slate-700/60 rounded-xl overflow-hidden shadow-sm ">
-          <div className="overflow-x-auto">
+        <div className="my-4 border-neutral-300 dark:bg-slate-800/90 border dark:border-slate-700/60 rounded-xl overflow-hidden shadow-sm ">
+          <div className="overflow-x-auto max-h-[65dvh]">
             <table className="w-full text-left border-collapse text-[.9rem]">
               <thead>
-                <tr className="bg-neutral-200 dark:bg-slate-900/80 dark:text-slate-400 uppercase text-neutral-600 border-b border-b-neutral-300/40 dark:border-slate-700/80">
+                <tr className="uppercase bg-neutral-200 dark:bg-slate-900/80 dark:text-slate-400  text-neutral-500 border-b border-b-neutral-300/40 dark:border-slate-700/80">
                   <th className="py-3.5 px-4 font-semibold">Category</th>
                   <th
-                    className=" py-3.5 px-4 font-semibold  cursor-pointer hover:text-white transition-colors w-[15%]"
+                    className=" py-3.5 px-4 font-semibold cursor-pointer hover:text-neutral-700 dark:hover:text-white transition-colors w-[15%]"
                     // onClick={() => handleSort('initiativeName')}
                   >
                     <div className="flex items-center gap-1 ">
@@ -154,7 +154,7 @@ const BudgetBurnRateModal = ({
                     </div>
                   </th>
                   <th
-                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-white transition-colors"
+                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-neutral-700 dark:hover:text-white transition-colors"
                     // onClick={() => handleSort('totalAllocation')}
                   >
                     <div className="flex items-center justify-end gap-1">
@@ -165,7 +165,7 @@ const BudgetBurnRateModal = ({
                     Spent
                   </th>
                   <th
-                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-white transition-colors"
+                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-neutral-700 dark:hover:text-white transition-colors"
                     // onClick={() => handleSort('remainingBalance')}
                   >
                     <div className="flex items-center justify-end gap-1">
@@ -176,7 +176,7 @@ const BudgetBurnRateModal = ({
                     Months Left
                   </th> */}
                   <th
-                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-white transition-colors"
+                    className="py-3.5 px-4 font-semibold text-right cursor-pointer hover:text-neutral-700 dark:hover:text-white transition-colors"
                     // onClick={() => handleSort('currentMonthlyBurnRate')}
                   >
                     <div className="flex items-center justify-center gap-1">
@@ -217,7 +217,7 @@ const BudgetBurnRateModal = ({
                         className="cursor-pointer dark:hover:bg-slate-700/30 transition-colors text-[1rem] text-neutral-800"
                       >
                         {/* Grant Code */}
-                        <td className="py-4 px-4 font-mono font-bold text-indigo-500 dark:text-indigo-300">
+                        <td className="py-2 px-4 font-mono font-bold text-indigo-500 dark:text-indigo-300">
                           <div className="flex gap-2 justify-between">
                             <div>
                               {index == 0
@@ -231,17 +231,17 @@ const BudgetBurnRateModal = ({
                         </td>
 
                         {/* Initiative Name */}
-                        <td className="py-4 px-4 font-medium dark:text-slate-100">
+                        <td className="py-2 px-4 font-medium dark:text-slate-100">
                           {row.accountName}
                         </td>
 
                         {/* Total Allocation */}
-                        <td className="py-4 px-4 text-right font-mono dark:text-slate-200">
+                        <td className="py-2 px-4 text-right font-mono dark:text-slate-200">
                           {formatCurrency(row.totalAllocation)}
                         </td>
 
                         {/* Consumption Progress bar */}
-                        <td className="py-4 px-4 text-right min-w-35">
+                        <td className="py-2 px-4 text-right min-w-35">
                           <div className="flex flex-col items-end gap-1">
                             <span className=" font-mono dark:text-slate-300">
                               {consumedPct.toFixed(1)}%
@@ -273,7 +273,7 @@ const BudgetBurnRateModal = ({
                         </td>
 
                         {/* Remaining Balance */}
-                        <td className="py-4 px-4 text-right font-mono font-semibold">
+                        <td className="py-2 px-4 text-right font-mono font-semibold">
                           <div>
                             <div
                               className={
@@ -349,13 +349,9 @@ const BudgetBurnRateModal = ({
           </div>
 
           {/* Table Footer */}
-          <div className="dark:bg-slate-900/60 px-4 py-3 border-t border-neutral-300 dark:border-slate-700/80 flex flex-col sm:flex-row items-center justify-between  dark:text-slate-400 gap-2">
+          {/* <div className="dark:bg-slate-900/60 px-4 py-3 border-t border-neutral-300 dark:border-slate-700/80 flex flex-col sm:flex-row items-center justify-between  dark:text-slate-400 gap-2">
             <div className="flex items-center gap-1.5">
-              {/* <Info className="w-4 h-4 dark:text-slate-400 shrink-0" /> */}
-              {/* <span>
-                Spend rate calculated using standard least-squares velocity
-                trajectory across fiscal months.
-              </span> */}
+           
             </div>
             <div className="text-neutral-500 dark:text-slate-200 text-sm">
               Showing{' '}
@@ -366,7 +362,7 @@ const BudgetBurnRateModal = ({
               </span>{' '}
               of {burnRateData?.length} Budget Lines
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="flex justify-end gap-3 pb-3">
