@@ -120,18 +120,18 @@ const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
       {...props}
     >
       <div >
-        <div className="border-neutral-300 dark:bg-slate-800/90 border dark:border-slate-700/60 rounded-xl overflow-hidden shadow-sm ">
+        <div className="my-8 border-neutral-300 dark:bg-slate-800/90 border dark:border-slate-700/60 rounded-xl overflow-hidden shadow-sm ">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-[.9rem]">
               <thead>
                 <tr className="bg-neutral-200 dark:bg-slate-900/80 dark:text-slate-400 uppercase text-neutral-600 border-b border-b-neutral-300/40 dark:border-slate-700/80">
-                  <th className="py-3.5 px-4 font-semibold">Grant Code</th>
+                  <th className="py-3.5 px-4 font-semibold">Category</th>
                   <th
-                    className=" py-3.5 px-4 font-semibold  cursor-pointer hover:text-white transition-colors"
+                    className=" py-3.5 px-4 font-semibold  cursor-pointer hover:text-white transition-colors w-[15%]"
                     // onClick={() => handleSort('initiativeName')}
                   >
                     <div className="flex items-center gap-1 ">
-                      Initiative Name <ArrowUpDown className="w-3 h-3" />
+                      Account <ArrowUpDown className="w-3 h-3" />
                     </div>
                   </th>
                   <th
@@ -200,20 +200,12 @@ const BudgetBurnRateModal = ({ initiativeId, grantId, ...props }: Props) => {
                         {/* Grant Code */}
                         <td className="py-4 px-4 font-mono font-bold text-indigo-500 dark:text-indigo-300">
                           <div className="flex gap-2 justify-between">
-                            <div>{row.categoryName}</div>
+                            <div>{index == 0 ? row.categoryName : filteredData[index-1].categoryName === row.categoryName ? "" : row.categoryName}</div>
 
-                            <div className="flex items-center gap-2 text-neutral-600 dark:text-slate-500 text-sm">
-                              <span>{format(row.awardStartDate, 'M/yy')}</span>-
-                              <span>{format(row.awardEndDate, 'M/yy')}</span>
-                            </div>
+                           
                           </div>
 
-                          <div className="flex flex-col text-neutral-600 dark:text-slate-500 text-sm">
-                            <span>
-                              {row.monthsRemaining} month
-                              {row.monthsRemaining > 1 ? 's' : ''} remaining
-                            </span>
-                          </div>
+                        
                         </td>
 
                         {/* Initiative Name */}
