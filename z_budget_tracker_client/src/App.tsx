@@ -3,8 +3,6 @@ import NavBar from './components/NavBar';
 import { ToastBar, Toaster } from 'react-hot-toast';
 
 function App() {
-
-  
   return (
     <div className='dark:bg-slate-900 min-h-lvh'>
       <NavBar></NavBar>

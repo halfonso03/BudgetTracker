@@ -25,7 +25,7 @@ const Budgets = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className=" min-h-lvh ">
       <div className="flex mb-4 justify-between items-center">
         <div>
           <div className="p-2  dark:text-slate-400 font-semibold ">Year:</div>
