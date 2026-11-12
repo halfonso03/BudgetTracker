@@ -21,6 +21,7 @@ import { useBudgetMutations } from '../../api/hooks/budgets/useBudgetMutations';
 import Button from '../../components/Button';
 import toast from 'react-hot-toast';
 import useCategories from '../../api/hooks/common/useCategories';
+import Label from '../../components/Label';
 
 const userId = 1;
 
@@ -212,18 +213,22 @@ const CreateBudget = () => {
 
   let indexRunningTotal = -1;
   return (
-    <div className="w-full mx-auto  ">
+    <div className="w-full mx-auto  pb-10">
       <div className="mb-2  text-2xl pb-5 text-neutral-700 font-bold tracking-tight dark:text-white">
         Create Budget
       </div>
-      <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-2 py-2 border-b border-b-neutral-200  border-t border-t-neutral-200">
-        <div className="entity-label">Year</div>
-        <div className="entity-label">Initiative</div>
-        <div className="entity-label">Grant</div>
-        <div className="font-semibold">{year}</div>
-        <div className="font-semibold">{initiative?.name}</div>
-        <div className="font-semibold">
-          {grant?.name} - {grant?.fiduciary}
+      <div className="grid grid-cols-[.15fr_.4fr_.3fr_1fr_.5fr_.075fr] mb-2 py-2 border-b border-b-neutral-200 dark:border-b-slate-800">
+        <Label>YEAR</Label>
+        <Label>INITIATIVE</Label>
+        <div className="col-span-4">
+          <Label>AWARD</Label>
+        </div>
+        <div className="font-medium dark:text-white">{year}</div>
+        <div className="font-medium dark:text-white">{initiative?.name}</div>
+        <div className="col-span-4">
+          <div className="font-mono font-bold dark:text-indigo-300">
+            {grant?.name} - {grant?.fiduciary}
+          </div>
         </div>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -242,12 +247,17 @@ const CreateBudget = () => {
             (x) => x.categoryId == c.id && x.accountId === 999,
           );
           return (
-            <div className="border border-neutral-200 mb-7" key={c.id}>
-              <div className="flex justify-between bg-neutral-100 ">
-                <div className="pl-3 py-2 font-semibold">{c.name}</div>
+            <div
+              className="border  border-neutral-200 mb-7  dark:border-slate-700/80  rounded-md"
+              key={c.id}
+            >
+              <div className="flex justify-between bg-neutral-100  dark:bg-slate-800">
+                <div className="pl-3 py-2 ">
+                  <Label>{c.name}</Label>
+                </div>
                 <div className="self-center mr-2">
                   <ChevronDownSquare
-                    className={`text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
+                    className={`dark:text-indigo-300  text-blue-500 cursor-pointer ${expandedIndexes.some((x) => x == index) ? 'transition-transform duration-300 ease-in-out rotate-180 ' : 'transition-transform duration-300 ease-in-out rotate-0'}`}
                     onClick={() => {
                       if (expandedIndexes.some((x) => x == index)) {
                         setExpandedIndexes((prev) =>
@@ -260,18 +270,19 @@ const CreateBudget = () => {
                   ></ChevronDownSquare>
                 </div>
               </div>
+              
               <div
-                className={`grid grid-cols-[.55fr_.25fr_.25fr] box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200' : ''}`}
+                className={`grid grid-cols-[.55fr_.25fr_.25fr] dark:bg-slate-800/80 p-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200 dark:border-t-slate-700/80' : ''}`}
                 key={c.id}
               >
-                <div className="pl-3 py-2 bg-neutral-100 entity-name">
-                  Account
+                <div className="pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                  <Label>Account</Label>
                 </div>
-                <div className="py-2 text-end bg-neutral-100 text-neutral-600 font-semibold">
-                  Budgeted
+                <div className="text-end pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                  <Label>Budgeted</Label>
                 </div>
-                <div className="text-center py-2 bg-neutral-100 text-neutral-600 font-semibold">
-                  Comments
+                <div className="text-center pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                  <Label>Comments</Label>
                 </div>
 
                 {amountFieldsForCategory.map((field) => {
@@ -331,7 +342,7 @@ const CreateBudget = () => {
 
                 return (
                   <div
-                    className="grid grid-cols-[.55fr_.25fr_.25fr] border-t border-t-neutral-200  "
+                    className="grid grid-cols-[.55fr_.25fr_.25fr] border-t border-t-neutral-200 dark:border-t-slate-700/80"
                     key={field.id}
                   >
                     <BudgetInputFieldsNewBudget

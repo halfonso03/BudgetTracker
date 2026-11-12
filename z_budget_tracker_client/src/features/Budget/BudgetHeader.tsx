@@ -9,41 +9,40 @@ interface Props {
 
 const BudgetHeader = ({ bRef, cRef, rRef, totalSpent }: Props) => {
   return (
-    <div className=" mb-5 grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr] border border-neutral-200 dark:border-slate-700/80 shadow-sm ">
-      <div className="pl-3 py-2  font-bold dark:text-white bg-neutral-100 dark:bg-slate-800">
-        <Label>Totals</Label>
+    <div className=" grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr] mb-2 ">
+      <div className="pl-3 pb-1 font-bold dark:text-white  dark:bg-transparent">
       </div>
-      <div className="pl-3 py-2 text-end bg-neutral-100 font-semibold dark:text-white  dark:bg-slate-800">
+      <div className="pl-3 pb-1 text-end font-semibold dark:text-white dark:bg-transparent">
         <Label>Budgeted</Label>
       </div>
-      <div className="pl-3 py-2 text-end bg-neutral-100 font-semibold dark:text-white  dark:bg-slate-800">
+      <div className="pl-3 pb-1 text-end  font-semibold dark:text-white  dark:bg-transparent">
         <Label>Current</Label>
       </div>
-      <div className="pl-3 py-2 text-end bg-neutral-100 font-semibold dark:text-white  dark:bg-slate-800">
+      <div className="pl-3 pb-1 text-end font-semibold dark:text-white  dark:bg-transparent">
         <Label>Spent</Label>
       </div>
-      <div className="pl-3 py-2 text-end bg-neutral-100  font-semibold dark:text-white  dark:bg-slate-800">
+      <div className="pl-3 pb-1 text-end  font-semibold dark:text-white  dark:bg-transparent">
         <Label>Remaining</Label>
       </div>
-      <div className="col-span-2 bg-neutral-100 dark:bg-slate-800"></div>
-      <div className="dark:bg-slate-800"></div>
+      <div className="col-span-2  dark:bg-transparent"></div>
+      <div className="dark:bg-transparent"></div>
       <div
-        className="text-end text-neutral-800 font-semibold py-2 dark:text-white dark:bg-slate-800"
+        className="text-end text-neutral-800 font-semibold pb-1 dark:text-white dark:bg-transparent"
         ref={bRef}
       ></div>
       <div
-        className="text-end text-neutral-800 font-semibold py-2 dark:text-white dark:bg-slate-800"
+        className="text-end text-neutral-800 font-semibold pb-1 dark:text-white dark:bg-transparent"
         ref={cRef}
       ></div>
-      <div className="text-end text-neutral-800 font-semibold py-2 dark:text-white dark:bg-slate-800">
+      <div className="text-end text-neutral-800 font-semibold pb-1 dark:text-white dark:bg-transparent">
         {totalSpent}
       </div>
       <div
-        className="text-end text-neutral-800 font-semibold py-2 dark:text-white dark:bg-slate-800"
+        className="text-end text-neutral-800 font-semibold pb-1 dark:text-white dark:bg-transparent"
         ref={rRef}
       ></div>
-      <div className="dark:bg-slate-800"></div>
-      <div className="dark:bg-slate-800"></div>
+      <div className="dark:bg-transparent"></div>
+      <div className="dark:bg-transparent"></div>
     </div>
   );
 };

@@ -30,7 +30,6 @@ const BudgetInputFieldsNewBudget = ({
   const [hasComment, setHasComment] = useState<boolean>(false);
   const [animateOut, setAnimateOut] = useState<boolean>(false);
 
-
   function handleSaveComments(e: { accountId: number; text: string }) {
     try {
       setHasComment(e.text.trim() != '' && e.text !== null);
@@ -51,19 +50,19 @@ const BudgetInputFieldsNewBudget = ({
   return (
     <>
       <div
-        className={`self-center pl-3 py-2 ${isLastRow ? 'bg-neutral-100 font-bold text-neutral-700' : ''}`}
+        className={` self-center pl-3 ${isLastRow ? 'dark:text-slate-300 py-2 bg-neutral-100 dark:bg-slate-800/80 font-bold text-neutral-600  ' : 'dark:text-white'}`}
       >
         {fieldName}
       </div>
       <div
-        className={`text-end self-center py-1  ${isLastRow ? 'bg-neutral-100' : ''}`}
+        className={`text-end self-center py-2 ${isLastRow ? ' py-2 bg-neutral-100 dark:bg-slate-800/80 ' : ''}`}
       >
         <NumericArrayInput
           key={accountId}
           register={amountRegister}
           readOnly={isLastRow}
           disabled={isLastRow}
-          className={`${isLastRow ? 'border-0 p-0 m-0 font-bold text-neutral-600 pr-1 py-1 ' : 'p-[.2rem] border border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
+          className={` ${isLastRow ? ' border-0 p-0 m-0 font-bold text-neutral-600 pr-1 dark:text-slate-300  ' : 'p-[.2rem] border border-neutral-200 dark:border-slate-700/80 dark:text-white dark:focus:border-indigo-500 focus:outline-none focus:ring-0 focus:ring-offset-0'}`}
           onClick={(e) => (onClick ? onClick(e) : null)}
           onBlur={(e) => {
             if (onBlur) {
@@ -74,12 +73,12 @@ const BudgetInputFieldsNewBudget = ({
         ></NumericArrayInput>
       </div>
       <div
-        className={`text-center self-center py-2 text-blue-500 text-sm  ${isLastRow ? 'bg-neutral-100 self-stretch' : ' self-center '}`}
+        className={`text-center self-center py-2 text-blue-500 text-sm  ${isLastRow ? 'bg-neutral-100 self-stretch dark:bg-slate-800/80' : ' self-center '}`}
       >
         {!isLastRow ? (
           <button
             type="button"
-            className={`cursor-pointer ${isLastRow ? 'opacity-0' : ''}`}
+            className={`cursor-pointer dark:text-indigo-400 ${isLastRow ? 'opacity-0' : ''}`}
             disabled={isLastRow}
             tabIndex={-1}
             onClick={() => setCommentsOpen(true)}

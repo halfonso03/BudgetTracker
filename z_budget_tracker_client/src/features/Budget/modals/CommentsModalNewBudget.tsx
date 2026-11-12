@@ -1,7 +1,9 @@
 import { useState, type ChangeEvent, type SubmitEvent } from 'react';
-import Modal from '../../../../misc/Modal';
 import Button from '../../../components/Button';
 import type { ModalSize } from '../../../components/Modal2';
+import Modal2 from '../../../components/Modal2';
+import Label from '../../../components/Label';
+import TextArea from '../../../components/TextArea';
 
 interface Props {
   accountId: number;
@@ -39,7 +41,7 @@ const CommentsModalNewBudget = ({
   }
 
   return (
-    <Modal
+    <Modal2
       isOpen={isOpen}
       animateOut={animateOut}
       onCancel={onCancel}
@@ -47,26 +49,27 @@ const CommentsModalNewBudget = ({
       title="Comments"
     >
       <div className="mb-5">
-        <div className="">
+        <div className="mb-4">
           <div>
-            <div className="entity-label"> Account </div>
-            <div className="entity-name mb-5"> {accountName} </div>
+            <Label>Account</Label>
+            <div className="dark:text-white font-semibold"> {accountName} </div>
           </div>
         </div>
 
-        <div className="entity-label mb-1"> Comments </div>
+        <div className="mb-1">
+          <Label>Comments</Label>
+        </div>
         <form onSubmit={onSubmit}>
-          <textarea
+          <TextArea
             value={comment}
-            className="w-full border border-neutral-300 rounded-sm p-2 outline-none focus:outline-none focus:ring-2 focus:ring-neutral-400 transition-all duration-300 ease-in-out"
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
               setComment(e.target.value);
             }}
-          ></textarea>
+          ></TextArea>
           <div className="text-end">
             <button
               type="button"
-              className="text-sm text-neutral-600 mb-2 hover:text-neutral-950 cursor-pointer"
+              className="text-sm text-neutral-600 mb-2 hover:text-neutral-950 cursor-pointer  dark:text-white"
               onClick={() => {
                 setComment('');
               }}
@@ -94,7 +97,7 @@ const CommentsModalNewBudget = ({
           </div>
         </form>
       </div>
-    </Modal>
+    </Modal2>
   );
 };
 export default CommentsModalNewBudget;

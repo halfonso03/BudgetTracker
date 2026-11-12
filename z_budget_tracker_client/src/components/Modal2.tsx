@@ -64,7 +64,7 @@ const Modal2 = ({
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside
       >
         {/* Header Section */}
-        <div className=" flex justify-between items-center px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/30">
+        <div className=" flex justify-between items-center px-5 py-4 border-b border-slate-200/60 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-950/30">
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 tracking-tight">
             {title}
           </h3>

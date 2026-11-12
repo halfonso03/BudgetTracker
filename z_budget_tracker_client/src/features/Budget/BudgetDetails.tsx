@@ -418,7 +418,7 @@ const BudgetDetails = () => {
         <div className="mb-2  text-2xl pb-5 text-neutral-700 font-bold tracking-tight dark:text-white">
           Edit Budget
         </div>
-        <div className="grid grid-cols-[.15fr_.4fr_.3fr_1fr_.5fr_.075fr] mb-2 py-2 border-b border-b-neutral-200 dark:border-b-slate-700/80  ">
+        <div className="grid grid-cols-[.15fr_.4fr_.3fr_1fr_.5fr_.075fr] mb-2 py-2 border-b border-b-neutral-200 dark:border-b-slate-800  ">
           <Label>YEAR</Label>
           <Label>INITIATIVE</Label>
           <Label>AWARD</Label>
@@ -512,11 +512,11 @@ const BudgetDetails = () => {
 
               .some((c) => c.current_amount - c.spent_amount < 0);
 
-            const categoryRedClass = n === true ? 'text-red-600' : '';
+            const categoryRedClass = n === true ? ' text-red-600 ' : ' ';
 
             return (
               <div
-                className="border border-neutral-200 mb-7 dark:border-slate-700/80"
+                className="border border-neutral-200 mb-7 dark:border-slate-700/80  rounded-md"
                 key={c.id}
               >
                 <div className="flex justify-between bg-neutral-100  dark:bg-slate-800/80">
