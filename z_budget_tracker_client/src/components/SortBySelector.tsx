@@ -15,7 +15,7 @@ export default function SortBySelector({
   const { setSortByValue } = useSortingContext();
 
   return (
-    <div className="hover:text-neutral-900 transition-colors duration-150 w-full">
+    <div className="hover:text-neutral-900 dark:hover:text-slate-200 dark:text-slate-200/90 transition-colors duration-150 w-full">
       <div className="flex items-center  w-full">
         <button
           className="flex cursor-pointer font-medium capitalize select-none"

@@ -21,11 +21,11 @@ export function Pagination({ data, onPageNumberChange }: Props) {
   );
 
   return (
-    <div className=" grid grid-cols-[1fr_1fr_1fr]   items-center  px-2 text-neutral-500 w-full mt-6 mb-16 ">
+    <div className=" grid grid-cols-[1fr_1fr_1fr] items-center px-2 text-neutral-500 w-full mt-6 mb-16 dark:text-slate-400 ">
       <div>
         <span>
           Showing page{' '}
-          <span className="font-medium text-neutral-900">
+          <span className="font-semibold text-neutral-900 dark:text-slate-400">
             {data?.currentPage}
           </span>{' '}
           of {data?.totalPages}
@@ -35,7 +35,7 @@ export function Pagination({ data, onPageNumberChange }: Props) {
       <div className="flex justify-center ">
         {data?.totalCount} results found.
       </div>
-      <div className="flex justify-end items-center gap-1 cursor-pointer">
+      <div className="flex justify-end items-center gap-1 cursor-pointer ">
         <div>
           <button
             onClick={() => {
@@ -43,9 +43,9 @@ export function Pagination({ data, onPageNumberChange }: Props) {
               setPageNumber(1);
             }}
             disabled={data?.currentPage === 1}
-            className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            className="cursor-pointer disabled:cursor-default p-2 rounded-md hover:bg-neutral-50 dark:hover:bg-slate-400 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
           >
-            <ChevronFirst size={20} className="cursor-pointer"></ChevronFirst>
+            <ChevronFirst size={20} className=""></ChevronFirst>
           </button>
         </div>
         <div>
@@ -55,9 +55,9 @@ export function Pagination({ data, onPageNumberChange }: Props) {
               setPageNumber(Math.max(data!.currentPage - 1, 1));
             }}
             disabled={data?.currentPage === 1}
-            className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            className="cursor-pointer disabled:cursor-default  p-2 rounded-md hover:bg-neutral-50 dark:hover:bg-slate-300 text-neutral-600 dark:text-slate-400 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
           >
-            <ChevronLeft size={20} className="cursor-pointer" />
+            <ChevronLeft size={20} />
           </button>
         </div>
         <div className="flex ">
@@ -96,9 +96,9 @@ export function Pagination({ data, onPageNumberChange }: Props) {
             onPageNumberChange(data!.currentPage + 1);
           }}
           disabled={data?.currentPage === data?.totalPages}
-          className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+          className=" cursor-pointer disabled:cursor-default  p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
         >
-          <ChevronRight size={20} className="cursor-pointer" />
+          <ChevronRight size={20}  />
         </button>
         <div>
           <button
@@ -108,9 +108,9 @@ export function Pagination({ data, onPageNumberChange }: Props) {
             }}
             disabled={data?.currentPage >= pageNumbers[pageNumbers.length - 1] || data?.totalPages < 12 }
             // disabled={data?.currentPage === pageNumbers[pageNumbers.length]}
-            className="p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            className="cursor-pointer disabled:cursor-default  p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
           >
-            <ChevronLast size={20} className="cursor-pointer"></ChevronLast>
+            <ChevronLast size={20} ></ChevronLast>
           </button>
         </div>
       </div>
@@ -178,8 +178,8 @@ const Pager = memo(
               key={p}
               className={`px-3 py-1.5 rounded-md transition-colors duration-200 font-medium ${
                 currentPage === p
-                  ? 'bg-neutral-500 text-white'
-                  : 'hover:bg-neutral-400 text-neutral-600 hover:text-white'
+                  ? 'bg-neutral-500 text-white dark:bg-slate-600 dark:text-white'
+                  : 'hover:bg-neutral-400 dark:bg-slate-400 text-neutral-600 hover:text-white'
               }`}
             >
               {p}

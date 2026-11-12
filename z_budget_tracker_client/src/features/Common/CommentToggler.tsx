@@ -67,10 +67,10 @@ const CommentToggler = ({ uuid, itemComment, saveComment, canEdit }: Props) => {
             45-Degree Folded Flap
             Perfectly aligned to sit over the clipped border gap, completely solid.
           */}
-          <div className="absolute top-0 right-0 w-[24px] h-[24px] pointer-events-none bg-yellow-400 border-b-[5px] border-l-[5px] border-yellow-500 rounded-bl-sm shadow-[-2px_2px_3px_rgba(0,0,0,0.15)] z-20" />
+          <div className="absolute top-0 right-0 w-6 h-6 pointer-events-none bg-yellow-400 border-b-[5px] border-l-[5px] border-yellow-500 rounded-bl-sm shadow-[-2px_2px_3px_rgba(0,0,0,0.15)] z-20" />
 
           <textarea
-            placeholder="Enter a comment. Click anywhere outside of the sticky to save the comment."
+            placeholder={canEdit === true ? "Enter a comment. Click anywhere outside of the sticky to save the comment." : ""}
             value={comment ?? ''}
             ref={textAreaRef}
             rows={7}

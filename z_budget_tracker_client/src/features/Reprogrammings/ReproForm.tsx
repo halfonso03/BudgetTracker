@@ -875,7 +875,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             <div className="flex gap-12 mr-4  ">
               <div className="flex gap-3 font-semibold">
                 <Label>POSTED ON</Label>
-                <div>
+                <div className='dark:text-white'>
                   {reproHeader.postedDate
                     ? formatDate(reproHeader.postedDate)
                     : ''}
@@ -883,16 +883,16 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
               </div>
               <div className="flex gap-3 font-semibold">
                 <Label>POSTED BY</Label>
-                <div>{reproHeader.postedBy}</div>
+                <div className='dark:text-white'>{reproHeader.postedBy}</div>
               </div>
             </div>
           )}
         </div>
 
         {reproHeader.status === POSTED && (
-          <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 mt-12">
+          <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 dark:border-b-slate-800/80 mb-8 font-semibold text-neutral-500 mt-12">
             <Label>Total</Label>
-            <div className="text-neutral-900">{formatNumber(+inc)}</div>
+            <div className="text-neutral-900 dark:text-white">{formatNumber(+inc)}</div>
             <div></div>
           </div>
         )}

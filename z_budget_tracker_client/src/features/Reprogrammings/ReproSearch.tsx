@@ -14,7 +14,6 @@ import { useReproMutations } from '../../api/hooks/repro/useReproMutations';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../../components/ConfirmModal';
 import ReproParams2 from './ReproParams2';
-import Skeleton from 'react-loading-skeleton';
 
 type SelectedItem = {
   id: number;
@@ -122,7 +121,7 @@ const ReproSearch = () => {
     setXSelectedIds(itemsList);
   }
 
-  const { searchResults, successLoadingResults, loadingSearchResults } =
+  const { searchResults, successLoadingResults } =
     useReproSearch(
       {
         pageNumber: pageNumber,
@@ -297,7 +296,7 @@ const ReproSearch = () => {
               onAmountFilterCancel={handleAmountFilterCancel}
             ></MemoizedReproParams>
           </div>
-          {loadingSearchResults && (
+          {/* {loadingSearchResults && (
             <div className="mt-16 ">
               <Skeleton
                 height={35}
@@ -307,19 +306,19 @@ const ReproSearch = () => {
                 containerClassName="flex-1"
               />
             </div>
-          )}
+          )} */}
           {successLoadingResults && paginationData && (
             <MenuIdProvider>
-              <div className="flex flex-col">
-                <div className="flex justify-between  pl-1 items-center mb-4 ">
-                  <div className="text-md font-semibold text-neutral-500  ">
+              <div className="flex flex-col ">
+                <div className="flex justify-between pl-1 items-center mb-4  ">
+                  <div className="text-md font-semibold text-neutral-500 dark:text-slate-300  ">
                     {paginationData.totalCount} Reprogramming
                     {paginationData.totalCount > 1 ? 's' : ''} found.
                   </div>
                   {searchResults && searchResults.items.length > 0 && (
                     <div>
                       <button
-                        className="text-neutral-500 hover:text-blue-800 cursor-pointer hover:scale-115 transition-all duration-200 "
+                        className="text-neutral-500 hover:text-blue-800 dark:hover:text-indigo-400  cursor-pointer hover:scale-115 transition-all duration-200 "
                         onClick={handleRefreshClick}
                       >
                         <RefreshCw size={20}></RefreshCw>

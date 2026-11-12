@@ -43,7 +43,9 @@ const ReproRow = ({
     label: (
       <div className="flex justify-between gap-2  dark:text-white dark:bg-slate-900  ">
         <div>{b.accountName}</div>
-        <div className={`${b.currentAmount==0 && "text-slate-500"}`}>{formatCurrency(b.currentAmount)}</div>
+        <div className={`${b.currentAmount == 0 && 'text-slate-500'}`}>
+          {formatCurrency(b.currentAmount)}
+        </div>
       </div>
     ),
   }));
@@ -75,7 +77,7 @@ const ReproRow = ({
             value={accountId}
           />
         ) : (
-          <span>
+          <span className="dark:text-white">
             {balances.filter((x) => x.accountId === accountId)[0].accountName}
           </span>
         )}
@@ -83,12 +85,24 @@ const ReproRow = ({
 
       {render()}
       <div className="flex justify-around self-center">
-        <CommentToggler
-          uuid={uuid}
-          itemComment={comment}
-          saveComment={handleSaveComment}
-          canEdit={canEdit}
-        ></CommentToggler>
+        {canEdit == true && (
+          <CommentToggler
+            uuid={uuid}
+            itemComment={comment}
+            saveComment={handleSaveComment}
+            canEdit={canEdit}
+          ></CommentToggler>
+        )}
+
+        {canEdit === false && comment && (
+          <CommentToggler
+            uuid={uuid}
+            itemComment={comment}
+            saveComment={handleSaveComment}
+            canEdit={canEdit}
+          ></CommentToggler>
+        )}
+
         {canEdit && (
           <Menus>
             <Menus.Toggler id={uuid}>
