@@ -41,9 +41,9 @@ const ReproRow = ({
   const accounts = balances.map((b) => ({
     value: b.accountId,
     label: (
-      <div className="flex justify-between gap-2 dark:text-white dark:bg-slate-900">
+      <div className="flex justify-between gap-2 dark:text-white dark:bg-slate-900  ">
         <div>{b.accountName}</div>
-        <div>{formatCurrency(b.currentAmount)}</div>
+        <div className={`${b.currentAmount==0 && "text-slate-500"}`}>{formatCurrency(b.currentAmount)}</div>
       </div>
     ),
   }));
@@ -73,8 +73,6 @@ const ReproRow = ({
               accountChange(+option.value, uuid);
             }}
             value={accountId}
-            className="w-full "
-             
           />
         ) : (
           <span>
