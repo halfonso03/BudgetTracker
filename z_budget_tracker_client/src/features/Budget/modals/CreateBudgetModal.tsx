@@ -130,7 +130,7 @@ const CreateBudgetModal = ({ year, ...props }: Props) => {
         </div>
 
         {/* <div>message</div> */}
-        {error && <div className="text-red-500 my-3">{error}</div>}
+        {error && <div className="text-red-500 text-[1rem] dark:text-rose-500 my-3">{error}</div>}
         <div className="flex justify-end gap-2 mt-6">
           <Button
             variation="primary"

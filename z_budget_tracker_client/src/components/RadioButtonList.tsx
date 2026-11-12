@@ -22,13 +22,13 @@ const RadioButtonList = ({ items, onSelected, id }: Props) => {
               checked={item.checked}
             />
             <div
-              className={`w-5 h-5 rounded-full border-2 border-gray-400 flex items-center justify-center 
-                peer-checked:border-blue-700 peer-checked:bg-blue-700 dark:peer-checked:border-green-700 dark:peer-checked:bg-green-700  
+              className={`w-5 h-5 rounded-full border-2 border-gray-400 dark:border-slate-600 flex items-center justify-center 
+                peer-checked:border-blue-700 peer-checked:bg-blue-700 dark:peer-checked:border-slate-600 dark:peer-checked:bg-slate-500  
                 group-hover:border-gray-400 transition-all duration-200`}
             >
               <div className="w-2 h-2 rounded-full bg-white"></div>
             </div>
-            <div>{item.name}</div>
+            <div className="text-neutral-700 dark:text-white">{item.name}</div>
           </label>
         </div>
       ))}

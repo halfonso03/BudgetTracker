@@ -11,6 +11,9 @@ import ReproSearchFilter from './ReproSearchFilter';
 import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
 import { parseFormattedNumber } from '../../app/util';
 import Skeleton from 'react-loading-skeleton';
+import Label from '../../components/Label';
+import Select from '../../components/Select';
+import Button from '../../components/Button';
 
 const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
@@ -256,15 +259,14 @@ const ReproParams2 = memo(
         >
           <div
             style={{ height: 'auto', zIndex: 10, overflow: 'visible' }}
-            className="flex flex-col absolute shadow-lg shadow-neutral-300 w-80 rounded-md mt-1 opacity-100 bg-white"
+            className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900"
           >
-            <div className="border border-b-0 border-neutral-200 p-2 py-3">
-              <div className="font-semibold text-neutral-600 ml-1">
-                Debit Amount
+            <div className="  rounded-md p-2 py-3">
+              <div className="ml-1">
+                <Label>Debit Amount</Label>
               </div>
               <div className="flex gap-2">
-                <select
-                  className="border p-2 border-neutral-300 rounded-sm text-neutral-800 focus:outline-none focus:ring-0 focus:ring-offset-0 disabled:opacity-90 disabled:bg-neutral-200"
+                <Select
                   value={amountFilter.debitComparer}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                     handleDebitComparerChange(e);
@@ -278,9 +280,9 @@ const ReproParams2 = memo(
                   <option value="1">Greater Than</option>
                   <option value="2">Less than</option>
                   <option value="3">Equal To</option>
-                </select>
+                </Select>
                 <NumericInputUncontrolled
-                  className="border border-neutral-300 p-1 rounded-md text-end "
+                  className="border border-neutral-300 p-1 dark:border-slate-700/80 rounded-md text-end dark:placeholder:text-slate-300 "
                   placeholder="Amount..."
                   ref={debitRef}
                   onBlur={(e: FocusEvent<HTMLInputElement>) => {
@@ -289,13 +291,12 @@ const ReproParams2 = memo(
                 ></NumericInputUncontrolled>
               </div>
             </div>
-            <div className="border border-neutral-200 p-2 py-3">
-              <div className="font-semibold text-neutral-600 ml-1">
-                Credit Amount
+            <div className=" p-2 py-3">
+              <div className="ml-1">
+                <Label>Credit Amount</Label>
               </div>
               <div className="flex gap-2">
-                <select
-                  className="border p-2 border-neutral-300 rounded-sm text-neutral-800 focus:outline-none focus:ring-0 focus:ring-offset-0 disabled:opacity-90 disabled:bg-neutral-200"
+                <Select
                   value={amountFilter.creditComparer}
                   onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                     handleCreditComparerChange(e);
@@ -309,9 +310,9 @@ const ReproParams2 = memo(
                   <option value="1">Greater Than</option>
                   <option value="2">Less than</option>
                   <option value="3">Equal To</option>
-                </select>
+                </Select>
                 <NumericInputUncontrolled
-                  className="border border-neutral-300 p-1 rounded-md text-end "
+                  className="border border-neutral-300 p-1 dark:border-slate-700/80 rounded-md text-end dark:placeholder:text-slate-300 "
                   placeholder="Amount..."
                   ref={creditRef}
                   onBlur={(e) => {
@@ -320,19 +321,21 @@ const ReproParams2 = memo(
                 ></NumericInputUncontrolled>
               </div>
             </div>
-            <div className="flex gap-2 p-2">
-              <button
-                className="flex-1 bg-blue-600 text-neutral-50 p-1 rounded-sm font-semibold cursor-pointer"
+            <div className="flex gap-2 p-2 ">
+              <Button
+                additionalclasses="flex-1"
+                variation="primary"
                 onClick={handleAmountFilter}
               >
                 Apply
-              </button>
-              <button
-                className="flex-1 border border-neutral-200 bg-neutral-50 text-blue-500 p-1 rounded-sm font-semibold cursor-pointer"
+              </Button>
+              <Button
+                variation="secondary"
+                additionalclasses="flex-1"
                 onClick={handleAmountFilterCancel}
               >
                 Clear
-              </button>
+              </Button>
             </div>
           </div>
         </ReproSearchFilter>
@@ -344,20 +347,23 @@ const ReproParams2 = memo(
           outsideClicked={handleYearOutsideCLick}
           selectedItemLabel={yearOptions.filter((y) => y.checked)[0].name}
         >
-          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-50 rounded-md mt-1 z-1000 opacity-100 bg-white">
+          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:shadow-neutral-900 w-50 rounded-md mt-1 z-1000 opacity-100 bg-white dark:bg-slate-900">
             <RadioButtonList
               id={YEARS_LIST_TYPE}
               onSelected={handleYearSelected}
               items={yearOptions}
             ></RadioButtonList>
-            <button
-              className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer"
-              onClick={() => {
-                setYearVisible(false);
-              }}
-            >
-              Apply
-            </button>
+
+            <div className="m-2 p-1 flex">
+              <Button
+                additionalclasses="flex-1"
+                onClick={() => {
+                  setYearVisible(false);
+                }}
+              >
+                Apply
+              </Button>
+            </div>
           </div>
         </ReproSearchFilter>
 
@@ -370,7 +376,7 @@ const ReproParams2 = memo(
             statuses.filter((x) => x.id == selectedStatus)[0].name
           }
         >
-          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-50 rounded-md mt-1 z-1000 opacity-100 bg-white">
+          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
             <RadioButtonList
               id={STATUS_LIST_TYPE}
               onSelected={handleStatusChange}
@@ -379,14 +385,16 @@ const ReproParams2 = memo(
                 checked: selectedStatus === y.id,
               }))}
             ></RadioButtonList>
-            <button
-              className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer"
-              onClick={() => {
-                setStatusVisible(false);
-              }}
-            >
-              Apply
-            </button>
+            <div className="px-2 flex">
+              <Button
+                additionalclasses="flex-1"
+                onClick={() => {
+                  setStatusVisible(false);
+                }}
+              >
+                Apply
+              </Button>
+            </div>
           </div>
         </ReproSearchFilter>
 
@@ -394,56 +402,54 @@ const ReproParams2 = memo(
           <div className="flex gap-3 w-[30%]">
             <Skeleton
               height={40}
-              className="mt-0 self-center p-1 flex-1"
+              className="mt-0 self-center p-1 flex-1 dark:bg-slate-600"
               enableAnimation={true}
               containerClassName="flex-1"
             />
             <Skeleton
               height={40}
-              className="mt-0 self-center p-1 flex-1"
+              className="mt-0 self-center p-1 flex-1 dark:bg-slate-600"
               enableAnimation={true}
-              containerClassName="flex-1"
+              containerClassName="flex-1 dark:bg-slate-600"
             />
             <Skeleton
               height={40}
-              className="mt-0 self-center p-1 flex-1"
+              className="mt-0 self-center p-1 flex-1 dark:bg-slate-600"
               enableAnimation={true}
               containerClassName="flex-1"
             />
           </div>
         )}
 
-        {initiatives !== undefined &&
-          initiatives.length > 0 &&
-           (
-            <ReproSearchFilter
-              selectedItemLabel={iLabel}
-              parentCorntrolled={false}
-              outsideShowList={false}
-            >
-              <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">
-                <CheckBoxListReproSearchParam
-                  id={INITIATIVES_LIST_TYPE}
-                  onCheck={handleCheck}
-                  onXCheck={handleXCheck}
-                  maxHeight={400}
-                  items={initiatives.map((i) => ({
-                    ...i,
-                    checked: true,
-                    xChecked: false,
-                  }))}
-                  onDeselectAll={handleDeselectAll}
-                  onSelectAll={handleSelectAll}
-                  onOptionsUpdated={(o) =>
-                    handleOptionsUpdated(o, INITIATIVES_LIST_TYPE)
-                  }
-                ></CheckBoxListReproSearchParam>
-                {/* <button className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer">
+        {initiatives !== undefined && initiatives.length > 0 && (
+          <ReproSearchFilter
+            selectedItemLabel={iLabel}
+            parentCorntrolled={false}
+            outsideShowList={false}
+          >
+            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
+              <CheckBoxListReproSearchParam
+                id={INITIATIVES_LIST_TYPE}
+                onCheck={handleCheck}
+                onXCheck={handleXCheck}
+                maxHeight={400}
+                items={initiatives.map((i) => ({
+                  ...i,
+                  checked: true,
+                  xChecked: false,
+                }))}
+                onDeselectAll={handleDeselectAll}
+                onSelectAll={handleSelectAll}
+                onOptionsUpdated={(o) =>
+                  handleOptionsUpdated(o, INITIATIVES_LIST_TYPE)
+                }
+              ></CheckBoxListReproSearchParam>
+              {/* <button className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer">
                 Apply
               </button> */}
-              </div>
-            </ReproSearchFilter>
-          )}
+            </div>
+          </ReproSearchFilter>
+        )}
 
         {grants !== undefined && grants.length > 0 && (
           <ReproSearchFilter
@@ -451,7 +457,7 @@ const ReproParams2 = memo(
             parentCorntrolled={false}
             outsideShowList={false}
           >
-            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">
+            <div className="flex flex-col absolute shadow-neutral-300 dark:shadow-lg dark:shadow-slate-900  w-100  mt-1 z-1000 opacity-100  ">
               <CheckBoxListReproSearchParam
                 key={selectedYear}
                 id={GRANTS_LIST_TYPE}
@@ -486,7 +492,7 @@ const ReproParams2 = memo(
             parentCorntrolled={false}
             outsideShowList={false}
           >
-            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 w-100 rounded-md mt-1 z-1000 opacity-100 bg-white">
+            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:shadow-lg dark:shadow-slate-900 w-100 rounded-md mt-1 z-1000 opacity-100 ">
               <CheckBoxListReproSearchParam
                 id={ACCOUNTS_LIST_TYPE}
                 onCheck={handleCheck}

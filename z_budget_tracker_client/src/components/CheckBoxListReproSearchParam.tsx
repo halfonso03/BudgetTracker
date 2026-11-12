@@ -43,7 +43,6 @@ const CheckBoxListReproSearchParam = ({
     })),
   );
 
-
   const overflowClass =
     maxHeight !== null && maxHeight !== undefined
       ? ` overflow-y-auto`
@@ -95,28 +94,21 @@ const CheckBoxListReproSearchParam = ({
 
   return (
     <div>
-      <div className=" flex justify-between font-semibold text-neutral-600 bg-neutral-50 p-2 ">
-        <div className="pl-2">{label}</div>
-        <div className="pr-2">
-          <button
-            className="text-blue-600 cursor-pointer"
-            onClick={deselectAllClick}
-          >
-            {allSelected ? 'Deselect All' : 'Select All'}
-          </button>
+      <div className="flex flex-col justify-between font-medium text-neutral-600 dark:text-white bg-neutral-50 dark:bg-slate-900 rounded-xl border-b border-b-neutral-200 dark:border-b-slate-800  ">
+        <div className="flex bg-neutral-200/60 dark:bg-slate-800 p-2">
+          <div className="pl-2 flex-1 dark:text-slate-300 ">{label}</div>
+          <div className="pr-2 ">
+            <button
+              className="text-blue-600 dark:text-slate-100 cursor-pointer"
+              onClick={deselectAllClick}
+            >
+              {allSelected ? 'Deselect All' : 'Select All'}
+            </button>
+          </div>
         </div>
-      </div>
-      <div
-        style={{
-          maxHeight:
-            maxHeight !== null && maxHeight !== undefined
-              ? maxHeight + 10 + 'px'
-              : '',
-          padding: '4px',
-        }}
-      >
+
         <div
-          className={overflowClass}
+          className={overflowClass + ' '}
           style={{
             maxHeight:
               maxHeight !== null && maxHeight !== undefined
@@ -125,13 +117,12 @@ const CheckBoxListReproSearchParam = ({
             padding: '4px',
           }}
         >
-          <ul>
+          <ul className='p-1'>
             {options?.map((i, index) => {
-
               return (
                 <li
                   key={index}
-                  className="grid grid-cols-[2fr_1fr] p-1 text-neutral-700"
+                  className="grid grid-cols-[2fr_1fr] p-1 text-neutral-700 dark:text-slate-500"
                 >
                   <div className="flex gap-2">
                     <div>
@@ -142,8 +133,8 @@ const CheckBoxListReproSearchParam = ({
                             handleCheck(i.id, id);
                           }}
                           checked={i.checked}
-                          className={`peer appearance-none w-5 h-5 border-2 border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-green-700 dark:checked:border-green-700 
-                    transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-green-500 focus:ring-offset-2`}
+                          className={`peer appearance-none w-5 h-5 border-2 border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-slate-700 dark:checked:border-indigio-300 
+                    transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-indigo-400 dark:focus:ring-indigio-500 focus:ring-offset-2`}
                         />
                         <svg
                           className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1/2  top-[.65rem] -translate-x-1/2 -translate-y-1/2"
@@ -160,7 +151,7 @@ const CheckBoxListReproSearchParam = ({
                       </div>
                     </div>
                     <div
-                      className={`text-[0.9rem]  ${i.checked ? 'text-neutral-700' : 'text-neutral-500'}`}
+                      className={`text-[0.9rem]  ${i.checked ? 'text-neutral-700 dark:text-white' : 'text-neutral-500 dark:text-slate-300'}`}
                     >
                       {i.name}
                     </div>
@@ -176,11 +167,11 @@ const CheckBoxListReproSearchParam = ({
                           !options.some((x) => x.id === i.id && x.checked)
                         }
                         checked={i.xChecked}
-                        className={`peer/excl appearance-none w-4.5 h-4.5 border-2 border-gray-400 rounded bg-transparent checked:bg-neutral-500 checked:border-neutral-500 dark:checked:bg-green-700 dark:checked:border-green-700 
-                    transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-green-500 focus:ring-offset-2`}
+                        className={`peer appearance-none w-5 h-5 border-2 border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-slate-700 dark:checked:border-indigio-300 
+                    transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-indigo-400 dark:focus:ring-indigio-500 focus:ring-offset-2`}
                       />
                       <svg
-                        className="absolute w-3 h-3 text-white pointer-events-none hidden peer-checked/excl:block left-1/2 top-[.6rem] -translate-x-1/2 -translate-y-1/2"
+                        className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1/2  top-[.65rem] -translate-x-1/2 -translate-y-1/2"
                         xmlns="http://w3.org"
                         viewBox="0 0 24 24"
                         fill="none"
@@ -194,7 +185,7 @@ const CheckBoxListReproSearchParam = ({
                     </div>
                     <div>
                       <div
-                        className={`text-[0.9rem] italic ${i.xChecked ? 'text-neutral-700' : 'text-neutral-500'}`}
+                        className={`text-[0.9rem] italic ${i.xChecked ? 'text-neutral-700 dark:text-white' : 'text-neutral-500 dark:text-slate-300'}`}
                       >
                         Exclusive
                       </div>
