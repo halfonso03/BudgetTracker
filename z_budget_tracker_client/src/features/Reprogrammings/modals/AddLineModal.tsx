@@ -9,6 +9,7 @@ import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
 import Select from '../../../components/Select';
 import Spinner from '../../../components/Spinner';
+import Label from '../../../components/Label';
 
 type Selections = {
   initiativeId?: number;
@@ -93,10 +94,10 @@ const AddLineModal = ({ ...props }: Props) => {
       <div className="grid grid-cols-[.7fr_1fr] mb-4 gap-4">
         <div className="flex flex-col gap-9">
           <div>
-            <div className="entity-label">Select an Initiative</div>
+            <Label>Select an Initiative</Label>
             <Select
               value={selections?.initiativeId}
-              additionalclasses={`${selections?.initiativeId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
+              additionalclasses={`${selections?.initiativeId !== undefined ? 'text-neutral-900' : 'text-neutral-500 '}`}
               onChange={(e: ChangeEvent<HTMLSelectElement>) => {
                 if (+e.target.value !== 0) {
                   setSelections((prev) => ({
@@ -106,18 +107,22 @@ const AddLineModal = ({ ...props }: Props) => {
                 }
               }}
             >
-              <option value={0} className="text-neutral-600">
+              <option value={0} className="text-neutral-600 dark:text-white">
                 Select...
               </option>
               {initiatives?.map((i) => (
-                <option value={i.id} key={i.id} className="text-neutral-900">
+                <option
+                  value={i.id}
+                  key={i.id}
+                  className="text-neutral-900 dark:text-white"
+                >
                   {i.name}
                 </option>
               ))}
             </Select>
           </div>
           <div>
-            <div className="entity-label">Select a Grant</div>
+            <Label>Select a Grant</Label>
             <Select
               additionalclasses={`${selections?.grantId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
               value={selections?.grantId}
@@ -131,18 +136,22 @@ const AddLineModal = ({ ...props }: Props) => {
                 }
               }}
             >
-              <option value={0} className="text-neutral-600">
+              <option value={0} className="text-neutral-600 dark:text-white">
                 Select...
               </option>
               {grants?.map((i) => (
-                <option value={i.id} key={i.id} className="text-neutral-900">
+                <option
+                  value={i.id}
+                  key={i.id}
+                  className="text-neutral-900 dark:text-white"
+                >
                   {i.name}
                 </option>
               ))}
             </Select>
           </div>
           <div>
-            <div className="entity-label">Select a Category</div>
+            <Label>Select a Category</Label>
             <Select
               additionalclasses={`${selections?.categoryId !== undefined ? 'text-neutral-900' : 'text-neutral-500'}`}
               value={selections?.categoryId}
@@ -160,7 +169,11 @@ const AddLineModal = ({ ...props }: Props) => {
                 Select...
               </option>
               {categories?.map((i) => (
-                <option value={i.id} key={i.id} className="text-neutral-900">
+                <option
+                  value={i.id}
+                  key={i.id}
+                  className="text-neutral-900 dark:text-white"
+                >
                   {i.name}
                 </option>
               ))}
@@ -176,11 +189,15 @@ const AddLineModal = ({ ...props }: Props) => {
           )}
           {balances && (
             <div className="flex justify-between py-2 px-2 pt-0 ">
-              <div className="flex-10 entity-label">Accounts</div>
+              <div className="flex-10 ">
+                <Label>Accounts</Label>
+              </div>
               <div className="flex-9 grid grid-cols-[1fr_1fr] ">
-                <div className=" entity-label text-end">Current</div>
+                <div className=" entity-label text-end">
+                  <Label>Current</Label>
+                </div>
                 <div className=" font-semibold text-end text-neutral-500">
-                  Remaining
+                  <Label>Remaining</Label>
                 </div>
               </div>
             </div>
@@ -189,7 +206,7 @@ const AddLineModal = ({ ...props }: Props) => {
           {balances &&
             balances.map((b) => (
               <div
-                className="rounded-sm py-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 transition-all duration-300"
+                className={`rounded-sm inset-1 py-1 pt-2 px-2 flex justify-between mb-1 cursor-pointer hover:bg-neutral-100 dark:hover:bg-slate-700/80 dark:hover:border-slate-700/60 transition-all duration-300`}
                 key={b.accountId}
                 onClick={() => {
                   onLineAdded(b);
@@ -197,12 +214,14 @@ const AddLineModal = ({ ...props }: Props) => {
                   // setTimeout(, 2000)
                 }}
               >
-                <div className="flex-10 text-neutral-700">{b.accountName}</div>
+                <div className="flex-10 text-neutral-700 dark:text-white">
+                  {b.accountName}
+                </div>
                 <div className="flex-9 grid grid-cols-[1fr_1fr] ">
-                  <div className="text-neutral-900  text-end ">
+                  <div className="text-neutral-900  text-end dark:text-white ">
                     {formatCurrency(b.currentAmount)}
                   </div>
-                  <div className="text-end text-neutral-500">
+                  <div className="text-end text-neutral-500 dark:text-white">
                     {formatCurrency(b.remainingAmount)}
                   </div>
                 </div>
@@ -212,28 +231,34 @@ const AddLineModal = ({ ...props }: Props) => {
           {balances && (
             <div className="flex justify-between py-2 px-2">
               <div className="flex-10 entity-label">
-                {selections &&
-                  categories?.some((c) => c.id == selections?.categoryId) &&
-                  categories?.filter((c) => c.id == selections?.categoryId)[0]
-                    .name}
-                &nbsp;Total
+                <Label>
+                  {selections &&
+                    categories?.some((c) => c.id == selections?.categoryId) &&
+                    categories?.filter((c) => c.id == selections?.categoryId)[0]
+                      .name}{' '}
+                  Total
+                </Label>
               </div>
               <div className="flex-9 grid grid-cols-[1fr_1fr]">
-                <div className="font-semibold text-neutral-800 text-end">
-                  {balances &&
-                    formatCurrency(
-                      balances
-                        .map((b) => b.currentAmount)
-                        ?.reduce((acc, cur) => acc + cur, 0),
-                    )}
+                <div className=" text-end">
+                  <Label>
+                    {balances &&
+                      formatCurrency(
+                        balances
+                          .map((b) => b.currentAmount)
+                          ?.reduce((acc, cur) => acc + cur, 0),
+                      )}
+                  </Label>
                 </div>
-                <div className="font-semibold text-end text-neutral-500">
-                  {balances &&
-                    formatCurrency(
-                      balances
-                        .map((b) => b.remainingAmount)
-                        ?.reduce((acc, cur) => acc + cur, 0),
-                    )}
+                <div className="text-end">
+                  <Label>
+                    {balances &&
+                      formatCurrency(
+                        balances
+                          .map((b) => b.remainingAmount)
+                          ?.reduce((acc, cur) => acc + cur, 0),
+                      )}
+                  </Label>
                 </div>
               </div>
             </div>

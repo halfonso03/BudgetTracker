@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent, type SubmitEvent } from 'react';
 import Button from '../../../components/Button';
 import Modal2, { type ModalSize } from '../../../components/Modal2';
+import Label from '../../../components/Label';
 
 type Props = {
   size?: ModalSize;
@@ -38,8 +39,8 @@ const JustificaModal = ({ itemComment, ...props }: Props) => {
   return (
     <Modal2 size="lg" title="Justification" animateOut={animateOut} {...props}>
       <div className="mb-1">
-        <div className="text-neutral-700 font-semibold mb-1">
-          Enter a Justification{' '}
+        <div className="mb-1">
+          <Label>Enter a Justification </Label>
         </div>
         <form onSubmit={onSubmit}>
           <textarea
@@ -55,7 +56,7 @@ const JustificaModal = ({ itemComment, ...props }: Props) => {
             <div className="text-end">
               <button
                 type="button"
-                className="text-sm text-neutral-600 mb-2 hover:text-neutral-950 cursor-pointer"
+                className="text-sm text-neutral-600 mb-2 hover:text-neutral-950 cursor-pointer dark:text-neutral-400 dark:hover:text-white transition-colors"
                 onClick={() => {
                   setComment('');
                 }}

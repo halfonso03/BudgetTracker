@@ -41,7 +41,7 @@ const ReproRow = ({
   const accounts = balances.map((b) => ({
     value: b.accountId,
     label: (
-      <div className="flex justify-between gap-2 dark:text-white dark:bg-slate-900  ">
+      <div className="flex justify-between gap-2  dark:text-white dark:bg-slate-900  ">
         <div>{b.accountName}</div>
         <div className={`${b.currentAmount==0 && "text-slate-500"}`}>{formatCurrency(b.currentAmount)}</div>
       </div>
@@ -63,7 +63,7 @@ const ReproRow = ({
       <div className="self-center px-3 py-4 dark:text-white">
         {categoryName}
       </div>
-      <div className="self-center px-3 py-4 dark:text-white dark:dropdown-dark">
+      <div className="self-center px-3 py-4">
         {canEdit ? (
           <Dropdown
             tabIndex={-1}

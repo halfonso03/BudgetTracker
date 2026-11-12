@@ -15,18 +15,14 @@ const IdHeader = React.memo(({ id, status, created }: Props) => {
     <div className={`flex gap-10 ${created ? '' : 'animate-page-fade-in'}`}>
       <div className="flex gap-3 ">
         <Label>ID</Label>
-        <div className="w-10">
-          {id == 0 ? (
-            <div className="font-medium dark:text-white" >-</div>
-          ) : (
-            <div className="font-medium ">{id}</div>
-          )}
+        <div className="w-10 dark:text-white font-medium">
+          {id == 0 ? <div>-</div> : <div>{id}</div>}
         </div>
       </div>
-      <div className="flex gap-3 font-medium">
+      <div className="flex gap-3 font-medium dark:text-indigo-200">
         <Label>STATUS</Label>
         {id == 0 ? (
-          <div className='dark:text-indigo-200'>Draft</div>
+          <div>Draft</div>
         ) : status === POSTED ? (
           <div>Posted</div>
         ) : status === SAVED ? (

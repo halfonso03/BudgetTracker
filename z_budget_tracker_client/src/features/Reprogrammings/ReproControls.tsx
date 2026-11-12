@@ -4,7 +4,7 @@ import { Search } from 'lucide-react';
 import ConfirmModal from '../../components/ConfirmModal';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ChooseYearModal from '../Common/modals/ChooseYearModal';
-import { NavLink} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   reproId?: number | undefined;
@@ -23,6 +23,8 @@ const ReproControls = ({
   const [newReproJustification, setNewReproJustification] = useState('');
   const [confirmLooseChangesModalIsOpen, setConfirmLooseChangesModalIsOpen] =
     useState(false);
+
+  const navigate = useNavigate();
 
   const hasUnsavedChanges = useHasUnsavedChangesStore(
     (x) => x.hasUnsavedChanges,
@@ -70,12 +72,14 @@ const ReproControls = ({
           <Search></Search>
         </Button>
         {reproId !== undefined && reproId !== 0 && (
-          <NavLink
-            to={`/reprogramming/duplicate/${reproId}`}
-            className="font-medium text-neutral-50 bg-neutral-500/70  hover:bg-neutral-500 hover:border-gray-400 disabled:opacity-70 disabled:text-neutral-500 dark:bg-transparent dark:text-white dark:border-gray-600 dark:hover:bg-neutral-800 dark:hover:border-gray-600 transition-all duration-300 p-2 w-35 cursor-pointer disabled:cursor-not-allowed rounded-sm shadow-sm flex justify-center items-center "
+          <Button
+            variation="secondary"
+            onClick={() => {
+              navigate(`/reprogramming/duplicate/${reproId}`);
+            }}
           >
             Duplicate
-          </NavLink>
+          </Button>
         )}
       </div>
       <ChooseYearModal

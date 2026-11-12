@@ -222,8 +222,8 @@ input:-webkit-autofill:focus {
   padding: 0 !important;
 }
 .Dropdown-control:focus {
-  outline: none;
-  box-shadow: none;
+  outline: none !important;
+  box-shadow: none !important;
 }
 .Dropdown-control.is-disabled {
   background-color: red;
@@ -236,7 +236,7 @@ input:-webkit-autofill:focus {
 }
 
 .Dropdown-menu li {
-  border-bottom: 1px solid var(--color-neutral-100) !important;
+  border-bottom: 1px solid var(--color-neutral-00) !important;
 }
 
 /* .dark .Dropdown-menu li:hover {
@@ -270,6 +270,10 @@ input:-webkit-autofill:focus {
   background-color: var(--color-slate-900) !important;
   transition: background-color 0.6s ease !important;
   padding: 15px !important;
+}
+
+.dark .Dropdown-option * {
+  transition: background-color 0.4s ease !important;
 }
 
 .dark .Dropdown-option:hover {
