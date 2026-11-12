@@ -213,8 +213,8 @@ const CreateBudget = () => {
   let indexRunningTotal = -1;
   return (
     <div className="w-full mx-auto  ">
-      <div className="mb-2 font-semibold text-2xl pb-5 text-neutral-700">
-        Create New Budget
+      <div className="mb-2  text-2xl pb-5 text-neutral-700 font-bold tracking-tight dark:text-white">
+        Create Budget
       </div>
       <div className="grid grid-cols-[.2fr_.5fr_1fr] mb-2 py-2 border-b border-b-neutral-200  border-t border-t-neutral-200">
         <div className="entity-label">Year</div>

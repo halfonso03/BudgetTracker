@@ -46,12 +46,24 @@ const Budgets = () => {
         </div>
       </div>
       <Summary year={year} key={year}></Summary>
-      {isCreateBudgetModalOpen && (
-        <CreateBudgetModal
-          year={year}
-          onCancelForm={() => setIsCreateBudgetOpenModal(false)}
-        />
-      )}
+
+      {/* <DarkModal
+        isOpen={isCreateBudgetModalOpen}
+        onConfirm={() => {}}
+        title="TEST"
+        onClose={() => setIsCreateBudgetOpenModal(false)}
+      >
+        <Input></Input>
+      </DarkModal> */}
+      <CreateBudgetModal
+        year={year}
+        isOpen={isCreateBudgetModalOpen}
+        onCancel={() => {
+          setTimeout(() => {
+            setIsCreateBudgetOpenModal(false);
+          }, 500);
+        }}
+      />
     </div>
   );
 };

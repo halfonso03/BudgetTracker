@@ -33,6 +33,7 @@ const ScoreBreakdownModal = ({
     burnRatePenalty +
     surplusGapPointsPenalty +
     monthsOfRunwayLeftPenalty;
+    
   function closeModal() {
     props.onCancel();
     setAnimateOut(true);

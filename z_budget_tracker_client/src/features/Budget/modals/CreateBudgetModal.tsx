@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import Modal from '../../../../misc/Modal';
 import useGrants from '../../../api/hooks/common/useGrants';
 import useInitiatives from '../../../api/hooks/common/useInitiatives';
 import Button from '../../../components/Button';
@@ -10,16 +9,18 @@ import Modal2 from '../../../components/Modal2';
 import Label from '../../../components/Label';
 
 interface Props {
+  isOpen: boolean;
+  onCancel: () => void;
   year: number;
-  onCancelForm: () => void;
 }
 
-const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
+const CreateBudgetModal = ({ year, ...props }: Props) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { initiatives: inits = [], loadingInit } = useInitiatives();
   const [initiativeId, setInitiativeId] = useState<number>(0);
   let sortedInitiatives: Initiative[] = [];
+  const [animateOut, setAnimateOut] = useState(false);
 
   const { grants = [], loadingGrants } = useGrants(year);
   const [grantId, setGrantId] = useState<number>(0);
@@ -50,15 +51,22 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
     }
   }
 
+  function closeModal() {
+    props.onCancel();
+    setAnimateOut(true);
+    setTimeout(() => {
+      setAnimateOut(false);
+    }, 500);
+  }
   return (
     <Modal2
-      isOpen={true}
-      onCancel={onCancelForm}
       size="md"
       title="Create Budget"
-      animateOut={false}
+      animateOut={animateOut}
+      isOpen={props.isOpen}
+      onCancel={props.onCancel}
     >
-      <div className="p-5 pt-1">
+      <div className="p-3 pt-1">
         <div className="flex flex-col gap-4 mb-4 ">
           <div>
             <Label>
@@ -131,7 +139,7 @@ const CreateBudgetModal = ({ onCancelForm, year }: Props) => {
           >
             Continue...
           </Button>
-          <Button onClick={onCancelForm} variation="secondary">
+          <Button onClick={closeModal} variation="secondary">
             Cancel
           </Button>
         </div>

@@ -1,9 +1,7 @@
 
 
-there are two ADP showing when searching for payee
 add % remaining on Summary.tsx
 should be able to save a payment even when not enough funds
-Oralce payment not showing on list
 
 
 charts - home page 
@@ -21,6 +19,8 @@ role assignment
 
 ON HOLD -  invalidate queuery for payees payments - or add it to the payment list??
 
+
+DONE there are two ADP showing when searching for payee
 DONE add options for search  
     View payment
     Update invoice

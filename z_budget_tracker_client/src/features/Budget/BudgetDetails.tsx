@@ -413,6 +413,7 @@ const BudgetDetails = () => {
   return (
     <MenuIdProvider>
       <div className="min-h-lvh pb-10">
+       
         {/* <Button onClick={testCommetnField}>Comment</Button> */}
         <div className="mb-2  text-2xl pb-5 text-neutral-700 font-bold tracking-tight dark:text-white">
           Edit Budget
@@ -636,7 +637,6 @@ const BudgetDetails = () => {
 
                             if (isDirty && !hasUnsavedChanges)
                               setHasUnsavedChanges(true);
-
                           }}
                           onShowAccountHistory={handleShowAccountHistory}
                         ></BudgetInputFields>

@@ -32,10 +32,10 @@ const Button = ({
 
   if (variation == 'primary') {
     classes +=
-      ' font-medium text-neutral-50 bg-blue-600 hover:bg-blue-500 dark:bg-indigo-800 disabled:opacity-50 dark:disabled:bg-slate-700 dark:border-green-500 shadow-md dark:hover:bg-indigo-700 transition-all duration-300';
+      ' w-full sm:w-auto px-4 py-2 text-sm font-medium text-white bg-slate-900 dark:bg-indigo-600 hover:bg-slate-800 dark:hover:bg-indigo-500 active:bg-slate-950 dark:active:bg-indigo-700 rounded-lg transition-all shadow-md dark:shadow-indigo-900/10 focus:outline-none focus:ring-2 focus:ring-slate-900/20 dark:focus:ring-indigo-500/40';
   } else if (variation == 'secondary') {
     classes +=
-      'font-medium  bg-neutral-300 text-neutral-700 hover:bg-neutral-200 dark:bg-slate-800 border border-neutral-300 dark:border-slate-700/70 shadow-md dark:hover:bg-slate-700/60 hover:border-neutral-300 dark:hover:border-slate-600 disabled:opacity-70 disabled:text-neutral-500  dark:text-white  transition-all duration-300';
+      'w-full sm:w-auto px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 active:bg-slate-100 dark:active:bg-slate-800 border border-slate-200 dark:border-slate-700/50 rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-slate-500/20 dark:focus:ring-slate-500/40';
   } else if (variation == 'danger') {
     classes +=
       ' text-neutral-100 bg-red-500 border border-red-600 hover:bg-red-600 shadow-md transition-all duration-300 disabled:opacity-50';

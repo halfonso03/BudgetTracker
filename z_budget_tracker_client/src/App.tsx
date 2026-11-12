@@ -18,7 +18,7 @@ function App() {
         //   top: '250px',
         // }}
         containerStyle={{
-          zIndex: 99999,
+          zIndex: 49,
         }}
         toastOptions={{
           success: {
