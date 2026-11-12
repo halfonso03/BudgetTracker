@@ -270,9 +270,9 @@ const CreateBudget = () => {
                   ></ChevronDownSquare>
                 </div>
               </div>
-              
+
               <div
-                className={`grid grid-cols-[.55fr_.25fr_.25fr] dark:bg-slate-800/80 p-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200 dark:border-t-slate-700/80' : ''}`}
+                className={`grid grid-cols-[.55fr_.25fr_.25fr]  p-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200 dark:border-t-slate-700/80' : ''}`}
                 key={c.id}
               >
                 <div className="pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
@@ -302,6 +302,7 @@ const CreateBudget = () => {
                         grantId={+grantId!}
                         fieldName={field.name}
                         budgetedAmount={field.amount}
+                        comment={field.comment}
                         amountRegister={amountRegister}
                         onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                           const input = e.target as HTMLInputElement;

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import NumericArrayInput from '../../components/NumericArrayInput';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import CommentsModalNewBudget from './modals/CommentsModalNewBudget';
+import { Pencil } from 'lucide-react';
 
 interface Props {
   isLastRow: boolean;
@@ -9,6 +10,7 @@ interface Props {
   grantId: number;
   accountId: number;
   fieldName: string;
+  comment?: BudgetComment;
   budgetedAmount: string;
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -20,6 +22,7 @@ const BudgetInputFieldsNewBudget = ({
   fieldName,
   accountId,
   isLastRow,
+  comment,
   onClick,
   onBlur,
   onFocus,
@@ -76,15 +79,30 @@ const BudgetInputFieldsNewBudget = ({
         className={`text-center self-center py-2 text-blue-500 text-sm  ${isLastRow ? 'bg-neutral-100 self-stretch dark:bg-slate-800/80' : ' self-center '}`}
       >
         {!isLastRow ? (
-          <button
-            type="button"
-            className={`cursor-pointer dark:text-indigo-400 ${isLastRow ? 'opacity-0' : ''}`}
-            disabled={isLastRow}
-            tabIndex={-1}
-            onClick={() => setCommentsOpen(true)}
-          >
-            {hasComment ? 1 : 0} Comment
-          </button>
+          <>
+            {/* <button
+              type="button"
+              className={`cursor-pointer dark:text-indigo-400 ${isLastRow ? 'opacity-0' : ''}`}
+              disabled={isLastRow}
+              tabIndex={-1}
+              onClick={() => setCommentsOpen(true)}
+            >
+              {hasComment ? 1 : 0} Comment
+            </button> */}
+            <button
+              type="button"
+              className={`cursor-pointer ${isLastRow ? 'opacity-0' : ''}`}
+              disabled={isLastRow}
+              tabIndex={-1}
+              onClick={() => setCommentsOpen(true)}
+            >
+              <Pencil
+                // size={comment?.text ? 24 : 22}
+                className={`hover:scale-120  transition-all duration-200 ${hasComment ? 'text-blue-400 dark:text-indigo-500' : 'text-neutral-400/60 '}`}
+              ></Pencil>
+            </button>
+            {comment?.text}
+          </>
         ) : (
           <div>&nbsp;</div>
         )}

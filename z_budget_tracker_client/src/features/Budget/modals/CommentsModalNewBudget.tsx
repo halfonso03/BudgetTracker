@@ -69,7 +69,7 @@ const CommentsModalNewBudget = ({
           <div className="text-end">
             <button
               type="button"
-              className="text-sm text-neutral-600 mb-2 hover:text-neutral-950 cursor-pointer  dark:text-white"
+              className="text-sm text-neutral-600 mb-2 hover:text-neutral-950 cursor-pointer   dark:text-slate-400 dark:hover:text-slate-200 transition-all"
               onClick={() => {
                 setComment('');
               }}

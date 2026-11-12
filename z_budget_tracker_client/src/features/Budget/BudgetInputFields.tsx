@@ -269,7 +269,7 @@ const BudgetInputFields = ({
           >
             <Pencil
               size={comment?.text ? 24 : 22}
-              className={`hover:scale-120 dark:text-indigo-500 transition-all duration-200 ${comment?.text ? 'text-blue-400' : 'text-neutral-400/60 '}`}
+              className={`hover:scale-120 dark:text-indigo-500 transition-all duration-200 ${comment?.text ? 'text-blue-400' : 'dark:text-neutral-400/60 '}`}
             ></Pencil>
           </button>
         ) : (
