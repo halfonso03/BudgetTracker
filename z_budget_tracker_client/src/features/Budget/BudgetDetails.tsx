@@ -413,7 +413,6 @@ const BudgetDetails = () => {
   return (
     <MenuIdProvider>
       <div className="min-h-lvh pb-10">
-       
         {/* <Button onClick={testCommetnField}>Comment</Button> */}
         <div className="mb-2  text-2xl pb-5 text-neutral-700 font-bold tracking-tight dark:text-white">
           Edit Budget
@@ -540,7 +539,7 @@ const BudgetDetails = () => {
                 </div>
 
                 <div
-                  className={`  grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200 dark:border-t-slate-700/80' : ''}`}
+                  className={`  grid grid-cols-[.55fr_.25fr_.15fr_.15fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200 dark:border-t-slate-700/80' : ''}`}
                   key={c.id}
                 >
                   <div className="pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
@@ -548,6 +547,12 @@ const BudgetDetails = () => {
                   </div>
                   <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
                     <Label>Budgeted</Label>
+                  </div>
+                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                    <Label>{year && +year - 1}</Label>
+                  </div>
+                  <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                    <Label>{year && +year - 2}</Label>
                   </div>
                   <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
                     <Label>Current</Label>
@@ -649,7 +654,7 @@ const BudgetDetails = () => {
 
                   return (
                     <div
-                      className="border-t border-t-neutral-200 dark:border-t-slate-700/80 grid grid-cols-[.55fr_.25fr_.25fr_.25fr_.25fr_.25fr_.2fr] pb-0 "
+                      className="border-t border-t-neutral-200 dark:border-t-slate-700/80 grid grid-cols-[.55fr_.25fr_.15fr_.15fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 "
                       key={field.id}
                     >
                       <BudgetInputFields

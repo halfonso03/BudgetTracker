@@ -9,7 +9,6 @@ import Modal2 from '../../../components/Modal2';
 import Select from '../../../components/Select';
 import Spinner from '../../../components/Spinner';
 import Label from '../../../components/Label';
-import BoxSmall from '../../../components/BoxSmall';
 
 type Selections = {
   initiativeId?: number;
@@ -168,7 +167,7 @@ const EditLineModal = ({ ...props }: Props) => {
           </div>
         </div>
 
-        <BoxSmall >
+        <div >
           {loadingBalances && (
             <div className="mt-4 flex justify-center">
               <Spinner></Spinner>
@@ -256,7 +255,7 @@ const EditLineModal = ({ ...props }: Props) => {
               </div>
             </div>
           </div>
-        </BoxSmall>
+        </div>
       </div>
       <div className="flex justify-end gap-3 pb-3">
         {/* <Button onClick={() => {}}>Save</Button> */}

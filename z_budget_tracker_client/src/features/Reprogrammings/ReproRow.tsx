@@ -41,7 +41,7 @@ const ReproRow = ({
   const accounts = balances.map((b) => ({
     value: b.accountId,
     label: (
-      <div className="flex justify-between gap-2">
+      <div className="flex justify-between gap-2 dark:text-white dark:bg-slate-900">
         <div>{b.accountName}</div>
         <div>{formatCurrency(b.currentAmount)}</div>
       </div>
@@ -53,13 +53,17 @@ const ReproRow = ({
   }
   return (
     <Fragment>
-      <div className='bg-neutral-200/50 border-r-neutral-200 text-center p-0 m-0  flex self-stretch items-center justify-center '>
-        <div className='text-neutral-400'>{rowId + 1}</div>
+      <div className="text-neutral-400 bg-neutral-200/50 dark:bg-slate-700/80 dark:text-slate-100 dark:border-r-slate-600 border-r-neutral-200 text-center p-0 m-0  flex self-stretch items-center justify-center ">
+        {rowId + 1}
       </div>
-      <div className="self-center px-3 py-4">{initiativeName}</div>
-      <div className="self-center px-3 py-4">{grantName}</div>
-      <div className="self-center px-3 py-4">{categoryName}</div>
-      <div className="self-center px-3 py-4">
+      <div className="self-center px-3 py-4 dark:text-white">
+        {initiativeName}
+      </div>
+      <div className="self-center px-3 py-4 dark:text-white">{grantName}</div>
+      <div className="self-center px-3 py-4 dark:text-white">
+        {categoryName}
+      </div>
+      <div className="self-center px-3 py-4 dark:text-white dark:dropdown-dark">
         {canEdit ? (
           <Dropdown
             tabIndex={-1}
@@ -69,7 +73,8 @@ const ReproRow = ({
               accountChange(+option.value, uuid);
             }}
             value={accountId}
-            className="w-full"
+            className="w-full "
+             
           />
         ) : (
           <span>
@@ -91,10 +96,10 @@ const ReproRow = ({
             <Menus.Toggler id={uuid}>
               <EllipsisVertical
                 size={20}
-                className="text-neutral-500"
+                className="text-neutral-500 dark:text-slate-400"
               ></EllipsisVertical>
             </Menus.Toggler>
-            <Menus.List topPos='translate-y-5' id={uuid}>
+            <Menus.List topPos="translate-y-5" id={uuid}>
               <Menus.MenuItem onClick={() => editRow(uuid)}>
                 <Edit size={18}></Edit>&nbsp;&nbsp;Edit Row
               </Menus.MenuItem>

@@ -41,7 +41,7 @@ const CommentToggler = ({ uuid, itemComment, saveComment, canEdit }: Props) => {
           setIsOpenerClass((prev) => (prev === ' open ' ? '' : ' open '))
         }
         className={`cursor-pointer z-1 hover:scale-120 duration-200 transition-all ${
-          comment && comment.length ? 'text-blue-500' : 'text-neutral-500'
+          comment && comment.length ? 'text-blue-500 dark:text-indigo-500' : 'text-neutral-500 dark:text-slate-200'
         }`}
       />
 

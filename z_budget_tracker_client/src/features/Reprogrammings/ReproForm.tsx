@@ -45,6 +45,7 @@ import {
 } from '../../app/constants';
 import ReproGrantSummary from './ReproGrantSummary';
 import IdHeader from '../Common/IdHeader';
+import Label from '../../components/Label';
 
 // export type DirtyState = {
 //   formValuesIsDirty: boolean;
@@ -863,7 +864,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           </Button>
         </div>
 
-        <div className="flex justify-between mb-1 border-b border-b-neutral-200 pb-2 ">
+        <div className="flex justify-between mb-1 border-b border-b-neutral-200 pb-2 dark:border-b-slate-800 ">
           <IdHeader
             id={reproHeader.id}
             status={reproHeader.status}
@@ -873,7 +874,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           {reproHeader.status === POSTED && (
             <div className="flex gap-12 mr-4  ">
               <div className="flex gap-3 font-semibold">
-                <div className=" text-neutral-500">POSTED ON</div>
+                <Label>POSTED ON</Label>
                 <div>
                   {reproHeader.postedDate
                     ? formatDate(reproHeader.postedDate)
@@ -881,7 +882,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                 </div>
               </div>
               <div className="flex gap-3 font-semibold">
-                <div className=" text-neutral-500">POSTED BY</div>
+                <Label>POSTED BY</Label>
                 <div>{reproHeader.postedBy}</div>
               </div>
             </div>
@@ -890,31 +891,33 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
 
         {reproHeader.status === POSTED && (
           <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 mb-8 font-semibold text-neutral-500 mt-12">
-            <div>Total</div>
+            <Label>Total</Label>
             <div className="text-neutral-900">{formatNumber(+inc)}</div>
             <div></div>
           </div>
         )}
 
         {lines.length > 0 && reproHeader.status !== POSTED && (
-          <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_1.65fr_.3fr_.3fr] gap-2 px-3 py-1 border-b border-neutral-200 mb-8 text-neutral-600 font-semibold">
+          <div className="grid grid-cols-[.8fr_.5fr_.4fr_1.15fr_1.65fr_.3fr_.3fr] gap-2 pt-4 border-b border-neutral-200 dark:border-b-slate-800 mb-8 text-neutral-600 font-semibold">
             <div className="self-end col-span-4 "></div>
             <div className="flex justify-between">
               <div className="flex-1"></div>
 
-              <div className="text-neutral-500 flex-1 pr-1 text-end ">
-                Increase
+              <div className="flex-1 pr-1 text-end ">
+                <Label>Increase</Label>
               </div>
-              <div className="text-neutral-500 flex-1 pr-1 text-end">
-                Decrease
+              <div className="flex-1 pr-1 text-end">
+                <Label>Decrease</Label>
               </div>
-              <div className="text-neutral-500 flex-1 pr-1 text-end">
-                Variance
+              <div className="flex-1 pr-1 text-end">
+                <Label>Variance</Label>
               </div>
             </div>
             <div></div>
             <div></div>
-            <div className="col-span-4">Total</div>
+            <div className="col-span-4">
+              <Label>Total</Label>
+            </div>
             <div className="flex">
               <div className="flex-1"></div>
               <div className="flex-1 ">
@@ -922,7 +925,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                   readOnly={true}
                   value={inc}
                   disabled={true}
-                  className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
+                  className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0 dark:text-white"
                 ></input>
               </div>
               <div className="flex-1 ">
@@ -930,7 +933,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                   readOnly={true}
                   disabled={true}
                   value={dec}
-                  className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0"
+                  className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full text-end focus:outline-none focus:ring-0 focus:ring-offset-0 dark:text-white"
                 ></input>
               </div>
               <div className="flex-1">
@@ -951,7 +954,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         {reproHeader.status !== POSTED &&
           hasNegativeRemainingBalances(lines) && (
             <div className="flex justify-center items-start my-9">
-              <div className="border border-red-300 shrink p-3">
+              <div className="border border-red-300 shrink p-3 dark:border-slate-800/80">
                 <div className=" text-red-600 ">
                   This reprogramming cannot be posted with the propsed Increase
                   and Decrease amounts as one or more accounts will have a
@@ -975,31 +978,39 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           <div>
             <div className="grid grid-cols-[.1fr_.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 py-1 border border-transparent font-semibold text-neutral-500">
               <div></div>
-              <div className="self-end pl-3">Initiative</div>
-              <div className="self-end pl-3">Grant</div>
-              <div className="self-end pl-3">Category</div>
-              <div className="self-end pl-3">Account</div>
+              <div className="self-end pl-3">
+                <Label>Initiative</Label>
+              </div>
+              <div className="self-end pl-3">
+                <Label>Grant</Label>
+              </div>
+              <div className="self-end pl-3">
+                <Label>Category</Label>
+              </div>
+              <div className="self-end pl-3">
+                <Label>Category</Label>
+              </div>
               <div className="flex justify-between ">
                 <div
                   className={`text-center flex-2 self-end ${reproHeader.status === POSTED ? 'opacity-0' : ''}`}
                 >
-                  Current Balance
+                  <Label>Current Balance</Label>
                 </div>
                 <div className="self-end  text-end flex-[1.5] pr-2">
-                  Increase
+                  <Label>Increase</Label>
                 </div>
                 <div className="self-end text-end flex-[1.5] pr-2">
-                  Decrease
+                  <Label>Decrease</Label>
                 </div>
                 <div
                   className={`text-center flex-2 self-end ${reproHeader.status === POSTED ? 'opacity-0' : ''}`}
                 >
-                  New Balance
+                  <Label>New Balance</Label>
                 </div>
                 <div
                   className={`text-center flex-2  ${reproHeader.status === POSTED ? 'opacity-0' : ''}`}
                 >
-                  Remaining Balance
+                  <Label>Remaining Balance</Label>
                 </div>
               </div>
               <div></div>
@@ -1017,7 +1028,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             return (
               <div
                 key={index}
-                className="grid grid-cols-[.1fr_.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 border border-neutral-300/70 items-center mb-3 "
+                className="grid grid-cols-[.1fr_.8fr_.5fr_.4fr_1.15fr_2fr_.3fr] gap-2 border border-neutral-300/70 dark:border-slate-700/80 items-center mb-3 rounded-md"
               >
                 <ReproRow
                   key={item.uuid}
@@ -1030,7 +1041,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                   saveComment={handleSaveComment}
                   render={() => (
                     <div className="flex gap-0">
-                      <div className="text-center flex-2 text-neutral-600 self-center w-full">
+                      <div className="text-center flex-2 text-neutral-600 self-center w-full dark:text-white">
                         {reproHeader.status !== POSTED &&
                           formatCurrency(item.currentAmount)}
                       </div>
@@ -1041,11 +1052,12 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                         fieldName="increase"
                         readOnly={reproHeader.status === POSTED}
                         disabled={reproHeader.status === POSTED}
+                        
                         onBlur={() => {
                           debitCreditOnBlur(item.uuid);
                         }}
-                        classes={`flex-[1.5] w-full pl-1 mr-1 pr-1 py-1 text-end border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
-                       ${reproHeader.status === POSTED ? ' border-b-0 ' : ' border-b-2 '}
+                        classes={`flex-[1.5] w-full pl-1 mr-1 pr-1 py-1 text-end focus:outline-none focus:ring-0 focus:ring-offset-0 dark:text-white 
+                       ${reproHeader.status === POSTED ? ' border-b-0 ' : ' border-b-2 border-b-neutral-200 dark:border-b-slate-700 '}
                        ${reproHeader.status === POSTED && +item.increase! === 0 ? ' opacity-0  ' : '  '}
                        `}
                       />
@@ -1059,13 +1071,13 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                         onBlur={() => {
                           debitCreditOnBlur(item.uuid);
                         }}
-                        classes={`flex-[1.5] w-full pl-1 mr-1 pr-1 py-1 text-end  border-neutral-200 focus:outline-none focus:ring-0 focus:ring-offset-0
-                       ${reproHeader.status === POSTED ? ' border-b-0 ' : ' border-b-2 '}
+                        classes={`flex-[1.5] w-full pl-1 mr-1 pr-1 py-1 text-end focus:outline-none focus:ring-0 focus:ring-offset-0 dark:text-white
+                       ${reproHeader.status === POSTED ? ' border-b-0 ' : ' border-b-2 border-b-neutral-200  dark:border-b-slate-700'}
                        ${reproHeader.status === POSTED && +item.decrease! === 0 ? ' opacity-0  ' : '  '}
                        `}
                       />
                       <div
-                        className={`text-center flex-2 self-center text-neutral-600  ${item.newCurrentAmount < 0 ? 'text-red-500' : ''}`}
+                        className={`text-center flex-2 self-center text-neutral-600  ${item.newCurrentAmount < 0 ? 'text-red-500' : 'dark:text-white'}`}
                       >
                         {reproHeader.status !== POSTED &&
                           formatCurrency(item.newCurrentAmount)}
