@@ -128,14 +128,14 @@ const BudgetBurnRateModal = ({
     >
       <div className=''>
         <div className="flex gap-1 mt-4 mb-2">
-          <div className="w-1/12 text-neutral-700 dark:text-slate-400 text-2xl">Initiative</div>
-          <div className=" text-nuetral-800 dark:text-white  text-2xl">
+          <div className="w-1/12 text-neutral-700/80 dark:text-slate-400 text-2xl">Initiative</div>
+          <div className=" text-neutral-800 dark:text-white text-2xl">
             {initiativeName}
           </div>
         </div>
         <div className="flex gap-1">
-          <div className="w-1/12 text-neutral-700 dark:text-slate-400  text-2xl">Grant</div>
-          <div className="text-nuetral-800 dark:text-white  text-2xl">{grantName}</div>
+          <div className="w-1/12 text-neutral-700/80 dark:text-slate-400  text-2xl">Grant</div>
+          <div className="text-neutral-800 dark:text-white  text-2xl">{grantName}</div>
         </div>
 
         <div></div>

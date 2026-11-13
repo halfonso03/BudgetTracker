@@ -798,12 +798,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         <pre>{JSON.stringify(lines)}</pre>
       </div> */}
       <div>
-        {!user && (
-          <div className="text-xl p-1 text-red-500 font-semibold">
-            Your are not logged in!
-          </div>
-        )}
-
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 mt-14 ">
           <div
             className={`flex gap-2 cursor-default ${reproHeader.status !== +POSTED ? '' : 'opacity-0 cursor-none'}`}
@@ -864,7 +858,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
           </Button>
         </div>
 
-        <div className="flex justify-between mb-1 border-b border-b-neutral-200 pb-2 dark:border-b-slate-800 ">
+        <div className="flex justify-between mb-1 border-b border-b-neutral-200 pb-2 dark:border-b-slate-700/60">
           <IdHeader
             id={reproHeader.id}
             status={reproHeader.status}
@@ -875,7 +869,7 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
             <div className="flex gap-12 mr-4  ">
               <div className="flex gap-3 font-semibold">
                 <Label>POSTED ON</Label>
-                <div className='dark:text-white'>
+                <div className="dark:text-white">
                   {reproHeader.postedDate
                     ? formatDate(reproHeader.postedDate)
                     : ''}
@@ -883,16 +877,18 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
               </div>
               <div className="flex gap-3 font-semibold">
                 <Label>POSTED BY</Label>
-                <div className='dark:text-white'>{reproHeader.postedBy}</div>
+                <div className="dark:text-white">{reproHeader.postedBy}</div>
               </div>
             </div>
           )}
         </div>
 
         {reproHeader.status === POSTED && (
-          <div className="flex gap-10 px-3 py-1 border-b border-neutral-200 dark:border-b-slate-800/80 mb-8 font-semibold text-neutral-500 mt-12">
-            <Label>Total</Label>
-            <div className="text-neutral-900 dark:text-white">{formatNumber(+inc)}</div>
+          <div className="flex gap-10  py-1 border-b border-neutral-200 dark:border-b-slate-700/60 mb-8 font-semibold text-neutral-500 mt-12">
+            <Label>TOTAL</Label>
+            <div className="font-semibold text-neutral-900 dark:text-white">
+              {formatNumber(+inc)}
+            </div>
             <div></div>
           </div>
         )}
@@ -954,8 +950,8 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
         {reproHeader.status !== POSTED &&
           hasNegativeRemainingBalances(lines) && (
             <div className="flex justify-center items-start my-9">
-              <div className="border border-red-300 shrink p-3 dark:border-slate-800/80">
-                <div className=" text-red-600 ">
+              <div className="border border-red-300 shrink p-3 dark:border-slate-700/90 ">
+                <div className=" text-red-600 dark:text-rose-500 ">
                   This reprogramming cannot be posted with the propsed Increase
                   and Decrease amounts as one or more accounts will have a
                   negative balance.
@@ -1052,7 +1048,6 @@ const ReproForm = ({ repro, onInitialSave, onIsDirty, onSaved }: Props) => {
                         fieldName="increase"
                         readOnly={reproHeader.status === POSTED}
                         disabled={reproHeader.status === POSTED}
-                        
                         onBlur={() => {
                           debitCreditOnBlur(item.uuid);
                         }}

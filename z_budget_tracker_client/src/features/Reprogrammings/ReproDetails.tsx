@@ -59,31 +59,7 @@ const ReproDetails = () => {
   }
 
   async function handleDuplicateReprogramming() {
-    // setTimeout(async () => {
-    //   try {
-    //     await duplicateRepro.mutateAsync(
-    //       { id: reproFromDb!.id!, userId: +user!.id! },
-    //       {
-    //         onSuccess: async (repro) => {
-    //           toast.success(
-    //             <div>
-    //               <div className="pb-1">{`Reprogramming Id ${+id!} duplicated.`}</div>
-    //               <div>{`Opening reprogramming id ${repro.id}.`}</div>
-    //             </div>,
-    //             {
-    //               duration: 2000,
-    //             },
-    //           );
-    //           setTimeout(() => {
-    //             navigate(`/reprogramming/${repro.id}`);
-    //           }, 2000);
-    //         },
-    //       },
-    //     );
-    //   } catch (error) {
-    //     console.log('e', error);
-    //   }
-    // }, 500);
+ 
   }
 
   const body = () => {

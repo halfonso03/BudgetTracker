@@ -39,6 +39,7 @@ import IdHeader from '../Common/IdHeader';
 import { useLocation } from 'react-router-dom';
 import PaymentPayees from './PaymentPayees';
 import PaymentPayFrom from './PaymentPayFrom';
+import Label from '../../components/Label';
 
 type DeletePayeeInfo = {
   isOpen: boolean;
@@ -728,8 +729,6 @@ const PaymentForm = ({
     <MenuIdProvider>
       <div>
         <div className="flex mb-12 justify-between text-neutral-400 mr-3 ">
-          {/* opacity-0 cursor-none */}
-
           {paymentHeader.status !== POSTED ? (
             <div
               className={`flex gap-2 cursor-default mt-10 ${paymentHeader.status !== +POSTED ? '' : ''}`}
@@ -790,7 +789,7 @@ const PaymentForm = ({
           </div>
         </div>
 
-        <div className="flex justify-between mb-10 border-b border-b-neutral-200 pb-2 ">
+        <div className="flex justify-between mb-10 border-b border-b-neutral-200 pb-2  dark:border-b-slate-700/60">
           <IdHeader
             id={paymentHeader.id}
             status={paymentHeader.status}
@@ -800,26 +799,26 @@ const PaymentForm = ({
           {paymentHeader.status === POSTED && (
             <div className="mr-4 flex gap-8">
               <div className="flex gap-3 font-medium">
-                <div className=" text-neutral-500">POSTED ON</div>
-                <div>
+                <Label>POSTED ON</Label>
+                <div className="dark:text-white">
                   {paymentHeader.postedDate
                     ? formatDate(paymentHeader.postedDate)
                     : ''}
                 </div>
               </div>
               <div className="flex gap-3 font-medium">
-                <div className=" text-neutral-500">POSTED BY</div>
-                <div>{paymentHeader.postedBy}</div>
+                <Label>POSTED BY</Label>
+                <div className="dark:text-white">{paymentHeader.postedBy}</div>
               </div>
             </div>
           )}
         </div>
 
-        <div className="flex gap-10 items-center py-1 border-b border-neutral-200  text-neutral-500 font-medium">
-          <div className="">TOTAL PAYMENT</div>
+        <div className="flex gap-10 items-center py-1 border-b border-neutral-200 dark:border-b-slate-700/60 text-neutral-500 font-medium">
+          <Label>TOTAL PAYMENT</Label>
           <div>
             {paymentHeader.status !== POSTED && (
-              <div className="text-neutral-800 font-semibold ">
+              <div className=" text-neutral-900 dark:text-white font-semibold ">
                 {getPaymentTotal()}
               </div>
             )}
@@ -829,7 +828,7 @@ const PaymentForm = ({
                   readOnly={true}
                   value={getPaymentTotal()}
                   disabled={true}
-                  className="border-0 text-neutral-800 font-semibold flex-1 pr-1 w-full focus:outline-none focus:ring-0 focus:ring-offset-0"
+                  className="border-0 dark:text-white text-neutral-800 font-semibold flex-1 pr-1 w-full focus:outline-none focus:ring-0 focus:ring-offset-0"
                 ></input>
               </div>
             )}
@@ -859,7 +858,7 @@ const PaymentForm = ({
                     key={i}
                   >
                     <div>
-                      <div className="my-2 font-medium text-neutral-600">
+                      <div className="my-2 font-medium text-neutral-600 dark:text-slate-300">
                         Pay From
                       </div>
                       <PaymentPayFrom
@@ -887,7 +886,7 @@ const PaymentForm = ({
                       </div>
                     </div>
                     <div className="flex flex-col items-start">
-                      <div className="my-2 font-medium text-neutral-600">
+                      <div className="my-2 font-medium text-neutral-600 dark:text-slate-300">
                         Pay To
                       </div>
                       <PaymentPayees

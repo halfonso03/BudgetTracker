@@ -188,7 +188,7 @@ const InvoiceInfoModal = ({
             </div>
           </div>
         </div>
-        <div className=" mb-8   ">
+        <div className=" mb-16 mt-10  ">
           <div className="flex flex-col gap-4   ">
             <div className="grid grid-cols-[.45fr_1fr_.5fr]  w-full items-center">
               <Label>Invoice Date.</Label>
@@ -197,6 +197,7 @@ const InvoiceInfoModal = ({
                 name="invoiceDate"
                 render={({ field }) => (
                   <DatePicker
+                   popperPlacement='top-start'
                     {...register('invoiceDate')}
                     id="invoiceDate"
                     selected={field.value ? new Date(field.value) : null}
@@ -211,7 +212,7 @@ const InvoiceInfoModal = ({
                 )}
               ></Controller>
             </div>
-            <div className="grid grid-cols-[.45fr_1fr_.5fr] items-center">
+            <div className="grid grid-cols-[.45fr_1fr_.5fr] items-center ">
               <Label>Invoice No.</Label>
               <div className="flex flex-col items-center gap-1 w-full ">
                 <Input

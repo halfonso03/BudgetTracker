@@ -319,7 +319,7 @@ const PaymentLineModal = (props: Props) => {
   const initiativesForDropdown = loadInitiativesSuccess
     ? initiatives!.map((b) => ({
         value: b.id,
-        label: b.name,
+        label: <div className="dark:text- border-0  ">{b.name}</div>,
       }))
     : [];
 
@@ -572,7 +572,6 @@ const PaymentLineModal = (props: Props) => {
                         onChange={(date: Date | null) => {
                           field.onChange(date);
                         }}
-                        wrapperClassName="w-full"
                         className="w-[35%] border border-neutral-300 py-2 px-[.9rem] text-end rounded-sm dark:border-slate-700 focus:outline-none
                          dark:focus:border-indigo-400 disabled:bg-slate-200/60 focus:dark:border-indigo-500 dark:disabled:bg-slate-950 dark:bg-slate-800"
                       />

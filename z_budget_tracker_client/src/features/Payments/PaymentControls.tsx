@@ -4,7 +4,7 @@ import { Search } from 'lucide-react';
 import ChooseYearModal from '../Common/modals/ChooseYearModal';
 import { useHasUnsavedChangesStore } from '../../state/useHasUnsavedChangesStore';
 import ConfirmModal from '../../components/ConfirmModal';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 // const NEW_REPRO
 // type Actions:number
@@ -21,6 +21,7 @@ const PaymentControls = ({
   paymentId = 0,
 }: Props) => {
   // console.log('ReproControls render');
+  const navigate = useNavigate();
 
   const [choosingYear, setChoosingYear] = useState(false);
   const [newReproJustification, setNewReproJustification] = useState('');
@@ -83,12 +84,14 @@ const PaymentControls = ({
           <Search></Search>
         </Button>
         {paymentId !== undefined && paymentId !== 0 && (
-          <NavLink
-            to={`/payments/duplicate/${paymentId}`}
-            className="font-medium text-neutral-50 bg-neutral-500/70  hover:bg-neutral-500 hover:border-gray-400 disabled:opacity-70 disabled:text-neutral-500 dark:bg-transparent dark:text-white dark:border-gray-600 dark:hover:bg-neutral-800 dark:hover:border-gray-600 transition-all duration-300 p-2 w-35 cursor-pointer disabled:cursor-not-allowed rounded-sm shadow-sm flex justify-center items-center "
+          <Button
+            variation="secondary"
+            onClick={() => {
+              navigate(`/payments/duplicate/${paymentId}`);
+            }}
           >
             Duplicate
-          </NavLink>
+          </Button>
         )}
       </div>
       <ChooseYearModal
