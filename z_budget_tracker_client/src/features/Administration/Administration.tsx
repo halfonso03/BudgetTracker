@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import MenuIdProvider from '../../contexts/MenuIdContext';
 import styled from 'styled-components';
+import Label from '../../components/Label';
 
 const StyledMenu = styled.div`
   flex: 1;
@@ -43,10 +44,10 @@ const Administration = () => {
             <StyledNavLink
               to="users"
               className={({ isActive }) =>
-                isActive ? 'admin-menu-item-active' : ''
+                isActive ? 'admin-menu-item-active ' : ''
               }
             >
-              <div>Users</div>
+              <Label>Users</Label>
             </StyledNavLink>
           </div>
           <div className="admin-menu-item">

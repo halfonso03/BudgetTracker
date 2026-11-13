@@ -229,7 +229,8 @@ input:-webkit-autofill:focus {
 }
 
 .dark .Dropdown-control {
-  border: 0 !important
+  border: 0 !important;
+  background: transparent !important;
 }
 
 .Dropdown-control.is-disabled {
@@ -258,7 +259,6 @@ input:-webkit-autofill:focus {
 .Dropdown-option:hover {
   background-color: var(--color-blue-100) !important;
 }
-
 
 .Dropdown-menu .Dropdown-option:last-child {
   border-bottom: 0 !important;
@@ -413,7 +413,6 @@ pre {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   background-color: var(--color-slate-900);
   color: var(--color-slate-100) !important;
-  
 }
 
 .dark .react-datepicker-popper {
@@ -439,7 +438,7 @@ pre {
 }
 
 .dark .react-datepicker__day--today {
- background-color: var(--color-slate-600);
+  background-color: var(--color-slate-600);
 }
 
 .dark .react-datepicker__day:hover {
@@ -457,5 +456,11 @@ pre {
 .dark .react-datepicker__day--selected {
   background-color: var(--color-indigo-400);
   color: white;
+}
+
+/* 1. Base scrollbar size (required) */
+.scroll-container::-webkit-scrollbar {
+  width: 8px;
+  height: 12px;
 }
 

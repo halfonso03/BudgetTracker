@@ -15,7 +15,7 @@ const SelectedPayeeCard = ({
   return (
     <div>
       {selectedPayeeInfo && (
-        <div className="flex items-center shadow-md gap-1 bg-neutral-200/70 dark:bg-slate-700/80 rounded-sm border border-neutral-200/90 dark:border-slate-700">
+        <div className="flex  items-center shadow-md  bg-neutral-200/70 dark:bg-slate-700/80 rounded-sm border border-neutral-200/90 dark:border-slate-700">
           <div
             className="cursor-pointer p-2 text-neutral-600 dark:text-slate-200 self-stretch hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-slate-500"
             onClick={onRemoveSelection}

@@ -53,14 +53,14 @@ const Modal2 = ({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-sm transition-opacity"
+      className="fixed inset-0 z-50 flex items-center justify-center  bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-sm transition-opacity"
       role="dialog"
       aria-modal="true"
     >
       {/* Modal Container Card */}
       <div
         ref={modalRef}
-        className={`${modalStyles} ${animateClass} w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xl dark:shadow-2xl overflow-hidden transform transition-all`}
+        className={`${modalStyles} ${animateClass}  w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xl dark:shadow-2xl overflow-hidden transform transition-all`}
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside
       >
         {/* Header Section */}

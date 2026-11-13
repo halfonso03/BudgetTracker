@@ -28,6 +28,7 @@ import Input from '../../../components/Input';
 import Spinner from '../../../components/Spinner';
 import Label from '../../../components/Label';
 import TextArea from '../../../components/TextArea';
+import Modal2 from '../../../components/Modal2';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -355,7 +356,7 @@ const PaymentLineModal = (props: Props) => {
 
   return (
     <PaginationContextProvider>
-      <TallModal
+      <Modal2
         {...props}
         size="lg"
         title="Create Payment"
@@ -387,7 +388,7 @@ const PaymentLineModal = (props: Props) => {
           )}
 
           <div className="flex flex-col justify-between h-full ">
-            <div className=" overflow-y-scroll border-0 ">
+            <div className=" overflow-y-scroll border-0 scroll-container">
               <div className="flex flex-col gap-4 justify-between p-3 px-4 ">
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <Label>Year</Label>
@@ -609,7 +610,7 @@ const PaymentLineModal = (props: Props) => {
                 <div></div>
               </div>
             </div>
-            <div className="flex justify-end gap-2 border-t border-t-neutral-300/90 p-4">
+            <div className="flex justify-end gap-2 mt-4 border-t border-t-neutral-300/90 dark:border-t-slate-800/80 items-center pt-3 ">
               {/* {allSelections() && <span>have all selections</span>}
               <br></br>
               {remIsvalid ? (
@@ -640,7 +641,7 @@ const PaymentLineModal = (props: Props) => {
             </div>
           </div>
         </form>
-      </TallModal>
+      </Modal2>
     </PaginationContextProvider>
   );
 };

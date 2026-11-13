@@ -112,9 +112,9 @@ const PayeeSearcher = ({
   return (
     <div>
       <div
-        className={` ${isFetching && 'bg-neutral-200 dark:bg-slate-700'}  pl-1  rounded-sm ${inputFocused ? 'border border-blue-500 dark:border-slate-600' : 'border border-neutral-300 dark:border-slate-700'}`}
+        className={` ${isFetching && 'bg-neutral-200 dark:bg-transparent'}  rounded-sm ${inputFocused ? 'border border-blue-500 dark:border-slate-600' : 'border border-neutral-300 dark:border-slate-700'}`}
       >
-        {loadginSelectedPayeeInfo && (
+        {/* {loadginSelectedPayeeInfo && (
           <Skeleton
             height={70}
             width="100%"
@@ -122,9 +122,9 @@ const PayeeSearcher = ({
             enableAnimation={true}
             containerClassName="flex-1 self-stretch"
           />
-        )}
+        )} */}
         {selectedPayee && selectedPayeeInfoFromDb && (
-          <div className="mb-2 pr-1 mt-1">
+          <div className="m-1">
             <SelectedPayeeCard
               selectedPayeeInfo={selectedPayeeInfoFromDb}
               onRemoveSelection={onRemoveSelection}
@@ -132,11 +132,11 @@ const PayeeSearcher = ({
             ></SelectedPayeeCard>
           </div>
         )}
-        <div className="flex items-center relative">
+        <div className="flex items-center relative border-t border-t-neutral-200 dark:border-t-slate-700/60">
           <input
             ref={inputRef}
             value={query}
-            className="cursor-pointer p-2 w-full rounded-sm text-neutral-800 dark:text-white placeholder-neutral-400 focus:outline-none transition-all dark:placeholder-neutral-300 focus:border-neutral-400 dark:focus:border-indigo-400"
+            className="cursor-pointer p-2 w-full rounded-sm text-neutral-800 dark:text-white placeholder-neutral-400 focus:outline-none transition-all dark:placeholder-slate-400 focus:border-neutral-400 dark:focus:border-indigo-400"
             placeholder="Enter payee name..."
             onFocus={() => {
               stInputFocused(true);
@@ -175,9 +175,9 @@ const PayeeSearcher = ({
         </div>
       </div>
       <div className="relative bg-white dark:bg-slate-700/80 opacity-100">
-        <div className="w-full rounded-sm pt-1 absolute z-1000">
+        <div className="w-full rounded-md pt-1 absolute z-1000 ">
           {suggestions && suggestions.length > 0 && searching && (
-            <ScrollableDiv className=" bg-white dark:bg-slate-700 border border-neutral-300/55 dark:border-slate-600 rounded-sm w-full shadow-md ">
+            <ScrollableDiv className=" bg-white dark:bg-slate-800 border border-neutral-300/55 dark:border-slate-600 rounded-sm w-full shadow-md ">
               {suggestions?.map((item, index) => (
                 // Render each suggestion as a clickable list item
                 <div
