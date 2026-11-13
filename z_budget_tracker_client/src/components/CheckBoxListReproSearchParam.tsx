@@ -135,8 +135,8 @@ const CheckBoxListReproSearchParam = ({
                             handleCheck(i.id, id);
                           }}
                           checked={i.checked}
-                          className={`peer appearance-none w-5 h-5 border-2 border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-slate-700 dark:checked:border-indigio-300 
-                    transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-indigo-400 dark:focus:ring-indigio-500 focus:ring-offset-2`}
+                          className={`peer appearance-none w-5 h-5 border-2 border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:border-slate-300 dark:checked:bg-slate-800 dark:checked:border-indigo-400 
+                                      transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-indigo-400 dark:focus:ring-indigio-600 `}
                         />
                         <svg
                           className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1/2  top-[.65rem] -translate-x-1/2 -translate-y-1/2"
@@ -153,7 +153,7 @@ const CheckBoxListReproSearchParam = ({
                       </div>
                     </div>
                     <div
-                      className={`text-[0.9rem]  ${i.checked ? 'text-neutral-700 dark:text-white' : 'text-neutral-500 dark:text-slate-300'}`}
+                      className={`text-[0.9rem]  ${i.checked ? 'text-neutral-700 dark:text-white' : 'text-neutral-500 dark:text-slate-100'}`}
                     >
                       {i.name}
                     </div>
