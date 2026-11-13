@@ -1,6 +1,7 @@
 import { formatCurrency, formatDate } from '../../app/util';
 import { usePayeesPaymentsStats } from '../../api/hooks/payees/usePayeesPaymentsStats';
-import Skeleton from 'react-loading-skeleton';
+import Spinner from '../../components/Spinner';
+import Label from '../../components/Label';
 
 type Props = {
   payeeId: number;
@@ -13,52 +14,51 @@ const PayeePaymentsStats = ({ payeeId }: Props) => {
     <div className="mb-3 gap-4 w-full ">
       {loadingPaymentStats && (
         <div className="mb-1">
-          <Skeleton
+          <Spinner></Spinner>
+          {/* <Skeleton
             height={50}
             className="mt-0 self-center p-1 flex-1"
             enableAnimation={true}
             containerClassName="flex-1"
-          />
+          /> */}
         </div>
       )}
 
       {paymentStats && paymentStats.lastPaymentDate && (
         <div className=" grid grid-cols-[1.3fr_.7fr_1fr_.7fr_.5fr_1fr_.5fr_1fr] gap-2 mb-6">
-          <div className="text-neutral-500 font-medium ">Last Payment Date</div>
+          <Label>Last Payment Date</Label>
           <div className="text-neutral-800 ">
             {paymentStats.lastPaymentDate
               ? formatDate(paymentStats!.lastPaymentDate!)
               : '-'}
           </div>
 
-          <div className="text-neutral-500 font-medium">Average</div>
-          <div className="text-neutral-800 ">
+          <Label>Average</Label>
+          <div className="text-neutral-800 dark:text-white">
             {paymentStats.averagePayment
               ? formatCurrency(paymentStats!.averagePayment!)
               : '-'}
           </div>
-          <div className="text-neutral-500 font-medium">Smallest</div>
-          <div className=" text-neutral-800 ">
+          <Label>Smallest</Label>
+          <div className=" text-neutral-800 dark:text-white ">
             {paymentStats.lowestPayment
               ? formatCurrency(paymentStats!.lowestPayment!)
               : '-'}
           </div>
-          <div className="text-neutral-500 font-medium">Largest</div>
-          <div className="text-neutral-800 ">
+          <Label>Largest</Label>
+          <div className="text-neutral-800 dark:text-white">
             {paymentStats.highestPayment
               ? formatCurrency(paymentStats!.highestPayment!)
               : '-'}
           </div>
-          <div className="text-neutral-500 font-medium">
-            Last Payment Amount
-          </div>
-          <div className="text-neutral-800 ">
+          <Label>Last Payment Amount</Label>
+          <div className="text-neutral-800 dark:text-white">
             {paymentStats.lastPaymentAmount
               ? formatCurrency(paymentStats!.lastPaymentAmount!)
               : '-'}
           </div>
-          <div className="text-neutral-500 font-medium">No. Payments</div>
-          <div className="text-neutral-800  ">
+          <Label>No. Payments</Label>
+          <div className="text-neutral-800  dark:text-white">
             {paymentStats.numberOfPayments}
           </div>
         </div>

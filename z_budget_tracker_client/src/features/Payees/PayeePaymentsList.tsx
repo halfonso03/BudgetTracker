@@ -60,12 +60,14 @@ const PayeePaymentsList = ({
 
   return (
     <div className="flex flex-col justify-between  ">
-      <div className="border border-neutral-200 ">
+      <div className="border rounded-md border-neutral-300 dark:border-slate-700/80 ">
         <div
-          className="bg-neutral-50 text-neutral-500 border-b border-neutral-200  
-            grid grid-cols-[.46fr_.25fr_1.2fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-2 gap-4 "
+          className="text-neutral-500 bg-neutral-200
+               rounded-t-md  dark:bg-slate-800/80 border-b border-b-neutral-300
+            grid grid-cols-[.46fr_.25fr_1.2fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-2 gap-4 dark:border-b-slate-700/80
+             "
         >
-          <div className="pl-3 self-center">
+          <div className="pl-3 self-center  ">
             <SortBySelector
               label="PMT. NO."
               value="PAYMENTNUMBER"
@@ -143,24 +145,24 @@ const PayeePaymentsList = ({
             <div
               key={i}
               className={` ${onPaymentRowClicked != null ? 'cursor-pointer ' : ''} 
-              grid grid-cols-[.46fr_.25fr_1.2fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-1  gap-4  hover:bg-neutral-100 duration-200 transition-all border-b border-b-neutral-200 last:border-0`}
+              grid grid-cols-[.46fr_.25fr_1.2fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-1  gap-4  hover:bg-neutral-100 dark:hover:bg-slate-700  duration-200 transition-all border-b border-b-neutral-200 dark:border-b-slate-700/80 last:border-0`}
             >
-              <div className="py-1 px-4 self-center text-center ">{p.paymentNumber}</div>
-              <div className="py-1 self-center">{p.year}</div>
-              <div className="py-1 self-center">{p.initiative}</div>
-              <div className="py-1 self-center text-center">{p.grant}</div>
-              <div className="py-1 self-center text-center">
+              <div className="py-1 px-4 self-center text-center dark:text-white ">{p.paymentNumber}</div>
+              <div className="py-1 self-center dark:text-white">{p.year}</div>
+              <div className="py-1 self-center dark:text-white">{p.initiative}</div>
+              <div className="py-1 self-center text-center dark:text-white">{p.grant}</div>
+              <div className="py-1 self-center text-center dark:text-white">
                 {formatCurrency(p.amount)}
               </div>
-              <div className="py-1 self-center text-center">
+              <div className="py-1 self-center text-center dark:text-white">
                 {formatDate(p.postedDate)}
               </div>
-              <div className="py-1 self-center text-center">{p.postedBy}</div>
-              <div className="text-center">{p.invoiceNumber}</div>
-              <div className="text-center">
+              <div className="py-1 self-center text-center dark:text-white">{p.postedBy}</div>
+              <div className="text-center dark:text-white">{p.invoiceNumber}</div>
+              <div className="text-center dark:text-white ">
                 {p.invoiceDate && formatDate(p.invoiceDate)}
               </div>
-              <div className="text-center">{p.checkNumber}</div>
+              <div className="text-center dark:text-white">{p.checkNumber}</div>
             </div>
           ))}
         </div>

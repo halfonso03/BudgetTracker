@@ -40,7 +40,7 @@ const Search = ({ onSearch }: Props) => {
         defaultValue={searchTerm}
         className={`px-4 py-2 w-full text-sm bg-neutral-50/20 border border-neutral-300 rounded-sm
               text-neutral-800 placeholder-neutral-400 focus:outline-none focus:border-neutral-400/80 
-              focus:bg-white transition-all text-[1rem]`}
+              focus:bg-white transition-all text-[1rem] dark:border-slate-700/80 dark:bg-slate-900/50 dark:focus:border-indigo-500 dark:focus:bg-slate-900 dark:placeholder-slate-400 dark:text-white`}
         placeholder="Enter a search term and presss enter..."
         style={{
           borderTopRightRadius: 0,
@@ -54,7 +54,7 @@ const Search = ({ onSearch }: Props) => {
         onClick={clearSearch}
         style={{
           borderRadius: '0 5px 5px 0',
-          backgroundColor: inputtedText != '' ? 'var(--color-neutral-600)' : '',
+          backgroundColor: inputtedText != '' ? 'var(--color-neutral-600) dark:text-slate-400 dark:bg-slate-500' : '',
         }}
       >
         <X className="text-neutral-100" size={20}></X>

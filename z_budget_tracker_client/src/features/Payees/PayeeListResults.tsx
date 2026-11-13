@@ -33,53 +33,53 @@ const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
 
   return (
     <div>
-      <div className="border-l border-r border-b border-neutral-300/60">
+      <div className="border-l border-r border-b border-neutral-300/60 dark:border-slate-700/80 rounded-b-md">
         {data.map((v) => (
           <div
             className="grid grid-cols-[.6fr_.3fr_1fr_.6fr_.4fr_.35fr_.4fr_.2fr] gap-2 
-            items-center hover:bg-neutral-100 duration-200 transition-all 
-          cursor-pointer border-b border-b-neutral-300/60 last:border-0 py-1"
+            items-center py-1  cursor-pointer  last:border-0 transition-all 
+            hover:bg-neutral-100 dark:hover:bg-slate-700 border-b border-b-neutral-300/60 dark:border-slate-700/80  "
             key={v.id}
             onClick={() => {
               openPayeeDetails(v);
             }}
           >
-            <div className="px-4 py-1 font-medium text-neutral-900">
+            <div className="px-4 py-1 text-neutral-800 dark:text-white ">
               <SearchTermMarker
                 textToFind={searchTerm || ''}
                 textToDisplay={v.name}
               ></SearchTermMarker>
             </div>
-            <div className="px-4 py-1 text-center text-neutral-800">
+            <div className="px-4 py-1 text-center  text-neutral-800 dark:text-white ">
               <SearchTermMarker
                 textToFind={searchTerm || ''}
                 textToDisplay={v.payeeType}
               ></SearchTermMarker>
             </div>
-            <div className="px-4 py-1 text-neutral-800 text-center">
+            <div className="px-4 py-1 text-center  text-neutral-800 dark:text-white">
               <SearchTermMarker
                 textToFind={searchTerm || ''}
                 textToDisplay={v.accountName}
               ></SearchTermMarker>
             </div>
-            <div className="px-4 py-1 text-neutral-800 text-center">
+            <div className="px-4 py-1 text-center  text-neutral-800 dark:text-white">
               {v.totalPaid ? formatNumber(v.totalPaid) : '-'}
             </div>
-            <div className="px-4 py-1 text-neutral-800 text-center">
+            <div className="px-4 py-1 text-center  text-neutral-800 dark:text-white">
               {v.lastPaymentAmount ? formatNumber(v.lastPaymentAmount) : '-'}
             </div>
-            <div className="px-4 py-1 text-neutral-800 text-center">
+            <div className="px-4 py-1 text-center  text-neutral-800 dark:text-white">
               {v.lastPaymentDate ? formatDate(v.lastPaymentDate) : '-'}
             </div>
 
-            <div className="px-4 py-1 text-neutral-800 text-center ">
+            <div className="px-4 py-1 text-center  text-neutral-800 dark:text-white">
               {v.daysSinceLastPayment || '-'}
             </div>
             <div className="flex justify-center ">
               {v.isActive ? (
                 <Check className="text-green-600"></Check>
               ) : (
-                <CircleX className="text-neutral-500"></CircleX>
+                <CircleX className="text-neutral-500 dark:text-slate-300"></CircleX>
               )}
             </div>
 

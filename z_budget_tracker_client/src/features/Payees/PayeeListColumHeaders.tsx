@@ -13,7 +13,7 @@ const PayeeListColumHeaders = ({ year, onOpenYearFilterModal }: Props) => {
   return (
     <div
       className="grid grid-cols-[.6fr_.3fr_1fr_.6fr_.4fr_.35fr_.4fr_.2fr] gap-2 
-                        bg-gray-50 text-neutral-500 border border-neutral-300/60 py-1"
+                        bg-gray-50 text-neutral-500 border border-neutral-300/60 dark:border-slate-700/80  rounded-t-md  dark:bg-slate-800/80 py-1"
     >
       <div className="flex items-center justify-start px-4">
         <SortBySelector
@@ -49,12 +49,12 @@ const PayeeListColumHeaders = ({ year, onOpenYearFilterModal }: Props) => {
           ></SortBySelector>
           <Filter
             size={18}
-            className={`cursor-pointer  ${year !== 0 ? 'text-blue-500' : 'text-neutral-500'}`}
+            className={`cursor-pointer  ${year !== 0 ? 'text-blue-500 dark:text-indigo-500' : 'text-neutral-500 dark:text-slate-400'}`}
             onClick={onOpenYearFilterModal}
           ></Filter>
         </div>
         {year !== 0 && (
-          <div className="self-center italic text-[.9rem] text-blue-500">
+          <div className="self-center italic text-[.9rem] text-blue-500 dark:text-indigo-500">
             FY {year}
           </div>
         )}

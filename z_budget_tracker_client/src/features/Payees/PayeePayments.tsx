@@ -9,7 +9,7 @@ const PayeePayments = ({ payeeId }: Props) => {
   return (
     <div>
       <div>
-        <div className="font-semibold text-neutral-500  border-b border-b-neutral-200/80 pl-0 p-1 mb-4">
+        <div className="font-semibold text-neutral-500 dark:text-slate-300  border-b border-b-neutral-200/80 dark:border-b-neutral-700/80  pl-0 p-1 mb-4">
           Payments
         </div>
       </div>

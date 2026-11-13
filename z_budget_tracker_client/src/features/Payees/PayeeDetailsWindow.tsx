@@ -18,20 +18,20 @@ const PayeeDetailsWindow = ({ payee, onClose }: Props) => {
   }
 
   return createPortal(
-    <div className="fixed inset-0 z-5 h-auto w-full bg-white border-t border-t-neutral-300 ">
+    <div className="fixed inset-0 z-5 h-auto w-full bg-white border-t border-t-neutral-300 dark:border-t-0 dark:bg-slate-900 ">
       <div className="relative ">
         <NavBar></NavBar>
         <div className="w-full flex justify-between pt-2 pr-4 mt-4 mb-4">
           <div className="font-bold text-xl text-neutral-800 pl-7">
             {payee.id === 0 ? (
-              <div className="">Add Payee</div>
+              <div className="text-white">Add Payee</div>
             ) : (
-              <div>Edit Payee</div>
+              <div className="text-white">Edit Payee</div>
             )}
           </div>
 
           <X
-            className=" absolute right-2 top-19 text-neutral-500 m-0 p-0 cursor-pointer hover:text-neutral-800"
+            className=" absolute right-2 top-19 text-neutral-500 m-0 p-0 cursor-pointer hover:text-neutral-800 dark:text-slate-300 dark:hover:text-slate-200"
             size={36}
             onClick={onClose}
           ></X>

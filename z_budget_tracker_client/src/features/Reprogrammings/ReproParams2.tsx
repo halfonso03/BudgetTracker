@@ -5,15 +5,14 @@ import {
   type ChangeEvent,
   type FocusEvent,
 } from 'react';
-import CheckBoxListReproSearchParam from '../../components/CheckBoxListReproSearchParam';
 import RadioButtonList from '../../components/RadioButtonList';
 import ReproSearchFilter from './ReproSearchFilter';
 import NumericInputUncontrolled from '../../components/NumericInputUncontrolled';
 import { parseFormattedNumber } from '../../app/util';
-import Skeleton from 'react-loading-skeleton';
 import Label from '../../components/Label';
 import Select from '../../components/Select';
 import Button from '../../components/Button';
+import CheckBoxListSearchParam from '../../components/CheckBoxListSearchParam';
 
 const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
@@ -428,7 +427,7 @@ const ReproParams2 = memo(
             outsideShowList={false}
           >
             <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
-              <CheckBoxListReproSearchParam
+              <CheckBoxListSearchParam
                 id={INITIATIVES_LIST_TYPE}
                 onCheck={handleCheck}
                 onXCheck={handleXCheck}
@@ -443,7 +442,7 @@ const ReproParams2 = memo(
                 onOptionsUpdated={(o) =>
                   handleOptionsUpdated(o, INITIATIVES_LIST_TYPE)
                 }
-              ></CheckBoxListReproSearchParam>
+              ></CheckBoxListSearchParam>
               {/* <button className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer">
                 Apply
               </button> */}
@@ -458,7 +457,7 @@ const ReproParams2 = memo(
             outsideShowList={false}
           >
             <div className="flex flex-col absolute shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900  w-100  mt-1 z-1000 opacity-100 rounded-md ">
-              <CheckBoxListReproSearchParam
+              <CheckBoxListSearchParam
                 key={selectedYear}
                 id={GRANTS_LIST_TYPE}
                 onCheck={handleCheck}
@@ -473,7 +472,7 @@ const ReproParams2 = memo(
                 onOptionsUpdated={(o) =>
                   handleOptionsUpdated(o, GRANTS_LIST_TYPE)
                 }
-              ></CheckBoxListReproSearchParam>
+              ></CheckBoxListSearchParam>
               {/* <button
                 className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer"
                 onClick={() =>
@@ -493,7 +492,7 @@ const ReproParams2 = memo(
             outsideShowList={false}
           >
             <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg  dark:shadow-slate-900 w-100 rounded-md mt-1 z-1000 opacity-100 ">
-              <CheckBoxListReproSearchParam
+              <CheckBoxListSearchParam
                 id={ACCOUNTS_LIST_TYPE}
                 onCheck={handleCheck}
                 onXCheck={handleXCheck}
@@ -508,7 +507,7 @@ const ReproParams2 = memo(
                 onOptionsUpdated={(o) =>
                   handleOptionsUpdated(o, ACCOUNTS_LIST_TYPE)
                 }
-              ></CheckBoxListReproSearchParam>
+              ></CheckBoxListSearchParam>
               {/* <button
                 className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer"
                 onClick={() =>

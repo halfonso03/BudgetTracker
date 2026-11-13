@@ -7,8 +7,8 @@ import PayeeListHeaderControls from './PayeeListHeaderControls';
 import { usePagination } from '../../contexts/pagination/usePagination';
 import { usePayees } from '../../api/hooks/payees/usePayees';
 import { Pagination } from '../../components/Pagination';
-import Skeleton from 'react-loading-skeleton';
 import YearFilterModal from './modals/YearFilterModal';
+import Spinner from '../../components/Spinner';
 
 const PayeeList = () => {
   const { setPageNumber, setSearchTerm, searchTerm } = usePagination();
@@ -65,18 +65,18 @@ const PayeeList = () => {
     setYear(year);
   }
 
-  const skeleton = () => (
-    <div className="mt-2 ">
-      <Skeleton
-        height={30}
-        width="100%"
-        className="mb-1"
-        enableAnimation={true}
-        count={12}
-        containerClassName="flex-1"
-      />
-    </div>
-  );
+  // const skeleton = () => (
+  //   <div className="mt-2 ">
+  //     <Skeleton
+  //       height={30}
+  //       width="100%"
+  //       className="mb-1"
+  //       enableAnimation={true}
+  //       count={12}
+  //       containerClassName="flex-1"
+  //     />
+  //   </div>
+  // );
 
   return (
     <div>
@@ -95,7 +95,9 @@ const PayeeList = () => {
           loadingPayees={loadingPayees}
         ></PayeeListResults>
       ) : (
-        skeleton()
+        <div className='flex justify-center my-10'>
+          <Spinner></Spinner>
+        </div>
       )}
       {data?.pagination && (
         <Pagination
