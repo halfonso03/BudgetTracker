@@ -2,6 +2,7 @@ import { useState, type ChangeEvent } from 'react';
 import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
 import Select from '../../../components/Select';
+import Label from '../../../components/Label';
 
 type Props = {
   isOpen: boolean;
@@ -31,8 +32,8 @@ const YearFilterModal = ({ ...props }: Props) => {
     >
       <div>
         <div>
-          <div className="font-semibold text-neutral-600 mb-3">
-            Filter Total Paid by Year:
+          <div className=" mb-3">
+            <Label>Filter Total Paid by Year:</Label>
           </div>
           <div className="w-[35%]">
             <Select
