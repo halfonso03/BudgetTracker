@@ -20,7 +20,7 @@ const Switch = ({ isOn, handleToggle }: Props) => {
         type="checkbox"
       />
       <label
-        className={`react-switch-label ${isOn ? 'bg-blue-700' : 'bg-neutral-500'}`}
+        className={` react-switch-label ${isOn ? 'bg-blue-700 dark:bg-indigo-700' : 'bg-neutral-500 dark:bg-slate-800'}`}
         htmlFor={`react-switch-new_${id}`}
       >
         <span className={`react-switch-button`} />

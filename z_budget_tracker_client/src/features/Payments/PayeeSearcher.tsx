@@ -10,7 +10,6 @@ import ScrollableDiv from '../../components/ScrollableDiv';
 import useSelectedPayeeInfo from '../../api/hooks/payments/useSelectedPayeeInfo';
 import InfoModal from './modals/InfoModal';
 import SelectedPayeeCard from './SelectedPayeeCard';
-import Skeleton from 'react-loading-skeleton';
 import Spinner from '../../components/Spinner';
 import { Plus } from 'lucide-react';
 import NewPayeeWindow from './NewPayeeWindow';
@@ -49,7 +48,6 @@ const PayeeSearcher = ({
 
   const {
     data: selectedPayeeInfoFromDb,
-    isLoading: loadginSelectedPayeeInfo,
     isSuccess: loadPayeeSuccess,
   } = useSelectedPayeeInfo(payeeIdToFind);
 

@@ -1,11 +1,9 @@
-import Skeleton from 'react-loading-skeleton';
 import { usePayeePayments } from '../../api/hooks/payees/usePayeePayments';
 import { formatCurrency, formatDate } from '../../app/util';
 import { Pagination } from '../../components/Pagination';
 import SortBySelector from '../../components/SortBySelector';
 import { usePagination } from '../../contexts/pagination/usePagination';
 import { useSortingContext } from '../../contexts/useSortingContext';
-import Spinner from '../../components/Spinner';
 import { useEffect } from 'react';
 
 type Props = {
@@ -13,13 +11,8 @@ type Props = {
   showSkeleton?: boolean;
   onPaymentRowClicked?: (paymentId: number, payeeId: number) => void;
 };
-const PayeePaymentsList = ({
-  payeeId,
-  showSkeleton = true,
-  onPaymentRowClicked,
-}: Props) => {
-  const { data, loadingPayments, loadingPaymentsSuccess } =
-    usePayeePayments(payeeId);
+const PayeePaymentsList = ({ payeeId, onPaymentRowClicked }: Props) => {
+  const { data, loadingPaymentsSuccess } = usePayeePayments(payeeId);
 
   const { setPageNumber } = usePagination();
   const { sortByValue, setSortByValue } = useSortingContext();
@@ -32,26 +25,22 @@ const PayeePaymentsList = ({
     setSortByValue('PAYMENTNUMBER');
   }, [setSortByValue]);
 
-  if (loadingPayments && showSkeleton) {
-    return (
-      <div className="mt-2 ">
-        <Skeleton
-          height={30}
-          width="100%"
-          className="mb-1"
-          enableAnimation={true}
-          count={12}
-          containerClassName="flex-1"
-        />
-      </div>
-    );
-  } else if (loadingPayments) {
-    return <Spinner></Spinner>;
-  }
+  // if (loadingPayments && showSkeleton) {
+  //   return (
+  //     <div className="mt-2 ">
+  //       <Spinner></Spinner>
+
+  //     </div>
+  //   );
+  // } else
+
+  // if (loadingPayments) {
+  //   return <Spinner></Spinner>;
+  // }
 
   if (loadingPaymentsSuccess && data?.items.length === 0) {
     return (
-      <div className="font-semibold text-neutral-600">
+      <div className="font-semibold text-neutral-600 dark:text-slate-300">
         There are no payments to this payee.
       </div>
     );
@@ -147,18 +136,28 @@ const PayeePaymentsList = ({
               className={` ${onPaymentRowClicked != null ? 'cursor-pointer ' : ''} 
               grid grid-cols-[.46fr_.25fr_1.2fr_.3fr_.7fr_.5fr_.5fr_.5fr_.5fr_.5fr] py-1  gap-4  hover:bg-neutral-100 dark:hover:bg-slate-700  duration-200 transition-all border-b border-b-neutral-200 dark:border-b-slate-700/80 last:border-0`}
             >
-              <div className="py-1 px-4 self-center text-center dark:text-white ">{p.paymentNumber}</div>
+              <div className="py-1 px-4 self-center text-center dark:text-white ">
+                {p.paymentNumber}
+              </div>
               <div className="py-1 self-center dark:text-white">{p.year}</div>
-              <div className="py-1 self-center dark:text-white">{p.initiative}</div>
-              <div className="py-1 self-center text-center dark:text-white">{p.grant}</div>
+              <div className="py-1 self-center dark:text-white">
+                {p.initiative}
+              </div>
+              <div className="py-1 self-center text-center dark:text-white">
+                {p.grant}
+              </div>
               <div className="py-1 self-center text-center dark:text-white">
                 {formatCurrency(p.amount)}
               </div>
               <div className="py-1 self-center text-center dark:text-white">
                 {formatDate(p.postedDate)}
               </div>
-              <div className="py-1 self-center text-center dark:text-white">{p.postedBy}</div>
-              <div className="text-center dark:text-white">{p.invoiceNumber}</div>
+              <div className="py-1 self-center text-center dark:text-white">
+                {p.postedBy}
+              </div>
+              <div className="text-center dark:text-white">
+                {p.invoiceNumber}
+              </div>
               <div className="text-center dark:text-white ">
                 {p.invoiceDate && formatDate(p.invoiceDate)}
               </div>

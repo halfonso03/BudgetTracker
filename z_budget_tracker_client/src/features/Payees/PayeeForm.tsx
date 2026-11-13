@@ -16,6 +16,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
+import Spinner from '../../components/Spinner';
 
 type Props = {
   payee: Payee;
@@ -215,14 +216,15 @@ const PayeeForm = ({
           error={errors?.categoryId?.message}
         >
           {categoriesFetching && (
-            <div>
-              <Skeleton
+            <div className='flex py-2 justify-center items-center'>
+              {/* <Skeleton
                 height={35}
                 width="95%"
                 enableAnimation={true}
                 count={1}
                 containerClassName="flex-1"
-              />
+              /> */}
+              <Spinner></Spinner>
             </div>
           )}
 

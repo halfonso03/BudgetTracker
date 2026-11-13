@@ -77,7 +77,7 @@ const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
             </div>
             <div className="flex justify-center ">
               {v.isActive ? (
-                <Check className="text-green-600"></Check>
+                <Check className="text-green-600 dark:text-emerald-400"></Check>
               ) : (
                 <CircleX className="text-neutral-500 dark:text-slate-300"></CircleX>
               )}

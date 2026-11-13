@@ -305,7 +305,7 @@ const PaymentSearch = () => {
         {/* <pre>{JSON.stringify(selectedIds)}</pre>
         <pre>{JSON.stringify(itemsList)}</pre> */}
 
-        <div className="mb-4">
+        <div className="mb-8">
           <MemoizedSearchParams
             payees={payeesList?.map((x) => ({
               id: x.id,

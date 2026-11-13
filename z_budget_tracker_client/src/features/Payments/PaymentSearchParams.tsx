@@ -3,7 +3,7 @@ import RadioButtonList from '../../components/RadioButtonList';
 import PaymentSearchFilter from './PaymentSearchFilter';
 import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
-import CheckBoxListSearchParam from '../../components/CheckBoxListSearchParam';
+import CheckBoxListReproSearchParam from '../../components/CheckBoxListReproSearchParam';
 
 const YEARS_LIST_TYPE = 'Y';
 const STATUS_LIST_TYPE = 'S';
@@ -326,7 +326,7 @@ const PaymentSearchParams = memo(
             outsideShowList={false}
           >
             <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
-              <CheckBoxListSearchParam
+              <CheckBoxListReproSearchParam
                 id={PAYEE_LIST_TYPE}
                 onCheck={handleCheck}
                 maxHeight={400}
@@ -341,7 +341,7 @@ const PaymentSearchParams = memo(
                   handleOptionsUpdated(o, PAYEE_LIST_TYPE)
                 }
                 showExclusiveOptions={false}
-              ></CheckBoxListSearchParam>
+              ></CheckBoxListReproSearchParam>
             </div>
           </PaymentSearchFilter>
         )}
@@ -353,7 +353,7 @@ const PaymentSearchParams = memo(
             outsideShowList={false}
           >
             <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
-              <CheckBoxListSearchParam
+              <CheckBoxListReproSearchParam
                 id={INITIATIVES_LIST_TYPE}
                 onCheck={handleCheck}
                 maxHeight={400}
@@ -367,7 +367,8 @@ const PaymentSearchParams = memo(
                 onOptionsUpdated={(o) =>
                   handleOptionsUpdated(o, INITIATIVES_LIST_TYPE)
                 }
-              ></CheckBoxListSearchParam>
+                showExclusiveOptions={true}
+              ></CheckBoxListReproSearchParam>
             </div>
           </PaymentSearchFilter>
         )}
@@ -379,7 +380,7 @@ const PaymentSearchParams = memo(
             outsideShowList={false}
           >
             <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
-              <CheckBoxListSearchParam
+              <CheckBoxListReproSearchParam
                 key={selectedYear}
                 id={GRANTS_LIST_TYPE}
                 onCheck={handleCheck}
@@ -393,7 +394,7 @@ const PaymentSearchParams = memo(
                 onOptionsUpdated={(o) =>
                   handleOptionsUpdated(o, GRANTS_LIST_TYPE)
                 }
-              ></CheckBoxListSearchParam>
+              ></CheckBoxListReproSearchParam>
             </div>
           </PaymentSearchFilter>
         )}
@@ -405,7 +406,7 @@ const PaymentSearchParams = memo(
             outsideShowList={false}
           >
             <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
-              <CheckBoxListSearchParam
+              <CheckBoxListReproSearchParam
                 id={ACCOUNTS_LIST_TYPE}
                 onCheck={handleCheck}
                 maxHeight={600}
@@ -419,7 +420,7 @@ const PaymentSearchParams = memo(
                 onOptionsUpdated={(o) =>
                   handleOptionsUpdated(o, ACCOUNTS_LIST_TYPE)
                 }
-              ></CheckBoxListSearchParam>
+              ></CheckBoxListReproSearchParam>
             </div>
           </PaymentSearchFilter>
         )}

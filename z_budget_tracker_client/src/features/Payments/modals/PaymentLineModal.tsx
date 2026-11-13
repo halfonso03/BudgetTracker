@@ -5,7 +5,6 @@ import useGrants from '../../../api/hooks/common/useGrants';
 import useInitiatives from '../../../api/hooks/common/useInitiatives';
 import Button from '../../../components/Button';
 import PayeeSearcher from '../PayeeSearcher';
-import TallModal from '../../../components/TallModal';
 import { PaginationContextProvider } from '../../../contexts/pagination/PaginationContextProvider';
 import PaymentEntryInput from '../PaymentEntryInput';
 import { Controller, useForm, type Resolver } from 'react-hook-form';
@@ -370,7 +369,7 @@ const PaymentLineModal = (props: Props) => {
           className="self-center h-full w-full"
         >
           {fromRedirect && redirectMessageIsOpen && (
-            <div className="p-3 border mb-2 border-blue-400 dark:border-slate-600 bg-blue-50 dark:bg-slate-700/50 dark:text-white flex items-center relative">
+            <div className="p-3 border mb-5 border-blue-400 dark:border-slate-600 bg-blue-50 dark:bg-slate-700/50 dark:text-white flex items-center relative">
               <div className="flex-1 ">
                 Initiative, Grant, Category and Account have been pre-selected.
               </div>
@@ -389,7 +388,7 @@ const PaymentLineModal = (props: Props) => {
 
           <div className="flex flex-col justify-between h-full ">
             <div className=" overflow-y-scroll border-0 scroll-container">
-              <div className="flex flex-col gap-4 justify-between p-3 px-4 ">
+              <div className="flex flex-col gap-4 justify-between   ">
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <Label>Year</Label>
                   <div className="text-neutral-700/90 dark:text-white font-medium">
@@ -610,7 +609,7 @@ const PaymentLineModal = (props: Props) => {
                 <div></div>
               </div>
             </div>
-            <div className="flex justify-end gap-2 mt-4 border-t border-t-neutral-300/90 dark:border-t-slate-800/80 items-center pt-3 ">
+            <div className="flex justify-end gap-2 border-t border-t-neutral-300/90 dark:border-t-slate-800/80 items-center pt-3 ">
               {/* {allSelections() && <span>have all selections</span>}
               <br></br>
               {remIsvalid ? (

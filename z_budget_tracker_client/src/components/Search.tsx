@@ -54,7 +54,7 @@ const Search = ({ onSearch }: Props) => {
         onClick={clearSearch}
         style={{
           borderRadius: '0 5px 5px 0',
-          backgroundColor: inputtedText != '' ? 'var(--color-neutral-600) dark:text-slate-400 dark:bg-slate-500' : '',
+          backgroundColor: inputtedText != '' ? ' dark:text-slate-400 dark:bg-slate-500' : '',
         }}
       >
         <X className="text-neutral-100" size={20}></X>
