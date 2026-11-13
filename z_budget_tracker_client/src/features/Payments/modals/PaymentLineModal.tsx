@@ -27,6 +27,7 @@ import DatePicker from 'react-datepicker';
 import Input from '../../../components/Input';
 import Spinner from '../../../components/Spinner';
 import Label from '../../../components/Label';
+import TextArea from '../../../components/TextArea';
 
 type PaymentLineItemSelections = {
   initiativeId?: number;
@@ -318,21 +319,33 @@ const PaymentLineModal = (props: Props) => {
   const initiativesForDropdown = loadInitiativesSuccess
     ? initiatives!.map((b) => ({
         value: b.id,
-        label: <div>{b.name}</div>,
+        label: (
+          <div className="flex justify-between gap-2  dark:text-white dark:bg-slate-900   ">
+            {b.name}
+          </div>
+        ),
       }))
     : [];
 
   const grantsForDropdown = grantsSuccess
     ? grants!.map((b) => ({
         value: b.id,
-        label: <div>{b.name}</div>,
+        label: (
+          <div className="flex justify-between gap-2  dark:text-white dark:bg-slate-900  ">
+            {b.name}
+          </div>
+        ),
       }))
     : [];
 
   const catsForDropdown = catSuccess
     ? categories!.map((b) => ({
         value: b.id,
-        label: <div>{b.name}</div>,
+        label: (
+          <div className="flex justify-between gap-2  dark:text-white dark:bg-slate-900  ">
+            {b.name}
+          </div>
+        ),
       }))
     : [];
 
@@ -341,9 +354,9 @@ const PaymentLineModal = (props: Props) => {
       ? remainingAccountBalances!.map((b) => ({
           value: b.accountId,
           label: (
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-2  dark:text-white dark:bg-slate-900">
               <div>{b.accountName}</div>
-              <span className="mr-8 text-neutral-600">
+              <span className="mr-8 text-neutral-600 dark:text-slate-200">
                 Available:&nbsp;&nbsp;{formatCurrency(b.availableAmount)}
               </span>
             </div>
@@ -368,7 +381,7 @@ const PaymentLineModal = (props: Props) => {
           className="self-center h-full w-full"
         >
           {fromRedirect && redirectMessageIsOpen && (
-            <div className="p-3 border mb-2 border-blue-400 dark:border-slate-600 bg-blue-50 dark:bg-slate-700 dark:text-white flex items-center relative">
+            <div className="p-3 border mb-2 border-blue-400 dark:border-slate-600 bg-blue-50 dark:bg-slate-700/10 dark:text-white flex items-center relative">
               <div className="flex-1 ">
                 Initiative, Grant, Category and Account have been pre-selected.
               </div>
@@ -386,7 +399,7 @@ const PaymentLineModal = (props: Props) => {
           )}
 
           <div className="flex flex-col justify-between h-full ">
-            <div className=" overflow-y-scroll h-[65dvh]">
+            <div className=" overflow-y-scroll border-0 ">
               <div className="flex flex-col gap-4 justify-between p-3 px-4 ">
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] gap-2 w-full ">
                   <Label>Year</Label>
@@ -426,6 +439,7 @@ const PaymentLineModal = (props: Props) => {
 
                       setSelections(newSelections);
                     }}
+                    className="border p-2 border-neutral-300 dark:border-slate-700/80 py-3 rounded-sm text-neutral-800 disabled:bg-white"
                   ></Dropdown>
                   {errors?.initiativeId && (
                     <div className="text-red-500 pl-1">
@@ -465,7 +479,7 @@ const PaymentLineModal = (props: Props) => {
 
                       setSelections(newSelections);
                     }}
-                    className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
+                    className="border p-2 border-neutral-300 dark:border-slate-700/80 py-3 rounded-sm text-neutral-800 disabled:bg-white"
                   ></Dropdown>
 
                   {errors?.grantId && (
@@ -490,7 +504,7 @@ const PaymentLineModal = (props: Props) => {
                         setValue('accountId', 0);
                       }
                     }}
-                    className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
+                    className="border p-2 border-neutral-300 dark:border-slate-700/80 py-3 rounded-sm text-neutral-800 disabled:bg-white"
                   ></Dropdown>
                   {errors?.categoryId && (
                     <div className="text-red-500 pl-1">
@@ -514,7 +528,7 @@ const PaymentLineModal = (props: Props) => {
                       console.log('option', option);
                       return option.label;
                     }}
-                    className="border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
+                    className="border p-2 border-neutral-300 dark:border-slate-700/80 py-3 rounded-sm text-neutral-800 disabled:bg-white"
                   ></Dropdown>
                   {errors?.accountId && (
                     <div className="text-red-500 pl-1">
@@ -540,87 +554,69 @@ const PaymentLineModal = (props: Props) => {
                 </div>
                 <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center ">
                   <Label>Comment</Label>
-                  <textarea
-                    {...register('comment')}
-                    className="p-2 border border-neutral-300 rounded-sm focus:outline-0 focus:border-blue-500"
-                    rows={1}
-                  ></textarea>
+                  <TextArea {...register('comment')} rows={1}></TextArea>
                 </div>
 
                 {/* {loadingRemainingAccountBalances && <Spinner></Spinner>} */}
 
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]">
-                  <div className="col-span-2">
-                    <PaymentEntryInput
-                      getValues={getValues}
-                      error={errors?.paymentAmount}
-                      register={register('paymentAmount')}
-                      available={availableAmount}
-                      onBlur={handleInputEntryOnBlur}
-                      onLessThanZero={handleLessThanZero}
-                      onOK={handleAmountOk}
-                    ></PaymentEntryInput>
-                  </div>
-                  <div></div>
-                </div>
+                <PaymentEntryInput
+                  getValues={getValues}
+                  error={errors?.paymentAmount}
+                  register={register('paymentAmount')}
+                  available={availableAmount}
+                  onBlur={handleInputEntryOnBlur}
+                  onLessThanZero={handleLessThanZero}
+                  onOK={handleAmountOk}
+                ></PaymentEntryInput>
 
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]">
                   <Label>Invoice Date.</Label>
-                  <div>
-                    <div className=" ">
-                      <Controller
-                        control={control}
-                        name="invoiceDate"
-                        render={({ field }) => (
-                          <DatePicker
-                            {...register('invoiceDate')}
-                            id="invoiceDate"
-                            selected={
-                              field.value ? new Date(field.value) : null
-                            }
-                            dateFormat="MM/dd/yyyy"
-                            onBlur={field.onBlur}
-                            onChange={(date: Date | null) => {
-                              field.onChange(date);
-                            }}
-                            wrapperClassName="w-full border border-blue-500"
-                            className="p-2 rounded-sm  bg-white border border-gray-300 focus:outline-none focus:ring focus:ring-blue-50 "
-                          />
-                        )}
-                      ></Controller>
-                    </div>
-                  </div>
+                  <Controller
+                    control={control}
+                    name="invoiceDate"
+                    render={({ field }) => (
+                      <DatePicker
+                        {...register('invoiceDate')}
+                        id="invoiceDate"
+                        selected={field.value ? new Date(field.value) : null}
+                        dateFormat="MM/dd/yyyy"
+                        onBlur={field.onBlur}
+                        onChange={(date: Date | null) => {
+                          field.onChange(date);
+                        }}
+                        wrapperClassName="w-full"
+                        className="w-[35%] border border-neutral-300 py-2 px-[.9rem] text-end rounded-sm dark:border-slate-700 focus:outline-none
+                         dark:focus:border-indigo-400 disabled:bg-slate-200/60 focus:dark:border-indigo-500 dark:disabled:bg-slate-950 dark:bg-slate-800"
+                      />
+                    )}
+                  ></Controller>
                   <div></div>
                 </div>
-                <div className="grid grid-cols-[.32fr_1fr] items-center">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]">
                   <Label>Invoice No.</Label>
-                  <div className="flex items-center gap-1 w-full">
-                    <div>
-                      <Input
-                        {...register('invoiceNumber')}
-                        additionalclasses="bg-white"
-                      ></Input>
-                    </div>
-                    <div className="flex-1  w-full text-red-500">
-                      {isValidating && dirtyFields.invoiceNumber && (
-                        <div className="ml-2">
-                          <Spinner color="neutral"></Spinner>
-                        </div>
-                      )}
-                      {!isValidating && errors.invoiceNumber?.message}
-                    </div>
+                  <div className="flex items-center w-[35%]">
+                    <Input
+                      {...register('invoiceNumber')}
+                      additionalclasses="bg-white"
+                    ></Input>
+                    {isValidating && dirtyFields.invoiceNumber && (
+                      <div className="ml-2">
+                        <Spinner color="neutral"></Spinner>
+                      </div>
+                    )}
+                    {!isValidating && (
+                      <span>{errors.invoiceNumber?.message}</span>
+                    )}
                   </div>
                   <div></div>
                 </div>
-                <div className="grid grid-cols-[.35fr_1fr_.1fr] items-center">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr]">
                   <Label>Check No.</Label>
-                  <div>
-                    <div className="w-[38%]">
-                      <Input
-                        {...register('checkNumber')}
-                        additionalclasses="bg-white"
-                      ></Input>
-                    </div>
+                  <div className="w-[35%]">
+                    <Input
+                      {...register('checkNumber')}
+                      additionalclasses="bg-white"
+                    ></Input>
                   </div>
                 </div>
                 <div></div>

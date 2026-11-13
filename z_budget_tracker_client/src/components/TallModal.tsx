@@ -18,7 +18,7 @@ const closeButtonStyles = {
   background: 'none',
   fontSize: '24px',
   cursor: 'pointer',
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 } as {};
 
 const Modal2 = ({
@@ -59,32 +59,24 @@ const Modal2 = ({
       {/* Modal Container Card */}
       <div
         ref={modalRef}
-        className={`${modalStyles} ${animateClass} w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80 shadow-xl dark:shadow-2xl overflow-hidden transform transition-all`}
+        className={`${modalStyles} ${animateClass} w-full max-w-md bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80  overflow-hidden transform transition-all`}
         onClick={(e) => e.stopPropagation()} // Prevents closing when clicking inside
       >
-        {/* Header Section */}
         <div className=" flex justify-between items-center px-5 py-4 border-b border-slate-200/60 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-950/30">
           <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 ">
             {title}
           </h3>
 
-          <div className="bg-neutral-200/30 dark:bg-slate-900/80   ">
+          <div className=" dark:bg-slate-900/80   ">
             <button style={closeButtonStyles} onClick={onCancel}>
-              <X className="text-neutral-500 hover:text-neutral-700 dark:text-neutral-300  dark:hover:text-neutral-100 transition-all duration-200"></X>
+              <X className="text-neutral-500 hover:text-neutral-400 dark:text-neutral-300  dark:hover:text-neutral-100 transition-all duration-200"></X>
             </button>
           </div>
         </div>
 
         {/* Modal Body Content */}
-        <div className="px-6 py-3">
-          <div className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-            {children || (
-              <p>
-                Are you sure you want to proceed? This action will permanently
-                update your settings and cannot be easily undone.
-              </p>
-            )}
-          </div>
+        <div className="px-6 py-3 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+          {children}
         </div>
       </div>
     </div>,
@@ -134,11 +126,9 @@ export default Modal2;
 
 //   let modalStyles = '';
 
- 
 //   if (size === 'lg') {
 //     modalStyles += 'min-w-4xl max-w-4xl ';
 //   }
-
 
 //   return createPortal(
 //     // body
@@ -162,7 +152,7 @@ export default Modal2;
 //         <div className="px-2 dark:bg-slate-900">{children}</div>
 //       </div>
 //     </div>,
-//     document.body, 
+//     document.body,
 //   );
 // };
 

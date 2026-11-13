@@ -71,7 +71,7 @@ const Modal2 = ({
 
           <div className="bg-neutral-200/30 dark:bg-slate-900/80   ">
             <button style={closeButtonStyles} onClick={onCancel}>
-              <X className="text-neutral-500 hover:text-neutral-700 dark:text-neutral-300  dark:hover:text-neutral-100 transition-all duration-200"></X>
+              <X className="text-neutral-500 hover:text-neutral-700 dark:text-neutral-300 dark:hover:text-neutral-100 transition-all duration-200"></X>
             </button>
           </div>
         </div>

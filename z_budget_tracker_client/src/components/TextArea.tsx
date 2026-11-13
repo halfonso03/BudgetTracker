@@ -3,8 +3,8 @@ interface CustomInputProps extends React.ComponentPropsWithoutRef<'textarea'> {
 }
 
 const TextArea = (props: CustomInputProps) => {
-  const defaultClasses = `w-full p-2 rounded-sm border border-neutral-300 focus:outline-none focus:border-neutral-400 dark:focus:border-indigo-400 disabled:bg-neutral-300 
-     dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-slate-900 dark:border-slate-500`;
+  const defaultClasses = `w-full p-2 rounded-sm border border-neutral-300 focus:outline-none focus:border-blue-400 dark:focus:border-indigo-400 disabled:bg-neutral-300 
+     dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-slate-800 dark:border-slate-700 `;
 
   return (
     <textarea

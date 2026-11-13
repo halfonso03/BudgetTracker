@@ -34,7 +34,7 @@ const ChooseYearModal = ({ ...props }: Props) => {
             <Label>Year</Label>
           </div>
           <Select value={year} onChange={handleYearChange}>
-            <option value="0" className="text-neutral-600">
+            <option value="0" className="text-neutral-600 dark:text-slate-100">
               Select
             </option>
             <option value="2026">2026</option>

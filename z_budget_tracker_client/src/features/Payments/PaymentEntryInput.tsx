@@ -38,21 +38,10 @@ const PaymentEntryInput = ({
   // const remaining = available - parseFormattedNumber(paymentAmount);
 
   return (
-    <div className="flex flex-col gap-4 animate-payment-input-fade-in">
-      {/* <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center ">
-        <div className="text-neutral-600/90 font-medium">Available</div>
-        <div
-          className={`pl-2 ${available < 0 ? 'text-red-500 font-semibold' : ''}`}
-        >
-          {formatCurrency(available)}
-        </div>
-      </div> */}
-      <div className="grid grid-cols-[.39fr_1fr_.1fr]  w-full items-center ">
-        <div className="self-start pt-2">
-          <Label>Payment Amount</Label>
-        </div>
-
-        <div className="flex items-center w-[42%]">
+    <div className="">
+      <div className="grid grid-cols-[.35fr_1fr_.1fr] items-center ">
+        <Label>Payment Amount</Label>
+        <div className="flex items-center w-[35%] relative">
           <NumericInputReactHookForm
             register={register}
             readOnly={false}
@@ -74,8 +63,8 @@ const PaymentEntryInput = ({
               register.onChange(e);
               // setPaymentAmount(e.target.value);
             }}
-            className="w-full text-start p-2 rounded-sm border border-gray-300  focus:outline-none focus:border-blue-500 disabled:bg-neutral-300 
-            focus:dark:border-gray-100 dark:disabled:bg-neutral-950 dark:text-neutral-100 dark:bg-neutral-800 dark:border-gray-500"
+            className="w-full text-start p-2 rounded-sm border border-gray-300 dark:border-slate-700/80 focus:outline-none focus:border-blue-500  disabled:bg-neutral-300 
+             dark:focus:dark:border-indigo-400  dark:disabled:bg-slate-950 dark:text-neutral-100 dark:bg-slate-800  dark:focus:border-indigo-500"
           ></NumericInputReactHookForm>
           {/* <div>
             {available - paymentAmount < 0 && (
@@ -86,7 +75,7 @@ const PaymentEntryInput = ({
             )}
           </div> */}
           {error && (
-            <div className="text-red-500 pl-1">
+            <div className="text-red-500 pl-1 absolute -right-5">
               <Asterisk size={18}></Asterisk>
             </div>
           )}

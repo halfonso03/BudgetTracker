@@ -231,6 +231,11 @@ input:-webkit-autofill:focus {
   background-color: red;
 }
 
+.dark .Dropdown-placeholder {
+  background-color: var(--color-slate-900) !important;
+  color: white !important;
+}
+
 .Dropdown-menu {
   border: 1px solid var(--color-neutral-300) !important;
   overflow-y: hidden !important;
@@ -392,4 +397,60 @@ pre {
 .min-w-8xl,
 .max-w-8xl {
   width: calc(100% - 15vw) !important;
+}
+
+.dark .react-datepicker {
+  border: 1px solid var(--color-slate-700);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: var(--color-slate-900);
+  color: var(--color-slate-100) !important;
+}
+/* .react-datepicker::after {
+  background-color: var(--color-grey-900);
+} */
+
+.dark .react-datepicker__triangle {
+  fill: var(--color-slate-900) !important;
+  background-color: transparent !important;
+  color: var(--color-slate-800) !important;
+}
+
+.dark .react-datepicker__header {
+  background-color: var(--color-slate-800);
+  border-bottom: 1px solid var(--color-slate-600);
+}
+
+.dark .react-datepicker__day {
+  color: var(--color-slate-100);
+}
+
+.dark .react-datepicker__day:hover {
+  background-color: var(--color-slate-600) !important;
+}
+
+.dark .react-datepicker__day-name {
+  color: var(--color-slate-100);
+}
+
+.dark .react-datepicker__current-month {
+  color: var(--color-slate-100);
+}
+
+.dark .react-datepicker__day--selected {
+  background-color: var(--color-indigo-400);
+  color: white;
+}
+
+.react-datepicker__input-container > input {
+  border-radius:  0 !important;
+}
+
+.dark .react-datepicker__input-container > input:focus {
+  border: 1px solid var(--color-indigo-400) !important;
+}
+
+
+.dark .react-datepicker__input-container > input:focus-visible {
+  border: 1px solid var(--color-indigo-400) !important;
 }

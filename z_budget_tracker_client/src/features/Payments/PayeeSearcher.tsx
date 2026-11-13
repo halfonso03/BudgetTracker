@@ -112,7 +112,7 @@ const PayeeSearcher = ({
   return (
     <div>
       <div
-        className={` ${isFetching && 'bg-neutral-200'}  pl-1  rounded-sm ${inputFocused ? 'border border-blue-500' : 'border border-neutral-300'}`}
+        className={` ${isFetching && 'bg-neutral-200 dark:bg-slate-700'}  pl-1  rounded-sm ${inputFocused ? 'border border-blue-500 dark:border-slate-600' : 'border border-neutral-300 dark:border-slate-700'}`}
       >
         {loadginSelectedPayeeInfo && (
           <Skeleton
@@ -136,7 +136,7 @@ const PayeeSearcher = ({
           <input
             ref={inputRef}
             value={query}
-            className="p-2 w-full rounded-sm text-neutral-800 placeholder-neutral-400 focus:outline-none transition-all "
+            className="cursor-pointer p-2 w-full rounded-sm text-neutral-800 dark:text-white placeholder-neutral-400 focus:outline-none transition-all dark:placeholder-neutral-300 focus:border-neutral-400 dark:focus:border-indigo-400"
             placeholder="Enter payee name..."
             onFocus={() => {
               stInputFocused(true);
@@ -155,7 +155,7 @@ const PayeeSearcher = ({
             </div>
           )}
           {suggestions && suggestions.length === 0 && (
-            <div className="mr-3 w-[45%] italic text-end text-neutral-400 ">
+            <div className="mr-3 w-[45%] italic text-end text-neutral-400 dark:text-white ">
               no results found
             </div>
           )}
@@ -165,7 +165,7 @@ const PayeeSearcher = ({
               onClick={() => setAddNewPayeeModalIsOpen(true)}
               tabIndex={-1}
             >
-              <Plus className="border border-transparent hover:border-neutral-400 hover:bg-neutral-300/60 rounded-sm  text-neutral-500 hover:text-neutral-600 duration-200 transition-all cursor-pointer"></Plus>
+              <Plus className="border border-transparent hover:border-neutral-400 dark:hover:border-slate-700 hover:bg-neutral-300/60 dark:hover:bg-slate-600 rounded-sm  text-neutral-500 dark:text-slate-200 hover:text-neutral-600 dark:hover:text-slate-100 duration-200 transition-all cursor-pointer"></Plus>
             </button>
           </div>
 
@@ -174,10 +174,10 @@ const PayeeSearcher = ({
           </div> */}
         </div>
       </div>
-      <div className="relative bg-white opacity-100">
+      <div className="relative bg-white dark:bg-slate-700/80 opacity-100">
         <div className="w-full rounded-sm pt-1 absolute z-1000">
           {suggestions && suggestions.length > 0 && searching && (
-            <ScrollableDiv className=" bg-white border border-neutral-300/55 rounded-sm w-full shadow-md ">
+            <ScrollableDiv className=" bg-white dark:bg-slate-700 border border-neutral-300/55 dark:border-slate-600 rounded-sm w-full shadow-md ">
               {suggestions?.map((item, index) => (
                 // Render each suggestion as a clickable list item
                 <div
@@ -190,22 +190,22 @@ const PayeeSearcher = ({
                     onPayeeSelected?.(suggestions[index]);
                   }}
                   className={`${highlightedRow === index ? 'bg-neutral-200/60' : ''} 
-                      px-1 pl-2 flex py-1 justify-between items-center border-b border-b-neutral-300/55 last:border-b-0 
-                       dark:text-neutral-300 cursor-pointer hover:bg-neutral-200`}
+                      px-1 pl-2 flex py-1 justify-between items-center border-b border-b-neutral-300/55 dark:border-b-slate-600 last:border-b-0 
+                       dark:text-neutral-300 cursor-pointer hover:bg-neutral-200 dark:hover:bg-slate-600`}
                 >
-                  <div className="p-1 w-full font-medium">
-                    <div>{item.name}</div>
+                  <div className="p-1 w-full font-semibold">
+                    <div className='dark:text-white'>{item.name}</div>
                     <div className=" w-full text-[.9rem]  ">
-                      <div className="text-neutral-500  ">
+                      <div className="text-neutral-500 dark:text-slate-300  ">
                         [Payee Type:
-                        <span className="font-medium text-neutral-900 pl-2">
+                        <span className="font-medium text-neutral-900 pl-2 dark:text-white">
                           {item.payeeTypeId === 1 ? 'Vendor' : 'Contractor'}
                         </span>
                         ]
                       </div>
-                      <div className="text-neutral-500 ">
+                      <div className="text-neutral-500 dark:text-slate-300">
                         [Charge Account:
-                        <span className="font-medium text-neutral-900 pl-2">
+                        <span className="font-medium text-neutral-900 pl-2 dark:text-white">
                           {item.categoryName} / {item.accountName}
                         </span>
                         ]
