@@ -319,33 +319,21 @@ const PaymentLineModal = (props: Props) => {
   const initiativesForDropdown = loadInitiativesSuccess
     ? initiatives!.map((b) => ({
         value: b.id,
-        label: (
-          <div className="flex justify-between gap-2  dark:text-white dark:bg-slate-900   ">
-            {b.name}
-          </div>
-        ),
+        label: b.name,
       }))
     : [];
 
   const grantsForDropdown = grantsSuccess
     ? grants!.map((b) => ({
         value: b.id,
-        label: (
-          <div className="flex justify-between gap-2  dark:text-white dark:bg-slate-900  ">
-            {b.name}
-          </div>
-        ),
+        label: <div className="dark:text-white  ">{b.name}</div>,
       }))
     : [];
 
   const catsForDropdown = catSuccess
     ? categories!.map((b) => ({
         value: b.id,
-        label: (
-          <div className="flex justify-between gap-2  dark:text-white dark:bg-slate-900  ">
-            {b.name}
-          </div>
-        ),
+        label: <div className=" dark:text-white  ">{b.name}</div>,
       }))
     : [];
 
@@ -381,18 +369,18 @@ const PaymentLineModal = (props: Props) => {
           className="self-center h-full w-full"
         >
           {fromRedirect && redirectMessageIsOpen && (
-            <div className="p-3 border mb-2 border-blue-400 dark:border-slate-600 bg-blue-50 dark:bg-slate-700/10 dark:text-white flex items-center relative">
+            <div className="p-3 border mb-2 border-blue-400 dark:border-slate-600 bg-blue-50 dark:bg-slate-700/50 dark:text-white flex items-center relative">
               <div className="flex-1 ">
                 Initiative, Grant, Category and Account have been pre-selected.
               </div>
               <div
                 onClick={() => setRedirectMessagIsOpen(false)}
-                className="absolute top-1 right-1 p-1  transition-all duration-200  cursor-pointer hover:bg-blue-200/70"
+                className="absolute top-1 right-1 p-1  transition-all duration-200  cursor-pointer hover:bg-blue-200/70 dark:hover:bg-transparent"
               >
                 <X
                   size={23}
                   className=" text-blue-500 border border-transparent hover:text-blue-700 dark:text-slate-400 hover:dark:text-white
-               transition-all duration-200 "
+               transition-all  "
                 ></X>
               </div>
             </div>
