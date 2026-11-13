@@ -43,7 +43,7 @@ export function Pagination({ data, onPageNumberChange }: Props) {
               setPageNumber(1);
             }}
             disabled={data?.currentPage === 1}
-            className="cursor-pointer disabled:cursor-default p-2 rounded-md hover:bg-neutral-50 dark:hover:bg-slate-400 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            className="cursor-pointer disabled:cursor-default  p-2 rounded-md hover:bg-neutral-50 dark:hover:bg-slate-600 text-neutral-600 dark:text-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
           >
             <ChevronFirst size={20} className=""></ChevronFirst>
           </button>
@@ -55,12 +55,12 @@ export function Pagination({ data, onPageNumberChange }: Props) {
               setPageNumber(Math.max(data!.currentPage - 1, 1));
             }}
             disabled={data?.currentPage === 1}
-            className="cursor-pointer disabled:cursor-default  p-2 rounded-md hover:bg-neutral-50 dark:hover:bg-slate-300 text-neutral-600 dark:text-slate-400 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            className="cursor-pointer disabled:cursor-default  p-2 rounded-md hover:bg-neutral-50 dark:hover:bg-slate-600 text-neutral-600 dark:text-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
           >
             <ChevronLeft size={20} />
           </button>
         </div>
-        <div className="flex ">
+        <div className="flex gap-1 ">
           {pageNumbers.length > 12 && (
             <Pager
               currentPage={data!.currentPage}
@@ -72,21 +72,14 @@ export function Pagination({ data, onPageNumberChange }: Props) {
             pageNumbers.map((p) => (
               <div
                 key={p}
-                className={
-                  p == data.currentPage ? 'page-link-active' : 'page-link'
-                }
+                onClick={() => onPageNumberChange(p)}
+                className={`px-3 py-1.5 rounded-md transition-colors duration-200 font-medium dark:hover:bg-slate-600 dark:text-white ${
+                  data.currentPage === p
+                    ? 'bg-neutral-500 text-white  dark:bg-slate-600/70'
+                    : 'hover:bg-neutral-400 text-neutral-600 hover:text-white dark:hover:bg-slate-600  '
+                }`}
               >
-                <div
-                  onClick={() => onPageNumberChange(p)}
-                  key={p}
-                  className={`px-3 py-1.5 rounded-md transition-colors duration-200 font-medium ${
-                    data.currentPage === p
-                      ? 'bg-neutral-500 text-white'
-                      : 'hover:bg-neutral-400 text-neutral-600 hover:text-white'
-                  }`}
-                >
-                  {p}
-                </div>
+                {p}
               </div>
             ))}
         </div>
@@ -96,9 +89,9 @@ export function Pagination({ data, onPageNumberChange }: Props) {
             onPageNumberChange(data!.currentPage + 1);
           }}
           disabled={data?.currentPage === data?.totalPages}
-          className=" cursor-pointer disabled:cursor-default  p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            className="cursor-pointer disabled:cursor-default  p-2 rounded-md hover:bg-neutral-50 dark:hover:bg-slate-600 text-neutral-600 dark:text-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
         >
-          <ChevronRight size={20}  />
+          <ChevronRight size={20} />
         </button>
         <div>
           <button
@@ -106,11 +99,14 @@ export function Pagination({ data, onPageNumberChange }: Props) {
               onPageNumberChange(pageNumbers.length);
               setPageNumber(pageNumbers.length);
             }}
-            disabled={data?.currentPage >= pageNumbers[pageNumbers.length - 1] || data?.totalPages < 12 }
+            disabled={
+              data?.currentPage >= pageNumbers[pageNumbers.length - 1] ||
+              data?.totalPages < 12
+            }
             // disabled={data?.currentPage === pageNumbers[pageNumbers.length]}
-            className="cursor-pointer disabled:cursor-default  p-2 rounded-md hover:bg-neutral-50 text-neutral-600 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+            className="cursor-pointer disabled:cursor-default  p-2 rounded-md hover:bg-neutral-50 dark:hover:bg-slate-600 text-neutral-600 dark:text-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
           >
-            <ChevronLast size={20} ></ChevronLast>
+            <ChevronLast size={20}></ChevronLast>
           </button>
         </div>
       </div>
@@ -151,7 +147,7 @@ const Pager = memo(
       lastPageNumber = 6;
     }
 
-    if (lastPageNumber - currentPage  <= 2) {
+    if (lastPageNumber - currentPage <= 2) {
       showRightEllipses = false;
     }
 

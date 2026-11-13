@@ -27,16 +27,16 @@ const PaymentSearchReults = ({
   if (results.length == 0) return null;
 
   return (
-    <div className="w-full min-w-full ">
-      <div className="grid grid-cols-[.4fr_.9fr_1.2fr_1fr_.7fr_.7fr_.7fr_1fr_.8fr_1.2fr_.5fr_1.4fr_.3fr] p-2 px-3 bg-gray-50 text-neutral-500 border border-neutral-300/60 ">
-        <div className="entity-label flex justify-center">
+    <div className="w-full min-w-full  ">
+      <div className="grid grid-cols-[.4fr_.9fr_1.2fr_1fr_.7fr_.7fr_.7fr_1fr_.8fr_1.2fr_.5fr_1.4fr_.3fr] p-2 px-3 bg-gray-50 text-neutral-500 border border-neutral-300/60 dark:border-slate-700/80  rounded-t-md  dark:bg-slate-800/80">
+        <div className="flex justify-center">
           <SortBySelector
             label="ID"
             value="ID"
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
-        <div className="entity-label flex justify-center">
+        <div className="flex justify-center">
           <div className="flex justify-center">
             <SortBySelector
               label="Payment No."
@@ -45,7 +45,7 @@ const PaymentSearchReults = ({
             ></SortBySelector>
           </div>
         </div>
-        <div className="entity-label flex justify-center">
+        <div className="flex justify-center">
           <div className="flex justify-center">
             <SortBySelector
               label="Payee"
@@ -54,7 +54,7 @@ const PaymentSearchReults = ({
             ></SortBySelector>
           </div>
         </div>
-        <div className="entity-label flex justify-center">
+        <div className="flex justify-center">
           <div className="flex justify-center">
             <SortBySelector
               label="Amount"
@@ -63,7 +63,7 @@ const PaymentSearchReults = ({
             ></SortBySelector>
           </div>
         </div>
-        <div className="entity-label flex justify-center">
+        <div className="flex justify-center">
           <div className="flex justify-center">
             {' '}
             <SortBySelector
@@ -73,7 +73,7 @@ const PaymentSearchReults = ({
             ></SortBySelector>
           </div>
         </div>
-        <div className="entity-label flex justify-center">
+        <div className="flex justify-center">
           <div className="flex justify-center">
             <SortBySelector
               label="Invoice No."
@@ -82,7 +82,7 @@ const PaymentSearchReults = ({
             ></SortBySelector>
           </div>
         </div>
-        <div className="entity-label flex justify-center">
+        <div className="flex justify-center">
           <div className="flex justify-center">
             <SortBySelector
               label="Check No."
@@ -91,7 +91,7 @@ const PaymentSearchReults = ({
             ></SortBySelector>
           </div>
         </div>
-        <div className="entity-label flex justify-center">
+        <div className="flex justify-center">
           <div className="flex justify-center">
             <SortBySelector
               label="Posted By"
@@ -100,7 +100,7 @@ const PaymentSearchReults = ({
             ></SortBySelector>
           </div>
         </div>
-        <div className="entity-label flex justify-center">
+        <div className="flex justify-center">
           <div className="flex justify-center">
             <SortBySelector
               label="Posted Date"
@@ -109,7 +109,7 @@ const PaymentSearchReults = ({
             ></SortBySelector>
           </div>
         </div>
-        <div className="entity-label flex justify-center">
+        <div className="flex justify-center">
           <div className="flex justify-center">
             <SortBySelector
               label="Initiative"
@@ -118,14 +118,14 @@ const PaymentSearchReults = ({
             ></SortBySelector>
           </div>
         </div>
-        <div className="entity-label flex justify-center">
+        <div className="flex justify-center">
           <SortBySelector
             label="Award"
             value="AWARD"
             currentSortValue={sortByValue}
           ></SortBySelector>
         </div>
-        <div className="entity-label flex justify-center">
+        <div className="flex justify-center">
           <div className="flex justify-center">
             <SortBySelector
               label="Account"
@@ -136,33 +136,47 @@ const PaymentSearchReults = ({
         </div>
         <div className="text-center"></div>
       </div>
-      <div className="border-l border-r border-b border-neutral-300/60">
+      <div className="border-l border-r border-b border-neutral-300/60 dark:border-slate-700/80 rounded-b-md">
         {results.map((r, index) => (
           <div
             key={index}
-            className="hover:bg-neutral-100  border-b border-b-neutral-300/60 last:border-0"
+            className="hover:bg-neutral-100 dark:hover:bg-slate-700 border-b border-b-neutral-300/60 dark:border-slate-700/80 last:border-0"
           >
             <div className="grid grid-cols-[.4fr_.9fr_1.2fr_1fr_.7fr_.7fr_.7fr_1fr_.8fr_1.2fr_.5fr_1.4fr_.3fr] p-2 px-3">
-              <div className="self-center">
+              <div className="self-center dark:text-white">
                 <Link to={`/payments/${r.paymentId}`}>{r.paymentId}</Link>
               </div>
-              <div className="text-center self-center">{r.paymentNumber}</div>
-              <div className="text-center self-center">{r.payeeName}</div>
-              <div className="text-center self-center">
+              <div className="text-center self-center dark:text-white">
+                {r.paymentNumber}
+              </div>
+              <div className="text-center self-center dark:text-white">
+                {r.payeeName}
+              </div>
+              <div className="text-center self-center dark:text-white">
                 {formatCurrency(r.amount)}
               </div>
-              <div className="text-center self-center">
+              <div className="text-center self-center dark:text-white">
                 {r.invoiceDate && formatDate(r.invoiceDate)}
               </div>
-              <div className="text-center self-center ">{r.invoiceNumber}</div>
-              <div className="text-center self-center">{r.checkNumber}</div>
-              <div className="text-center self-center">{r.postedBy}</div>
-              <div className="text-center self-center">
+              <div className="text-center self-center dark:text-white">
+                {r.invoiceNumber}
+              </div>
+              <div className="text-center self-center dark:text-white">
+                {r.checkNumber}
+              </div>
+              <div className="text-center self-center dark:text-white">
+                {r.postedBy}
+              </div>
+              <div className="text-center self-center dark:text-white">
                 {r.postedDate && formatDate(r.postedDate)}
               </div>
-              <div className="text-center self-center">{r.initiativeName}</div>
-              <div className="text-center self-center">{r.grantName}</div>
-              <div className="text-center self-center">
+              <div className="text-center self-center dark:text-white">
+                {r.initiativeName}
+              </div>
+              <div className="text-center self-center dark:text-white">
+                {r.grantName}
+              </div>
+              <div className="text-center self-center dark:text-white">
                 {r.categoryName + '/' + r.accountName}
               </div>
               <div className="flex justify-center self-center w-full">
@@ -170,7 +184,7 @@ const PaymentSearchReults = ({
                   <Menus.Toggler id={r.paymentLineItemId.toString()}>
                     <Ellipsis
                       size={22}
-                      className="text-neutral-500 hover:text-blue-500 transition-all duration-200 hover:scale-120"
+                      className="text-neutral-500 hover:text-neutral-400 dark:text-slate-400 adrk:hover:text-slate-300 transition-all hover:scale-125"
                     ></Ellipsis>
                   </Menus.Toggler>
                   <Menus.List
@@ -210,7 +224,6 @@ const PaymentSearchReults = ({
                       >
                         <Trash className="text-red-500" size={18}></Trash>
                         &nbsp;&nbsp;Delete
-
                       </Menus.MenuItem>
                     )}
                   </Menus.List>

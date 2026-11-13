@@ -3,7 +3,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 import { usePaymentSearch } from '../../api/hooks/payments/usePaymentSearch';
 import { RefreshCw } from 'lucide-react';
-import Skeleton from 'react-loading-skeleton';
 import { Pagination } from '../../components/Pagination';
 import MenuIdProvider from '../../contexts/MenuIdContext';
 import PaymentSearchReults from './PaymentSearchReults';
@@ -17,6 +16,7 @@ import { usePaymentMutations } from '../../api/hooks/payments/usePaymentMutation
 import toast from 'react-hot-toast';
 import ConfirmModal from '../../components/ConfirmModal';
 import InvoiceInfoModal from './modals/InvoiceInfoModal';
+import Spinner from '../../components/Spinner';
 
 const PAYEE_LIST_TYPE = 'P';
 const INITIATIVES_LIST_TYPE = 'I';
@@ -339,21 +339,23 @@ const PaymentSearch = () => {
           ></MemoizedSearchParams>
         </div>
         {loadingSearchResults && (
-          <div className="mt-16 ">
-            <Skeleton
-              height={35}
-              width="100%"
-              enableAnimation={true}
-              count={15}
-              containerClassName="flex-1"
-            />
+          <div className="mt-16 flex justify-center ">
+            <Spinner></Spinner>
+            {/* <Skeleton
+               customHighlightBackground="linear-gradient(90deg, var(--color-slate-800) 40%, var(--color-slate-700) 50%, var(--color-slate-800) 60%)"
+                height={35}
+                width="100%"
+                enableAnimation={true}
+                count={15}
+                containerClassName="flex-1"
+              /> */}
           </div>
         )}
         {successLoadingResults && paginationData && (
           <MenuIdProvider>
             <div className="flex flex-col">
               <div className="flex justify-between  pl-1 items-center mb-4 ">
-                <div className="text-md font-semibold text-neutral-500  ">
+                <div className="text-md font-semibold text-neutral-500 500 dark:text-slate-300  ">
                   {paginationData.totalCount} Payment
                   {paginationData.totalCount > 1 ||
                   paginationData.totalCount === 0
@@ -364,7 +366,7 @@ const PaymentSearch = () => {
                 {searchResults && searchResults.items.length > 0 && (
                   <div>
                     <button
-                      className="text-neutral-500 hover:text-blue-800 cursor-pointer hover:scale-115 transition-all duration-200 "
+                      className="text-neutral-500 hover:text-blue-800 dark:hover:text-indigo-400  cursor-pointer hover:scale-115 transition-all duration-200 "
                       onClick={handleRefreshClick}
                     >
                       <RefreshCw size={20}></RefreshCw>
@@ -373,7 +375,9 @@ const PaymentSearch = () => {
                 )}
               </div>
 
-              {successLoadingResults && searchResults && (
+              {loadingSearchResults && <Spinner></Spinner>}
+
+              {searchResults && (
                 <PaymentSearchReults
                   key={searchResults.searchId}
                   results={searchResults.items}

@@ -17,6 +17,7 @@ type Props = {
       xChecked: boolean;
     }[],
   ) => void;
+  showExclusiveOptions?: boolean;
 };
 
 const CheckBoxListReproSearchParam = ({
@@ -29,6 +30,7 @@ const CheckBoxListReproSearchParam = ({
   onDeselectAll,
   onSelectAll,
   onOptionsUpdated,
+  showExclusiveOptions,
 }: Props) => {
   const [allSelected, setAllSelected] = useState(true);
 
@@ -117,7 +119,7 @@ const CheckBoxListReproSearchParam = ({
             padding: '4px',
           }}
         >
-          <ul className='p-1'>
+          <ul className="p-1">
             {options?.map((i, index) => {
               return (
                 <li
@@ -156,41 +158,44 @@ const CheckBoxListReproSearchParam = ({
                       {i.name}
                     </div>
                   </div>
-                  <div className="flex gap-2  justify-end">
-                    <div className="relative flex">
-                      <input
-                        type="checkbox"
-                        onChange={() => {
-                          handleXCheck(i.id, id);
-                        }}
-                        disabled={
-                          !options.some((x) => x.id === i.id && x.checked)
-                        }
-                        checked={i.xChecked}
-                        className={`peer appearance-none w-5 h-5 border-2 border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-slate-700 dark:checked:border-indigio-300 
+
+                  {showExclusiveOptions && (
+                    <div className="flex gap-2  justify-end">
+                      <div className="relative flex">
+                        <input
+                          type="checkbox"
+                          onChange={() => {
+                            handleXCheck(i.id, id);
+                          }}
+                          disabled={
+                            !options.some((x) => x.id === i.id && x.checked)
+                          }
+                          checked={i.xChecked}
+                          className={`peer appearance-none w-5 h-5 border-2 border-gray-400 rounded bg-transparent checked:bg-blue-700 checked:border-blue-700 dark:checked:bg-slate-700 dark:checked:border-indigio-300 
                     transition-colors duration-200 ease-in-out focus:outline-none focus:ring focus:ring-blue-50 dark:focus:ring-indigo-400 dark:focus:ring-indigio-500 focus:ring-offset-2`}
-                      />
-                      <svg
-                        className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1/2  top-[.65rem] -translate-x-1/2 -translate-y-1/2"
-                        xmlns="http://w3.org"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polyline points="20 6 9 17 4 12"></polyline>
-                      </svg>
-                    </div>
-                    <div>
-                      <div
-                        className={`text-[0.9rem] italic ${i.xChecked ? 'text-neutral-700 dark:text-white' : 'text-neutral-500 dark:text-slate-300'}`}
-                      >
-                        Exclusive
+                        />
+                        <svg
+                          className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1/2  top-[.65rem] -translate-x-1/2 -translate-y-1/2"
+                          xmlns="http://w3.org"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
+                      <div>
+                        <div
+                          className={`text-[0.9rem] italic ${i.xChecked ? 'text-neutral-700 dark:text-white' : 'text-neutral-500 dark:text-slate-300'}`}
+                        >
+                          Exclusive
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </li>
               );
             })}

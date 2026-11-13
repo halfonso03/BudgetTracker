@@ -7,16 +7,16 @@ const agent = axios.create({
 });
 
 
-// const sleep = (delay: number) =>
-//     new Promise((resolve) => setTimeout(resolve, delay));
+const sleep = (delay: number) =>
+    new Promise((resolve) => setTimeout(resolve, delay));
 
 
 agent.interceptors.request.use(async (config) => {
     // store.uiStore.isBusy();
 
-    // if (import.meta.env.DEV) {
-    //     await sleep(2000);
-    // }
+    if (import.meta.env.DEV) {
+        await sleep(2000);
+    }
     return config;
 });
 

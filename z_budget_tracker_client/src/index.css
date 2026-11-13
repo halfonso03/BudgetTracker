@@ -386,23 +386,21 @@ pre {
   z-index: 20000;
 }
 
-.page-link-active {
+/* .page-link-active {
   color: var(--color-neutral-600);
   background-color: var(--color-neutral-200);
   border-radius: 5px;
-  /* border: 1px solid var(--color-neutral-300); */
 }
 
-.dark.page-link-active {
+.dark .page-link-active {
   color: var(--color-white);
   background-color: var(--color-slate-700);
   border-radius: 5px;
-  /* border: 1px solid var(--color-neutral-300); */
-}
+} */
 
-.page-link {
+/* .page-link {
   border: 1px solid transparent;
-}
+} */
 
 .min-w-8xl,
 .max-w-8xl {
