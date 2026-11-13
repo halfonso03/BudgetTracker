@@ -368,7 +368,7 @@ const PaymentLineModal = (props: Props) => {
           className="self-center h-full w-full"
         >
           {fromRedirect && redirectMessageIsOpen && (
-            <div className="p-3 border border-blue-400 bg-blue-50 flex items-center relative">
+            <div className="p-3 border mb-2 border-blue-400 dark:border-slate-600 bg-blue-50 dark:bg-slate-700 dark:text-white flex items-center relative">
               <div className="flex-1 ">
                 Initiative, Grant, Category and Account have been pre-selected.
               </div>
@@ -378,7 +378,7 @@ const PaymentLineModal = (props: Props) => {
               >
                 <X
                   size={23}
-                  className=" text-blue-500 border border-transparent hover:text-blue-700
+                  className=" text-blue-500 border border-transparent hover:text-blue-700 dark:text-slate-400 hover:dark:text-white
                transition-all duration-200 "
                 ></X>
               </div>
@@ -395,7 +395,7 @@ const PaymentLineModal = (props: Props) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-[.35fr_1fr_.1fr]  w-full items-center">
+                <div className="grid grid-cols-[.35fr_1fr_.1fr] w-full items-center ">
                   <Label>Initiative</Label>
                   <Dropdown
                     options={initiativesForDropdown}
@@ -426,7 +426,6 @@ const PaymentLineModal = (props: Props) => {
 
                       setSelections(newSelections);
                     }}
-                    className=" border p-2 border-neutral-300 py-3 rounded-sm text-neutral-800 disabled: bg-white"
                   ></Dropdown>
                   {errors?.initiativeId && (
                     <div className="text-red-500 pl-1">

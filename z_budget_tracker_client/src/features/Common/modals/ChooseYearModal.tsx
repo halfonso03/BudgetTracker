@@ -3,6 +3,7 @@ import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
 import TextArea from '../../../components/TextArea';
 import Select from '../../../components/Select';
+import Label from '../../../components/Label';
 
 type Props = {
   isOpen: boolean;
@@ -29,7 +30,9 @@ const ChooseYearModal = ({ ...props }: Props) => {
     <Modal2 size="lg" animateOut={animateOut} {...props}>
       <div>
         <div className="mb-3">
-          <div className="entity-label mb-1">Year</div>
+          <div className="mb-1">
+            <Label>Year</Label>
+          </div>
           <Select value={year} onChange={handleYearChange}>
             <option value="0" className="text-neutral-600">
               Select
@@ -39,7 +42,7 @@ const ChooseYearModal = ({ ...props }: Props) => {
           </Select>
         </div>
         <div className="mb-4">
-          <div className="entity-label">Enter a Justification</div>
+          <Label>Enter a Justification</Label>
           <TextArea
             value={justification}
             additionalclasses=""

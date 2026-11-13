@@ -259,7 +259,7 @@ const ReproParams2 = memo(
         >
           <div
             style={{ height: 'auto', zIndex: 10, overflow: 'visible' }}
-            className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900"
+            className="flex flex-col absolute shadow-lg dark:border dark:border-slate-700/80 shadow-neutral-300 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900"
           >
             <div className="  rounded-md p-2 py-3">
               <div className="ml-1">
@@ -347,7 +347,7 @@ const ReproParams2 = memo(
           outsideClicked={handleYearOutsideCLick}
           selectedItemLabel={yearOptions.filter((y) => y.checked)[0].name}
         >
-          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:shadow-neutral-900 w-50 rounded-md mt-1 z-1000 opacity-100 bg-white dark:bg-slate-900">
+          <div className="flex flex-col absolute dark:border dark:border-slate-700/80 shadow-lg shadow-neutral-300 dark:shadow-neutral-900 w-50 rounded-md mt-1 z-1000 opacity-100 bg-white dark:bg-slate-900">
             <RadioButtonList
               id={YEARS_LIST_TYPE}
               onSelected={handleYearSelected}
@@ -376,7 +376,7 @@ const ReproParams2 = memo(
             statuses.filter((x) => x.id == selectedStatus)[0].name
           }
         >
-          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
+          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
             <RadioButtonList
               id={STATUS_LIST_TYPE}
               onSelected={handleStatusChange}
@@ -385,7 +385,7 @@ const ReproParams2 = memo(
                 checked: selectedStatus === y.id,
               }))}
             ></RadioButtonList>
-            <div className="px-2 flex">
+            <div className="px-2 flex mb-2">
               <Button
                 additionalclasses="flex-1"
                 onClick={() => {
@@ -398,7 +398,7 @@ const ReproParams2 = memo(
           </div>
         </ReproSearchFilter>
 
-        {!initiatives && (
+        {/* {!initiatives && (
           <div className="flex gap-3 w-[30%]">
             <Skeleton
               height={40}
@@ -419,7 +419,7 @@ const ReproParams2 = memo(
               containerClassName="flex-1"
             />
           </div>
-        )}
+        )} */}
 
         {initiatives !== undefined && initiatives.length > 0 && (
           <ReproSearchFilter
@@ -427,7 +427,7 @@ const ReproParams2 = memo(
             parentCorntrolled={false}
             outsideShowList={false}
           >
-            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
+            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
               <CheckBoxListReproSearchParam
                 id={INITIATIVES_LIST_TYPE}
                 onCheck={handleCheck}
@@ -457,7 +457,7 @@ const ReproParams2 = memo(
             parentCorntrolled={false}
             outsideShowList={false}
           >
-            <div className="flex flex-col absolute shadow-neutral-300 dark:shadow-lg dark:shadow-slate-900  w-100  mt-1 z-1000 opacity-100  ">
+            <div className="flex flex-col absolute shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900  w-100  mt-1 z-1000 opacity-100 rounded-md ">
               <CheckBoxListReproSearchParam
                 key={selectedYear}
                 id={GRANTS_LIST_TYPE}
@@ -492,7 +492,7 @@ const ReproParams2 = memo(
             parentCorntrolled={false}
             outsideShowList={false}
           >
-            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:shadow-lg dark:shadow-slate-900 w-100 rounded-md mt-1 z-1000 opacity-100 ">
+            <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg  dark:shadow-slate-900 w-100 rounded-md mt-1 z-1000 opacity-100 ">
               <CheckBoxListReproSearchParam
                 id={ACCOUNTS_LIST_TYPE}
                 onCheck={handleCheck}

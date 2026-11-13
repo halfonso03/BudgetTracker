@@ -55,7 +55,7 @@ const ReproGrantSummary = ({ lines }: Props) => {
       </div>
       <div className="border border-neutral-300/60 dark:border-slate-700/80 rounded-md">
         <div className="grid grid-cols-[.5fr_.5fr.5fr] ">
-          <div className="text-center py-2 pl-1 bg-neutral-100 dark:bg-slate-800/80">
+          <div className="text-center py-2 pl-1 bg-neutral-100 dark:bg-slate-800/80 ">
             <Label>Grant</Label>
           </div>
           <div className="text-center py-2 pl-1  bg-neutral-100 dark:bg-slate-800/80">
@@ -66,7 +66,7 @@ const ReproGrantSummary = ({ lines }: Props) => {
           </div>
           {grantTotals.map((g) => (
             <>
-              <div className="pl-1 text-center my-2 dark:text-white">
+              <div className="pl-1 text-center my-2 font-mono text-neutral-800 dark:text-indigo-300 font-bold">
                 {g.grantName}
               </div>
               <div className="text-center  my-2 dark:text-white">

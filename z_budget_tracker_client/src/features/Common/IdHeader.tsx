@@ -19,7 +19,7 @@ const IdHeader = React.memo(({ id, status, created }: Props) => {
           {id == 0 ? <div>-</div> : <div>{id}</div>}
         </div>
       </div>
-      <div className="flex gap-3 font-medium dark:text-indigo-200">
+      <div className="flex gap-3 font-medium dark:text-indigo-100">
         <Label>STATUS</Label>
         {id == 0 ? (
           <div>Draft</div>

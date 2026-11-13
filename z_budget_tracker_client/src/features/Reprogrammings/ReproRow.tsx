@@ -61,7 +61,7 @@ const ReproRow = ({
       <div className="self-center px-3 py-4 dark:text-white">
         {initiativeName}
       </div>
-      <div className="self-center px-3 py-4 dark:text-white">{grantName}</div>
+      <div className="self-center px-3 py-4 font-mono text-neutral-800 dark:text-indigo-300 font-bold">{grantName}</div>
       <div className="self-center px-3 py-4 dark:text-white">
         {categoryName}
       </div>

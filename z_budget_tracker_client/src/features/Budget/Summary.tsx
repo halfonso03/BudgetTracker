@@ -126,7 +126,7 @@ const Summary = ({ year }: Props) => {
             <div className="pl-3 font-medium dark:text-slate-100 self-center">
               {budget.initiative_name}
             </div>
-            <div className="font-mono font-bold text-neutral-700  dark:text-indigo-300 self-center text-[1.1rem]">{budget.grant_name}</div>
+            <div className="font-mono dark:text-indigo-300 font-bold text-neutral-700 self-center text-[1.1rem]">{budget.grant_name}</div>
             <div className="text-end self-center">
               <Link
                 to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}

@@ -2,6 +2,7 @@ import { useState, type ChangeEvent, type SubmitEvent } from 'react';
 import Button from '../../../components/Button';
 import Modal2, { type ModalSize } from '../../../components/Modal2';
 import Label from '../../../components/Label';
+import TextArea from '../../../components/TextArea';
 
 type Props = {
   size?: ModalSize;
@@ -43,15 +44,14 @@ const JustificaModal = ({ itemComment, ...props }: Props) => {
           <Label>Enter a Justification </Label>
         </div>
         <form onSubmit={onSubmit}>
-          <textarea
+          <TextArea
             value={comment}
             readOnly={!props.canEdit}
             disabled={!props.canEdit}
-            className="w-full border border-neutral-300 rounded-sm p-2 outline-none focus:outline-none focus:ring-2 focus:ring-neutral-400 transition-all duration-300 ease-in-out"
             onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
               setComment(e.target.value);
             }}
-          ></textarea>
+          ></TextArea>
           {props.canEdit && (
             <div className="text-end">
               <button

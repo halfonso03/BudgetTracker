@@ -304,6 +304,8 @@ namespace Persistence
             builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.CurrentMonthlyBurnRate).HasColumnType("NUMERIC(5,2)");
             builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.MonthsOfRunwayLeft).HasColumnType("NUMERIC(10,2)");
             builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.SurplusGapPoints).HasColumnType("NUMERIC(10,2)");
+            builder.Entity<BudgetSurplusAndBurnRateDto>().Property(x => x.SimpleSlope).HasColumnType("NUMERIC(10,2)");
+
 
             DataSeeder.SeedData(builder, "hialfonso@nhac.org");
         }
