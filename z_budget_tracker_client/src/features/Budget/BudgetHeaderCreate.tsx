@@ -35,10 +35,10 @@ const BudgetHeaderCreate = ({ year, bRef, py1Amount, py2Amount }: Props) => {
       ></div>
       <div>
         <div className="flex items-stretch ">
-          <div className="flex flex-1 justify-end font-bold text-neutral-600 dark:text-white">
+          <div className="flex flex-1 justify-end font-semibold text-neutral-500 dark:text-slate-400">
             {formatNumber(py1Amount)}
           </div>
-          <div className="flex flex-1 justify-end font-bold text-neutral-600 dark:text-white">
+          <div className="flex flex-1 justify-end font-semibold text-neutral-500 dark:text-slate-400">
             {formatNumber(py2Amount)}
           </div>
         </div>

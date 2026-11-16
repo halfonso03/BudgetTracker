@@ -118,7 +118,6 @@ const CreateBudget = () => {
     }
   }
 
-  console.log('budgetRows', budgetRows);
   const { register, control, handleSubmit, setValue, getValues } =
     useForm<BudgetRows>({
       values: {
