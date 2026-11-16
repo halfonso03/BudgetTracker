@@ -56,6 +56,7 @@ const Modal2 = ({
       className="fixed inset-0 z-50 flex items-center justify-center  bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-sm transition-opacity"
       role="dialog"
       aria-modal="true"
+      onClick={(e) => e.stopPropagation()}
     >
       {/* Modal Container Card */}
       <div

@@ -73,16 +73,20 @@ export const GrantHealthScoreCard: React.FC<GrantHealthScoreProps> = ({
   else if (surplusScore <= 80) surplusScorePenalty -= 2;
   else if (surplusScore <= 90) surplusScorePenalty -= 1;
 
+  // if only few months left and no suplus, dont penalize
+  if (monthsRemaining <= 2 && surplusScorePenalty !== 0) {
+    if (monthsRemaining <= 2) monthsRemainingPenalty -= 9;
+    else if (monthsRemaining <= 3) monthsRemainingPenalty -= 8;
+    else if (monthsRemaining <= 5) monthsRemainingPenalty -= 7;
+    else if (monthsRemaining <= 7) monthsRemainingPenalty -= 6;
+    else if (monthsRemaining <= 9) monthsRemainingPenalty -= 5;
+    else if (monthsRemaining <= 11) monthsRemainingPenalty -= 4;
+    else if (monthsRemaining <= 13) monthsRemainingPenalty -= 3;
+    else if (monthsRemaining <= 14) monthsRemainingPenalty -= 2;
+    else if (monthsRemaining <= 15) monthsRemainingPenalty -= 1;
+  }
+
   // Months Remaining Penalties / Bonuses
-  if (monthsRemaining <= 2) monthsRemainingPenalty -= 9;
-  else if (monthsRemaining <= 3) monthsRemainingPenalty -= 8;
-  else if (monthsRemaining <= 5) monthsRemainingPenalty -= 7;
-  else if (monthsRemaining <= 7) monthsRemainingPenalty -= 6;
-  else if (monthsRemaining <= 9) monthsRemainingPenalty -= 5;
-  else if (monthsRemaining <= 11) monthsRemainingPenalty -= 4;
-  else if (monthsRemaining <= 13) monthsRemainingPenalty -= 3;
-  else if (monthsRemaining <= 14) monthsRemainingPenalty -= 2;
-  else if (monthsRemaining <= 15) monthsRemainingPenalty -= 1;
 
   // Slope Penalties
   if (remainingAmount > 0) {
@@ -124,7 +128,6 @@ export const GrantHealthScoreCard: React.FC<GrantHealthScoreProps> = ({
     monthsOfRunwayLeftPenalty;
   // Get UI styling details
   const status = getScoreDetails(totalScore);
-
   return (
     <div className="flex flex-col gap-2 text-neutral-600 dark:text-slate-900/80  dark:bg-transparent max-w-sm">
       <div className="flex justify-end items-center gap-2 ">

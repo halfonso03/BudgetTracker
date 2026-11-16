@@ -344,6 +344,8 @@ const CreateBudget = () => {
                         fieldName={field.name}
                         budgetedAmount={field.amount}
                         comment={field.comment}
+                        priorYear1AmountTotal={0}
+                        priorYear2AmountTotal={0}
                         priorYear1Amount={py1}
                         priorYear2Amount={py2}
                         amountRegister={amountRegister}
