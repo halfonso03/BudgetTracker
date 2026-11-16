@@ -127,7 +127,7 @@ const BudgetBurnRateModal = ({
       {...props}
     >
       <div className=''>
-        <div className="flex gap-1 mt-4 mb-2">
+        <div className="flex gap-1 mt-1 mb-2">
           <div className="w-1/12 text-neutral-700/80 dark:text-slate-400 text-2xl">Initiative</div>
           <div className=" text-neutral-800 dark:text-white text-2xl">
             {initiativeName}

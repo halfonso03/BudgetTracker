@@ -161,10 +161,12 @@ const BudgetInputFields = ({
           onFocus={(e) => (onFocus ? onFocus(e) : null)}
         ></NumericArrayInput>
       </div>
-      <div  className={` self-center pl-3 ${isLastRow ? 'dark:text-slate-300 py-2 bg-neutral-100 dark:bg-slate-800/80 font-bold text-neutral-600  ' : 'dark:text-white'}`}>
-      &nbsp;</div>
-      <div  className={` self-center pl-3 ${isLastRow ? 'dark:text-slate-300 py-2 bg-neutral-100 dark:bg-slate-800/80 font-bold text-neutral-600  ' : 'dark:text-white'}`}>
-      &nbsp;</div>
+      <div
+        className={` self-center pl-3 ${isLastRow ? 'dark:text-slate-300 py-2 bg-neutral-100 dark:bg-slate-800/80 font-bold text-neutral-600  ' : 'dark:text-white'}`}
+      >
+        &nbsp;
+      </div>
+
       <div
         className={`text-end self-center py-1 ${getCellColor(isLastRow, current)} ${isLastRow} ? "  py-2 ":""`}
       >

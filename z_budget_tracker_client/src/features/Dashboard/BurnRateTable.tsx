@@ -546,6 +546,7 @@ export default function App() {
                         </td>
                         <td className="py-2 px-4 flex justify-center">
                           <GrantHealthScoreCard
+                            remainingAmount={row.remainingBalance}
                             surplusScore={row.surplusScore}
                             monthsRemaining={row.monthsRemaining}
                             slope={row.simpleSlope}
@@ -627,9 +628,8 @@ export default function App() {
           )[0]?.initiativeName ?? ''
         }
         grantName={
-          burnRateData?.filter(
-            (x) => x.grantId === selectedGrantId,
-          )[0]?.grantName ?? ''
+          burnRateData?.filter((x) => x.grantId === selectedGrantId)[0]
+            ?.grantName ?? ''
         }
       ></BudgetBurnRateModal>
     </div>

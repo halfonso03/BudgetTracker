@@ -4,6 +4,7 @@ import ScoreBreakdownModal from './modals/ScoreBreakdownModal';
 
 // Define the shape of the props
 export interface GrantHealthScoreProps {
+  remainingAmount: number;
   surplusScore: number;
   monthsRemaining: number; // Months left in the grant lifecycle (e.g., 24 - currentMonth)
   slope: number; // Simple Slope value
@@ -49,6 +50,7 @@ export const GrantHealthScoreCard: React.FC<GrantHealthScoreProps> = ({
   burnRate,
   monthsOfRunwayLeft,
   surplusGapPoints,
+  remainingAmount,
 }) => {
   // 1. Replicate the scoring logic in TypeScript
 
@@ -72,28 +74,28 @@ export const GrantHealthScoreCard: React.FC<GrantHealthScoreProps> = ({
   else if (surplusScore <= 90) surplusScorePenalty -= 1;
 
   // Months Remaining Penalties / Bonuses
-  if (monthsRemaining >= 23) monthsRemainingPenalty += 2;
-  else if (monthsRemaining >= 18) monthsRemainingPenalty += 1;
-  else if (monthsRemaining <= 2) monthsRemainingPenalty -= 9;
+  if (monthsRemaining <= 2) monthsRemainingPenalty -= 9;
   else if (monthsRemaining <= 3) monthsRemainingPenalty -= 8;
   else if (monthsRemaining <= 5) monthsRemainingPenalty -= 7;
   else if (monthsRemaining <= 7) monthsRemainingPenalty -= 6;
   else if (monthsRemaining <= 9) monthsRemainingPenalty -= 5;
   else if (monthsRemaining <= 11) monthsRemainingPenalty -= 4;
   else if (monthsRemaining <= 13) monthsRemainingPenalty -= 3;
-  else if (monthsRemaining >= 14) monthsRemainingPenalty -= 2;
+  else if (monthsRemaining <= 14) monthsRemainingPenalty -= 2;
   else if (monthsRemaining <= 15) monthsRemainingPenalty -= 1;
 
   // Slope Penalties
-  if (slope === 0) slopePenalty -= 18;
-  else if (slope >= -0.2) slopePenalty -= 16;
-  else if (slope >= -0.4) slopePenalty -= 14;
-  else if (slope >= -0.6) slopePenalty -= 12;
-  else if (slope >= -0.8) slopePenalty -= 10;
-  else if (slope >= -1.0) slopePenalty -= 8;
-  else if (slope >= -1.2) slopePenalty -= 6;
-  else if (slope >= -1.4) slopePenalty -= 4;
-  else if (slope >= -1.6) slopePenalty -= 2;
+  if (remainingAmount > 0) {
+    if (slope === 0) slopePenalty -= 18;
+    else if (slope >= -0.2) slopePenalty -= 16;
+    else if (slope >= -0.4) slopePenalty -= 14;
+    else if (slope >= -0.6) slopePenalty -= 12;
+    else if (slope >= -0.8) slopePenalty -= 10;
+    else if (slope >= -1.0) slopePenalty -= 8;
+    else if (slope >= -1.2) slopePenalty -= 6;
+    else if (slope >= -1.4) slopePenalty -= 4;
+    else if (slope >= -1.6) slopePenalty -= 2;
+  }
 
   // Burn Rate Penalties
   if (burnRate <= 0) burnRatePenalty -= 15;
