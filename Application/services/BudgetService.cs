@@ -48,7 +48,7 @@ namespace Application.services
 
         }
 
-        public async Task<BudgetDto> GetBudget(int initiativeId, int grantId)
+        public async Task<BudgetDto> GetBudget(int year, int initiativeId, int grantId)
         {
             var budgetLineItemsFromDb = await _dbContext
                         .BudgetLineItems
@@ -85,7 +85,6 @@ namespace Application.services
                 .Where(x => x.InitiativeId == initiativeId && x.GrantId == grantId)
                 .ToListAsync();
 
-
             var result = new BudgetDto
             {
                 Grant = GrantDto.Create(g.Id, g.Name, g.StartDate, g.EndDate, g.Fiduciary),
@@ -94,6 +93,16 @@ namespace Application.services
                 GrantId = g.Id,
                 Year = g.Year,
                 AccountBalances = CreatePivotedBalances(lineItems, comments),
+                // AccountBalancesPY1 = new List<AccountBalancesPYDto>
+                // {
+                //     new() { AccountId = 1, Amount = 100 },
+                //     new() { AccountId = 2, Amount = 200  }
+                // },
+                // AccountBalancesPY2 = new List<AccountBalancesPYDto>
+                // {
+                //     new() { AccountId = 1, Amount = 300 },
+                //     new() { AccountId = 2, Amount = 400  }
+                // }
             };
 
 
@@ -158,7 +167,7 @@ namespace Application.services
 
 
             var result = from a in budgetBase
-                         
+
                          select new BudgetDto
                          {
                              GrantId = a.GrantId,
@@ -574,6 +583,92 @@ namespace Application.services
 
             return Result<List<TransactionResponseDto>>.Success([.. result.OrderBy(x => x.PostedDate)]);
         }
+
+        public async Task<Result<List<NewBudgetCategoryDto>>> NewBudget(int initiativeId, int grantId)
+        {
+
+            var accounts = await _dbContext.Accounts.AsNoTracking().Include(x => x.Category).ToListAsync();
+            var grant = await _dbContext.Grants.AsNoTracking().SingleAsync(x => x.Id == grantId);
+            var priorYear1Grant = await _dbContext.Grants.AsNoTracking().SingleOrDefaultAsync(x => x.Year == grant.Year - 1 && x.Fiduciary == grant.Fiduciary);
+            var priorYear2Grant = await _dbContext.Grants.AsNoTracking().SingleOrDefaultAsync(x => x.Year == grant.Year - 2 && x.Fiduciary == grant.Fiduciary);
+
+            var accountDtos = accounts.Select(x => new NewBudgetAmountDto
+            {
+                Id = x.Id,
+                Name = x.Name,
+                CategoryId = x.CategoryId,
+                Number = x.Number
+            }).ToList();
+
+            if (priorYear1Grant != null)
+            {
+                var priorYear1Budget = await _dbContext.BudgetLineItems
+                                    .AsNoTracking()
+                                    .Where(x => x.InitiativeId == initiativeId && x.GrantId == priorYear1Grant.Id && x.ItemType == Globals.ITEM_TYPE_BUDGET)
+                                    .Select(x => new { x.AccountId, x.Amount })
+                                    .ToListAsync();
+
+                accountDtos = [.. from a in accountDtos
+                               join p1 in priorYear1Budget on a.Id equals p1.AccountId
+                                     into itemsGroup
+                               from subItems in itemsGroup.DefaultIfEmpty()
+                               select new NewBudgetAmountDto
+                               {
+                                   Id = a.Id,
+                                   Name = a.Name,
+                                   CategoryId = a.CategoryId,
+                                   Number = a.Number,
+                                   PY1Amount = subItems != null ? subItems.Amount : 0
+                               }];
+            }
+
+            if (priorYear2Grant != null)
+            {
+                var priorYear2Budget = await _dbContext.BudgetLineItems
+                                    .AsNoTracking()
+                                    .Where(x => x.InitiativeId == initiativeId && x.GrantId == priorYear2Grant.Id && x.ItemType == Globals.ITEM_TYPE_BUDGET)
+                                    .Select(x => new { x.AccountId, x.Amount })
+                                    .ToListAsync();
+
+                accountDtos = [.. from a in accountDtos
+                               join p1 in priorYear2Budget on a.Id equals p1.AccountId
+                                     into itemsGroup
+                               from subItems in itemsGroup.DefaultIfEmpty()
+                               select new NewBudgetAmountDto
+                               {
+                                    Id = a.Id,
+                                    Name = a.Name,
+                                    CategoryId = a.CategoryId,
+                                    Number = a.Number,
+                                    PY1Amount = a.PY1Amount,
+                                    PY2Amount = subItems != null ? subItems.Amount : 0
+                               }];
+            }
+
+            var categories = accounts.Select(x => new { x.CategoryId, x.Category!.Name, }).Distinct();
+
+
+            var result = categories.Select(x => new NewBudgetCategoryDto
+            {
+                Id = x.CategoryId,
+                Name = x.Name,
+                Accounts = accountDtos
+            })
+            .ToList();
+
+
+            // return await _dbContext.Categories
+            //                     .AsNoTracking()
+            //                     .Select(c => CategoryDto.Create(
+            //                         c.Id,
+            //                         c.Name,
+            //                         c.Accounts.Select(a => AccountDto.Create(a.Id, a.Name, a.CategoryId, a.Number)).ToList()
+            //                     )) // 2. Projects directly to DTOs in SQL, fetching only required columns
+            //                     .ToListAsync();
+
+            return Result<List<NewBudgetCategoryDto>>.Success(result);
+        }
+
 
     }
 }

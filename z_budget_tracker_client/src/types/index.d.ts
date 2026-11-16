@@ -52,6 +52,8 @@ type Budget = {
     year: number
     items?: BudgetLineItem[]
     account_balances: AccountBalance[]
+    account_balances_py1: AccountBalance[],
+    account_balances_py2: AccountBalance[],
     initiative?: Initiative
     grant?: Grant
     lastUpdatedDate: Date | null

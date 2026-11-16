@@ -22,6 +22,12 @@ namespace Application.DTOs.Budgets
         [JsonPropertyName("account_balances")]
         public IEnumerable<AccountBalancesDto> AccountBalances { get; set; } = [];
 
+        [JsonPropertyName("account_balances_py1")]
+        public IEnumerable<AccountBalancesPYDto> AccountBalancesPY1 { get; set; } = [];
+        
+         [JsonPropertyName("account_balances_py2")]
+        public IEnumerable<AccountBalancesPYDto> AccountBalancesPY2 { get; set; } = [];
+
         public string? LastUpdatedBy { get; set; }
         public DateTime? LastUpdatedDate { get; set; }
         // [JsonPropertyName("account_balances2")]

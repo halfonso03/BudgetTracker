@@ -88,6 +88,7 @@ const BudgetDetails = () => {
     useHasUnsavedChangesStore();
 
   const { data: budget, isLoading } = useBudgetDetails(
+    +year!,
     +initiativeId!,
     +grantId!,
   );
@@ -493,7 +494,6 @@ const BudgetDetails = () => {
           </div>
           {/* <pre>{JSON.stringify(negativeAccounts)}</pre> */}
           <BudgetHeader
-            year={year !== undefined && year !== null ? +year : 0}
             bRef={bRef}
             cRef={cRef}
             rRef={rRef}
@@ -540,7 +540,7 @@ const BudgetDetails = () => {
                 </div>
 
                 <div
-                  className={`  grid grid-cols-[.55fr_.25fr_.35fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200 dark:border-t-slate-700/80' : ''}`}
+                  className={`  grid grid-cols-[.55fr_.35fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200 dark:border-t-slate-700/80' : ''}`}
                   key={c.id}
                 >
                   <div className="pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
@@ -548,9 +548,8 @@ const BudgetDetails = () => {
                   </div>
                   <div className=" flex flex-col items-end justify-end gap-1 py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
                     <Label>Budgeted</Label>
-                    <Label>{year}</Label>
                   </div>
-                  <div className="flex flex-col items-end gap-2 py-2  bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                  {/* <div className="flex flex-col items-end gap-2 py-2  bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
                     <Label>Prior Budgets</Label>
                     <div className="flex w-full justify-between">
                       <div className="flex flex-1 justify-end">
@@ -560,7 +559,7 @@ const BudgetDetails = () => {
                         <Label>{year && +year - 2}</Label>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="py-2 text-end bg-neutral-100 font-semibold text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
                     <Label>Current</Label>
                   </div>
@@ -587,6 +586,24 @@ const BudgetDetails = () => {
                       `rows.${indexRunningTotal}.hasRepro`,
                     );
 
+                    const py1 = budget.account_balances_py1.some(
+                      (x) => x.account_id == field.accountId,
+                    )
+                      ? budget.account_balances_py1.filter(
+                          (x) => x.account_id == field.accountId,
+                        )[0].amount
+                      : 0;
+
+                    const py2 = budget.account_balances_py2.some(
+                      (x) => x.account_id == field.accountId,
+                    )
+                      ? budget.account_balances_py2.filter(
+                          (x) => x.account_id == field.accountId,
+                        )[0].amount
+                      : 0;
+
+                    console.log('py1', py1);
+
                     return (
                       <Fragment key={field.id}>
                         <BudgetInputFields
@@ -603,6 +620,8 @@ const BudgetDetails = () => {
                           currentAmount={field.current_amount as string}
                           spentAmount={field.spent_amount as string}
                           amountRegister={amountRegister}
+                          priorYear1Amount={py1}
+                          priorYear2Amount={py2}
                           currentAmountRegister={register(
                             `rows.${indexRunningTotal}.current_amount`,
                           )}
@@ -661,7 +680,7 @@ const BudgetDetails = () => {
 
                   return (
                     <div
-                      className="border-t border-t-neutral-200 dark:border-t-slate-700/80 grid grid-cols-[.55fr_.25fr_.35fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 "
+                      className="border-t border-t-neutral-200 dark:border-t-slate-700/80 grid grid-cols-[.55fr_.35fr_.25fr_.25fr_.25fr_.25fr_.2fr]  pb-0 "
                       key={field.id}
                     >
                       <BudgetInputFields
@@ -677,6 +696,8 @@ const BudgetDetails = () => {
                         budgetedAmount={field.amount}
                         currentAmount={field.current_amount as string}
                         spentAmount={field.spent_amount as string}
+                        priorYear1Amount={1}
+                        priorYear2Amount={2}
                         amountRegister={register(
                           `rows.${indexRunningTotal}.amount`,
                         )}

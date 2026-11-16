@@ -11,12 +11,13 @@ namespace Application.Interfaces
     public interface IBudgetService
     {
         Task<List<BudgetDto>> GetBudgetsForYear(int year);
-        Task<BudgetDto> GetBudget(int initiativeId, int grantId);
+        Task<BudgetDto> GetBudget(int year, int initiativeId, int grantId);
         Task<Result<Unit>> CreateBudget(CreateBudgetRequestDto createBudgetDtos);
         Task<Result<Unit>> UpdateBudget(UpdateBudgetRequestDto updateBudgetDto);
         Task<List<ReproCategoryBalanceDto>> GetBalancesForCategory(int initiativeId, int grantId, int categoryId);
         Task<List<TransactionResponseDto>> GetLineItemsForAccount(int initiativeId, int grantId, int accountId);
         Task<Result<List<TransactionResponseDto>>> GetTransactionsForAccount(BudgetType budgetType, int initiativeId, int grantId, int accountId);
         Task<Result<List<BudgetAuditResponseDto>>> GetBudgetAudit(int initiativeId, int grantId);
+        Task<Result<List<NewBudgetCategoryDto>>> NewBudget(int initiativeId, int grantId);
     }
 }

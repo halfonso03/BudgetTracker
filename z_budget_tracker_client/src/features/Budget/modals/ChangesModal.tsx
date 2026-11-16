@@ -54,14 +54,14 @@ const ChangeModal = ({
       animateOut={animateOut}
       {...props}
     >
-      <div className="grid grid-cols-[1.3fr_1fr_1fr_1fr_1fr] font-medium p-2 px-3 bg-neutral-200/50 text-neutral-500 border border-neutral-300/60 rounded-t-sm">
+      <div className="grid grid-cols-[1.3fr_1fr_1fr_1fr_1fr] font-medium p-2 px-3 bg-neutral-200/50 text-neutral-500 border border-neutral-300/60 dark:border-slate-700/60 rounded-t-sm dark:bg-slate-800 dark:text-neutral-300" >
         <div>Acount</div>
         <div>Version</div>
         <div className="text-center">New Amount</div>
         <div className="text-center">Updated By</div>
         <div className="text-center">Update Date</div>
       </div>
-      <div className="border-l border-r border-b border-neutral-300/60 mb-4 h-[65dvh] overflow-y-scroll">
+      <div className="border-l border-r border-b border-neutral-300/60 dark:border-slate-700/60 mb-4 h-[65dvh] overflow-y-scroll">
         {audits?.map((a, index) => {
           console.log('  a.version', a.version);
           const classes =

@@ -4,11 +4,13 @@ import agent from '../../agent';
 const fetchBudget = async (
   initiative_id: number,
   grant_id: number,
+  year: number,
 ): Promise<Budget> => {
   const response = await agent.get<Budget>('/Budget/GetBudget', {
     params: {
       grantId: grant_id,
       initiativeId: initiative_id,
+      year: year,
     },
   });
 
@@ -19,10 +21,10 @@ const fetchBudget = async (
   return response.data;
 };
 
-const useBudgetDetails = (initiative_id: number, grant_id: number) => {
+const useBudgetDetails = (year: number, initiative_id: number, grant_id: number) => {
   const { data, isLoading } = useQuery<Budget>({
-    queryFn: () => fetchBudget(initiative_id, grant_id),
-    queryKey: ['budgets', initiative_id, grant_id],
+    queryFn: () => fetchBudget(initiative_id, grant_id, year),
+    queryKey: ['budgets', initiative_id, grant_id, year],
   });
 
   return { data, isLoading };

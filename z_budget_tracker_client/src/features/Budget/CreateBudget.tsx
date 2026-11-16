@@ -282,17 +282,15 @@ const CreateBudget = () => {
                   <Label>Account</Label>
                 </div>
                 <div className="flex flex-col gap-1 items-end justify-end pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
-                  <Label>Budgeted</Label>
-                  <div className="font-semibold">{year}</div>
+                  <Label>{year}</Label>
                 </div>
-                <div className="text-end pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
-                  <Label>Prior Budget</Label>
+                <div className="text-end pl-3 py-2 bg-neutral-100  border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
                   <div className="flex w-full justify-between">
                     <div className="flex flex-1 justify-end">
-                      <Label>{(year ? +year :  0) -  1}</Label>
+                      <Label>{(year ? +year : 0) - 1}</Label>
                     </div>
                     <div className="flex flex-1 justify-end">
-                      <Label>{(year ? +year :  0) - 2}</Label>
+                      <Label>{(year ? +year : 0) - 2}</Label>
                     </div>
                   </div>
                 </div>
@@ -318,6 +316,8 @@ const CreateBudget = () => {
                         fieldName={field.name}
                         budgetedAmount={field.amount}
                         comment={field.comment}
+                        priorYear1Amount={150}
+                        priorYear2Amount={250}
                         amountRegister={amountRegister}
                         onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                           const input = e.target as HTMLInputElement;
@@ -371,6 +371,8 @@ const CreateBudget = () => {
                       amountRegister={register(
                         `rows.${indexRunningTotal}.amount`,
                       )}
+                      priorYear1Amount={100}
+                      priorYear2Amount={200}
                     ></BudgetInputFieldsNewBudget>
                   </div>
                 );

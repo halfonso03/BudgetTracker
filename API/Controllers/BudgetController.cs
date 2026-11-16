@@ -23,10 +23,16 @@ namespace API.Controllers
             return Ok(budgets);
         }
 
-        [HttpGet("GetBudget")]
-        public async Task<IActionResult> GetBudget(int initiativeId, int grantId)
+        [HttpGet("NewBudget")]
+        public async Task<IActionResult> NewBudget(int initiativeId, int grantId)
         {
-            return Ok(await _budgetService.GetBudget(initiativeId, grantId));
+            return HandleResult(await _budgetService.NewBudget(initiativeId, grantId));
+        }
+
+        [HttpGet("GetBudget")]
+        public async Task<IActionResult> GetBudget(int year, int initiativeId, int grantId)
+        {
+            return Ok(await _budgetService.GetBudget(year, initiativeId, grantId));
         }
 
         [HttpGet("balances")]

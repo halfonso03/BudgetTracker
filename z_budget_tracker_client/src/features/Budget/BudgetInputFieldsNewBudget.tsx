@@ -3,6 +3,7 @@ import NumericArrayInput from '../../components/NumericArrayInput';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 import CommentsModalNewBudget from './modals/CommentsModalNewBudget';
 import { Pencil } from 'lucide-react';
+import { formatNumber } from '../../app/util';
 
 interface Props {
   isLastRow: boolean;
@@ -13,6 +14,8 @@ interface Props {
   comment?: BudgetComment;
   budgetedAmount: string;
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
+  priorYear1Amount: number;
+  priorYear2Amount: number;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
@@ -23,6 +26,8 @@ const BudgetInputFieldsNewBudget = ({
   accountId,
   isLastRow,
   comment,
+  priorYear1Amount,
+  priorYear2Amount,
   onClick,
   onBlur,
   onFocus,
@@ -86,9 +91,9 @@ const BudgetInputFieldsNewBudget = ({
           </div>
         ) : (
           <div className="flex w-full justify-between">
-            <div className="flex flex-1 justify-end text-end ">1</div>
+            <div className="flex flex-1 justify-end text-end ">{formatNumber(priorYear1Amount)}</div>
 
-            <div className="flex flex-1 justify-end">2</div>
+            <div className="flex flex-1 justify-end">{formatNumber(priorYear2Amount)}</div>
           </div>
         )}
       </div>

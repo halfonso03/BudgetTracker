@@ -31,6 +31,8 @@ interface Props {
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
   remainingAmountRegister?: UseFormRegisterReturn<`rows.${number}.remaining_amount`>;
   currentAmountRegister?: UseFormRegisterReturn<`rows.${number}.current_amount`>;
+  priorYear1Amount: number;
+  priorYear2Amount: number;
   onBlur?: (
     e: React.FocusEvent<HTMLInputElement>,
     isDirty: boolean,
@@ -144,11 +146,6 @@ const BudgetInputFields = ({
                 budgeted + reprogrammed + spentParsed,
               );
 
-              console.log(budgeted);
-              console.log(reprogrammed);
-              console.log(spentParsed);
-              console.log(newRemaining);
-
               setRemaining(newRemaining);
               setError(budgeted + reprogrammed + spentParsed < 0);
               onBlur(
@@ -161,11 +158,18 @@ const BudgetInputFields = ({
           onFocus={(e) => (onFocus ? onFocus(e) : null)}
         ></NumericArrayInput>
       </div>
-      <div
-        className={` self-center pl-3 ${isLastRow ? 'dark:text-slate-300 py-2 bg-neutral-100 dark:bg-slate-800/80 font-bold text-neutral-600  ' : 'dark:text-white'}`}
+      {/* <div
+        className={`self-center  py-2 pl-3 ${isLastRow ? 'dark:text-slate-300  bg-neutral-100 dark:bg-slate-800/80 font-bold text-neutral-600  ' : 'dark:text-white'}`}
       >
-        &nbsp;
-      </div>
+         <div className="flex w-full justify-between">
+          <div className="flex flex-1 justify-end">
+            <Label>{formatNumber(priorYear1Amount)}</Label>
+          </div>
+          <div className="flex flex-1 justify-end">
+            <Label>{formatNumber(priorYear2Amount)}</Label>
+          </div>
+        </div> 
+      </div> */}
 
       <div
         className={`text-end self-center py-1 ${getCellColor(isLastRow, current)} ${isLastRow} ? "  py-2 ":""`}

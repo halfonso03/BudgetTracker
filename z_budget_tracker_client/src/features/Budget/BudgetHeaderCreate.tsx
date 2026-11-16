@@ -11,7 +11,7 @@ const BudgetHeaderCreate = ({ year, bRef }: Props) => {
       <div></div>
       <div className="flex gap-2 flex-col items-end justify-end pb-1">
         <Label>Total Budgeted</Label>
-        <div className='text-neutral-500 font-semibold'>{year}</div>
+        <Label>{year}</Label>
       </div>
       <div className="flex flex-col items-end gap-2 py-2 font-semibold text-neutral-600 ">
         <Label>Prior Budget</Label>
