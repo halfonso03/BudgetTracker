@@ -16,6 +16,8 @@ interface Props {
   amountRegister: UseFormRegisterReturn<`rows.${number}.amount`>;
   priorYear1Amount: number;
   priorYear2Amount: number;
+  priorYear1AmountTotal: number;
+  priorYear2AmountTotal: number;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
   onClick?: (e: React.MouseEvent<HTMLInputElement>) => void;
@@ -28,6 +30,8 @@ const BudgetInputFieldsNewBudget = ({
   comment,
   priorYear1Amount,
   priorYear2Amount,
+  priorYear1AmountTotal,
+  priorYear2AmountTotal,
   onClick,
   onBlur,
   onFocus,
@@ -81,13 +85,17 @@ const BudgetInputFieldsNewBudget = ({
         ></NumericArrayInput>
       </div>
       <div
-        className={`text-end self-center py-2 font-bold text-neutral-600 dark:text-slate-300 ${isLastRow ? '  py-2 bg-neutral-100 dark:bg-slate-800/80 ' : ''}`}
+        className={`text-end self-center py-2 font-semibold text-neutral-600 dark:text-slate-300 ${isLastRow ? '  py-2 bg-neutral-100 dark:bg-slate-800/80 ' : ''}`}
       >
         {isLastRow ? (
           <div className="flex w-full justify-between">
-            <div className="flex flex-1 justify-end text-end ">3</div>
+            <div className="flex flex-1 justify-end text-end ">
+              {formatNumber(priorYear1AmountTotal)}
+            </div>
 
-            <div className="flex flex-1 justify-end">4</div>
+            <div className="flex flex-1 justify-end">
+              {formatNumber(priorYear2AmountTotal)}
+            </div>
           </div>
         ) : (
           <div className="flex w-full justify-between">

@@ -384,6 +384,15 @@ const CreateBudget = () => {
               {totalFieldForCategory.map((field) => {
                 indexRunningTotal += 1;
 
+                const py1 = data!
+                  .filter((x) => x.id === field.categoryId)[0]
+                  .accounts!.map((x) => x.prioryear1_amount)
+                  .reduce((acc, cur) => acc + cur, 0);
+                const py2 = data!
+                  .filter((x) => x.id === field.categoryId)[0]
+                  .accounts!.map((x) => x.prioryear2_amount)
+                  .reduce((acc, cur) => acc + cur, 0);
+
                 return (
                   <div
                     className="grid grid-cols-[.55fr_.25fr_.25fr_.25fr] border-t border-t-neutral-200 dark:border-t-slate-700/80"
@@ -399,8 +408,10 @@ const CreateBudget = () => {
                       amountRegister={register(
                         `rows.${indexRunningTotal}.amount`,
                       )}
-                      priorYear1Amount={100}
-                      priorYear2Amount={200}
+                      priorYear1Amount={0}
+                      priorYear2Amount={0}
+                      priorYear1AmountTotal={py1}
+                      priorYear2AmountTotal={py2}
                     ></BudgetInputFieldsNewBudget>
                   </div>
                 );
