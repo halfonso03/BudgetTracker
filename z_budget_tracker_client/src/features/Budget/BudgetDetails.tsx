@@ -493,6 +493,7 @@ const BudgetDetails = () => {
           </div>
           {/* <pre>{JSON.stringify(negativeAccounts)}</pre> */}
           <BudgetHeader
+            year={year !== undefined && year !== null ? +year : 0}
             bRef={bRef}
             cRef={cRef}
             rRef={rRef}

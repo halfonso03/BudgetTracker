@@ -237,7 +237,10 @@ const CreateBudget = () => {
             Create Budget
           </Button>
         </div>
-        <BudgetHeaderCreate bRef={bRef}></BudgetHeaderCreate>
+        <BudgetHeaderCreate
+          bRef={bRef}
+          year={year ? +year : 0}
+        ></BudgetHeaderCreate>
 
         {categories.map((c, index) => {
           const amountFieldsForCategory = fields.filter(
@@ -272,14 +275,26 @@ const CreateBudget = () => {
               </div>
 
               <div
-                className={`grid grid-cols-[.55fr_.25fr_.25fr]  p-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200 dark:border-t-slate-700/80' : ''}`}
+                className={`grid grid-cols-[.55fr_.25fr_.25fr_.25fr]  p-0 box ${expandedIndexes.some((x) => x == index) ? ' expanded border-t border-t-neutral-200 dark:border-t-slate-700/80' : ''}`}
                 key={c.id}
               >
                 <div className="pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
                   <Label>Account</Label>
                 </div>
-                <div className="text-end pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                <div className="flex flex-col gap-1 items-end justify-end pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
                   <Label>Budgeted</Label>
+                  <div className="font-semibold">{year}</div>
+                </div>
+                <div className="text-end pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                  <Label>Prior Budget</Label>
+                  <div className="flex w-full justify-between">
+                    <div className="flex flex-1 justify-end">
+                      <Label>{(year ? +year :  0) -  1}</Label>
+                    </div>
+                    <div className="flex flex-1 justify-end">
+                      <Label>{(year ? +year :  0) - 2}</Label>
+                    </div>
+                  </div>
                 </div>
                 <div className="text-center pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
                   <Label>Comments</Label>
@@ -343,7 +358,7 @@ const CreateBudget = () => {
 
                 return (
                   <div
-                    className="grid grid-cols-[.55fr_.25fr_.25fr] border-t border-t-neutral-200 dark:border-t-slate-700/80"
+                    className="grid grid-cols-[.55fr_.25fr_.25fr_.25fr] border-t border-t-neutral-200 dark:border-t-slate-700/80"
                     key={field.id}
                   >
                     <BudgetInputFieldsNewBudget

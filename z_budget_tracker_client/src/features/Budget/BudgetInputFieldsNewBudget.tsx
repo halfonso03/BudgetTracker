@@ -76,6 +76,24 @@ const BudgetInputFieldsNewBudget = ({
         ></NumericArrayInput>
       </div>
       <div
+        className={`text-end self-center py-2 font-bold text-neutral-600 dark:text-slate-300 ${isLastRow ? '  py-2 bg-neutral-100 dark:bg-slate-800/80 ' : ''}`}
+      >
+        {isLastRow ? (
+          <div className="flex w-full justify-between">
+            <div className="flex flex-1 justify-end text-end ">3</div>
+
+            <div className="flex flex-1 justify-end">4</div>
+          </div>
+        ) : (
+          <div className="flex w-full justify-between">
+            <div className="flex flex-1 justify-end text-end ">1</div>
+
+            <div className="flex flex-1 justify-end">2</div>
+          </div>
+        )}
+      </div>
+
+      <div
         className={`text-center self-center py-2 text-blue-500 text-sm  ${isLastRow ? 'bg-neutral-100 self-stretch dark:bg-slate-800/80' : ' self-center '}`}
       >
         {!isLastRow ? (
