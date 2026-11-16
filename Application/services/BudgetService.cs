@@ -652,7 +652,7 @@ namespace Application.services
             {
                 Id = x.CategoryId,
                 Name = x.Name,
-                Accounts = accountDtos
+                Accounts = accountDtos.Where(y => y.CategoryId == x.CategoryId).ToList()
             })
             .ToList();
 

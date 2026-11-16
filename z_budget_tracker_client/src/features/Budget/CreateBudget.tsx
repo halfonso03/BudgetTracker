@@ -20,8 +20,8 @@ import { ChevronDownSquare } from 'lucide-react';
 import { useBudgetMutations } from '../../api/hooks/budgets/useBudgetMutations';
 import Button from '../../components/Button';
 import toast from 'react-hot-toast';
-import useCategories from '../../api/hooks/common/useCategories';
 import Label from '../../components/Label';
+import useBudgetNew from '../../api/hooks/budgets/useBudgetNew';
 
 const userId = 1;
 
@@ -36,12 +36,12 @@ const CreateBudget = () => {
   const { year, initiativeId, grantId } = useParams();
   const { grants } = useGrants(+year!);
   const { initiatives } = useInitiatives();
-  const { categories, loadingCat } = useCategories();
   const [canSubmitForm, setCanSubmitForm] = useState(false);
   const { createBudget } = useBudgetMutations();
 
   const initiative = initiatives?.filter((x) => x.id === +initiativeId!)[0];
   const grant = grants?.filter((x) => x.id == +grantId!)[0];
+  const { data, isLoading } = useBudgetNew(initiative?.id ?? 0, grant?.id ?? 0);
 
   let budgetRows: BudgetInputRow[] = [];
   let runningTotal = 0;
@@ -54,9 +54,10 @@ const CreateBudget = () => {
     string,
     { startIndex: number; totalIndex: number }
   > = {};
-
-  if (categories) {
-    const groupedCategories: grp = categories.reduce(
+  let py1Total = 0;
+  let py2Total = 0;
+  if (data) {
+    const groupedCategories: grp = data.reduce(
       (accumulator: any, currentItem: Category) => {
         const key: string = currentItem.name;
 
@@ -73,7 +74,20 @@ const CreateBudget = () => {
     for (const cat in groupedCategories) {
       const value = groupedCategories[cat];
 
-      const accounts: BudgetInputRow[] = value[0]
+      if (value[0][0].prioryear1_amount !== 0) {
+        py1Total += data!
+          .filter((x) => x.id === value[0][0].category_id)[0]
+          .accounts!.map((x) => x.prioryear1_amount)
+          .reduce((acc, cur) => acc + cur, 0);
+      }
+      if (value[0][0].prioryear2_amount !== 0) {
+        py2Total += data!
+          .filter((x) => x.id === value[0][0].category_id)[0]
+          .accounts!.map((x) => x.prioryear2_amount)
+          .reduce((acc, cur) => acc + cur, 0);
+      }
+
+      const accountRows: BudgetInputRow[] = value[0]
         .sort((a: BudgetInputRow, b: BudgetInputRow) =>
           a.name.localeCompare(b.name),
         )
@@ -86,15 +100,15 @@ const CreateBudget = () => {
 
       const totalRow = {
         accountId: 999,
-        categoryId: categories.filter((x) => x.name == cat)[0].id,
+        categoryId: data.filter((x) => x.name == cat)[0].id,
         amount: '0.00',
         name: 'Total',
       };
 
-      budgetRows = [...budgetRows, ...accounts, totalRow];
+      budgetRows = [...budgetRows, ...accountRows, totalRow];
     }
 
-    for (const cat of categories) {
+    for (const cat of data) {
       const tempRows = budgetRows.filter((a) => a.categoryId == cat.id);
       categoryAccountIndexes[cat.id] = {
         startIndex: runningTotal,
@@ -104,6 +118,7 @@ const CreateBudget = () => {
     }
   }
 
+  console.log('budgetRows', budgetRows);
   const { register, control, handleSubmit, setValue, getValues } =
     useForm<BudgetRows>({
       values: {
@@ -117,7 +132,7 @@ const CreateBudget = () => {
   });
 
   function calculateTotalBudgeted() {
-    const totalBudgeted = categories!
+    const totalBudgeted = data!
       .map((x: Category) => {
         return parseFormattedNumber(
           getValues(`rows.${categoryAccountIndexes[x.id].totalIndex}.amount`),
@@ -134,7 +149,7 @@ const CreateBudget = () => {
   const calculateTotals = useCallback(() => {
     calculateTotalBudgeted();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [categories, categoryAccountIndexes]);
+  }, [data, categoryAccountIndexes]);
 
   useEffect(() => {
     calculateTotals();
@@ -208,8 +223,8 @@ const CreateBudget = () => {
     }
   }
 
-  if (loadingCat) return <div>Loading...</div>;
-  if (!categories) return <span>Error</span>;
+  if (isLoading) return <div>Loading...</div>;
+  if (!data) return <span>Error</span>;
 
   let indexRunningTotal = -1;
   return (
@@ -240,9 +255,11 @@ const CreateBudget = () => {
         <BudgetHeaderCreate
           bRef={bRef}
           year={year ? +year : 0}
+          py1Amount={py1Total}
+          py2Amount={py2Total}
         ></BudgetHeaderCreate>
 
-        {categories.map((c, index) => {
+        {data.map((c, index) => {
           const amountFieldsForCategory = fields.filter(
             (x) => x.categoryId == c.id && x.accountId !== 999,
           );
@@ -284,7 +301,7 @@ const CreateBudget = () => {
                 <div className="flex flex-col gap-1 items-end justify-end pl-3 py-2 bg-neutral-100 text-neutral-600 border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
                   <Label>{year}</Label>
                 </div>
-                <div className="text-end pl-3 py-2 bg-neutral-100  border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
+                <div className="text-end  py-2 bg-neutral-100  border-b border-b-neutral-200 dark:border-b-slate-700/80 dark:bg-slate-800/80">
                   <div className="flex w-full justify-between">
                     <div className="flex flex-1 justify-end">
                       <Label>{(year ? +year : 0) - 1}</Label>
@@ -306,6 +323,18 @@ const CreateBudget = () => {
                     `rows.${indexRunningTotal}.amount`,
                   );
 
+                  const py1 =
+                    data
+                      .filter((x) => x.id == field.categoryId)[0]
+                      .accounts?.filter((x) => x.id === field.accountId)[0]
+                      .prioryear1_amount ?? 0;
+
+                  const py2 =
+                    data
+                      .filter((x) => x.id == field.categoryId)[0]
+                      .accounts?.filter((x) => x.id === field.accountId)[0]
+                      .prioryear2_amount ?? 0;
+
                   return (
                     <Fragment key={field.id}>
                       <BudgetInputFieldsNewBudget
@@ -316,8 +345,8 @@ const CreateBudget = () => {
                         fieldName={field.name}
                         budgetedAmount={field.amount}
                         comment={field.comment}
-                        priorYear1Amount={150}
-                        priorYear2Amount={250}
+                        priorYear1Amount={py1}
+                        priorYear2Amount={py2}
                         amountRegister={amountRegister}
                         onClick={(e: React.MouseEvent<HTMLInputElement>) => {
                           const input = e.target as HTMLInputElement;

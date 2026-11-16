@@ -1,11 +1,14 @@
+import { formatNumber } from '../../app/util';
 import Label from '../../components/Label';
 
 interface Props {
   year: number;
   bRef: React.Ref<HTMLDivElement>;
+  py1Amount: number;
+  py2Amount: number;
 }
 
-const BudgetHeaderCreate = ({ year, bRef }: Props) => {
+const BudgetHeaderCreate = ({ year, bRef, py1Amount, py2Amount }: Props) => {
   return (
     <div className="mb-2 grid grid-cols-[.55fr_.25fr_.25fr_.25fr]  ">
       <div></div>
@@ -33,10 +36,10 @@ const BudgetHeaderCreate = ({ year, bRef }: Props) => {
       <div>
         <div className="flex items-stretch ">
           <div className="flex flex-1 justify-end font-bold text-neutral-600 dark:text-white">
-            1,000
+            {formatNumber(py1Amount)}
           </div>
           <div className="flex flex-1 justify-end font-bold text-neutral-600 dark:text-white">
-            2,000
+            {formatNumber(py2Amount)}
           </div>
         </div>
       </div>

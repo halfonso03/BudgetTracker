@@ -91,9 +91,21 @@ const BudgetInputFieldsNewBudget = ({
           </div>
         ) : (
           <div className="flex w-full justify-between">
-            <div className="flex flex-1 justify-end text-end ">{formatNumber(priorYear1Amount)}</div>
+            <div className="flex flex-1 justify-end text-end font-medium ">
+              {priorYear1Amount !== 0 ? (
+                formatNumber(priorYear1Amount)
+              ) : (
+                <span className="text-neutral-400 dark:text-slate-400">-</span>
+              )}
+            </div>
 
-            <div className="flex flex-1 justify-end">{formatNumber(priorYear2Amount)}</div>
+            <div className="flex flex-1 justify-end text-end font-medium ">
+              {priorYear2Amount !== 0 ? (
+                formatNumber(priorYear2Amount)
+              ) : (
+                <span className="text-neutral-400 dark:text-slate-400">-</span>
+              )}
+            </div>
           </div>
         )}
       </div>
