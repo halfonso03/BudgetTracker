@@ -140,7 +140,7 @@ const PaymentSearchReults = ({
         {results.map((r, index) => (
           <div
             key={index}
-            className="hover:bg-neutral-100 dark:hover:bg-slate-700 border-b border-b-neutral-300/60 dark:border-slate-700/80 last:border-0"
+            className="hover:bg-neutral-100 dark:hover:bg-slate-700 border-b border-b-neutral-300/60 dark:border-slate-700/80 last:border-0 transition-all"
           >
             <div className="grid grid-cols-[.4fr_.9fr_1.2fr_1fr_.7fr_.7fr_.7fr_1fr_.8fr_1.2fr_.5fr_1.4fr_.3fr] p-2 px-3">
               <div className="self-center dark:text-white">

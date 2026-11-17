@@ -210,9 +210,10 @@ export default function App() {
                 </button>
               ))}
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4  ">
               {/* Card 1: Total Allocated */}
-              <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
+              <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
+              hover:scale-105 transition-all duration-250 ease-out">
                 <div className="flex items-center justify-between text-neutral-700 dark:text-slate-400">
                   <span className="dark:text-sm font-semibold uppercase tracking-wider">
                     Total Budgeted
@@ -230,7 +231,8 @@ export default function App() {
               </div>
 
               {/* Card 2: Cumulative Spent */}
-              <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
+              <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
+                 hover:scale-105 transition-all duration-250 ease-out">
                 <div className="flex items-center justify-between dark:text-slate-400">
                   <span className="text-neutral-700 dark:text-slate-400 dark:text-sm font-semibold uppercase tracking-wider">
                     Total Spent YTD
@@ -259,7 +261,8 @@ export default function App() {
               </div>
 
               {/* Card 3: Monthly Burn Rate */}
-              <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden">
+              <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
+                 hover:scale-105 transition-all duration-250 ease-out">
                 <div className="flex items-center justify-between dark:text-slate-400">
                   <span className="text-neutral-700 dark:text-slate-400  dark:text-sm font-semibold uppercase tracking-wider">
                     Avg Monthly Spend
@@ -281,7 +284,8 @@ export default function App() {
 
               {/* Card 4: Action Items */}
               <div
-                className={`${budgetsInTrouble?.length === 0 && 'opacity-50'} bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden`}
+                className={`${budgetsInTrouble?.length === 0 && 'opacity-50'}  hover:scale-105 transition-all duration-250 ease-out bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
+                  `}
               >
                 <div className="flex items-center justify-between dark:text-slate-400">
                   <span className="dark:text-sm font-semibold uppercase tracking-wider text-red-500 dark:text-rose-400">

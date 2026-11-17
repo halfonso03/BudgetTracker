@@ -1,9 +1,9 @@
 import { memo, useState } from 'react';
 import RadioButtonList from '../../components/RadioButtonList';
 import PaymentSearchFilter from './PaymentSearchFilter';
-import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import CheckBoxListReproSearchParam from '../../components/CheckBoxListReproSearchParam';
+import Button from '../../components/Button';
 
 const YEARS_LIST_TYPE = 'Y';
 const STATUS_LIST_TYPE = 'S';
@@ -12,6 +12,7 @@ const INITIATIVES_LIST_TYPE = 'I';
 const GRANTS_LIST_TYPE = 'G';
 const ACCOUNTS_LIST_TYPE = 'A';
 const DAYS_LIST_TYPE = 'D';
+const CHECK_NO_TYPE = 'C';
 
 type RadioOption = {
   id: number;
@@ -21,9 +22,11 @@ type RadioOption = {
 type Props = {
   years: { id: number; name: string }[];
   daysAgo: { id: number; name: string }[];
+  checkNumber: { id: number; name: string }[];
   onYearChange: (year: number) => void;
   onStatusChange: (id: number) => void;
   onDaysChange: (id: number) => void;
+  onCheckNoChange: (id: number) => void;
   onListCheck?: (id: number, key: string) => void;
   onDeselectAll: (type: string) => void;
   onSelectAll: (type: string) => void;
@@ -39,10 +42,12 @@ const PaymentSearchParams = memo(
     onListCheck,
     onStatusChange,
     onDaysChange,
+    onCheckNoChange,
     onSelectAll,
     onDeselectAll,
     years,
     daysAgo,
+    checkNumber,
     payees,
     initiatives,
     grants,
@@ -71,6 +76,15 @@ const PaymentSearchParams = memo(
       })),
     );
 
+    const [checkNumberOptions, setCheckNumberOptions] = useState<RadioOption[]>(
+      () =>
+        checkNumber.map((y) => ({
+          id: +y.id,
+          name: y.name,
+          checked: y.id === daysAgo[0].id,
+        })),
+    );
+
     const [pLabel, setPLabel] = useState('Payee');
     const [iLabel, setILabel] = useState('Initiative');
     const [gLabel, setGLabel] = useState('Grant');
@@ -79,11 +93,15 @@ const PaymentSearchParams = memo(
     const [selectedYear, setSelectedYear] = useState(years[0].id);
     const [selectedStatus, setSelectedStatus] = useState(statuses[0].id);
     const [selectedDaysAgo, setSelectedDaysAgo] = useState(0);
+    const [selectedCheckNumberFilter, setSelectedCheckNumberFilter] =
+      useState(0);
 
     const [statusVisible, setStatusVisible] = useState(false);
     const [yearVisible, setYearVisible] = useState(false);
     const [daysAgoFilterVisible, setDaysAgoFilterVisible] =
       useState<boolean>(false);
+    const [checkNumberFliterVisisble, setCheckNumberFilterVisible] =
+      useState(false);
 
     function handleStatusChange(id: number) {
       setSelectedStatus(id);
@@ -106,6 +124,13 @@ const PaymentSearchParams = memo(
       );
 
       onDaysChange(id);
+    }
+    function handleCheckNoSelected(id: number) {
+      setSelectedCheckNumberFilter(id);
+      setCheckNumberOptions((prev) =>
+        prev.map((y) => ({ ...y, checked: y.id === id })),
+      );
+      onCheckNoChange(id);
     }
 
     function handleCheck(id: number, type: string) {
@@ -196,6 +221,10 @@ const PaymentSearchParams = memo(
       setDaysAgoFilterVisible((prev) => !prev);
     }
 
+    function handleCheckNoFilterOpened() {
+      setCheckNumberFilterVisible((prev) => !prev);
+    }
+
     function handleStatusOutsideCLick() {
       setStatusVisible(false);
     }
@@ -206,6 +235,10 @@ const PaymentSearchParams = memo(
 
     function handleAmountFilterOutsideClick() {
       setDaysAgoFilterVisible(false);
+    }
+
+    function handleCheckNoFilterOutsideClick() {
+      setCheckNumberFilterVisible(false);
     }
 
     return (
@@ -223,14 +256,17 @@ const PaymentSearchParams = memo(
               onSelected={handleYearSelected}
               items={yearOptions}
             ></RadioButtonList>
-            <button
-              className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer"
+
+            <Button
+              buttonSize="small"
+              variation="primary"
+              additionalclasses="m-2"
               onClick={() => {
                 setYearVisible(false);
               }}
             >
               Apply
-            </button>
+            </Button>
           </div>
         </PaymentSearchFilter>
         <PaymentSearchFilter
@@ -251,14 +287,16 @@ const PaymentSearchParams = memo(
                 checked: selectedStatus === y.id,
               }))}
             ></RadioButtonList>
-            <button
-              className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer"
+            <Button
+              buttonSize="small"
+              variation="primary"
+              additionalclasses="m-2"
               onClick={() => {
                 setStatusVisible(false);
               }}
             >
               Apply
-            </button>
+            </Button>
           </div>
         </PaymentSearchFilter>
 
@@ -273,20 +311,52 @@ const PaymentSearchParams = memo(
           listOpened={handleAmountFilterOpened}
           outsideClicked={handleAmountFilterOutsideClick}
         >
-          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900 w-80 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
+          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900 w-50 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
             <RadioButtonList
               id={DAYS_LIST_TYPE}
               onSelected={handleDaysSelected}
               items={daysAgoOptions}
             ></RadioButtonList>
-            <button
-              className="bg-blue-600 text-neutral-50 p-1 rounded-sm m-2 font-semibold cursor-pointer"
+            <Button
+              buttonSize="small"
+              variation="primary"
+              additionalclasses="m-2"
               onClick={() => {
                 setDaysAgoFilterVisible(false);
               }}
             >
               Apply
-            </button>
+            </Button>
+          </div>
+        </PaymentSearchFilter>
+        <PaymentSearchFilter
+          selectedItemLabel={
+            selectedCheckNumberFilter === 0
+              ? 'Check #...'
+              : checkNumber.filter((x) => x.id == selectedCheckNumberFilter)[0]
+                  .name
+          }
+          parentCorntrolled={true}
+          outsideShowList={checkNumberFliterVisisble}
+          listOpened={handleCheckNoFilterOpened}
+          outsideClicked={handleCheckNoFilterOutsideClick}
+        >
+          <div className="flex flex-col absolute shadow-lg shadow-neutral-300 dark:border dark:border-slate-700/80 dark:shadow-lg dark:shadow-slate-900 w-60 rounded-md mt-1 opacity-100 bg-white dark:bg-slate-900">
+            <RadioButtonList
+              id={CHECK_NO_TYPE}
+              onSelected={handleCheckNoSelected}
+              items={checkNumberOptions}
+            ></RadioButtonList>
+            <Button
+              buttonSize="small"
+              variation="primary"
+              additionalclasses="m-2"
+              onClick={() => {
+                setCheckNumberFilterVisible(false);
+              }}
+            >
+              Apply
+            </Button>
           </div>
         </PaymentSearchFilter>
 

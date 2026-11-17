@@ -36,6 +36,7 @@ const PaymentSearch = () => {
   const [year, setYear] = useState<number>(2026);
   const [status, setStatus] = useState<number>(0);
   const [daysPaid, setDaysPaid] = useState(0);
+  const [checkNumberFilter, setCheckNumberFilter] = useState(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
   const { initiatives } = useInitiatives();
   const { grants } = useGrantsAllYears();
@@ -138,6 +139,7 @@ const PaymentSearch = () => {
         year,
         daysPaid,
         selectedIds,
+        checkNumberFilter,
       },
     );
 
@@ -174,6 +176,10 @@ const PaymentSearch = () => {
     setPageNumber(1);
   }, []);
 
+  const handleCheckNoChange = useCallback((value: number) => {
+    setCheckNumberFilter(value);
+    setPageNumber(1);
+  }, []);
   function handleSelectAll(type: string) {
     const newSelectedIds: SelectedItem[] = [
       ...selectedIds.filter((x) => x.type !== type),
@@ -323,9 +329,18 @@ const PaymentSearch = () => {
               name: x.name,
             }))}
             years={years}
-            daysAgo={[0, 5, 10, 15, 20, 25, 30].map((x) => ({
+            daysAgo={[0, 5, 10, 15, 20, 25, 30, 365].map((x) => ({
               id: x,
-              name: x === 0 ? 'All' : `Less than ${x} ago`,
+              name: x === 0 ? 'All' : `Upto ${x} ago`,
+            }))}
+            checkNumber={[0, 1, 2].map((x) => ({
+              id: x,
+              name:
+                x === 0
+                  ? 'All'
+                  : x === 1
+                    ? 'Missing Check No.'
+                    : 'Missing Invoice No.',
             }))}
             onListCheck={handleListCheck}
             // onListXCheck={handleListXCheck}
@@ -334,6 +349,7 @@ const PaymentSearch = () => {
             onStatusChange={handleStatusChange}
             onYearChange={handleYearChange}
             onDaysChange={handleDaysChange}
+            onCheckNoChange={handleCheckNoChange}
             // onAmountFilter={handleAmountFilter}
             // onAmountFilterCancel={handleAmountFilterCancel}
           ></MemoizedSearchParams>

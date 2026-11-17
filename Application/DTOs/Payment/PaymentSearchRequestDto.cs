@@ -10,6 +10,7 @@ namespace Application.DTOs.Payment
         public List<int>? GrantIds { get; set; } = [];
         public List<int>? AccountIds { get; set; } = [];
         public int DaysPaid { get; set; }
+        public int CheckNumberFilter { get; set; }
         public List<PaymentSearchBudgetHeader>? PaymentSearchBudgetHeaders { get; set; } = null;
     }
 

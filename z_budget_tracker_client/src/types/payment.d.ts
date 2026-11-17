@@ -60,7 +60,7 @@ type PaymentLineItem = {
     checkNumber?: string | null
     paymentLineItemId?: number | null
     paymentNumber?: number | null
-    paymentId?:number | null
+    paymentId?: number | null
 }
 
 type PaymentInvoiceInfo = {
@@ -184,7 +184,8 @@ type PaymentSearchParams = {
     year: number
     status: number
     selectedIds?: { id: number, type: string }[]
-    daysPaid:number
+    daysPaid: number
+    checkNumberFilter: number
     // paymentSearchBudgetHeaders: PaymentSearchBudgetHeader[]
 }
 

@@ -786,7 +786,6 @@ namespace Application.Services
             }
 
 
-
             if (searchParams.Status != PaymentSearchStatus.ALL)
             {
                 if (searchParams.Status == PaymentSearchStatus.SAVED)
@@ -798,11 +797,21 @@ namespace Application.Services
                     disbLineItems = disbLineItems.Where(x => x.BudgetLineItemId != null);
                 }
             }
-            Console.WriteLine(searchParams.DaysPaid);
 
             if (searchParams.DaysPaid != 0)
             {
                 disbLineItems = disbLineItems.Where(x => x.Disb!.PostedDate > DateTime.Now.AddDays(-1 * searchParams.DaysPaid));
+            }
+
+            // missing check number
+            if (searchParams.CheckNumberFilter == 1)
+            {
+                disbLineItems = disbLineItems.Where(x => x.CheckNumber == null);
+            }
+            // missing invoice  number
+            else if (searchParams.CheckNumberFilter == 2)
+            {
+                disbLineItems = disbLineItems.Where(x => x.InvoiceNumber == null);
             }
 
 

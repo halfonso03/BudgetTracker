@@ -56,13 +56,14 @@ const Summary = ({ year }: Props) => {
     return <div className="my-5">There are no budgets for {year}</div>;
 
   return (
-    <div className='tracking-wider'>
+    <div className="tracking-wider">
       <div
-        className={` border-b border-b-neutral-200 dark:border-slate-700/80 mb-8 text-neutral-500 dark:text-slate-400  grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-2 `}
+        className={` border-b border-b-neutral-200 dark:border-slate-700/80 mb-8 text-neutral-500 dark:text-slate-400  grid grid-cols-[1.2fr_.5fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-2 `}
       >
         <div className="">Totals</div>
         <div></div>
         <div className="text-end">Budgeted</div>
+        <div className="text-end">Reprogrammed</div>
         <div className="text-end">Current</div>
         <div className="text-end">Spent</div>
         <div className="text-end">Remaining</div>
@@ -79,10 +80,21 @@ const Summary = ({ year }: Props) => {
         <div className="text-end text-neutral-950  dark:text-neutral-50">
           {formatCurrency(
             budgetSummaries
+              .map((x) => x.approved_amount)
+              .reduce((acc, cur) => acc + cur, 0) -
+              budgetSummaries
+                .map((x) => x.current_amount)
+                .reduce((acc, cur) => acc + cur, 0),
+          )}
+        </div>
+        <div className="text-end text-neutral-950  dark:text-neutral-50">
+          {formatCurrency(
+            budgetSummaries
               .map((x) => x.current_amount)
               .reduce((acc, cur) => acc + cur, 0),
           )}
         </div>
+
         <div className="text-end text-neutral-950  dark:text-neutral-50">
           {formatCurrency(
             budgetSummaries
@@ -100,12 +112,19 @@ const Summary = ({ year }: Props) => {
         <div></div>
       </div>
       <div
-        className={` grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-4 `}
+        className={` grid grid-cols-[1.2fr_.5fr_.5fr_1fr_1fr_1fr_1fr_.5fr] font-semibold p-3 gap-4 `}
       >
-        <div className="text-start text-neutral-500 dark:text-slate-400 font-semibold">Initiative</div>
-        <div className="text-start text-neutral-500 dark:text-slate-400 font-semibold">Grant</div>
+        <div className="text-start text-neutral-500 dark:text-slate-400 font-semibold">
+          Initiative
+        </div>
+        <div className="text-start text-neutral-500 dark:text-slate-400 font-semibold">
+          Grant
+        </div>
         <div className="text-end text-neutral-500 dark:text-slate-400 font-semibold">
           Budgeted{' '}
+        </div>
+        <div className="text-end text-neutral-500 dark:text-slate-400 font-semibold">
+          Reprogrammed{' '}
         </div>
         <div className="text-end text-neutral-500 dark:text-slate-400 font-semibold">
           Current{' '}
@@ -119,14 +138,19 @@ const Summary = ({ year }: Props) => {
         <div></div>
       </div>
       {budgetSummaries?.map((budget, index) => (
-        <div key={index} className=" border border-neutral-300 dark:border-slate-700/60 mb-5 rounded-md">
+        <div
+          key={index}
+          className=" border border-neutral-300 dark:border-slate-700/60 mb-5 rounded-md"
+        >
           <div
-            className={`grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 py-3 `}
+            className={`grid grid-cols-[1.2fr_.5fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 py-3 `}
           >
             <div className="pl-3 font-medium dark:text-slate-100 self-center">
               {budget.initiative_name}
             </div>
-            <div className="font-mono dark:text-indigo-300 font-bold text-neutral-700 self-center text-[1.1rem]">{budget.grant_name}</div>
+            <div className="font-mono dark:text-indigo-300 font-bold text-neutral-700 self-center text-[1.1rem]">
+              {budget.grant_name}
+            </div>
             <div className="text-end self-center">
               <Link
                 to={`${budget.year}/${budget.initiative_id}/${budget.grant_id}`}
@@ -136,6 +160,9 @@ const Summary = ({ year }: Props) => {
                   {formatCurrency(budget.approved_amount)}
                 </span>
               </Link>
+            </div>
+            <div className="text-end self-center dark:text-slate-100">
+              {formatCurrency(budget.approved_amount - budget.current_amount)}
             </div>
             <div className="text-end self-center dark:text-slate-100">
               {budget.current_amount === 0
@@ -262,7 +289,7 @@ function CategorySummary({
             key={index}
           >
             <div
-              className={` grid bg-neutral-200/30 dark:bg-slate-800/80  grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 items-center`}
+              className={` grid bg-neutral-200/30 dark:bg-slate-800/80  grid-cols-[1.2fr_.5fr_.5fr_1fr_1fr_1fr_1fr_.5fr] gap-4 items-center`}
               key={index}
             >
               <div
@@ -275,21 +302,30 @@ function CategorySummary({
                 {c.amount > 0 ? (
                   formatCurrency(c.amount)
                 ) : (
-                  <span className="text-neutral-400 dark:text-slate-100 ">-</span>
+                  <span className="text-neutral-400 dark:text-slate-100 ">
+                    -
+                  </span>
                 )}
+              </div>
+              <div className="text-end dark:text-slate-100 ">
+                {formatCurrency(c.amount - c.current_amount)}
               </div>
               <div className="text-end dark:text-slate-100 ">
                 {c.current_amount !== 0 ? (
                   formatCurrency(c.current_amount)
                 ) : (
-                  <span className="text-neutral-400 dark:text-slate-100 ">-</span>
+                  <span className="text-neutral-400 dark:text-slate-100 ">
+                    -
+                  </span>
                 )}
               </div>
               <div className="text-end dark:text-slate-100 ">
                 {c.spent_amount !== 0 ? (
                   formatCurrency(-1 * c.spent_amount)
                 ) : (
-                  <span className="text-neutral-400 dark:text-slate-100 ">-</span>
+                  <span className="text-neutral-400 dark:text-slate-100 ">
+                    -
+                  </span>
                 )}
               </div>
               <div
@@ -298,7 +334,9 @@ function CategorySummary({
                 {c.current_amount + c.spent_amount > 0 ? (
                   formatCurrency(c.current_amount - c.spent_amount)
                 ) : (
-                  <span className="text-neutral-400 dark:text-slate-100 ">-</span>
+                  <span className="text-neutral-400 dark:text-slate-100 ">
+                    -
+                  </span>
                 )}
               </div>
               <div className="flex justify-center items-center">
@@ -329,7 +367,7 @@ function CategorySummary({
                   .sort((a, b) => a.account_name.localeCompare(b.account_name))
                   .map((i) => (
                     <div
-                      className=" py-2 grid grid-cols-[1.2fr_.5fr_1fr_1fr_1fr_1fr_.5fr] items-center gap-4 last:mb-0
+                      className=" py-2 grid grid-cols-[1.2fr_.5fr_.5fr_1fr_1fr_1fr_1fr_.5fr] items-center gap-4 last:mb-0
                          transition-all duration-200 hover:bg-neutral-200/50 dark:bg-slate-900 dark:hover:bg-slate-800 
                          "
                       key={i.account_id}
@@ -343,6 +381,9 @@ function CategorySummary({
                         ) : (
                           <span className="text-neutral-400">-</span>
                         )}
+                      </div>
+                      <div className="text-end italic text-neutral-700 dark:text-slate-100">
+                        {formatCurrency(i.amount - i.current_amount)}
                       </div>
                       <div className="text-end italic text-neutral-700 dark:text-slate-100">
                         {i.current_amount !== 0 ? (
