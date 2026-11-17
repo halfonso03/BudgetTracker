@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Button from '../../../components/Button';
 import Modal2 from '../../../components/Modal2';
-import { ChevronDownSquare, Info } from 'lucide-react';
 import ScoreCardExplanationExpander from './ScoreCardExplanation';
 
 type Props = {
@@ -134,8 +133,8 @@ const ScoreBreakdownModal = ({
             >
               Expenditure Slope shows the speed and direction of your grant
               spending compared to how much time has passed. A flat slope means
-              funds are sitting idle, while a steep
-              downward slope shows your funds are actively being put to use.
+              funds are sitting idle, while a steep downward slope shows your
+              funds are actively being put to use.
             </div>
             <div className="flex items-center gap-2 text-neutral-700 dark:text-slate-100">
               Spend Rate
@@ -179,7 +178,11 @@ const ScoreBreakdownModal = ({
             <div
               className={`col-span-2 pl-3 w-full dark:text-slate-300 italic box ${expandedIndexes.filter((x) => x === 5).length > 0 ? ' expanded ' : ''} `}
             >
-              Estimates how long your remaining grant funds will last if you continue spending at your current monthly pace. Comparing this against the time left in the grant tells you whether you are on track to use all your funding or risk leaving unspent money behind.
+              Estimates how long your remaining grant funds will last if you
+              continue spending at your current monthly pace. Comparing this
+              against the time left in the grant tells you whether you are on
+              track to use all your funding or risk leaving unspent money
+              behind.
             </div>
             <div className="font-semibold text-neutral-700 dark:text-slate-100">
               Final Score

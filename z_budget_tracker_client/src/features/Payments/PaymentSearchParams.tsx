@@ -290,7 +290,7 @@ const PaymentSearchParams = memo(
           </div>
         </PaymentSearchFilter>
 
-        {!payees && (
+        {/* {!payees && (
           <div className="flex gap-3 w-[30%]">
             <Skeleton
               height={40}
@@ -317,7 +317,7 @@ const PaymentSearchParams = memo(
               containerClassName="flex-1"
             />
           </div>
-        )}
+        )} */}
 
         {payees !== undefined && payees.length > 0 && (
           <PaymentSearchFilter
@@ -367,7 +367,7 @@ const PaymentSearchParams = memo(
                 onOptionsUpdated={(o) =>
                   handleOptionsUpdated(o, INITIATIVES_LIST_TYPE)
                 }
-                showExclusiveOptions={true}
+                showExclusiveOptions={false}
               ></CheckBoxListReproSearchParam>
             </div>
           </PaymentSearchFilter>
@@ -394,6 +394,7 @@ const PaymentSearchParams = memo(
                 onOptionsUpdated={(o) =>
                   handleOptionsUpdated(o, GRANTS_LIST_TYPE)
                 }
+                showExclusiveOptions={false}
               ></CheckBoxListReproSearchParam>
             </div>
           </PaymentSearchFilter>
@@ -420,6 +421,7 @@ const PaymentSearchParams = memo(
                 onOptionsUpdated={(o) =>
                   handleOptionsUpdated(o, ACCOUNTS_LIST_TYPE)
                 }
+                showExclusiveOptions={false}
               ></CheckBoxListReproSearchParam>
             </div>
           </PaymentSearchFilter>

@@ -17,7 +17,7 @@ type Props = {
       xChecked: boolean;
     }[],
   ) => void;
-  showExclusiveOptions?: boolean;
+  showExclusiveOptions: boolean;
 };
 
 const CheckBoxListReproSearchParam = ({
