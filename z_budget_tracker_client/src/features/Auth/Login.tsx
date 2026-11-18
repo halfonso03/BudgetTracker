@@ -36,8 +36,18 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center w-full  min-h-screen border  bg-dark-content absolute top-0 left-0 dark:bg-slate-900">
-      <div className="self-center flex justify-center w-100 relative">
+    <div className="flex justify-center w-full  min-h-screen bg-dark-content  top-0 left-0 dark:bg-slate-900 ">
+      <div className="self-center flex flex-col gap-16 justify-start mb-20">
+        <div className=" border-nuetral-300 dark:border-slate-700/50 p-3 rounded-md dark:text-white w-[50%] text-lg/7 border m-auto space-y-1">
+          This system is a concept-phase prototype designed as a "shadow"
+          expense tracking solution. Built to run alongside existing processes,
+          it demonstrates end-to-end workflows for budgeting, fund
+          reprogrammings, payment management, and financial reporting. While the
+          overall platform is still an early-stage proof of concept, several
+          core modules are already fully functional and ready for live
+          demonstration. For more information or a demonstration please send an
+          email to hialfonso@nhac.org.
+        </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="self-center animate-fade-in w-80"

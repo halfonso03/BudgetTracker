@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
+@custom-variant demo (&:where(.demo, .demo *));
+
 html {
   interpolate-size: allow-keywords;
 }
@@ -330,21 +332,21 @@ pre {
   overflow-wrap: break-word; /* Safely breaks long, unbroken strings */
 }
 
-.admin-menu-item {
+/* .admin-menu-item {
   padding: 0rem 1.5rem;
   letter-spacing: 1px;
   border-radius: var(--radius-sm);
   font-weight: var(--font-weight-medium);
   color: var(--color-neutral-700);
-}
+} */
 
-.admin-menu-item:hover {
+/* .admin-menu-item:hover {
   background-color: var(--color-neutral-300);
   transition: background-color 0.5s ease-out 0.05s;
-}
-.admin-menu-item.active {
+} */
+/* .admin-menu-item.active {
   background-color: var(--color-neutral-600);
-}
+} */
 
 .menu {
   position: absolute;

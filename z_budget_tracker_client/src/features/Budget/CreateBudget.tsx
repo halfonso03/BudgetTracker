@@ -341,7 +341,7 @@ const CreateBudget = () => {
                         isLastRow={false}
                         accountId={field.accountId}
                         initiativeId={+initiativeId!}
-                        grantId={+grantId!}d
+                        grantId={+grantId!}
                         fieldName={field.name}
                         budgetedAmount={field.amount}
                         comment={field.comment}

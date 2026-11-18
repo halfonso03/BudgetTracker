@@ -187,7 +187,7 @@ const PayeeSearcher = ({
                     setQuery('');
                     onPayeeSelected?.(suggestions[index]);
                   }}
-                  className={`${highlightedRow === index ? 'bg-neutral-200/60' : ''} 
+                  className={`${highlightedRow === index ? 'bg-neutral-200/60 dark:bg-slate-700/80' : ''} 
                       px-1 pl-2 flex py-1 justify-between items-center border-b border-b-neutral-300/55 dark:border-b-slate-600 last:border-b-0 
                        dark:text-neutral-300 cursor-pointer hover:bg-neutral-200 dark:hover:bg-slate-600`}
                 >

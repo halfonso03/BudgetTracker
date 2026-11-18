@@ -68,14 +68,14 @@ const ChangeModal = ({
             a.version === BUDGET_AUDIT_INITIAL_VERSION
               ? 'border-blue-500'
               : a.version == BUDGET_AUDIT_NEW_VERSION
-                ? 'border-green-500'
+                ? 'border-emerald-500'
                 : a.version == BUDGET_AUDIT_OLD_VERSION
-                  ? 'border-red-500'
+                  ? 'border-rose-500'
                   : 'border-neutral-300';
           return (
             <div key={index} className={`  last:border-0 mt-1  p-1`}>
               <div
-                className={`hover:bg-neutral-100/60 grid grid-cols-[1.3fr_1fr_1fr_1fr_1fr] border p-2 px-3 ${classes}`}
+                className={`hover:bg-neutral-100/60 dark:hover:bg-slate-700/70 transition-all grid grid-cols-[1.3fr_1fr_1fr_1fr_1fr] border p-2 px-3 ${classes}`}
               >
                 <div className='font-medium'>{a.accountName}</div>
                 <div>{a.version}</div>

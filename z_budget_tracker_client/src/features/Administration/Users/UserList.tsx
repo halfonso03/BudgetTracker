@@ -3,15 +3,18 @@ import React from 'react';
 import { useUsersQuery } from '../../../api/hooks/users/useUsersQuery';
 import Menus from '../../../components/menus/Menus';
 import { EllipsisVertical } from 'lucide-react';
-import {  useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useUserMutations } from '../../../api/hooks/users/useUserMutations';
 import toast from 'react-hot-toast';
 import Button from '../../../components/Button';
+import SortBySelector from '../../../components/SortBySelector';
+import { useSortingContext } from '../../../contexts/useSortingContext';
 
 export const UserList: React.FC = () => {
   const { data: users, isLoading, error } = useUsersQuery();
   const navigate = useNavigate();
   const { changeAccountLockStatus, forceResetPassword } = useUserMutations();
+  const { sortByValue } = useSortingContext();
 
   async function onLockAccountStatus(id: number, locked: boolean) {
     await changeAccountLockStatus.mutateAsync(
@@ -60,55 +63,75 @@ export const UserList: React.FC = () => {
         </Button>
       </div>
 
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 border border-neutral-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
-                Email
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
-                Last Login
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
-                Is Locked
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-medium text-gray-500 uppercase tracking-wider">
-                Failed Logins
-              </th>
-              <th></th>
-            </tr>
+      <div className="overflow-x-auto rounded-md border border-neutral-300/60 dark:border-slate-700/80">
+        <table className="min-w-full ">
+          <thead className=" bg-gray-50 text-neutral-600 dark:text-slate-700/80 dark:bg-slate-800/80 border-b border-b-neutral-300/60 dark:border-b-slate-700/80">
+            <th className="p-3 flex justify-start  ">
+              <SortBySelector
+                label="NAME"
+                value="name"
+                currentSortValue={sortByValue}
+              ></SortBySelector>
+            </th>
+            <th className="p-3 ">
+              <SortBySelector
+                label="EMAIL"
+                value="email"
+                currentSortValue={sortByValue}
+              ></SortBySelector>
+            </th>
+            <th className="p-3 ">
+              <SortBySelector
+                label="LAST LOGIN"
+                value="lastLogin"
+                currentSortValue={sortByValue}
+              ></SortBySelector>
+            </th>
+            <th className="p-3 flex justify-center">
+              <div className="flex justify-center">
+                <SortBySelector
+                  label="IS LOCKED"
+                  value="isLocked"
+                  currentSortValue={sortByValue}
+                ></SortBySelector>
+              </div>
+            </th>
+            <th className=" dark:text-white">
+              <div className="flex justify-center">
+                <div className="flex justify-center">
+                  <SortBySelector
+                    label="ACCESS FAILED COUNT"
+                    value="accessFailedCount"
+                    currentSortValue={sortByValue}
+                  ></SortBySelector>
+                </div>
+              </div>
+            </th>
+            <th></th>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200 ">
+          <tbody>
             {users?.map((user) => (
               <tr
                 key={user.id}
-                className="hover:bg-neutral-200 cursor-pointer transition-all duration-200"
+                className="cursor-pointer dark:text-white hover:bg-neutral-200/60 dark:hover:bg-slate-700 border-b border-b-neutral-300/60 dark:border-slate-700/80 last:border-0 transition-all"
                 onClick={() => navigate(`${user.id.toString()}`)}
               >
-                <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                <td className=" p-3 ">
                   {user.firstName} {user.lastName}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap  text-gray-600">
-                  {user.email}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap  text-gray-600">
+                <td className=" p-3 ">{user.email}</td>
+                <td className=" p-3 ">
                   {user.lastLoginDate
                     ? new Date(user.lastLoginDate).toLocaleString()
                     : 'Never'}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap  text-gray-600">
-                  {user.isLocked ? 'Yes' : 'No'}
-                </td>
+                <td className="text-center">{user.isLocked ? 'Yes' : 'No'}</td>
                 <td
-                  className={`px-6 py-4 whitespace-nowrap ${user.accessFailedCount > 0 ? ' text-red-500' : 'text-gray-600'}`}
+                  className={`dark:text-white text-center whitespace-nowrap ${user.accessFailedCount > 0 ? ' text-red-500 dark:text-rose-500' : 'text-gray-600'}`}
                 >
                   {user.accessFailedCount}
                 </td>
-                <td>
+                <td className='p-3 flex justify-center items-center'>
                   <Menus>
                     <Menus.Toggler id={user.id.toString()}>
                       <EllipsisVertical
@@ -117,12 +140,13 @@ export const UserList: React.FC = () => {
                       ></EllipsisVertical>
                     </Menus.Toggler>
                     <Menus.List
-                      topPos="translate-y-0"
-                      leftPos="translate-x-5"
+                      topPos="translate-y-16"
+                      leftPos="translate-x-28"
                       id={user.id.toString()}
                     >
                       <Menus.MenuItem>
-                        <div className='pl-1'
+                        <div
+                          className="pl-1"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate(user.id.toString());

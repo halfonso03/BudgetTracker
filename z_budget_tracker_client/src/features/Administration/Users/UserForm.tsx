@@ -174,9 +174,9 @@ export const UserForm: React.FC<UserFormProps> = ({ onSuccess }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="max-w-md mx-auto p-6 bg-white space-y-4"
+      className="max-w-md mx-auto p-6 bg-white space-y-4 dark:bg-slate-800/40 border border-neutral-200 rounded-md dark:border-slate-700/80"
     >
-      <h3 className="text-xl font-bold text-gray-900 mb-2">
+      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
         {isEditing ? 'Edit User' : 'Create User'}
       </h3>
 
