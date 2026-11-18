@@ -24,8 +24,14 @@ namespace API.Controllers
         [HttpPost("runReport")]
         public async Task<IActionResult> RunReport([FromBody] RunReportRequestDto request)
         {
-            Console.WriteLine(request);
-            return HandleFileResult(await reportRunnerService.RunReport(request));
+            try
+            {
+                return HandleFileResult(await reportRunnerService.RunReport(request));
+
+            } catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("parameters/values/{reportId}/{parameterId}")]

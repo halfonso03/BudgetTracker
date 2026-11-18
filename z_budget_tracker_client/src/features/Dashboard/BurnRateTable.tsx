@@ -32,6 +32,13 @@ export default function App() {
 
   const { data: burnRateData, isLoading } = useBudgetSurplusBurnRate();
 
+  function getMetric(
+    account: BudgetSurplusBurnRate,
+    field: keyof BudgetSurplusBurnRate,
+  ) {
+    return account[field];
+  }
+
   // Filter & Sort Logic
   const filteredData = useMemo(() => {
     if (isLoading) return [];
@@ -60,9 +67,15 @@ export default function App() {
           return true;
         })
         .sort((a, b) => {
-          const aVal = a[sortField];
-          const bVal = b[sortField];
+          const t = getMetric(a, sortField as keyof BudgetSurplusBurnRate);
+          const u = getMetric(b, sortField as keyof BudgetSurplusBurnRate);
 
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const aVal = t as any;
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const bVal = u as any;
+          
           if (typeof aVal === 'string') {
             return sortAsc
               ? aVal.localeCompare(bVal)
@@ -212,8 +225,10 @@ export default function App() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4  ">
               {/* Card 1: Total Allocated */}
-              <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
-              hover:scale-105 transition-all duration-250 ease-out">
+              <div
+                className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
+              hover:scale-105 transition-all duration-250 ease-out"
+              >
                 <div className="flex items-center justify-between text-neutral-700 dark:text-slate-400">
                   <span className="dark:text-sm font-semibold uppercase tracking-wider">
                     Total Budgeted
@@ -231,8 +246,10 @@ export default function App() {
               </div>
 
               {/* Card 2: Cumulative Spent */}
-              <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
-                 hover:scale-105 transition-all duration-250 ease-out">
+              <div
+                className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
+                 hover:scale-105 transition-all duration-250 ease-out"
+              >
                 <div className="flex items-center justify-between dark:text-slate-400">
                   <span className="text-neutral-700 dark:text-slate-400 dark:text-sm font-semibold uppercase tracking-wider">
                     Total Spent YTD
@@ -261,8 +278,10 @@ export default function App() {
               </div>
 
               {/* Card 3: Monthly Burn Rate */}
-              <div className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
-                 hover:scale-105 transition-all duration-250 ease-out">
+              <div
+                className="bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
+                 hover:scale-105 transition-all duration-250 ease-out"
+              >
                 <div className="flex items-center justify-between dark:text-slate-400">
                   <span className="text-neutral-700 dark:text-slate-400  dark:text-sm font-semibold uppercase tracking-wider">
                     Avg Monthly Spend

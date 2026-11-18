@@ -131,6 +131,7 @@ const CreateBudget = () => {
   });
 
   function calculateTotalBudgeted() {
+    if (!data) return;
     const totalBudgeted = data!
       .map((x: Category) => {
         return parseFormattedNumber(
@@ -340,7 +341,7 @@ const CreateBudget = () => {
                         isLastRow={false}
                         accountId={field.accountId}
                         initiativeId={+initiativeId!}
-                        grantId={+grantId!}
+                        grantId={+grantId!}d
                         fieldName={field.name}
                         budgetedAmount={field.amount}
                         comment={field.comment}

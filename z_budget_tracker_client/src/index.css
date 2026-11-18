@@ -26,6 +26,15 @@ pre {
 .dark .nav-link:hover {
   color: var(--color-slate-50);
 }
+
+.nav-link.active {
+  border-bottom: 2px solid var(--color-blue-800);
+}
+
+.dark .nav-link.active {
+   border-bottom: 2px solid var(--color-slate-500);
+}
+
 /* .nav-link {
   padding-bottom: 0.4rem;
 }
@@ -34,9 +43,7 @@ pre {
   padding-bottom: 0.4rem;
 }
 
-.nav-link.active {
-  border-bottom: 2px solid var(--color-blue-800);
-}
+
 
 .admin-link.active {
   background-color: var(--bg-neutral-400);

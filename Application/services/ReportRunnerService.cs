@@ -38,6 +38,44 @@ namespace Application.Services
         public async Task<FileResult<byte[]>> RunReport(RunReportRequestDto runReportRequestDto)
         {
 
+            // var binding = new BasicHttpBinding();
+
+            // // binding.UseDefaultWebProxy = true;
+            // // // binding.Security.Transport.ProxyCredentialType = HttpProxyCredentialType.None;
+            // // binding.TextEncoding = System.Text.Encoding.UTF8;
+            // // binding.TransferMode = TransferMode.Buffered;
+            // // binding.MaxReceivedMessageSize = 10485760; //I wanted a 10MB size limit on response to allow for larger PDFs
+            // // binding.SendTimeout = TimeSpan.FromSeconds(300);
+            // // binding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
+            // // binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Ntlm;
+
+            // binding.MaxBufferPoolSize = 0;
+            // binding.TextEncoding = System.Text.Encoding.UTF8;
+            // binding.TransferMode = TransferMode.Buffered;
+            // binding.UseDefaultWebProxy = true;
+            // binding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
+            // binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Ntlm;
+
+
+            // //Create the execution service SOAP Client
+            // var rsExec = new ReportExecutionServiceSoapClient(binding, new EndpointAddress(reportServerUrl));
+
+            // //Setup access credentials. I use windows credentials, yours may differ
+            // var clientCredentials = new NetworkCredential(
+            //                                         reportServerUserName,
+            //                                         reportServerPassword,
+            //                                         reportServerIP);
+            // // if (isProduction)
+            // // {
+            // rsExec.ClientCredentials.Windows.ClientCredential = clientCredentials;
+            // // }
+            // // else
+            // // {
+            // //     rsExec.ClientCredentials.Windows.ClientCredential = System.Net.CredentialCache.DefaultNetworkCredentials;
+            // // }
+
+            // rsExec.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Impersonation;
+
             var binding = new BasicHttpBinding(BasicHttpSecurityMode.TransportCredentialOnly);
             binding.Security.Transport.ClientCredentialType = HttpClientCredentialType.Ntlm;
             binding.MaxReceivedMessageSize = 10485760; //I wanted a 10MB size limit on response to allow for larger PDFs
@@ -48,20 +86,12 @@ namespace Application.Services
 
             //Setup access credentials. I use windows credentials, yours may differ
             var clientCredentials = new NetworkCredential(
-                reportServerUserName,
-                reportServerPassword,
-                reportServerIP);
+                                                    reportServerUserName,
+                                                    reportServerPassword,
+                                                    reportServerIP);
             rsExec.ClientCredentials.Windows.AllowedImpersonationLevel = System.Security.Principal.TokenImpersonationLevel.Impersonation;
+            rsExec.ClientCredentials.Windows.ClientCredential = clientCredentials;
 
-
-            // if (isProduction)
-            // {
-            //     rsExec.ClientCredentials.Windows.ClientCredential = clientCredentials;
-            // }
-            // else
-            // {
-                rsExec.ClientCredentials.Windows.ClientCredential = System.Net.CredentialCache.DefaultNetworkCredentials;
-            // }
 
             //This handles the problem of "Missing session identifier"
             //rsExec.Endpoint.EndpointBehaviors.Add( new ReportingServicesEndpointBehavior());
@@ -102,10 +132,6 @@ namespace Application.Services
                 throw ReportException.CreateReportException(ex.Message, ex.InnerException?.Message ?? "");
             }
         }
-
-
-
-
 
     }
 }

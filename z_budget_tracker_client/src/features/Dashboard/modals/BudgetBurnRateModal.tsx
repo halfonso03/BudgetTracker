@@ -23,9 +23,9 @@ const BudgetBurnRateModal = ({
   ...props
 }: Props) => {
   const [animateOut, setAnimateOut] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortAsc, setSortAsc] = useState(true);
-  const [sortField, setSortField] = useState('monthsOfRunwayLeft');
+  const [searchQuery] = useState('');
+  const [sortAsc] = useState(true);
+  const [sortField] = useState('monthsOfRunwayLeft');
 
   const { data: burnRateData, isLoading } = useBudgetSurplusBurnRateByAccount(
     initiativeId,
@@ -80,6 +80,13 @@ const BudgetBurnRateModal = ({
   //   100
   // ).toFixed(2);
 
+  function getMetric(
+    account: BudgetSurplusBurnRateByAccount,
+    field: keyof BudgetSurplusBurnRateByAccount,
+  ) {
+    return account[field];
+  }
+
   const filteredData = useMemo(() => {
     if (isLoading) return [];
 
@@ -106,8 +113,20 @@ const BudgetBurnRateModal = ({
           return true;
         })
         .sort((a, b) => {
-          const aVal = a[sortField];
-          const bVal = b[sortField];
+          const t = getMetric(
+            a,
+            sortField as keyof BudgetSurplusBurnRateByAccount,
+          );
+          const u = getMetric(
+            b,
+            sortField as keyof BudgetSurplusBurnRateByAccount,
+          );
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const aVal = t as any;
+          
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const bVal = u as any;
 
           if (typeof aVal === 'string') {
             return sortAsc
@@ -126,16 +145,22 @@ const BudgetBurnRateModal = ({
       animateOut={animateOut}
       {...props}
     >
-      <div className=''>
+      <div className="">
         <div className="flex gap-1 mt-1 mb-2">
-          <div className="w-1/12 text-neutral-700/80 dark:text-slate-400 text-2xl">Initiative</div>
+          <div className="w-1/12 text-neutral-700/80 dark:text-slate-400 text-2xl">
+            Initiative
+          </div>
           <div className=" text-neutral-800 dark:text-white text-2xl">
             {initiativeName}
           </div>
         </div>
         <div className="flex gap-1">
-          <div className="w-1/12 text-neutral-700/80 dark:text-slate-400  text-2xl">Grant</div>
-          <div className="text-neutral-800 dark:text-white  text-2xl">{grantName}</div>
+          <div className="w-1/12 text-neutral-700/80 dark:text-slate-400  text-2xl">
+            Grant
+          </div>
+          <div className="text-neutral-800 dark:text-white  text-2xl">
+            {grantName}
+          </div>
         </div>
 
         <div></div>
@@ -308,6 +333,7 @@ const BudgetBurnRateModal = ({
                             burnRate={row.currentMonthlyBurnRate}
                             monthsOfRunwayLeft={row.monthsOfRunwayLeft}
                             surplusGapPoints={row.surplusGapPoints}
+                            remainingAmount={row.remainingBalance}
                           ></GrantHealthScoreCard>
                         </td>
                         {/* Runway Months */}
