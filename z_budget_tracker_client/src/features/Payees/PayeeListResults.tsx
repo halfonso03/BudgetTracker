@@ -3,7 +3,7 @@ import { Check, CircleX } from 'lucide-react';
 import { formatNumber, formatDate } from '../../app/util';
 import SearchTermMarker from '../../components/SearchTermMarker';
 import { usePagination } from '../../contexts/pagination/usePagination';
-import Skeleton from 'react-loading-skeleton';
+// import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 type Props = {
@@ -13,20 +13,17 @@ type Props = {
 };
 const PayeeListResults = ({ loadingPayees, data, openPayeeDetails }: Props) => {
   const { searchTerm } = usePagination();
-
-  // const navigate = useNavigate();
-
   if (loadingPayees)
     return (
       <div className="mt-2 ">
-        <Skeleton
+        {/* <Skeleton
           height={30}
           width="100%"
           className="mb-1"
           enableAnimation={true}
           count={12}
           containerClassName="flex-1"
-        />
+        /> */}
       </div>
     );
   if (!data) return null;

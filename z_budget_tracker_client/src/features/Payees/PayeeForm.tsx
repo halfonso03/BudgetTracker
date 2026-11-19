@@ -14,7 +14,6 @@ import { usePayeeMutations } from '../../api/hooks/payees/usePayeeMutations';
 import toast from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
-import Skeleton from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import Spinner from '../../components/Spinner';
 
@@ -253,7 +252,7 @@ const PayeeForm = ({
           error={errors?.accountId?.message}
           useMessage={false}
         >
-          {categoriesFetching && (
+          {/* {categoriesFetching && (
             <div>
               <Skeleton
                 height={35}
@@ -264,7 +263,7 @@ const PayeeForm = ({
                 containerClassName="flex-1"
               />
             </div>
-          )}
+          )} */}
 
           {catSuccess && categories && categories.length > 0 && (
             <Select

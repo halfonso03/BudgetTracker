@@ -19,7 +19,7 @@ export default function Tooltip({ text, children, position = 'top' }: Props) {
     >
       {children}
       {isVisible && (
-        <div className={`tooltip-box tooltip-${position}`} role="tooltip">
+        <div className={`tooltip-box bg-neutral-600 dark:bg-slate-700 tooltip-${position}`} role="tooltip">
           {text}
           <span className="tooltip-arrow" />
         </div>

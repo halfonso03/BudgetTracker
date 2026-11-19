@@ -10,7 +10,7 @@ type Props = {
 const PaymentNumber = (props: Props) => {
   return (
     <div className="flex w-full  ">
-      <div className="flex gap-2 justify-end items-center flex-8 text-end text-neutral-500 text-[1rem]">
+      <div className="flex gap-2 justify-end items-center flex-8 text-end text-neutral-500 dark:text-slate-50 text-[1rem]">
         <Label>Payment No.</Label>
         {props.status !== POSTED && (
           <div className="self-center cursor-pointer">

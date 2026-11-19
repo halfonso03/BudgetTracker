@@ -65,7 +65,6 @@ export const GrantHealthScoreCard: React.FC<GrantHealthScoreProps> = ({
         </span>
       </div>
 
-      {scores.burnRatePenalty && (
         <ScoreBreakdownModal
           isOpen={scoreBreakdownModalIsOpen}
           surplusScorePenalty={scores.surplusScorePenalty}
@@ -80,7 +79,6 @@ export const GrantHealthScoreCard: React.FC<GrantHealthScoreProps> = ({
             }, 500);
           }}
         ></ScoreBreakdownModal>
-      )}
     </div>
   );
 };

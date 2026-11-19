@@ -209,7 +209,6 @@ export default function App() {
     );
   }, [scores]);
 
-  console.log('lowRiskBudgets', lowRiskBudgets);
 
   const combinedMonthlySpend =
     burnRateData
@@ -481,7 +480,7 @@ export default function App() {
                       Exhaustion Date
                     </th>
                     <th className="py-3.5 px-4 text-center font-semibold">
-                      Surplus Scrore
+                      Surplus Score
                     </th>
                     {/*       <th
                     className="py-3.5 px-4 font-semibold text-center cursor-pointer hover:text-white transition-colors"
@@ -663,7 +662,7 @@ export default function App() {
                 {/* <span>
                 Spend rate calculated using standard least-squares velocity
                 </span> */}
-                trajectory across fiscal months.
+                {/* trajectory across fiscal months. */}
               </div>
               <div className="text-neutral-500 dark:text-slate-200 text-sm">
                 Showing{' '}
