@@ -1,11 +1,15 @@
-import BurnRateTable from "./Dashboard/BurnRateTable";
+import InvoiceDropViewer from './Payments/InvoiceDropViewer';
 
 // const RADIAN = Math.PI / 180;
 const Home = () => {
   return (
     <div>
       {/* <BarChartWithMultiXAxis></BarChartWithMultiXAxis> */}
-      <BurnRateTable></BurnRateTable>
+      {/* <BurnRateTable></BurnRateTable>
+      
+      */}
+      {/* <FileUploader></FileUploader> */}
+      <InvoiceDropViewer></InvoiceDropViewer>
     </div>
   );
 };

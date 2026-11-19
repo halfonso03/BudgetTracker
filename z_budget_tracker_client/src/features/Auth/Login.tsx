@@ -38,7 +38,7 @@ const Login = () => {
     <div className="flex justify-center w-full  min-h-screen bg-dark-content  top-0 left-0 dark:bg-slate-900 ">
       <div className="self-center flex flex-col gap-16 justify-start mb-20">
         <div className=" border-neutral-300 dark:border-slate-700/50 p-3 rounded-md dark:text-white w-[50%] text-lg/7 border m-auto space-y-1">
-          This system is a concept-phase prototype designed as a "shadow"
+          This system is a prototype designed as a "shadow"
           expense tracking solution. Built to run alongside existing processes,
           it demonstrates end-to-end workflows for budgeting, fund
           reprogrammings, payment management, and financial reporting. While the
