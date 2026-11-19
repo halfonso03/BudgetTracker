@@ -15,9 +15,73 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 const InvoiceDropViewer = () => {
   const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
   const [numPages, setNumPages] = useState<number>(0);
+  const dragOffsetRef = useRef({ x: 0, y: 0 });
 
   const [pdfBytes, setPdfBytes] = useState<ArrayBuffer | null>(null);
   const pageContainerRef = useRef<HTMLDivElement>(null);
+
+  // 2. Drop directly onto a specific page wrapper
+  const handleDropOnPage = async (
+    e: React.DragEvent<HTMLDivElement>,
+    pageIndex: number,
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const pageRect = e.currentTarget.getBoundingClientRect();
+
+    // Adjust drop coordinates by where the user grabbed the image
+    const dropX = e.clientX - pageRect.left - dragOffsetRef.current.x;
+    const dropY = e.clientY - pageRect.top - dragOffsetRef.current.y;
+    
+    const src =
+      e.dataTransfer.getData('text/plain') ||
+      e.dataTransfer.getData('text/uri-list');
+
+    if (!src || !pdfBytes) return;
+
+    try {
+      const response = await fetch(src);
+      const contentType = response.headers.get('Content-Type') || '';
+      const imageArrayBuffer = await response.arrayBuffer();
+
+      // Measure the exact individual <Page> container, not the whole Document
+
+      const pdfDoc = await PDFDocument.load(pdfBytes);
+      const page = pdfDoc.getPage(pageIndex);
+      const { width: pdfWidth, height: pdfHeight } = page.getSize();
+
+      const isPng =
+        contentType.includes('image/png') || src.toLowerCase().endsWith('.png');
+
+      const embeddedImg = isPng
+        ? await pdfDoc.embedPng(imageArrayBuffer)
+        : await pdfDoc.embedJpg(imageArrayBuffer);
+
+      // Map screen pixels to PDF points using this single page's dimensions
+      const scaleX = pdfWidth / pageRect.width;
+      const scaleY = pdfHeight / pageRect.height;
+
+      // Match the rendered width of your dragged image (140px) scaled to PDF points
+      const sigWidth = 140 * scaleX;
+      const sigHeight = (embeddedImg.height / embeddedImg.width) * sigWidth;
+
+      const pdfX = dropX * scaleX;
+      const pdfY = pdfHeight - dropY * scaleY - sigHeight;
+
+      page.drawImage(embeddedImg, {
+        x: pdfX,
+        y: pdfY,
+        width: sigWidth,
+        height: sigHeight,
+      });
+
+      const updatedPdfUint8 = await pdfDoc.save();
+      setPdfBytes(updatedPdfUint8.slice().buffer);
+    } catch (err) {
+      console.error('Failed to stamp image onto PDF:', err);
+    }
+  };
 
   const handleDropOnPdf = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -35,9 +99,6 @@ const InvoiceDropViewer = () => {
     const contentType = response.headers.get('Content-Type') || '';
     // const imageArrayBuffer = await response.arrayBuffer();
 
-    const isPng =
-      contentType.includes('image/png') || src.toLowerCase().endsWith('.png');
-
     // const imageFile = e.dataTransfer.files[0];
     // if (!imageFile || !imageFile.type.startsWith('image/')) return;
 
@@ -46,18 +107,6 @@ const InvoiceDropViewer = () => {
     try {
       const response = await fetch(src);
       const imageArrayBuffer = await response.arrayBuffer();
-
-      //   const pdfBytes = await invoiceFile.arrayBuffer();
-
-      //   const pdfBytes = arrayBuffer;
-
-      console.log('Image ArrayBuffer:', imageArrayBuffer);
-      console.log(imageArrayBuffer.byteLength);
-
-      console.log('pdfBytes', pdfBytes);
-      //   console.log(pdfBytes.byteLength);
-
-      console.log('src', src);
 
       // 1. Get drop position relative to the rendered PDF page
       const rect = pageContainerRef.current.getBoundingClientRect();
@@ -68,18 +117,17 @@ const InvoiceDropViewer = () => {
       const pdfDoc = await PDFDocument.load(pdfBytes as ArrayBuffer);
       const page = pdfDoc.getPage(0); // Target page index
 
+      const isPng =
+        contentType.includes('image/png') || src.toLowerCase().endsWith('.png');
+      const { width: pdfWidth, height: pdfHeight } = page.getSize();
       const embeddedImg = isPng
         ? await pdfDoc.embedPng(imageArrayBuffer)
         : await pdfDoc.embedJpg(imageArrayBuffer);
 
-      const { width: pdfWidth, height: pdfHeight } = page.getSize();
-
-    //   const imgBuffer = await imageFile.arrayBuffer();
-
-      // 3. Scale screen pixels to PDF points and flip the Y-axis
+      // 4. Scale screen pixels to PDF points and flip the Y-axis
       const scaleX = pdfWidth / rect.width;
       const scaleY = pdfHeight / rect.height;
-      const sigWidth = 120; // Desired width in PDF points
+      const sigWidth = 120;
       const sigHeight = (embeddedImg.height / embeddedImg.width) * sigWidth;
 
       const pdfX = dropX * scaleX;
@@ -92,12 +140,10 @@ const InvoiceDropViewer = () => {
         height: sigHeight,
       });
 
-      // // 4. Stamp the image onto the PDF and export a new Uint8Array
-
-      const updatedPdfUint8: Uint8Array = await pdfDoc.save();
-
-      setPdfBytes(updatedPdfUint8.buffer as ArrayBuffer); // Re-renders react-pdf with the signature baked in
-      console.log('222', 123);
+      // 5. Save and update state with a clean ArrayBuffer slice
+      const updatedPdfUint8 = await pdfDoc.save();
+      const cleanBuffer = updatedPdfUint8.slice().buffer;
+      setPdfBytes(cleanBuffer);
 
       // Ready to pass into libraries like pdf-lib (e.g., pdfDoc.embedPng(arrayBuffer))
     } catch (err) {
@@ -122,6 +168,12 @@ const InvoiceDropViewer = () => {
 
   const handleDragStart = (e: React.DragEvent<HTMLImageElement>) => {
     e.dataTransfer.setData('text/plain', e.currentTarget.src);
+
+    const imgRect = e.currentTarget.getBoundingClientRect();
+    dragOffsetRef.current = {
+      x: e.clientX - imgRect.left,
+      y: e.clientY - imgRect.top,
+    };
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -170,7 +222,7 @@ const InvoiceDropViewer = () => {
             <div
               ref={pageContainerRef}
               onDragOver={handleDragOver}
-              onDrop={handleDropOnPdf}
+              //   onDrop={handleDropOnPdf}
               style={{
                 position: 'relative',
                 display: 'inline-block',
@@ -179,7 +231,7 @@ const InvoiceDropViewer = () => {
               }}
             >
               <Document
-                file={pdfBytes }
+                file={pdfBytes}
                 onLoadSuccess={({ numPages }) => setNumPages(numPages)}
                 loading={<p style={{ padding: 16 }}>Loading invoice...</p>}
                 error={
@@ -189,13 +241,23 @@ const InvoiceDropViewer = () => {
                 }
               >
                 {Array.from(new Array(numPages), (_, index) => (
-                  <Page
+                  <div
                     key={`page_${index + 1}`}
-                    pageNumber={index + 1}
-                    width={760}
-                    renderTextLayer={true}
-                    renderAnnotationLayer={true}
-                  />
+                    onDragOver={handleDragOver}
+                    onDrop={(e) => handleDropOnPage(e, index)}
+                    style={{
+                      position: 'relative',
+                      display: 'inline-block',
+                      marginBottom: 8,
+                    }}
+                  >
+                    <Page
+                      pageNumber={index + 1}
+                      width={760}
+                      renderTextLayer={true}
+                      renderAnnotationLayer={true}
+                    />
+                  </div>
                 ))}
               </Document>
             </div>
