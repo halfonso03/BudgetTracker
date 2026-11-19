@@ -6,7 +6,6 @@ import Input from '../../components/Input';
 import { Check } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import useLogin from '../../api/hooks/auth/useLogin';
-import Box from '../../components/Box';
 
 const Login = () => {
   const {
@@ -38,7 +37,7 @@ const Login = () => {
   return (
     <div className="flex justify-center w-full  min-h-screen bg-dark-content  top-0 left-0 dark:bg-slate-900 ">
       <div className="self-center flex flex-col gap-16 justify-start mb-20">
-        <div className=" border-nuetral-300 dark:border-slate-700/50 p-3 rounded-md dark:text-white w-[50%] text-lg/7 border m-auto space-y-1">
+        <div className=" border-neutral-300 dark:border-slate-700/50 p-3 rounded-md dark:text-white w-[50%] text-lg/7 border m-auto space-y-1">
           This system is a concept-phase prototype designed as a "shadow"
           expense tracking solution. Built to run alongside existing processes,
           it demonstrates end-to-end workflows for budgeting, fund
@@ -50,9 +49,9 @@ const Login = () => {
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="self-center animate-fade-in w-80"
+          className="self-center  w-80"
         >
-          <Box>
+          <div className='rounded-md border border-neutral-200 dark:border-slate-700/60 py-6 px-4'>
             <div className=" flex flex-col justify-center rounded-md gap-5 ">
               <div
                 className="absolute opacity-0 pointer-events-none bottom-0 left-0 -z-10 h-0 w-0 overflow-hidden"
@@ -126,7 +125,7 @@ const Login = () => {
                 </div>
               )}
             </div>
-          </Box>
+          </div>
         </form>
       </div>
     </div>

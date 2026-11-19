@@ -53,9 +53,9 @@ const Administration = () => {
     <MenuIdProvider>
       <SortingProvider defaultSortOrder={'ID'} >
         <div className="grid grid-cols-[1.5fr_14fr] gap-4 ">
-          <div className="flex flex-col gap-4 bg-neutral-200/60 dark:bg-slate-700 py-8 px-4 rounded-md min-h-[80dvh] ">
+          <div className="flex flex-col gap-4 bg-neutral-200/60 dark:bg-slate-800/70 py-4 px-4 rounded-md min-h-[80dvh] ">
             {menuItems.map((item) => (
-              <div className="  hover:bg-neutral-200 dark:hover:bg-slate-800 py-1 px-2 rounded-md transition-all">
+              <div className="  hover:bg-neutral-200 dark:hover:bg-slate-700 py-4 px-2 rounded-md transition-all">
                 <NavLink
                   to={item.path}
                   className={({ isActive }) =>

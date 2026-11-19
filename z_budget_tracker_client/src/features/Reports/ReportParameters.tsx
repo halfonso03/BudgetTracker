@@ -418,11 +418,11 @@ const ReportParameters = ({ reportId, parameters, selectedReport }: Props) => {
           </div>
         );
       })}
-      <div className="grid grid-cols-[.3fr_1fr] mt-20 ">
+      <div className="grid grid-cols-[.23fr_.3fr_.3fr] mt-20 ">
         <div></div>
         <Button
           disabled={reportIsRunning}
-          buttonSize={'medium'}
+          buttonSize={'small'}
           onClick={async () => {
             const reportSelections: ParameterSelections[] = [];
             for (const parameter of parameters) {

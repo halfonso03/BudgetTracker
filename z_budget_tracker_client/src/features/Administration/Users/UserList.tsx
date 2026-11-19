@@ -131,12 +131,12 @@ export const UserList: React.FC = () => {
                 >
                   {user.accessFailedCount}
                 </td>
-                <td className='p-3 flex justify-center items-center'>
+                <td className='p-3 flex justify-center items-center '>
                   <Menus>
                     <Menus.Toggler id={user.id.toString()}>
                       <EllipsisVertical
                         size={20}
-                        className="text-neutral-500"
+                        className="text-neutral-500 dark:text-slate-300"
                       ></EllipsisVertical>
                     </Menus.Toggler>
                     <Menus.List
