@@ -15,8 +15,7 @@ import useBudgetSurplusBurnRate from '../../api/hooks/dashboard/useBudgetSurplus
 import { GrantHealthScoreCard } from './GrantHealthScore';
 import { format } from 'date-fns';
 import BudgetBurnRateModal from './modals/BudgetBurnRateModal';
-
-// Exact Dataset provided from Book2.xlsx analysis
+import useHealthScore from '../../hooks/useHealthScore';
 
 export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,15 +28,43 @@ export default function App() {
 
   const [selectedInitiativeId, setselectedInitiativeId] = useState(0);
   const [selectedGrantId, setSelectedGrantId] = useState(0);
-
   const { data: burnRateData, isLoading } = useBudgetSurplusBurnRate();
+  const healthScore = useHealthScore(0, 0, 0, 0, 0, 0, 0);
 
+  console.log('year', year);
   function getMetric(
     account: BudgetSurplusBurnRate,
     field: keyof BudgetSurplusBurnRate,
   ) {
     return account[field];
   }
+
+  const scores = useMemo(() => {
+    if (isLoading) return [];
+
+    return burnRateData
+      ?.filter((x) => x.grantYear === year)
+      ?.map((b) => {
+        return {
+          initiativeId: b.initiativeId,
+          grantId: b.grantId,
+          year: b.grantYear,
+          score: healthScore.calculateHealthScore(
+            b.remainingBalance,
+            b.surplusScore,
+            b.monthsRemaining,
+            b.simpleSlope,
+            b.currentMonthlyBurnRate,
+            b.monthsOfRunwayLeft,
+            b.surplusGapPoints,
+          ),
+        };
+      })
+      .map((b) => ({
+        ...b,
+        scoreLabel: healthScore.getScoreDetails(b.score.totalScore),
+      }));
+  }, [isLoading, burnRateData, year, healthScore]);
 
   // Filter & Sort Logic
   const filteredData = useMemo(() => {
@@ -47,6 +74,14 @@ export default function App() {
       burnRateData &&
       burnRateData
         .filter((x) => x.grantYear === year)
+        .map((b) => {
+          return {
+            ...b,
+            scoreInfo: scores?.filter(
+              (x) => x.initiativeId == b.initiativeId && x.grantId == b.grantId,
+            )[0],
+          };
+        })
         .filter((item) => {
           const matchesSearch =
             item.grantName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -56,16 +91,29 @@ export default function App() {
 
           if (!matchesSearch) return false;
 
-          if (riskFilter === 'HIGH_RISK') {
-            //  .filter((x) => x.monthsRemaining <= 6 && x.pct > 90)
-            return item.monthsRemaining <= 6 || item.percentCashLeft > 90;
-          }
-          if (riskFilter === 'LOW_RISK') {
-            return item.monthsOfRunwayLeft >= 4.0 && item.remainingBalance > 0;
+          if (scores) {
+            if (item.scoreInfo) {
+              const scoreDetails = healthScore.getScoreDetails(
+                item.scoreInfo.score.totalScore,
+              );
+
+              if (riskFilter === 'HIGH_RISK') {
+                return (
+                  scoreDetails.label === 'BAD' ||
+                  scoreDetails.label === 'WARNING'
+                );
+              } else if (riskFilter === 'LOW_RISK') {
+                return (
+                  scoreDetails.label === 'GOOD' ||
+                  scoreDetails.label === 'MODERATE'
+                );
+              }
+            }
           }
 
           return true;
         })
+
         .sort((a, b) => {
           const t = getMetric(a, sortField as keyof BudgetSurplusBurnRate);
           const u = getMetric(b, sortField as keyof BudgetSurplusBurnRate);
@@ -75,7 +123,7 @@ export default function App() {
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const bVal = u as any;
-          
+
           if (typeof aVal === 'string') {
             return sortAsc
               ? aVal.localeCompare(bVal)
@@ -89,7 +137,9 @@ export default function App() {
     burnRateData,
     year,
     searchQuery,
+    scores,
     riskFilter,
+    healthScore,
     sortField,
     sortAsc,
   ]);
@@ -123,32 +173,6 @@ export default function App() {
     }).format(val);
   };
 
-  // Get Risk Badge Styles
-  // const getRiskBadge = (status, runway) => {
-  //   if (status.includes('CRITICAL') || runway <= 0) {
-  //     return (
-  //       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full dark:text-sm font-semibold bg-rose-500/10 text-rose-700 border border-rose-200">
-  //         <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-  //         CRITICAL: EXHAUSTED
-  //       </span>
-  //     );
-  //   }
-  //   if (status.includes('HIGH RISK') || runway < 4.0) {
-  //     return (
-  //       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full dark:text-sm  font-semibold bg-amber-500/10 text-amber-800 border border-amber-300">
-  //         <Clock className="w-3.5 h-3.5 text-amber-600" />
-  //         HIGH RISK: Depleting
-  //       </span>
-  //     );
-  //   }
-  //   return (
-  //     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full dark:text-sm  font-semibold bg-emerald-500/10 text-emerald-800 border border-emerald-200">
-  //       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-  //       LOW RISK: Stable
-  //     </span>
-  //   );
-  // };
-
   const totalAllocated =
     burnRateData
       ?.filter((x) => x.grantYear === year)
@@ -161,7 +185,7 @@ export default function App() {
       .map((x) => x.cumulativeSpent)
       .reduce((acc, cur) => acc + cur, 1) ?? 0;
 
-  const budgetsInTrouble =
+  const highPriorityBudgets =
     burnRateData
       ?.filter((x) => x.grantYear === year)
       ?.map((x) => ({
@@ -173,12 +197,25 @@ export default function App() {
       }))
       .filter((x) => x.monthsRemaining <= 6 && x.pct > 90) ?? null;
 
+  const criticalHighRiskBudgets = useMemo(() => {
+    return scores?.filter(
+      (x) => x.scoreLabel.label === 'BAD' || x.scoreLabel.label === 'WARNING',
+    );
+  }, [scores]);
+
+  const lowRiskBudgets = useMemo(() => {
+    return scores?.filter(
+      (x) => x.scoreLabel.label === 'GOOD' || x.scoreLabel.label === 'MODERATE',
+    );
+  }, [scores]);
+
+  console.log('lowRiskBudgets', lowRiskBudgets);
+
   const combinedMonthlySpend =
     burnRateData
       ?.filter((x) => x.grantYear === year)
       .map((x) => x.currentMonthlyBurnRate)
       .reduce((acc, cur) => acc + cur, 1) ?? 0;
-  console.log('burnRateData', burnRateData);
 
   const pctBudgetConsumed = (
     (1 - (totalAllocated - totalSpent) / totalAllocated) *
@@ -303,7 +340,7 @@ export default function App() {
 
               {/* Card 4: Action Items */}
               <div
-                className={`${budgetsInTrouble?.length === 0 && 'opacity-50'}  hover:scale-105 transition-all duration-250 ease-out bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
+                className={`${highPriorityBudgets?.length === 0 && 'opacity-50'}  hover:scale-105 transition-all duration-250 ease-out bg-neutral-100 border-neutral-300/60 dark:bg-slate-800/80  border dark:border-slate-700/60 rounded-md p-5 shadow-sm relative overflow-hidden
                   `}
               >
                 <div className="flex items-center justify-between dark:text-slate-400">
@@ -315,8 +352,8 @@ export default function App() {
                   </div>
                 </div>
                 <div className="text-2xl sm:text-3xl font-bold text-red-500 dark:text-rose-400 mt-3 font-mono">
-                  {budgetsInTrouble && (
-                    <span>{budgetsInTrouble.length} Budgets</span>
+                  {highPriorityBudgets && (
+                    <span>{highPriorityBudgets.length} Budgets</span>
                   )}
                 </div>
                 <div className="flex  gap-3 mt-2 text-red-500 dark:text-rose-300/80">
@@ -373,8 +410,8 @@ export default function App() {
                 }`}
               >
                 Critical / High Risk ({' '}
-                {budgetsInTrouble && (
-                  <span>{budgetsInTrouble.length} Budgets</span>
+                {criticalHighRiskBudgets && criticalHighRiskBudgets.length && (
+                  <span>{criticalHighRiskBudgets.length} Budgets</span>
                 )}
                 )
               </button>
@@ -387,10 +424,9 @@ export default function App() {
                 }`}
               >
                 Low Risk (
-                {budgetsInTrouble &&
-                  burnRateData &&
-                  burnRateData.filter((x) => x.grantYear === year).length -
-                    budgetsInTrouble.length}
+                {lowRiskBudgets && lowRiskBudgets.length && (
+                  <span>{lowRiskBudgets.length} Budgets</span>
+                )}
                 )
               </button>
             </div>
@@ -626,8 +662,8 @@ export default function App() {
                 {/* <Info className="w-4 h-4 dark:text-slate-400 shrink-0" /> */}
                 {/* <span>
                 Spend rate calculated using standard least-squares velocity
+                </span> */}
                 trajectory across fiscal months.
-              </span> */}
               </div>
               <div className="text-neutral-500 dark:text-slate-200 text-sm">
                 Showing{' '}
@@ -731,3 +767,29 @@ export default function App() {
 //     trajectorySlope: 0.05,
 //   },
 // ];
+
+// Get Risk Badge Styles
+// const getRiskBadge = (status, runway) => {
+//   if (status.includes('CRITICAL') || runway <= 0) {
+//     return (
+//       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full dark:text-sm font-semibold bg-rose-500/10 text-rose-700 border border-rose-200">
+//         <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
+//         CRITICAL: EXHAUSTED
+//       </span>
+//     );
+//   }
+//   if (status.includes('HIGH RISK') || runway < 4.0) {
+//     return (
+//       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full dark:text-sm  font-semibold bg-amber-500/10 text-amber-800 border border-amber-300">
+//         <Clock className="w-3.5 h-3.5 text-amber-600" />
+//         HIGH RISK: Depleting
+//       </span>
+//     );
+//   }
+//   return (
+//     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full dark:text-sm  font-semibold bg-emerald-500/10 text-emerald-800 border border-emerald-200">
+//       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+//       LOW RISK: Stable
+//     </span>
+//   );
+// };
